@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of the Alfresco Mobile SDK.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources>
+
+    <!-- Application -->
+    <string name="sample_app_name">SDK Samples</string>
+    <!-- Home Screen -->
+    <string name="samples_option">Samples</string>
+    <string name="api_reference_option">API Reference</string>
+    <string name="learn_more_option">Learn More...</string>
+    <string name="api_reference_title">API Reference</string>
+    <string name="api_reference_url">http://docs.alfresco.com/mobile_sdk_android_preview/index.jsp</string>
+    <string name="learn_more_url">http://www.alfresco.com/products/mobile</string>
+    <!-- Menu Screen -->
+    <string name="sample_title">Select Sample</string>
+    <string name="sample_browse_company_home_option">Browse Company Home</string>
+    <string name="sample_browse_all_sites_option">Browse All Sites</string>
+    <string name="sample_browse_favourite_sites_option">Browse Favourite Sites</string>
+    <string name="sample_browse_my_sites_option">Browse My Sites</string>
+    <string name="sample_search_option">Search</string>
+    <string name="sample_browse_activities_option">Activities</string>
+    <!-- Screen Title -->
+    <string name="select_company_home_title">Company Home</string>
+    <string name="select_favourite_sites_title">Favourite Sites</string>
+    <string name="select_activities_title">Activities</string>
+    <string name="select_my_sites_title">My Sites</string>
+    <string name="select_all_sites_title">All Sites</string>
+    <!-- Details Screen -->
+    <string name="document_general_metadata_header">General</string>
+    <string name="document_comments_header">Comments</string>
+    <string name="document_tags_header">Tags</string>
+    <string name="document_version_header">Version</string>
+    <string name="document_general_metadata">Properties</string>
+    <string name="document_general_metadata_title">Title</string>
+    <string name="document_general_metadata_description">Description</string>
+    <string name="document_general_metadata_createdby">Created By</string>
+    <string name="document_general_metadata_createdon">Created On</string>
+    <string name="document_general_metadata_modifiedby">Modified By</string>
+    <string name="document_general_metadata_modifiedon">Modified On</string>
+    <string name="document_tags_notags">No Tags</string>
+    <string name="document_comments_nocomments">No Comments</string>
+    <string name="document_versions_noversions">No Versions</string>
+    <!-- Add Screen -->
+    <string name="add_new_title">Add New</string>
+    <string name="add_folder_option">Add Folder</string>
+    <string name="add_photo_option">Add Photo</string>
+    <string name="folder_dialog_message">Folder Name</string>
+    <string name="add_photo_name">Name</string>
+    <string name="add_photo_description">Description</string>
+    <string name="add_photo_tags">Tags</string>
+    <!-- Search -->
+    <string name="search_title">Search</string>
+    <string name="search_keyword_option">Search</string>
+    <string name="search_fulltext_option">Full text</string>
+    <string name="search_exact_option">Exact</string>
+    <!-- Errors -->
+    <string name="error_no_photo_library">The Photo Library is unavailable.</string>
+    <string name="error_retrieve_children">Failed to retrieve children for this folder.</string>
+    <string name="error_retrieve_comments">Failed to retrieve comments for this document.</string>
+    <string name="error_retrieve_versions">Failed to retrieve versions for this document.</string>
+    <string name="error_retrieve_likes">Could not retrieve Like/Unlike tag for this document.</string>
+    <string name="error_retrieve_tags">Failed to retrieve tags for this document.</string>
+    <string name="error_retrieve_thumbnails">Failed to retrieve thumbnail(s).</string>
+    <string name="error_retrieve_sites">Failed to retrieve sites.</string>
+    <string name="error_retrieve_doc_library">Failed to retrieve document library.</string>
+    <string name="error_search">Failure during search.</string>
+    <string name="error_retrieve_activities">Failure to retrieve activities.</string>
+    <string name="error_uploading_document">Failure to upload the document.</string>
+    <string name="error_adding_tags">Failure to add tags to document on server.</string>
+    <string name="error_retrieve_avatars">Failure to retrieve avatars for listed users.</string>
+    <string name="error_add_folder">Failure to add folder.</string>
+    <string name="error_add_photo">Failure to add photo.</string>
+    <string name="error_title">Error</string>
+    <!-- Listing -->
+    <string name="load_more">Load more...</string>
+    <string name="document_general_nodata">No data.</string>
+    <!-- Account -->
+    <string name="account_username">Username</string>
+    <string name="account_password">Password</string>
+    <string name="account_url">Hostname</string>
+    <string name="error_login">Failed to log in. Please check your settings.</string>
+
+    <!-- EXTRA -->
+    <string name="account_username">Username</string>
+    <string name="account_password">Password</string>
+    <string name="account_hostname">Hostname</string>
+    <string name="error_login">Failed to log in. Please check your settings.</string>
+    <string name="required">Required</string>
+    <string name="dialog_wait">Please wait</string>
+    <string name="contact_server_progress">Contacting your server&#8230;</string>
+    <string name="document_actions">Actions</string>
+
+</resources>

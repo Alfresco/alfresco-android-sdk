@@ -1,0 +1,75 @@
+package org.alfresco.mobile.android.test.api.utils;
+
+import java.util.Locale;
+
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+
+import junit.framework.Assert;
+import android.os.PatternMatcher;
+import android.test.AndroidTestCase;
+
+public class UtilsTest extends AndroidTestCase
+{
+
+    public void testPattern()
+    {
+
+        // NodeRef
+        String nodeRef = "workspace://SpacesStore/2485c3f5-533d-4ab7-b409-ef6daee9cf29";
+
+        Assert.assertTrue(NodeRefUtils.isNodeRef(nodeRef));
+        Assert.assertFalse(NodeRefUtils.isIdentifier(nodeRef));
+        Assert.assertFalse(NodeRefUtils.isVersionIdentifier(nodeRef));
+
+        // Identifier
+        String identifier = "2485c3f5-533d-4ab7-b409-ef6daee9cf29";
+
+        Assert.assertFalse(NodeRefUtils.isNodeRef(identifier));
+        Assert.assertTrue(NodeRefUtils.isIdentifier(identifier));
+        Assert.assertFalse(NodeRefUtils.isVersionIdentifier(identifier));
+
+        // Version + Identifier
+        String verisonNodeRef = "workspace://SpacesStore/2485c3f5-533d-4ab7-b409-ef6daee9cf29;1.4";
+        Assert.assertTrue(NodeRefUtils.isNodeRef(verisonNodeRef));
+        Assert.assertFalse(NodeRefUtils.isIdentifier(verisonNodeRef));
+        Assert.assertFalse(NodeRefUtils.isVersionIdentifier(verisonNodeRef));
+
+        nodeRef = NodeRefUtils.getCleanIdentifier(verisonNodeRef);
+        Assert.assertTrue(NodeRefUtils.isNodeRef(nodeRef));
+        Assert.assertFalse(NodeRefUtils.isIdentifier(nodeRef));
+        Assert.assertFalse(NodeRefUtils.isVersionIdentifier(nodeRef));
+
+        identifier = NodeRefUtils.getNodeIdentifier(verisonNodeRef);
+        Assert.assertFalse(NodeRefUtils.isNodeRef(identifier));
+        Assert.assertTrue(NodeRefUtils.isIdentifier(identifier));
+        Assert.assertFalse(NodeRefUtils.isVersionIdentifier(identifier));
+    }
+
+    public void testPatternMAtcher()
+    {
+        String url = "https://ts.alfresco.com/share/page/site/MobileEngineeringTeam/folder-details?nodeRef=workspace://SpacesStore/24e858f4-d2de-439f-88a7-608ea5bbb4ef";
+        String path = "/share/page/site/MobileEngineeringTeam/folder-details?nodeRef=workspace://SpacesStore/24e858f4-d2de-439f-88a7-608ea5bbb4ef";
+
+        PatternMatcher pm = new PatternMatcher("/share/page/site", PatternMatcher.PATTERN_PREFIX);
+        Assert.assertTrue(pm.match(path));
+    }
+
+    public void testLocaleToLowerCase()
+    {
+        Assert.assertTrue("i".equals("I".toLowerCase(Locale.ENGLISH)));
+        Assert.assertTrue("i".equals("I".toLowerCase(Locale.CHINESE)));
+        Assert.assertTrue("i".equals("I".toLowerCase(Locale.FRENCH)));
+        Assert.assertTrue("i".equals("I".toLowerCase(Locale.KOREA)));
+        Assert.assertTrue("i".equals("I".toLowerCase(Locale.JAPANESE)));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("ar_SA"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("iw_IL"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("hi_IN"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("sv_SE"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("ru_RU"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("no_NO"))));
+        Assert.assertTrue("i".equals("I".toLowerCase(new Locale("uk_UA"))));
+        Assert.assertFalse("i is not equal to " + "I".toLowerCase(new Locale("tr")),
+                "i".equals("I".toLowerCase(new Locale("tr"))));
+    }
+
+}
