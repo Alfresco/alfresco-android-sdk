@@ -52,13 +52,44 @@
 			<groupId>com.google.android.support</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
+			<groupId>org.apache.chemistry.opencmis</groupId>
+			<artifactId>chemistry-opencmis-android-client</artifactId>
+			<version>${chemistry.opencmis.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>android</artifactId>
+					<groupId>com.google.android</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-codec</artifactId>
+					<groupId>commons-codec</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-android</artifactId>
+			<version>1.6.1-RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.alfresco.cmis.client</groupId>
 			<artifactId>alfresco-opencmis-extension</artifactId>
-		</dependency> -->
+			<version>${alfresco.opencmis.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.chemistry.opencmis</groupId>
+					<artifactId>chemistry-opencmis-client-impl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 </project>

@@ -10,13 +10,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.alfresco.mobile.android.sdk</groupId>
-        <artifactId>alfresco-mobile-android-sdk</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+		<artifactId>afresco-mobile-android-sdk-samples</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
-	<artifactId>alfresco-mobile-android-sample-extension</artifactId>
+	<artifactId>alfresco-mobile-android-samples-extension</artifactId>
 
 	<name>Alfresco Mobile Android - Sample API extension</name>
 
@@ -26,9 +26,10 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
 			<artifactId>alfresco-mobile-android-client-api</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

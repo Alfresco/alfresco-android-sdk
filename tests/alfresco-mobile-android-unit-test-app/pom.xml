@@ -10,11 +10,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.alfresco.mobile.android.sdk</groupId>
-        <artifactId>alfresco-mobile-android-sdk</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>org.alfresco.mobile.android.sdk.tests</groupId>
+		<artifactId>alfresco-mobile-android-sdk-tests</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<artifactId>alfresco-mobile-android-unit-test-app</artifactId>
 
@@ -22,6 +23,7 @@
 	<name>Alfresco Mobile Android - Tests</name>
 
 	<build>
+	    <sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -54,19 +56,31 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
 			<artifactId>alfresco-mobile-android-samples-app</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 			<type>apk</type>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+			<artifactId>alfresco-mobile-android-samples-app</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android.support</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>alfresco-mobile-android-sample-extension</artifactId>
+			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+			<artifactId>alfresco-mobile-android-samples-extension</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android-test</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -108,7 +122,7 @@
 						</executions>
 						<extensions>true</extensions>
 					</plugin>
-					
+
 				</plugins>
 			</build>
 		</profile>
