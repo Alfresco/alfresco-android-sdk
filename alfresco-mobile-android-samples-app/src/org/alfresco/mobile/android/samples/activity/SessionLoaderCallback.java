@@ -98,9 +98,11 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobileSampleApp"));
 
-        
         //Specific for Test Instance server
         if (url.startsWith(ALFRESCO_CLOUD_URL)){
+            
+            //TODO Remove it when public
+            url = "http://devapis.alfresco.com";
             
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE){
