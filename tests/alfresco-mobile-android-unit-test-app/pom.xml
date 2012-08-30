@@ -96,10 +96,9 @@
 						<configuration>
 							<emulator>
 								<avd>14</avd>
-								<wait>60000</wait>
-								<options>-no-window -noaudio</options>
+								<wait>30000</wait>
+								<options>-no-skin</options>
 							</emulator>
-							<undeployBeforeDeploy>true</undeployBeforeDeploy>
 							<testPackages>
 								<testPackage>org.alfresco.mobile.android.test</testPackage>
 							</testPackages>
@@ -107,16 +106,9 @@
 						<executions>
 							<execution>
 								<id>startemulator</id>
-								<phase>process-test-classes</phase>
+								<phase>initialize</phase>
 								<goals>
 									<goal>emulator-start</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>stopemulator</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>emulator-stop</goal>
 								</goals>
 							</execution>
 						</executions>
