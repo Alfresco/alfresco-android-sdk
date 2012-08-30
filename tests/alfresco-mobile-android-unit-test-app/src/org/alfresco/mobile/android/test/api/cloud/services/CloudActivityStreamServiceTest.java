@@ -17,13 +17,19 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.cloud.services;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
+import org.alfresco.mobile.android.api.model.Comment;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
@@ -61,6 +67,9 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
         // Create Session
         initSession();
 
+        //INIT DATA with a comment activity Entry
+        createCloudCommentActivityEntry();
+        
         // ///////////////////////////////////////////////////////////////////////////
         // Activity Service
         // ///////////////////////////////////////////////////////////////////////////
@@ -154,6 +163,20 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
         {
             Assert.assertFalse(pagingFeed.hasMoreItems());
         }
+    }
+    
+    private void createCloudCommentActivityEntry(){
+        final String COMMENT_FOLDER = "CommentTestFolder";
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        // Create sample folder
+        Map<String, Serializable> properties = new HashMap<String, Serializable>();
+        properties.put(ContentModel.PROP_TITLE, COMMENT_FOLDER);
+        Folder folder = createNewFolder(alfsession, unitTestFolder, COMMENT_FOLDER, properties);
+
+        // Add comment
+        alfsession.getServiceRegistry().getCommentService().addComment(folder, "Hello World!");
     }
 
     /**

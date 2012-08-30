@@ -144,6 +144,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             {
                 cf = docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
                 if (cf != null) break;
+                wait(5000);
             }
             catch (AlfrescoServiceException e)
             {
