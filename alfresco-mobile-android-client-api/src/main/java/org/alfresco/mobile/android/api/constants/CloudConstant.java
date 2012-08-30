@@ -110,5 +110,9 @@ public class CloudConstant extends OnPremiseConstant
     public static final String SUBSCRIPTIONLEVEL_VALUE = "subscriptionLevel";
     public static final String PAIDNETWORK_VALUE = "paidNetwork";
     public static final String HOMENETWORK_VALUE = "homeNetwork";
+    
+    //PEOPLE
+    public static final String AVATARID_VALUE = "avatarId";
+
 
 }

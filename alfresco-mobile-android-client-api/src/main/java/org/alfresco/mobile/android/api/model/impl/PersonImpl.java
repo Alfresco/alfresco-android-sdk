@@ -93,7 +93,7 @@ public class PersonImpl implements Person
 
         if (json == null) return null;
 
-        person.avatarIdentifier = JSONConverter.getString(json, CloudConstant.AVATAR_VALUE);
+        person.avatarIdentifier = JSONConverter.getString(json, CloudConstant.AVATARID_VALUE);
         person.username = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         person.firstName = JSONConverter.getString(json, CloudConstant.FIRSTNAME_VALUE);
         person.lastName = JSONConverter.getString(json, CloudConstant.LASTNAME_VALUE);
