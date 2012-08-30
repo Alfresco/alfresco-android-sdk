@@ -260,7 +260,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         
     }
 
-    private void quickSearch(String statement, int nbValue)
+    protected void quickSearch(String statement, int nbValue)
     {
         Assert.assertEquals(nbValue, searchService.search(statement, SearchLanguage.CMIS).size());
     }
