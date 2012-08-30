@@ -49,8 +49,8 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.support</groupId>
-			<artifactId>annotations</artifactId>
+			<groupId>com.google.android.annotations</groupId>
+				<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.chemistry.opencmis</groupId>

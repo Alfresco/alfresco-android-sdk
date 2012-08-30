@@ -204,7 +204,7 @@
 
 
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.1</version>
@@ -223,7 +223,7 @@
 					<revisionOnScmFailure>?</revisionOnScmFailure>
 					<timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ssZ}</timestampFormat>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -302,6 +302,7 @@
 						<manifestEntries>
 							<X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
 							<X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
+							<!-- TODO Commit Revision number -->
 							<X-Apache-SVN-Revision>${buildNumber}</X-Apache-SVN-Revision>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
@@ -477,9 +478,9 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.google.android.support</groupId>
+				<groupId>com.google.android.annotations</groupId>
 				<artifactId>annotations</artifactId>
-				<version>r1</version>
+				<version>20.0.1</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>

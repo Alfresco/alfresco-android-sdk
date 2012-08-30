@@ -23,7 +23,7 @@
 	<name>Alfresco Mobile Android - Tests</name>
 
 	<build>
-	    <sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -70,7 +70,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.support</groupId>
+			<groupId>com.google.android.annotations</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>

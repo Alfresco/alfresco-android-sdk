@@ -46,7 +46,7 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.support</groupId>
+			<groupId>com.google.android.annotations</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
 	</dependencies>
