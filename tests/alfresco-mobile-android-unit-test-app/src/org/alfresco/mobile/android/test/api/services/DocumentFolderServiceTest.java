@@ -428,6 +428,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                     break;
                 }
                 i++;
+                wait(5000);
             }
             catch (AlfrescoServiceException e)
             {
