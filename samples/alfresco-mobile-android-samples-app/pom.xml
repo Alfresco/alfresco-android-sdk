@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (C) 2005-2012 Alfresco Software Limited. This file is part 
 	of the Alfresco Mobile SDK. Licensed under the Apache License, Version 2.0 
 	(the "License"); you may not use this file except in compliance with the 
@@ -7,19 +8,20 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.alfresco.mobile.android.sdk</groupId>
-		<artifactId>alfresco-mobile-android-sdk</artifactId>
+		<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+		<artifactId>afresco-mobile-android-sdk-samples</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>alfresco-mobile-android-ui-library</artifactId>
-	<packaging>apklib</packaging>
 
-	<name>Alfresco Mobile Android - UI Library</name>
+	<artifactId>alfresco-mobile-android-samples-app</artifactId>
+
+	<packaging>apk</packaging>
+	<name>Alfresco Mobile Android - Samples Application</name>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -29,34 +31,15 @@
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>pack</id>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>alfresco-android-sdk</finalName>
-							<attach>true</attach>
-							<descriptors>
-								<descriptor>src/main/assembly/pack.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>alfresco-mobile-android-async</artifactId>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-ui-library</artifactId>
 			<version>${project.version}</version>
+			<type>apklib</type>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -67,4 +50,33 @@
 			<artifactId>annotations</artifactId>
 		</dependency>
 	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>emma</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<!-- emma start -->
+							<emma>
+								<enable>true</enable>
+								<classFolders>${project.basedir}/target/classes/</classFolders>
+								<outputMetaFile>${project.basedir}/target/emma/coverage.em</outputMetaFile>
+							</emma>
+							<!-- emma stop -->
+							<dex>
+								<noLocals>true</noLocals> <!-- must be set for emma -->
+							</dex>
+						</configuration>
+						<extensions>true</extensions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

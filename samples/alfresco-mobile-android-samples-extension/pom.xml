@@ -11,28 +11,25 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.alfresco.mobile.android.sdk</groupId>
-		<artifactId>alfresco-mobile-android-sdk</artifactId>
+		<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+		<artifactId>afresco-mobile-android-sdk-samples</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>alfresco-mobile-android-async</artifactId>
+	<artifactId>alfresco-mobile-android-samples-extension</artifactId>
 
-	<name>Alfresco Mobile Android - Async</name>
+	<name>Alfresco Mobile Android - Sample API extension</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>alfresco-mobile-android-client-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.annotations</groupId>
-				<artifactId>annotations</artifactId>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-client-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

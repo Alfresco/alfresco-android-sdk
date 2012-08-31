@@ -14,8 +14,12 @@
 	<groupId>org.alfresco.mobile.android.sdk</groupId>
 	<artifactId>alfresco-mobile-android-sdk</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Alfresco Mobile Android SDK</name>
 	<packaging>pom</packaging>
+
+	<name>Alfresco Android SDK (Parent)</name>
+	<description>Android SDK for using  Alfresco API for OnPremise and Cloud</description>
+	<url>http://www.alfresco.com/products/mobile</url>
+	<inceptionYear>2012</inceptionYear>
 
 	<organization>
 		<name>Alfresco Software</name>
@@ -31,21 +35,22 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/sdk</connection>
-		<developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/sdk</developerConnection>
-		<url>https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/sdk</url>
+		<url>https://github.com/Alfresco/alfresco-android-sdk.git</url>
+		<connection>scm:git:git://github.com/Alfresco/alfresco-android-sdk.git</connection>
+		<developerConnection>scm:git:git@github.com:Alfresco/alfresco-android-sdk.git</developerConnection>
 	</scm>
 
 	<modules>
-		<!-- SDK -->
+		<!-- Libraries -->
 		<module>alfresco-mobile-android-client-api</module>
 		<module>alfresco-mobile-android-async</module>
 		<module>alfresco-mobile-android-ui-library</module>
 
-		<!-- Samples / Extension / Tests -->
-		<module>alfresco-mobile-android-sample-extension</module>
-		<module>alfresco-mobile-android-samples-app</module>
-		<module>alfresco-mobile-android-unit-test-app</module>
+		<!-- Samples / Extension -->
+		<module>samples</module>
+
+		<!-- Tests -->
+		<module>tests</module>
 	</modules>
 
 	<distributionManagement>
@@ -114,13 +119,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compile.source>1.6</maven.compile.source>
 		<maven.compile.target>1.6</maven.compile.target>
 		<android.version.number>14</android.version.number>
-		<android.version.compilation>4.0.3_r3</android.version.compilation>
+		<android.version>4.0.1.2</android.version>
 		<chemistry.opencmis.version>0.8.0-SNAPSHOT</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.4-ANDROID</alfresco.opencmis.version>
 		<site.basedir>${project.parent.basedir}</site.basedir>
+		<junit.version>4.10</junit.version>
 	</properties>
 
 	<build>
@@ -168,7 +175,7 @@
 				<plugin>
 					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 					<artifactId>android-maven-plugin</artifactId>
-					<version>3.2.0</version>
+					<version>3.3.0</version>
 					<extensions>true</extensions>
 					<configuration>
 						<sdk>
@@ -197,7 +204,7 @@
 
 
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.1</version>
@@ -216,7 +223,7 @@
 					<revisionOnScmFailure>?</revisionOnScmFailure>
 					<timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ssZ}</timestampFormat>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -295,6 +302,7 @@
 						<manifestEntries>
 							<X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
 							<X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
+							<!-- TODO Commit Revision number -->
 							<X-Apache-SVN-Revision>${buildNumber}</X-Apache-SVN-Revision>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
@@ -460,54 +468,26 @@
 			<dependency>
 				<groupId>com.google.android</groupId>
 				<artifactId>android</artifactId>
-				<version>${android.version.compilation}</version>
+				<version>${android.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.google.android.support</groupId>
+				<groupId>com.google.android</groupId>
+				<artifactId>android-test</artifactId>
+				<version>${android.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android.annotations</groupId>
 				<artifactId>annotations</artifactId>
-				<version>r1</version>
+				<version>20.0.1</version>
 				<scope>provided</scope>
 			</dependency>
-			<!-- <dependency>
-				<groupId>org.apache.chemistry.opencmis</groupId>
-				<artifactId>chemistry-opencmis-android-client</artifactId>
-				<version>${chemistry.opencmis.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>android</artifactId>
-						<groupId>com.google.android</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-codec</artifactId>
-						<groupId>commons-codec</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>org.slf4j</artifactId>
-						<groupId>slf4j-api</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-android</artifactId>
-				<version>1.6.1-RC1</version>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.alfresco.cmis.client</groupId>
-				<artifactId>alfresco-opencmis-extension</artifactId>
-				<version>${alfresco.opencmis.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.chemistry.opencmis</groupId>
-						<artifactId>chemistry-opencmis-client-impl</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency> -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -549,50 +529,4 @@
 			</reporting>
 		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.chemistry.opencmis</groupId>
-			<artifactId>chemistry-opencmis-android-client</artifactId>
-			<version>${chemistry.opencmis.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>android</artifactId>
-					<groupId>com.google.android</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-codec</artifactId>
-					<groupId>commons-codec</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>org.slf4j</artifactId>
-					<groupId>slf4j-api</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-android</artifactId>
-			<version>1.6.1-RC1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.cmis.client</groupId>
-			<artifactId>alfresco-opencmis-extension</artifactId>
-			<version>${alfresco.opencmis.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.chemistry.opencmis</groupId>
-					<artifactId>chemistry-opencmis-client-impl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
 </project>
