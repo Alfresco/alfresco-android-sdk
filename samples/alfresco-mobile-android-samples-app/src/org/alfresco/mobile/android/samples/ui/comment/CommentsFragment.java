@@ -57,7 +57,7 @@ public class CommentsFragment extends CommentFragment
         CommentsFragment bf = new CommentsFragment();
         ListingContext lc = new ListingContext();
         lc.setMaxItems(15);
-        lc.setSortProperty(Sorting.CREATION_DATE);
+        lc.setSortProperty(Sorting.CREATED_AT);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(lc, LOAD_MANUAL);
         b.putAll(createBundleArgs(n));

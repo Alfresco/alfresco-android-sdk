@@ -26,7 +26,7 @@ public enum SearchLanguage
 {
     CMIS("CMIS");
 
-    final String value;
+    private final String value;
 
     SearchLanguage(String v)
     {

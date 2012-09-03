@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 public class NodeRefUtils
 {
 
+    public static final int IDENTIFIER_LENGTH = 36;
+    
     public static final String URI_FILLER = "://";
 
     private static final Pattern nodeRefPattern = Pattern.compile(".+://.+/.+");

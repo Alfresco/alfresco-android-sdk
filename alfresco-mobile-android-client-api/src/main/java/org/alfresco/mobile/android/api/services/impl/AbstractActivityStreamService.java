@@ -108,7 +108,7 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
                     Messagesl18n.getString("ActivityStreamService.0")); }
             return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -150,7 +150,7 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
                     Messagesl18n.getString("ActivityStreamService.1")); }
             return computeActivities(getSiteActivitiesUrl(siteIdentifier, listingContext), listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

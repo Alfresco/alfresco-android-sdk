@@ -94,7 +94,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Site> getFavoriteSites(ListingContext listingContext)
     {
         try
         {
@@ -108,7 +108,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
             }
             return computeSites(url, true);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -138,7 +138,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    protected PagingResult<Site> computeSites(UrlBuilder url, boolean isAllSite) throws AlfrescoServiceException
+    protected PagingResult<Site> computeSites(UrlBuilder url, boolean isAllSite)
     {
 
         HttpUtils.Response resp = read(url);
@@ -149,7 +149,10 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
-            if (!isAllSite) data = (Map<String, Object>) data.get(CloudConstant.SITE_VALUE);
+            if (!isAllSite)
+            {
+                data = (Map<String, Object>) data.get(CloudConstant.SITE_VALUE);
+            }
             result.add(SiteImpl.parsePublicAPIJson(data));
         }
 
@@ -158,7 +161,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     }
 
     @SuppressWarnings("unchecked")
-    protected String parseContainer(String link) throws AlfrescoServiceException
+    protected String parseContainer(String link)
     {
         HttpUtils.Response resp = read(new UrlBuilder(link));
         PublicAPIResponse response = new PublicAPIResponse(resp);
@@ -167,11 +170,9 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
-            if (data.containsKey(CloudConstant.FOLDERID_VALUE))
-            {
-                if (CloudConstant.DOCUMENTLIBRARY_VALUE.equals(data.get(CloudConstant.FOLDERID_VALUE))) { return (String) data
-                        .get(CloudConstant.ID_VALUE); }
-            }
+            if (data.containsKey(CloudConstant.FOLDERID_VALUE)
+                    && CloudConstant.DOCUMENTLIBRARY_VALUE.equals(data.get(CloudConstant.FOLDERID_VALUE))) { return (String) data
+                    .get(CloudConstant.ID_VALUE); }
         }
 
         return null;

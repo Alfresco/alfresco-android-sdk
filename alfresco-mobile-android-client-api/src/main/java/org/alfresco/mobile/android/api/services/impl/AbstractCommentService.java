@@ -81,7 +81,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
 
     /**
      * List the available comments for the specified node. </br> Order supports
-     * : {@link Sorting#CREATION_DATE} </br>
+     * : {@link Sorting#CREATED_AT} </br>
      * 
      * @param node : Node object (Folder or Document).
      * @param listingContext : define characteristics of the result
@@ -96,7 +96,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             if (node == null) { throw new IllegalArgumentException(Messagesl18n.getString("CommentService.0")); }
             return computeComment(getCommentsUrl(node, listingContext));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -141,7 +141,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
 
             return parseData(json);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -164,7 +164,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             if (comment == null) { throw new IllegalArgumentException(Messagesl18n.getString("CommentService.2")); }
             delete(getCommentUrl(node, comment));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -203,7 +203,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
 
             return parseData(json);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

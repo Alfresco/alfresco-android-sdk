@@ -29,6 +29,11 @@ import java.util.Locale;
  */
 public class DateUtils
 {
+    
+    private DateUtils(){
+        
+    }
+    
     public static final String FORMAT_1 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static final String FORMAT_2 = "yyyy-MM-dd'T'HH:mm:ss'Z'";

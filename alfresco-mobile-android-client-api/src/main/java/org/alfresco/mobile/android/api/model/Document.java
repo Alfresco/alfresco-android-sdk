@@ -28,26 +28,26 @@ public interface Document extends Node
     /**
      * Returns the content stream length or -1 if the document has no content
      */
-    public long getContentStreamLength();
+    long getContentStreamLength();
 
     /**
      * Returns the content stream MIME type or null if the document has no
      * content
      */
-    public String getContentStreamMimeType();
+    String getContentStreamMimeType();
 
     /**
      * Returns the version label of this document
      */
-    public String getVersionLabel();
+    String getVersionLabel();
 
     /**
      * Returns the comment provided for this version of this document.
      */
-    public String getVersionComment();
+    String getVersionComment();
 
     /**
      * Returns true if latest version.
      */
-    public Boolean isLatestVersion();
+    Boolean isLatestVersion();
 }

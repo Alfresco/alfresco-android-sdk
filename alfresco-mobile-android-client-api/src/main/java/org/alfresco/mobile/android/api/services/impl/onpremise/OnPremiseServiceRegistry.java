@@ -53,28 +53,36 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     public SiteService getSiteService()
     {
         if (siteService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.siteService = new OnPremiseSiteServiceImpl((RepositorySession) session);
+        }
         return siteService;
     }
 
     public CommentService getCommentService()
     {
         if (commentService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.commentService = new OnPremiseCommentServiceImpl((RepositorySession) session);
+        }
         return commentService;
     }
 
     public TaggingService getTaggingService()
     {
         if (taggingService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.taggingService = new OnPremiseTaggingServiceImpl((RepositorySession) session);
+        }
         return taggingService;
     }
 
     public ActivityStreamService getActivityStreamService()
     {
         if (activityStreamService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.activityStreamService = new OnPremiseActivityStreamServiceImpl((RepositorySession) session);
+        }
         return activityStreamService;
     }
 
@@ -82,14 +90,18 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session)
                 && session.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
             this.ratingsService = new OnPremiseRatingsServiceImpl((RepositorySession) session);
+        }
         return ratingsService;
     }
 
     public PersonService getPersonService()
     {
         if (personService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.personService = new OnPremisePersonServiceImpl((RepositorySession) session);
+        }
         return personService;
     }
 

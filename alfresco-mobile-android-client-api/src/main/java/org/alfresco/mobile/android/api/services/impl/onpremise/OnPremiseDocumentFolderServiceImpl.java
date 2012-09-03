@@ -40,7 +40,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     }
 
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type)
-            throws AlfrescoServiceException
     {
         try
         {
@@ -64,7 +63,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             }
             return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.model;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 
 /**
  * Provides constant for sorting.</br>
@@ -28,21 +29,21 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 public interface Sorting
 {
     /** Sorting based on the name of the object. */
-    public final static String NAME = ContentModel.PROP_NAME;
+    public static final String NAME = ContentModel.PROP_NAME;
+
+    /** Sorting based on the name of the object. */
+    public static final String SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
+
+    /** Sorting based on the name of the object. */
+    public static final String TITLE = ContentModel.PROP_TITLE;
+
+    /** Sorting based on the name of the object. */
+    public static final String DESCRIPTION = ContentModel.PROP_DESCRIPTION;
 
     /** Sorting based on the creation date of the object. */
-    public final static String CREATION_DATE = ContentModel.PROP_CREATED;
+    public static final String CREATED_AT = ContentModel.PROP_CREATED;
 
     /** Sorting based on the modification date of the object. */
-    public final static String MODIFICATION_DATE = ContentModel.PROP_MODIFIED;
-
-    /** Sorting based on the type of object. */
-    public final static String TYPE = "type";
-
-    /** Sorting based on the size of the object. */
-    public final static String SIZE = "size";
-
-    /** Sorting based on the author/creator name of the object. */
-    public final static String AUTHOR = ContentModel.PROP_CREATOR;
+    public static final String MODIFIED_AT = ContentModel.PROP_MODIFIED;
 
 }

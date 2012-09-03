@@ -57,15 +57,13 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
     protected UrlBuilder getUserActivitiesUrl(ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserActivitiesUrl(session);
-        UrlBuilder url = new UrlBuilder(link);
-        return url;
+        return new UrlBuilder(link);
     }
 
     protected UrlBuilder getUserActivitiesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserActivitiesUrl(session, personIdentifier);
-        UrlBuilder url = new UrlBuilder(link);
-        return url;
+        return new UrlBuilder(link);
     }
 
     protected UrlBuilder getSiteActivitiesUrl(String siteIdentifier, ListingContext listingContext)
@@ -95,7 +93,7 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
             HttpUtils.Response resp = read(url);
 
             List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
-            int size = (json != null) ? json.size() : 0;
+            int size = json.size();
             ArrayList<ActivityEntry> result = new ArrayList<ActivityEntry>(size);
 
             Boolean b = false;
@@ -119,12 +117,14 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
             if (json != null)
             {
                 for (Object obj : json)
+                {
                     result.add(ActivityEntryImpl.parseJson((Map<String, Object>) obj));
+                }
             }
 
             return new PagingResultImpl<ActivityEntry>(result, b, size);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 
 /**
- * 
  * @author Jean Marie PASCAL
  */
 public class OnPremiseRepositoryCapabilitiesImpl implements RepositoryCapabilities
@@ -91,7 +90,7 @@ public class OnPremiseRepositoryCapabilitiesImpl implements RepositoryCapabiliti
      */
     private boolean supportLikingNodes()
     {
-        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) return false;
+        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) { return false; }
         return (repositoryInfo.getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 
@@ -104,7 +103,7 @@ public class OnPremiseRepositoryCapabilitiesImpl implements RepositoryCapabiliti
      */
     private boolean supportCommentsCount()
     {
-        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) return false;
+        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) { return false; }
         return (repositoryInfo.getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 

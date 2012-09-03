@@ -103,7 +103,9 @@ public class CommentImpl implements Comment
 
         comment.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         if (json.containsKey(CloudConstant.TITLE_VALUE))
+        {
             comment.title = JSONConverter.getString(json, CloudConstant.TITLE_VALUE);
+        }
         comment.content = JSONConverter.getString(json, CloudConstant.CONTENT_VALUE);
         comment.creationDate = JSONConverter.getString(json, CloudConstant.CREATEDAT_VALUE);
         comment.modificationDate = JSONConverter.getString(json, CloudConstant.MODIFIEDAT_VALUE);
@@ -111,9 +113,13 @@ public class CommentImpl implements Comment
         comment.isUpdated = JSONConverter.getBoolean(json, CloudConstant.EDITED_VALUE);
 
         if (json.containsKey(CloudConstant.CANEDIT_VALUE))
+        {
             comment.edit = JSONConverter.getBoolean(json, CloudConstant.CANEDIT_VALUE);
+        }
         if (json.containsKey(CloudConstant.CANDELETE_VALUE))
+        {
             comment.delete = JSONConverter.getBoolean(json, CloudConstant.CANDELETE_VALUE);
+        }
 
         return comment;
     }
@@ -180,7 +186,7 @@ public class CommentImpl implements Comment
      */
     public String getCreatedBy()
     {
-        return author.getIdentifier();
+        return (author != null) ? author.getIdentifier() : null;
     }
 
     /**

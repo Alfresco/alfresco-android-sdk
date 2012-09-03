@@ -75,7 +75,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -96,7 +96,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         {
             delete(getUnlikeUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -115,7 +115,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         {
             return computeRatingsCount(getRatingsUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -135,7 +135,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         {
             return computeIsRated(getRatingsUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

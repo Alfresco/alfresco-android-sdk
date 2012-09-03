@@ -57,7 +57,7 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
         {
             return computePerson(getPersonDetailssUrl(personIdentifier));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

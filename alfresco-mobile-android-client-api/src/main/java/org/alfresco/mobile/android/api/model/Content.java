@@ -19,10 +19,9 @@ package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 
-
 /**
  * Content represents an abstract way to share inputstream/file between the
- * client remote api and server.
+ * client api and server.
  * 
  * @author Jean Marie Pascal
  */
@@ -32,16 +31,16 @@ public interface Content extends Serializable
     /**
      * Returns the length of the content in bytes.
      */
-    public long getLength();
+    long getLength();
 
     /**
      * Returns the mime type of the content.
      */
-    public String getMimeType();
+    String getMimeType();
 
     /**
      * Returns the name of the file representing the content.
      */
-    public String getFileName();
+    String getFileName();
 
 }

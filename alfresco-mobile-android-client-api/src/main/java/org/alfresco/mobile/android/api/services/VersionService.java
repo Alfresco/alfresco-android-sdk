@@ -38,7 +38,7 @@ public interface VersionService
      * @return Returns a list of documents representing the version history for
      *         the given document.
      */
-    public List<Document> getVersions(Document document) throws AlfrescoServiceException;
+    List<Document> getVersions(Document document) throws AlfrescoServiceException;
 
     /**
      * Get the version history that relates to the referenced document.
@@ -50,7 +50,7 @@ public interface VersionService
      * @return Returns a paged list of documents representing the version
      *         history for the given document.
      */
-    public PagingResult<Document> getVersions(Document document, ListingContext listingContext)
+    PagingResult<Document> getVersions(Document document, ListingContext listingContext)
             throws AlfrescoServiceException;
 
 }

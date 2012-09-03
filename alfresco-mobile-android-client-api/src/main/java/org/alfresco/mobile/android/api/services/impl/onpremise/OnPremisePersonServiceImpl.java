@@ -64,7 +64,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public ContentStream getAvatarStream(String username) throws AlfrescoServiceException
+    public ContentStream getAvatarStream(String username)
     {
         try
         {
@@ -88,7 +88,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
 
             return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -107,14 +107,13 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         return OnPremiseUrlRegistry.getAvatarUrl(session, username);
     }
 
-    protected Person computePerson(UrlBuilder url) throws AlfrescoServiceException
+    protected Person computePerson(UrlBuilder url)
     {
         // read and parse
         HttpUtils.Response resp = read(url);
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-        if (json == null) return null;
         return PersonImpl.parseJson(json);
     }
 

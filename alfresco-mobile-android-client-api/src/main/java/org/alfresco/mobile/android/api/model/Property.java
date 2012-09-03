@@ -30,16 +30,16 @@ public interface Property extends Serializable
     /**
      * Returns true if the property is a multi-value property.
      */
-    public boolean isMultiValued();
+    boolean isMultiValued();
 
     /**
      * Returns the property data type.
      */
-    public PropertyType getType();
+    PropertyType getType();
 
     /**
      * Returns the property value, in the case of a multi-valued property a List
      * is returned.
      */
-    public <T> T getValue();
+    <T> T getValue();
 }

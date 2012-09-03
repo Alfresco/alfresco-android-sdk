@@ -50,11 +50,11 @@ public interface CommentService
      * @throws AlfrescoServiceException : If node is not defined or If network
      *             problems occur during the process.
      */
-    public List<Comment> getComments(Node node) throws AlfrescoServiceException;
+     List<Comment> getComments(Node node) throws AlfrescoServiceException;
 
     /**
      * List the available comments for the specified node. </br> Order supports
-     * : {@link Sorting#CREATION_DATE} </br>
+     * : {@link Sorting#CREATED_AT} </br>
      * 
      * @param node : Node object (Folder or Document).
      * @param listingContext : define characteristics of the result
@@ -63,7 +63,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If node is not defined or if network
      *             or internal problems occur during the process.
      */
-    public PagingResult<Comment> getComments(Node node, ListingContext listingContext) throws AlfrescoServiceException;
+     PagingResult<Comment> getComments(Node node, ListingContext listingContext) throws AlfrescoServiceException;
 
     /**
      * Add a comment to the specified Node (Folder or Document).
@@ -74,7 +74,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If content or node is not defined or
      *             if network or internal problems occur during the process.
      */
-    public Comment addComment(Node node, String content) throws AlfrescoServiceException;
+     Comment addComment(Node node, String content) throws AlfrescoServiceException;
 
     /**
      * Updates the given comment with the provided content.
@@ -84,7 +84,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If content or comment is not defined
      *             or if network or internal problems occur during the process.
      */
-    public Comment updateComment(Node node, Comment comment, String content) throws AlfrescoServiceException;
+     Comment updateComment(Node node, Comment comment, String content) throws AlfrescoServiceException;
 
     /**
      * Remove the specified comment from the repository.
@@ -93,6 +93,6 @@ public interface CommentService
      * @throws AlfrescoServiceException : If comment is not defined or if
      *             network or internal problems occur during the process.
      */
-    public void deleteComment(Node node, Comment comment) throws AlfrescoServiceException;
+     void deleteComment(Node node, Comment comment) throws AlfrescoServiceException;
 
 }

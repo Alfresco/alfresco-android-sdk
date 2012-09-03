@@ -95,7 +95,10 @@ public abstract class AlfrescoService
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() != HttpStatus.SC_OK) convertStatusCode(resp);
+        if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
@@ -113,7 +116,10 @@ public abstract class AlfrescoService
         HttpUtils.Response resp = HttpUtils.invokePOST(url, contentType, writer, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != 201) convertStatusCode(resp);
+        if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
@@ -132,7 +138,10 @@ public abstract class AlfrescoService
 
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_NO_CONTENT && resp.getResponseCode() != HttpStatus.SC_OK)
+        {
             convertStatusCode(resp);
+        }
+
     }
 
     /**
@@ -148,7 +157,10 @@ public abstract class AlfrescoService
         HttpUtils.Response resp = HttpUtils.invokePUT(url, contentType, headers, writer, getSessionHttp());
 
         // check response code
-        if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299)) convertStatusCode(resp);
+        if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299))
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
@@ -207,7 +219,7 @@ public abstract class AlfrescoService
      * @throws AlfrescoServiceException : Reasons why the requested response
      *             code is not valid.
      */
-    protected static void convertException(Throwable t)
+    protected static void convertException(Exception t)
     {
         try
         {
@@ -221,7 +233,7 @@ public abstract class AlfrescoService
         {
             throw new AlfrescoServiceException(cmisException.getMessage(), cmisException.getErrorContent());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             throw new AlfrescoServiceException(e.getMessage(), e);
         }
@@ -246,12 +258,13 @@ public abstract class AlfrescoService
     // /////////////////////////////////////////////////////////////////////////////////////////
 
     protected static final int RENDITION_CACHE = 1;
+
     protected static final int CONTENT_CACHE = 2;
 
     protected ContentFile saveContentStream(ContentStream contentStream, String cacheFileName, int storageType)
             throws AlfrescoServiceException
     {
-        if (contentStream == null || contentStream.getInputStream() == null) return null;
+        if (contentStream == null || contentStream.getInputStream() == null) { return null; }
 
         try
         {
@@ -267,13 +280,13 @@ public abstract class AlfrescoService
                 default:
                     break;
             }
-            
+
             File f = new File(folderName, cacheFileName);
             IOUtils.ensureOrCreatePathAndFile(f);
             IOUtils.copyFile(contentStream.getInputStream(), f);
             return new ContentFileImpl(f, contentStream.getFileName(), contentStream.getMimeType());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

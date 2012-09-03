@@ -8,26 +8,26 @@ public interface CloudSignupRequest
     /**
      * Returns the identifier of this registration.
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      * Returns the API key used for the signup request.
      */
-    public String getApiKey();
+    String getApiKey();
 
     /**
      * Returns the registration key.
      */
-    public String getRegistrationKey();
+    String getRegistrationKey();
 
     /**
      * Returns the email address of the user that requested to signup.
      */
-    public String getEmailAddress();
+    String getEmailAddress();
 
     /**
      * Returns the time of the registration request.
      */
-    public GregorianCalendar getRegistrationTime();
+    GregorianCalendar getRegistrationTime();
 
 }

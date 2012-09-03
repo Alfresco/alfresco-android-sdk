@@ -30,16 +30,16 @@ public interface PagingResult<T>
     /**
      * Return a list of all object present in a page.
      */
-    public List<T> getList();
+    List<T> getList();
 
     /**
      * Returns True if there are more items available.
      */
-    public Boolean hasMoreItems();
+    Boolean hasMoreItems();
 
     /**
      * Returns the number of all items presents.
      */
-    public int getTotalItems();
+    int getTotalItems();
 
 }

@@ -36,6 +36,10 @@ import org.apache.chemistry.opencmis.commons.impl.json.parser.JSONParser;
  */
 public class JsonUtils
 {
+    private JsonUtils(){
+        
+    }
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected static final ContainerFactory SIMPLE_CONTAINER_FACTORY = new ContainerFactory()
     {

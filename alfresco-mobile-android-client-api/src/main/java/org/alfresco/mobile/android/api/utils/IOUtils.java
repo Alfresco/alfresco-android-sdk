@@ -39,6 +39,10 @@ import android.util.Log;
  */
 public class IOUtils
 {
+    
+    private IOUtils(){
+        
+    }
 
     public static final int MAX_BUFFER_SIZE = 1024;
 

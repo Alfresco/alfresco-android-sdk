@@ -82,12 +82,12 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
         // authentication
         if (sendBasicAuth) {
             // get user and password
-            String user = getUser();
-            String password = getPassword();
+            String mUser = getUser();
+            String mPassword = getPassword();
 
             // if no user is set, don't set basic auth header
-            if (user != null) {
-                fixedHeaders.put("Authorization", createBasicAuthHeaderValue(user, password));
+            if (mUser != null) {
+                fixedHeaders.put("Authorization", createBasicAuthHeaderValue(mUser, mPassword));
             }
 
             // get proxy user and password
@@ -149,7 +149,7 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
      * Creates a basic authentication header value from a username and a
      * password.
      */
-    protected List<String> createBasicAuthHeaderValue(String username, String password) {
+    private List<String> createBasicAuthHeaderValue(String username, String password) {
         if (password == null) {
             password = "";
         }

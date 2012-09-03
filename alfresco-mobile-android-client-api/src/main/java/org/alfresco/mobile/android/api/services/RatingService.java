@@ -37,14 +37,14 @@ public interface RatingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public int getLikeCount(Node node) throws AlfrescoServiceException;
+    int getLikeCount(Node node) throws AlfrescoServiceException;
 
     /**
      * Increases the like count for the specified node.
      * 
      * @param node : Node object (Folder or Document).
      */
-    public void like(Node node) throws AlfrescoServiceException;
+    void like(Node node) throws AlfrescoServiceException;
 
     /**
      * Removes a previous “like” of the specified node.
@@ -53,7 +53,7 @@ public interface RatingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public void unlike(Node node) throws AlfrescoServiceException;
+    void unlike(Node node) throws AlfrescoServiceException;
 
     /**
      * Determine if the current user has liked this node.
@@ -63,6 +63,6 @@ public interface RatingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public boolean isLiked(Node node) throws AlfrescoServiceException;
+    boolean isLiked(Node node) throws AlfrescoServiceException;
 
 }

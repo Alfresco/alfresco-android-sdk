@@ -123,7 +123,7 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
             return new PagingResultImpl<ActivityEntry>(result, response.getHasMoreItems(), response.getSize());
 
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

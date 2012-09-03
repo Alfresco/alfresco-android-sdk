@@ -49,6 +49,7 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
+import org.apache.http.HttpStatus;
 
 import android.util.Log;
 
@@ -62,7 +63,7 @@ public class CloudSessionImpl extends CloudSession
 {
     private static final String CLOUD_URL = "https://api.alfresco.com";
 
-    protected CloudNetwork currentNetwork;
+    private CloudNetwork currentNetwork;
 
     public CloudSessionImpl()
     {
@@ -82,19 +83,17 @@ public class CloudSessionImpl extends CloudSession
      *            <i>http://hostname:port/alfresco</i>
      * @return a RepositorySession object that is not bind with the repository.
      */
-    public CloudSessionImpl(String username, String password) throws AlfrescoConnectionException
+    public CloudSessionImpl(String username, String password)
     {
         this(username, password, null);
     }
 
     public CloudSessionImpl(String username, String password, Map<String, Serializable> settings)
-            throws AlfrescoConnectionException
     {
         initSettings(CLOUD_URL, username, password, settings);
         authenticate();
     }
 
-    
     private AuthenticationProvider createAuthenticationProvider(String className)
     {
         AuthenticationProvider s = null;
@@ -104,13 +103,13 @@ public class CloudSessionImpl extends CloudSession
             Constructor<?> t = c.getDeclaredConstructor(Map.class);
             s = (AuthenticationProvider) t.newInstance(userParameters);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
         return s;
     }
-    
+
     /**
      * @see org.alfresco.mobile.android.api.session.RepositorySession#authenticate(String,
      *      String)
@@ -128,7 +127,10 @@ public class CloudSessionImpl extends CloudSession
                     "No Home Network available."); }
 
             String networkIdentifier = null;
-            if (hasParameter(CLOUD_NETWORK_ID)) networkIdentifier = (String) getParameter(CLOUD_NETWORK_ID);
+            if (hasParameter(CLOUD_NETWORK_ID))
+            {
+                networkIdentifier = (String) getParameter(CLOUD_NETWORK_ID);
+            }
 
             List<CloudNetwork> listNetworks = networks.getList();
             for (CloudNetwork cloudNetwork : listNetworks)
@@ -174,7 +176,8 @@ public class CloudSessionImpl extends CloudSession
             }
 
             passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
-            authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator).getAlfrescoAuthenticationProvider();
+            authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
+                    .getAlfrescoAuthenticationProvider();
 
         }
         catch (Exception e)
@@ -188,9 +191,13 @@ public class CloudSessionImpl extends CloudSession
         try
         {
             if (param.get(SessionParameter.REPOSITORY_ID) != null)
+            {
                 return sessionFactory.createSession(param);
+            }
             else
+            {
                 return sessionFactory.getRepositories(param).get(0).createSession();
+            }
         }
         catch (Exception e)
         {
@@ -212,13 +219,13 @@ public class CloudSessionImpl extends CloudSession
     // //////////////////////////////////////////////////////////////
     // Networks
     // /////////////////////////////////////////////////////////////
-
     @SuppressWarnings("unchecked")
-    public PagingResult<CloudNetwork> getPagingNetworks()
+    private PagingResult<CloudNetwork> getPagingNetworks()
     {
         UrlBuilder builder = new UrlBuilder(CloudUrlRegistry.getUserNetworks(baseUrl));
 
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder, authenticator.getHTTPHeaders());
+        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
+                authenticator.getHTTPHeaders());
 
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
@@ -252,8 +259,8 @@ public class CloudSessionImpl extends CloudSession
 
     // TODO Replace by official one.
     private static final String SIGNUP_CLOUD_URL = "http://devapis.alfresco.com";
-    //private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
 
+    // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
 
     @SuppressWarnings("unchecked")
     public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
@@ -300,7 +307,7 @@ public class CloudSessionImpl extends CloudSession
         UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getVerifiedAccountUrl(signupRequest, SIGNUP_CLOUD_URL));
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, null);
-        if (resp.getResponseCode() == 404)
+        if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
         {
             return true;
         }

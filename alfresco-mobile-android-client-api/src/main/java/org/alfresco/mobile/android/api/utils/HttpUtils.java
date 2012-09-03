@@ -17,6 +17,10 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 public class HttpUtils
 {
+    
+    private HttpUtils(){
+        
+    }
 
     private static final int BUFFER_SIZE = 2 * 1024 * 1024;
 

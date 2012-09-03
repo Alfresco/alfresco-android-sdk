@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class RepositorySession extends AbstractAlfrescoSessionImpl implements AlfrescoSession
+public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
 {
     
     /** Define the specific repository identifier. By default not necessary. */

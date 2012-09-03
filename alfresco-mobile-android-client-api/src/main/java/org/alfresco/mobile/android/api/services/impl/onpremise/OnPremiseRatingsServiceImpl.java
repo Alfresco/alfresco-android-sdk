@@ -78,8 +78,6 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
         HttpUtils.Response resp = read(url);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-        if (json == null) { return -1; }
-
         Map<String, Object> j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
         if (j.size() == 0 && j.get(OnPremiseConstant.NODESTATISTICS_VALUE) == null) { return -1; }
 
@@ -99,8 +97,6 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
         // read and parse
         HttpUtils.Response resp = read(url);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-
-        if (json == null) { return false; }
 
         Map<String, Object> j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
         if (j.size() == 0 && j.get(OnPremiseConstant.RATINGS_VALUE) == null) { return false; }

@@ -58,14 +58,7 @@ public class PermissionsImpl implements Permissions
      */
     public boolean canAddChildren()
     {
-        if (node.hasAllowableAction(Action.CAN_CREATE_FOLDER) && node.hasAllowableAction(Action.CAN_CREATE_DOCUMENT))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (node.hasAllowableAction(Action.CAN_CREATE_FOLDER) && node.hasAllowableAction(Action.CAN_CREATE_DOCUMENT));
     }
 
     /**

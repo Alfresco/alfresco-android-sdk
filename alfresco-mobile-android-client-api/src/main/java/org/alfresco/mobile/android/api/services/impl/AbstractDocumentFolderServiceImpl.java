@@ -129,8 +129,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /**
      * Lists all immediate child nodes of the given context folder. </br> By
      * default, this list contains a maximum of 50 elements. </br> Use
-     * {@link AbstractDocumentFolderServiceImpl#getChildren(Folder, ListingContext)} to
-     * change this behaviour.
+     * {@link AbstractDocumentFolderServiceImpl#getChildren(Folder, ListingContext)}
+     * to change this behaviour.
      * 
      * @param parentFolder : context folder
      * @return a list of Nodes (could contains Folder and/or Documents objects)
@@ -210,7 +210,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return new PagingResultImpl<Node>(page, hasMoreItem, children.getNumItems().intValue());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -249,17 +249,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (relativePathFromFolder == null) { throw new IllegalArgumentException("Path must be set!"); }
 
-            if (relativePathFromFolder.length() > 1 && relativePathFromFolder.endsWith("/"))
+            String tmpPath = relativePathFromFolder;
+            if (tmpPath.length() > 1 && tmpPath.endsWith("/"))
             {
-                relativePathFromFolder = relativePathFromFolder.substring(0, relativePathFromFolder.length() - 1);
+                tmpPath = tmpPath.substring(0, tmpPath.length() - 1);
             }
 
-            if (relativePathFromFolder.length() > 1 && !relativePathFromFolder.startsWith("/"))
+            if (tmpPath.length() > 1 && !tmpPath.startsWith("/"))
             {
-                relativePathFromFolder = "/" + relativePathFromFolder;
+                tmpPath = "/" + tmpPath;
             }
 
-            path = path.concat(relativePathFromFolder);
+            path = path.concat(tmpPath);
 
             Node result = null;
 
@@ -276,7 +277,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return result;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -297,7 +298,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             return getChildById(identifier);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -343,7 +344,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         try
         {
-            String statement = QUERY_CHILD_FOLDER.replace(PARAM_NODEREF, folder.getIdentifier().toString());
+            String statement = QUERY_CHILD_FOLDER.replace(PARAM_NODEREF, folder.getIdentifier());
             SearchService searchService = session.getServiceRegistry().getSearchService();
             PagingResult<Node> nodes = searchService.search(statement, SearchLanguage.CMIS, listingContext);
             List<Folder> folders = new ArrayList<Folder>(nodes.getList().size());
@@ -354,7 +355,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return new PagingResultImpl<Folder>(folders, nodes.hasMoreItems(), nodes.getTotalItems());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -390,7 +391,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         try
         {
-            String statement = QUERY_CHILD_DOCS.replace(PARAM_NODEREF, folder.getIdentifier().toString());
+            String statement = QUERY_CHILD_DOCS.replace(PARAM_NODEREF, folder.getIdentifier());
             SearchService searchService = session.getServiceRegistry().getSearchService();
             PagingResult<Node> nodes = searchService.search(statement, SearchLanguage.CMIS, listingContext);
             List<Document> documents = new ArrayList<Document>(nodes.getList().size());
@@ -404,7 +405,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return docs;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -436,7 +437,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return result;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -470,18 +471,19 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         try
         {
             Node n = null;
-            if (properties == null)
+            Map<String, Serializable> tmpProperties = properties;
+            if (tmpProperties == null)
             {
-                properties = new HashMap<String, Serializable>();
+                tmpProperties = new HashMap<String, Serializable>();
             }
-            properties.put(ContentModel.PROP_NAME, folderName);
+            tmpProperties.put(ContentModel.PROP_NAME, folderName);
 
-            convertProps(properties, BaseTypeId.CMIS_FOLDER.value());
+            convertProps(tmpProperties, BaseTypeId.CMIS_FOLDER.value());
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             String newId = objectService.createFolder(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(properties, null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), null, null, null, null);
 
             if (newId == null) { return null; }
@@ -492,7 +494,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     "Newly created object is not a folder! New id: " + newId); }
             return (Folder) n;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -518,16 +520,15 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         try
         {
-            if (properties == null)
+            Map<String, Serializable> tmpProperties = properties;
+            if (tmpProperties == null)
             {
-                properties = new HashMap<String, Serializable>();
+                tmpProperties = new HashMap<String, Serializable>();
             }
 
-            properties.put(ContentModel.PROP_NAME, documentName);
+            tmpProperties.put(ContentModel.PROP_NAME, documentName);
 
-            convertProps(properties, BaseTypeId.CMIS_DOCUMENT.value());
-            if ((properties == null) || (properties.isEmpty())) { throw new IllegalArgumentException(
-                    Messagesl18n.getString("DocumentFolderService.0")); }
+            convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -540,7 +541,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
 
             String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(properties, null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
 
             // EXTRACT METADATA + Generate Thumbnails
@@ -563,11 +564,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             Node n = getChildById(newId);
 
-            if (!(n instanceof Document))
-                throw new AlfrescoServiceException(Messagesl18n.getString("DocumentFolderService.19") + newId);
+            if (!(n instanceof Document)) { throw new AlfrescoServiceException(
+                    Messagesl18n.getString("DocumentFolderService.19") + newId); }
             return (Document) n;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -610,7 +611,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 Log.d(TAG, "Metadata extraction : ok");
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             e.printStackTrace();
             convertException(e);
@@ -647,7 +648,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             e.printStackTrace();
             convertException(e);
@@ -677,7 +678,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 delete((Folder) node);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -704,7 +705,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisConstraintException e)
         {
-            throw new AlfrescoServiceException(e.getErrorContent());
+            throw new AlfrescoServiceException(e.getMessage(), e);
         }
     }
 
@@ -727,7 +728,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisConstraintException e)
         {
-            throw new AlfrescoServiceException(e.getErrorContent());
+            throw new AlfrescoServiceException(e.getMessage(), e);
         }
     }
 
@@ -754,7 +755,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
-            String objectId = node.getIdentifier().toString();
+            String objectId = node.getIdentifier();
             Holder<String> objectIdHolder = new Holder<String>(objectId);
 
             Holder<String> changeTokenHolder = null;
@@ -781,7 +782,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return getChildById(objectId);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -825,7 +826,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             newContent = (Document) getNodeByIdentifier(content.getIdentifier());
 
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -847,9 +848,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         try
         {
-            return saveContentStream(getContentStream(document), NodeRefUtils.getNodeIdentifier(document.getIdentifier()), CONTENT_CACHE);
+            return saveContentStream(getContentStream(document),
+                    NodeRefUtils.getNodeIdentifier(document.getIdentifier()), CONTENT_CACHE);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -870,7 +872,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     document.getContentStreamLength()); }
             return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -898,7 +900,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
              */
             // return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -921,7 +923,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             return objectService.loadLink(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(),
                     AtomPubParser.LINK_REL_CONTENT, null);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -940,7 +942,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type);
+    public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier,
+            String type);
 
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)
             throws AlfrescoServiceException
@@ -958,7 +961,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     public ContentFile getRendition(Node node, String type) throws AlfrescoServiceException
     {
-        return saveContentStream(getRenditionStream(node.getIdentifier(), type), NodeRefUtils.getNodeIdentifier(node.getIdentifier()), RENDITION_CACHE);
+        return saveContentStream(getRenditionStream(node.getIdentifier(), type),
+                NodeRefUtils.getNodeIdentifier(node.getIdentifier()), RENDITION_CACHE);
     }
 
     // ////////////////////////////////////////////////////
@@ -999,15 +1003,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     }
 
     @SuppressWarnings("serial")
-    private static HashMap<String, String> sortingMap = new HashMap<String, String>(6)
+    private static Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
             put(Sorting.NAME, PropertyIds.NAME);
-            put(Sorting.CREATION_DATE, PropertyIds.CREATION_DATE);
-            put(Sorting.MODIFICATION_DATE, PropertyIds.LAST_MODIFICATION_DATE);
-            put(Sorting.TYPE, PropertyIds.BASE_TYPE_ID);
-            put(Sorting.SIZE, PropertyIds.CONTENT_STREAM_LENGTH);
-            put(Sorting.AUTHOR, PropertyIds.CREATED_BY);
+            put(Sorting.CREATED_AT, PropertyIds.CREATION_DATE);
+            put(Sorting.MODIFIED_AT, PropertyIds.LAST_MODIFICATION_DATE);
         }
     };
 
@@ -1081,10 +1082,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         properties.put(PropertyIds.OBJECT_TYPE_ID, buf.toString());
     }
-    
-    //////////////////////////////////////////////////////////////////
+
+    // ////////////////////////////////////////////////////////////////
     // Manage mapping between Alfresco ContentModel and CMIS Property
-    /////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////
 
     /** Alfresco OpenCMIS extension prefix for all aspects. */
     public static final String CMISPREFIX_ASPECTS = "P:";
@@ -1173,17 +1174,21 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         ALFRESCO_ASPECTS.put(ContentModel.PROP_AUTHOR, CMISPREFIX_ASPECTS + ContentModel.ASPECT_AUTHOR);
 
     }
-    
+
     /**
-     * Return the equivalent CMIS property name for a specific alfresco property name.
+     * Return the equivalent CMIS property name for a specific alfresco property
+     * name.
+     * 
      * @param name name of the property.
      * @return the same if equivalent doesnt exist.
      */
-    public static String getPropertyName(String name){
-        if (ALFRESCO_TO_CMIS.containsKey(name))
+    public static String getPropertyName(String name)
+    {
+        String tmpName = name;
+        if (ALFRESCO_TO_CMIS.containsKey(tmpName))
         {
-            name = ALFRESCO_TO_CMIS.get(name);
+            tmpName = ALFRESCO_TO_CMIS.get(tmpName);
         }
-        return name;
+        return tmpName;
     }
 }

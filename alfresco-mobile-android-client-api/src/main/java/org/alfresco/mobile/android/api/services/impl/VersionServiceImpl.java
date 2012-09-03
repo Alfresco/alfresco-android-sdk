@@ -143,7 +143,7 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
 
             return new PagingResultImpl<Document>(result, hasMoreItems, size);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

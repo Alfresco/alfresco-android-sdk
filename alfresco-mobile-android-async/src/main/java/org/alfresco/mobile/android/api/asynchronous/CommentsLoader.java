@@ -42,7 +42,7 @@ public class CommentsLoader extends AbstractPagingLoader<LoaderResult<PagingResu
 
     /**
      * List the available comments for the specified node. </br> Sorting
-     * supported : {@link Sorting#CREATION_DATE} </br> Use
+     * supported : {@link Sorting#CREATED_AT} </br> Use
      * {@link #setListingContext(ListingContext)} to define characteristics of
      * the PagingResult.
      * 

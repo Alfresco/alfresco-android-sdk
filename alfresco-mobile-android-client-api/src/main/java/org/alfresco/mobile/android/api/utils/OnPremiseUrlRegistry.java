@@ -26,6 +26,10 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
  */
 public class OnPremiseUrlRegistry
 {
+    private OnPremiseUrlRegistry(){
+        
+    }
+    
     public static final String BINDING_CMISATOM = "/cmisatom";
 
     public static final String BINDING_CMIS = "/service/cmis";

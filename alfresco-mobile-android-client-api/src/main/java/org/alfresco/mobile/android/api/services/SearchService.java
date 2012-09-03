@@ -50,7 +50,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
+    PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
             throws AlfrescoServiceException;
 
     /**
@@ -65,7 +65,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException;
+    List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException;
 
     /**
      * A space delimited list of keywords to search for. The options object
@@ -82,7 +82,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
+    PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
             throws AlfrescoServiceException;
 
     /**
@@ -96,6 +96,6 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException;
+    List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException;
 
 }

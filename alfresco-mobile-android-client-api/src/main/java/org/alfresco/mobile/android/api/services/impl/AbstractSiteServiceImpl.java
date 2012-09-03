@@ -115,7 +115,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
             return computeSites(getUserSitesUrl(session.getPersonIdentifier(), listingContext), listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -170,7 +170,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
             return parseData(json);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -194,7 +194,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
             String ref = parseContainer(getDocContainerSiteUrl(site));
             return (Folder) session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(ref);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

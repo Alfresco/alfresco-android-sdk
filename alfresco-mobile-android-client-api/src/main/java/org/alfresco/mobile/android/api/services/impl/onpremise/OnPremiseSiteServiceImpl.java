@@ -68,15 +68,13 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     protected UrlBuilder getAllSitesUrl(ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getAllSitesUrl(session);
-        UrlBuilder url = new UrlBuilder(link);
-        return url;
+        return new UrlBuilder(link);
     }
 
     protected UrlBuilder getUserSitesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserSitesUrl(session, session.getPersonIdentifier());
-        UrlBuilder url = new UrlBuilder(link);
-        return url;
+        return new UrlBuilder(link);
     }
 
     /**
@@ -87,29 +85,25 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getFavoriteSites() throws AlfrescoServiceException
+    public List<Site> getFavoriteSites()
     {
         try
         {
-            /*
-             * String username = session.getPersonIdentifier(); String link =
-             * OnPremiseUrlRegistry.getUserSitesUrl(session, username);
-             * UrlBuilder url = new UrlBuilder(link); List<Site> sites =
-             * computeSites(url, null).getList();
-             */
             List<Site> sites = getSites();
 
             Map<String, Boolean> favoriteSites = computeFavoriteSite(session.getPersonIdentifier());
             List<Site> finalList = new ArrayList<Site>();
-            if (favoriteSites == null) return finalList;
+            if (favoriteSites == null) { return finalList; }
             for (Site site : sites)
             {
                 if (favoriteSites.get(site.getShortName()) != null && favoriteSites.get(site.getShortName()))
+                {
                     finalList.add(site);
+                }
             }
             return finalList;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -124,7 +118,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Site> getFavoriteSites(ListingContext listingContext)
     {
         try
         {
@@ -137,7 +131,10 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                         .getSkipCount();
 
                 // Case if skipCount > result size
-                if (listingContext.getSkipCount() < result.size()) fromIndex = listingContext.getSkipCount();
+                if (listingContext.getSkipCount() < result.size())
+                {
+                    fromIndex = listingContext.getSkipCount();
+                }
 
                 // Case if skipCount > result size
                 if (listingContext.getMaxItems() + fromIndex >= result.size())
@@ -153,7 +150,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             }
             return new PagingResultImpl<Site>(result, hasMoreItems, result.size());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -181,7 +178,6 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
     protected PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException
     {
 
         HttpUtils.Response resp = read(url);
@@ -212,7 +208,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         }
 
         for (int i = fromIndex; i < toIndex; i++)
+        {
             result.add(SiteImpl.parseJson((Map<String, Object>) json.get(i)));
+        }
         Collections.sort(result, new AlphaComparator(true));
 
         return new PagingResultImpl<Site>(result, hasMoreItems, size);
@@ -220,7 +218,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     }
 
     @SuppressWarnings("unchecked")
-    protected String parseContainer(String link) throws AlfrescoServiceException
+    protected String parseContainer(String link)
     {
         String n = null;
 
@@ -228,8 +226,6 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         Response resp = read(url);
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-
-        if (json == null) { return null; }
 
         if (json.size() == 1)
         {
@@ -253,21 +249,20 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-        if (json == null) { return null; }
-
         String[] s = OnPremiseUrlRegistry.PREFERENCE_SITES.split("\\.");
         for (int i = 0; i < s.length; i++)
         {
-            if (json.get(s[i]) != null) json = (Map<String, Object>) json.get(s[i]);
+            if (json.get(s[i]) != null)
+            {
+                json = (Map<String, Object>) json.get(s[i]);
+            }
         }
 
-        Map<String, Boolean> favoriteSites = (Map<String, Boolean>) json.get(OnPremiseUrlRegistry.FAVOURITES);
-        return favoriteSites;
+        return (Map<String, Boolean>) json.get(OnPremiseUrlRegistry.FAVOURITES);
     }
 
     @Override
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException
     {
         return computeSites(url, listingContext);
     }

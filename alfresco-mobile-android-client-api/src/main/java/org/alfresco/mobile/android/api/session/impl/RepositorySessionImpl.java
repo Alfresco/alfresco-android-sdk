@@ -60,7 +60,7 @@ public class RepositorySessionImpl extends RepositorySession
      *            <i>http://hostname:port/alfresco</i>
      * @return a RepositorySession object that is not bind with the repository.
      */
-    public RepositorySessionImpl(String url, String username, String password) throws AlfrescoConnectionException
+    public RepositorySessionImpl(String url, String username, String password)
     {
         this(url, username, password, null);
     }
@@ -76,7 +76,7 @@ public class RepositorySessionImpl extends RepositorySession
      * @see org.alfresco.mobile.android.api.session.RepositorySession#authenticate(String,
      *      String)
      */
-    private void authenticate() throws AlfrescoConnectionException
+    private void authenticate()
     {
         try
         {

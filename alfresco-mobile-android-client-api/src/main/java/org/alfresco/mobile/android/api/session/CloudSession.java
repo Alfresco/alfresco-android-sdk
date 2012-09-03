@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class CloudSession extends AbstractAlfrescoSessionImpl implements AlfrescoSession
+public abstract class CloudSession extends AbstractAlfrescoSessionImpl
 {
 
     // ///////////////////////////////////////////////
@@ -39,8 +39,7 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl implement
     // ///////////////////////////////////////////////
     /** Define a different cloud network. */
     public static final String CLOUD_NETWORK_ID = "org.alfresco.mobile.bindings.api.cloud.network.id";
-    
-    
+
     /**
      * Registers a new user for an account on the Alfresco in the cloud server.
      * 
@@ -99,9 +98,13 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl implement
     public static CloudSession connect(String emailAddress, String password, String apiKey, String networkId,
             Map<String, Serializable> parameters)
     {
-        if (parameters == null) parameters = new HashMap<String, Serializable>();
-        parameters.put(CLOUD_NETWORK_ID, networkId);
-        return new CloudSessionImpl(emailAddress, password, parameters);
+        Map<String, Serializable> tmpParameters = parameters;
+        if (tmpParameters == null)
+        {
+            tmpParameters = new HashMap<String, Serializable>();
+        }
+        tmpParameters.put(CLOUD_NETWORK_ID, networkId);
+        return new CloudSessionImpl(emailAddress, password, tmpParameters);
     }
 
     /**

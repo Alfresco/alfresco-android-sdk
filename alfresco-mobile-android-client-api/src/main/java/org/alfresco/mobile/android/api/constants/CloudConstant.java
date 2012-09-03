@@ -18,101 +18,143 @@
 package org.alfresco.mobile.android.api.constants;
 
 /**
- * Provides all public constants necessary for Alfresco Cloud. <br/>
+ * Provides all  constants necessary for Alfresco Cloud. <br/>
  * Generally it's used for parsing data (json, atompub xml).
  * 
  * @author Jean Marie Pascal
  */
-public class CloudConstant extends OnPremiseConstant
+public interface CloudConstant extends OnPremiseConstant
 {
 
-    //EDITION
-    public static final String ALFRESCO_EDITION_CLOUD = "Alfresco in the Cloud";
-    
-    //JSON LIST
-    public static final String LIST_VALUE = "list";
-    public static final String PAGINATION_VALUE = "pagination";
-    public static final String COUNT_VALUE = "count";
-    public static final String HAS_MORE_ITEMS_VALUE = "hasMoreItems";
-    public static final String TOTAL_ITEMS_VALUE = "totalItems";
-    public static final String SKIP_COUNT_VALUE = "skipCount";
-    public static final String MAX_ITEMS_VALUE = "maxItems";
+    // EDITION
+     static final String ALFRESCO_EDITION_CLOUD = "Alfresco in the Cloud";
 
-    public static final String ENTRIES_VALUE = "entries";
-    public static final String ENTRY_VALUE = "entry";
-    
-    //SITES
-    public static final String SITE_VALUE = "site";
-    public static final String FOLDERID_VALUE = "folderId";
-    public static final String DOCUMENTLIBRARY_VALUE = "documentLibrary";
+    // JSON LIST
+     static final String LIST_VALUE = "list";
 
-    //Networks
-    public static final String NETWORK_VALUE = "network";
-    public static final String ENABLED_VALUE = "enabled";
-    public static final String QUOTAS_VALUE = "quotas";
-    public static final String LIMIT_VALUE = "limit";
-    public static final String USAGE_VALUE = "usage";
-    public static final String ACCOUNTCLASSNAME_VALUE = "accountClassName";
-    public static final String ACCOUNTTYPE_VALUE = "accountType";
-    public static final String ACCOUNTCLASSDISPLAYNAME_VALUE = "accountClassDisplayName";
+     static final String PAGINATION_VALUE = "pagination";
 
-    
-    //Comments
-    public static final String CREATEDAT_VALUE = "createdAt";
-    public static final String CREATEDBY_VALUE = "createdBy";
-    public static final String CREATOR_VALUE = "creator";
-    public static final String MODIFIEDAT_VALUE = "modifiedAt";
-    public static final String MODIFIEDBY_VALUE = "modifiedBy";
-    public static final String CANEDIT_VALUE = "canEdit";
-    public static final String CANDELETE_VALUE = "canDelete";
-    public static final String EDITED_VALUE = "edited";
-    
-    //Tags
-    public static final String TAG_VALUE = "tag";
+     static final String COUNT_VALUE = "count";
 
+     static final String HAS_MORE_ITEMS_VALUE = "hasMoreItems";
 
-    //RATINGS
-    public static final String LIKES_VALUE = "likes";
-    public static final String AGGREGATE_VALUE = "aggregate";
-    public static final String NUMBEROFRATINGS_VALUE = "numberOfRatings";
-    public static final String RATEDAT_VALUE = "ratedAt";
-    public static final String MYRATING_VALUE = "myRating";
-    
-    
-    //ACTIVITIES
-    public static final String SITEID_VALUE = "siteId";
-    public static final String FEEDPERSONID_VALUE = "feedPersonId";
-    public static final String POSTPERSONID_VALUE = "postPersonId";
-    public static final String ACTIVITYTYPE_VALUE = "activityType";
-    public static final String ACTIVITYSUMMARY_VALUE = "activitySummary";
-    public static final String OBJECTID_VALUE = "objectId";
-    public static final String NETWORKID_VALUE = "networkId";
-    public static final String POSTEDAT_VALUE = "postedAt";
+     static final String TOTAL_ITEMS_VALUE = "totalItems";
 
-    
-    //REGISTRATION
-    public static final String CLOUD_EMAIL_VALUE= "email";
-    public static final String CLOUD_FIRSTNAME_VALUE= "firstName";
-    public static final String CLOUD_LASTNAME_VALUE= "lastName";
-    public static final String CLOUD_PASSWORD_VALUE= "password";
-    public static final String CLOUD_SOURCE_VALUE= "source";
-    public static final String CLOUD_SOURCEURL_VALUE= "sourceUrl";
-    public static final String CLOUD_KEY= "key";
-    public static final String CLOUD_REGISTRATIONDATE= "registrationDate";
-    public static final String CLOUD_REGISTRATION= "registration";
-    public static final String CLOUD_REGISTRATION_KEY= "key";
-    public static final String CLOUD_ISREGISTERED= "isRegistered";
-    public static final String CLOUD_ISACTIVATED= "isActivated";
-    public static final String CLOUD_ISPREREGISTERED= "isPreRegistered";
+     static final String SKIP_COUNT_VALUE = "skipCount";
 
+     static final String MAX_ITEMS_VALUE = "maxItems";
 
-    //NETWORKS
-    public static final String SUBSCRIPTIONLEVEL_VALUE = "subscriptionLevel";
-    public static final String PAIDNETWORK_VALUE = "paidNetwork";
-    public static final String HOMENETWORK_VALUE = "homeNetwork";
-    
-    //PEOPLE
-    public static final String AVATARID_VALUE = "avatarId";
+     static final String ENTRIES_VALUE = "entries";
 
+     static final String ENTRY_VALUE = "entry";
+
+    // SITES
+     static final String SITE_VALUE = "site";
+
+     static final String FOLDERID_VALUE = "folderId";
+
+     static final String DOCUMENTLIBRARY_VALUE = "documentLibrary";
+
+    // Networks
+     static final String NETWORK_VALUE = "network";
+
+     static final String ENABLED_VALUE = "enabled";
+
+     static final String QUOTAS_VALUE = "quotas";
+
+     static final String LIMIT_VALUE = "limit";
+
+     static final String USAGE_VALUE = "usage";
+
+     static final String ACCOUNTCLASSNAME_VALUE = "accountClassName";
+
+     static final String ACCOUNTTYPE_VALUE = "accountType";
+
+     static final String ACCOUNTCLASSDISPLAYNAME_VALUE = "accountClassDisplayName";
+
+    // Comments
+     static final String CREATEDAT_VALUE = "createdAt";
+
+     static final String CREATEDBY_VALUE = "createdBy";
+
+     static final String CREATOR_VALUE = "creator";
+
+     static final String MODIFIEDAT_VALUE = "modifiedAt";
+
+     static final String MODIFIEDBY_VALUE = "modifiedBy";
+
+     static final String CANEDIT_VALUE = "canEdit";
+
+     static final String CANDELETE_VALUE = "canDelete";
+
+     static final String EDITED_VALUE = "edited";
+
+    // Tags
+     static final String TAG_VALUE = "tag";
+
+    // RATINGS
+     static final String LIKES_VALUE = "likes";
+
+     static final String AGGREGATE_VALUE = "aggregate";
+
+     static final String NUMBEROFRATINGS_VALUE = "numberOfRatings";
+
+     static final String RATEDAT_VALUE = "ratedAt";
+
+     static final String MYRATING_VALUE = "myRating";
+
+    // ACTIVITIES
+     static final String SITEID_VALUE = "siteId";
+
+     static final String FEEDPERSONID_VALUE = "feedPersonId";
+
+     static final String POSTPERSONID_VALUE = "postPersonId";
+
+     static final String ACTIVITYTYPE_VALUE = "activityType";
+
+     static final String ACTIVITYSUMMARY_VALUE = "activitySummary";
+
+     static final String OBJECTID_VALUE = "objectId";
+
+     static final String NETWORKID_VALUE = "networkId";
+
+     static final String POSTEDAT_VALUE = "postedAt";
+
+    // REGISTRATION
+     static final String CLOUD_EMAIL_VALUE = "email";
+
+     static final String CLOUD_FIRSTNAME_VALUE = "firstName";
+
+     static final String CLOUD_LASTNAME_VALUE = "lastName";
+
+     static final String CLOUD_PASSWORD_VALUE = "password";
+
+     static final String CLOUD_SOURCE_VALUE = "source";
+
+     static final String CLOUD_SOURCEURL_VALUE = "sourceUrl";
+
+     static final String CLOUD_KEY = "key";
+
+     static final String CLOUD_REGISTRATIONDATE = "registrationDate";
+
+     static final String CLOUD_REGISTRATION = "registration";
+
+     static final String CLOUD_REGISTRATION_KEY = "key";
+
+     static final String CLOUD_ISREGISTERED = "isRegistered";
+
+     static final String CLOUD_ISACTIVATED = "isActivated";
+
+     static final String CLOUD_ISPREREGISTERED = "isPreRegistered";
+
+    // NETWORKS
+     static final String SUBSCRIPTIONLEVEL_VALUE = "subscriptionLevel";
+
+     static final String PAIDNETWORK_VALUE = "paidNetwork";
+
+     static final String HOMENETWORK_VALUE = "homeNetwork";
+
+    // PEOPLE
+     static final String AVATARID_VALUE = "avatarId";
 
 }

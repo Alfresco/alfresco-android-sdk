@@ -53,28 +53,36 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
     public SiteService getSiteService()
     {
         if (siteService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.siteService = new CloudSiteServiceImpl((CloudSession) session);
+        }
         return siteService;
     }
 
     public CommentService getCommentService()
     {
         if (commentService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.commentService = new CloudCommentServiceImpl((CloudSession) session);
+        }
         return commentService;
     }
 
     public TaggingService getTaggingService()
     {
         if (taggingService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.taggingService = new CloudTaggingServiceImpl((CloudSession) session);
+        }
         return taggingService;
     }
 
     public ActivityStreamService getActivityStreamService()
     {
         if (activityStreamService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.activityStreamService = new CloudActivityStreamServiceImpl((CloudSession) session);
+        }
         return activityStreamService;
     }
 
@@ -82,14 +90,18 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
     {
         if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session)
                 && session.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
             this.ratingsService = new CloudRatingsServiceImpl((CloudSession) session);
+        }
         return ratingsService;
     }
 
     public PersonService getPersonService()
     {
         if (personService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.personService = new CloudPersonServiceImpl((CloudSession) session);
+        }
         return personService;
     }
 

@@ -35,7 +35,7 @@ public interface PersonService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public Person getPerson(String personIdentifier) throws AlfrescoServiceException;
+    Person getPerson(String personIdentifier) throws AlfrescoServiceException;
 
     /**
      * @param person
@@ -44,6 +44,6 @@ public interface PersonService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public ContentFile getAvatar(Person person) throws AlfrescoServiceException;
+    ContentFile getAvatar(Person person) throws AlfrescoServiceException;
 
 }

@@ -34,7 +34,7 @@ public class PropertyImpl implements Property
     private static final long serialVersionUID = 1L;
 
     /** CMIS Property Object associated. */
-    private org.apache.chemistry.opencmis.client.api.Property prop;
+    private transient org.apache.chemistry.opencmis.client.api.Property prop;
 
     /** Simple representation of property value. */
     private Object value;

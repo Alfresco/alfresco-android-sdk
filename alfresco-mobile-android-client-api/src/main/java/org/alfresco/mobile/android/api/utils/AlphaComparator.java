@@ -36,8 +36,12 @@ public class AlphaComparator implements Comparator<Site>
     {
         int b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
         if (asc)
+        {
             return b;
+        }
         else
+        {
             return -b;
+        }
     }
 }

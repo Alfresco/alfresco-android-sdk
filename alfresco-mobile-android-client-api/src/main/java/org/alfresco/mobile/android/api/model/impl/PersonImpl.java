@@ -62,9 +62,12 @@ public class PersonImpl implements Person
      */
     public static PersonImpl parseJson(Map<String, Object> json)
     {
+
+        String separatorInternal = "Store/";
+
         PersonImpl person = new PersonImpl();
 
-        if (json == null) return null;
+        if (json == null) { return null; }
 
         person.avatarIdentifier = JSONConverter.getString(json, OnPremiseConstant.AVATAR_REF_VALUE);
         if (person.avatarIdentifier == null)
@@ -72,16 +75,18 @@ public class PersonImpl implements Person
             person.avatarIdentifier = JSONConverter.getString(json, OnPremiseConstant.AVATAR_VALUE);
             if (person.avatarIdentifier != null && person.avatarIdentifier.length() > 0)
             {
-                int beginIndex = person.avatarIdentifier.lastIndexOf("Store/") + 6;
-                int endIndex = beginIndex + 36;
+                int beginIndex = person.avatarIdentifier.lastIndexOf(separatorInternal) + separatorInternal.length();
+                int endIndex = beginIndex + NodeRefUtils.IDENTIFIER_LENGTH;
                 person.avatarIdentifier = NodeRefUtils.createNodeRefByIdentifier(person.avatarIdentifier.subSequence(
                         beginIndex, endIndex).toString());
             }
         }
 
-        person.username = JSONConverter.getString(json, OnPremiseConstant.USERNAME_VALUE.toLowerCase());
+        person.username = JSONConverter.getString(json, OnPremiseConstant.USERNAME_L_VALUE);
         if (person.username == null || person.username.length() == 0)
+        {
             person.username = JSONConverter.getString(json, OnPremiseConstant.USERNAME_VALUE);
+        }
         person.firstName = JSONConverter.getString(json, OnPremiseConstant.FIRSTNAME_VALUE);
         person.lastName = JSONConverter.getString(json, OnPremiseConstant.LASTNAME_VALUE);
         return person;
@@ -91,7 +96,7 @@ public class PersonImpl implements Person
     {
         PersonImpl person = new PersonImpl();
 
-        if (json == null) return null;
+        if (json == null) { return null; }
 
         person.avatarIdentifier = JSONConverter.getString(json, CloudConstant.AVATARID_VALUE);
         person.username = JSONConverter.getString(json, CloudConstant.ID_VALUE);
@@ -137,8 +142,8 @@ public class PersonImpl implements Person
      */
     public String getFullName()
     {
-        if ((firstName != null && firstName.length() != 0) || (lastName != null && lastName.length() != 0))
-            return firstName + " " + lastName;
+        if ((firstName != null && firstName.length() != 0) || (lastName != null && lastName.length() != 0)) { return firstName
+                + " " + lastName; }
         return username;
     }
 

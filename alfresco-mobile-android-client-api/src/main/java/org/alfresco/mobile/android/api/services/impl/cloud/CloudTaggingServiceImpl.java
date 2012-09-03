@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -66,7 +65,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Tag> getAllTags() throws AlfrescoServiceException
+    public List<Tag> getAllTags() 
     {
         return getAllTags(null).getList();
     }
@@ -76,7 +75,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Tag> getAllTags(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
         {
@@ -87,9 +86,9 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
                 url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
             }
-            return computeTag(url, listingContext);
+            return computeTag(url);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -124,9 +123,9 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
                 url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
             }
-            return computeTag(url, listingContext);
+            return computeTag(url);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -171,7 +170,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -181,8 +180,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    private PagingResult<Tag> computeTag(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException, JSONException
+    private PagingResult<Tag> computeTag(UrlBuilder url)
     {
         HttpUtils.Response resp = read(url);
         PublicAPIResponse response = new PublicAPIResponse(resp);

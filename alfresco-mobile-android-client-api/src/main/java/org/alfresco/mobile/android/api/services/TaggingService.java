@@ -44,7 +44,7 @@ public interface TaggingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Tag> getAllTags() throws AlfrescoServiceException;;
+     List<Tag> getAllTags() throws AlfrescoServiceException;;
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -56,7 +56,7 @@ public interface TaggingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Tag> getAllTags(ListingContext listingContext) throws AlfrescoServiceException;;
+     PagingResult<Tag> getAllTags(ListingContext listingContext) throws AlfrescoServiceException;;
 
     /**
      * @param node : tagged node (document or folder)
@@ -64,7 +64,7 @@ public interface TaggingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Tag> getTags(Node node) throws AlfrescoServiceException;;
+     List<Tag> getTags(Node node) throws AlfrescoServiceException;;
 
     /**
      * @param node : tagged node (document or folder)
@@ -76,7 +76,7 @@ public interface TaggingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Tag> getTags(Node node, ListingContext listingContext) throws AlfrescoServiceException;;
+     PagingResult<Tag> getTags(Node node, ListingContext listingContext) throws AlfrescoServiceException;;
 
     /**
      * Adds a list of tags to a node.
@@ -86,6 +86,6 @@ public interface TaggingService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public void addTags(Node node, List<String> tags) throws AlfrescoServiceException;;
+     void addTags(Node node, List<String> tags) throws AlfrescoServiceException;;
 
 }

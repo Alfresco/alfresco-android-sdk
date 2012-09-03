@@ -100,11 +100,12 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      */
     public List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException
     {
-        if (options == null)
+        KeywordSearchOptions tmpOptions = options;
+        if (tmpOptions == null)
         {
-            options = new KeywordSearchOptions();
+            tmpOptions = new KeywordSearchOptions();
         }
-        return keywordSearch(keywords, options, null).getList();
+        return keywordSearch(keywords, tmpOptions, null).getList();
     }
 
     /**
@@ -148,7 +149,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
-            BigInteger maxItems = BigInteger.valueOf(50);
+            BigInteger maxItems = BigInteger.valueOf(ListingContext.DEFAULT_MAX_ITEMS);
             BigInteger skipCount = BigInteger.valueOf(0);
             if (listingContext != null)
             {
@@ -184,7 +185,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                 return new PagingResultImpl<Node>(page, false, -1);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -213,7 +214,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String OPERTATOR_AND = " AND ";
 
     @SuppressWarnings("serial")
-    private static final List<String> queryPropertyList = new ArrayList<String>(3)
+    private static final List<String> QUERYPROPERTIESLIST = new ArrayList<String>(3)
     {
         {
             add(PARAM_NAME);
@@ -256,7 +257,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
         // Request name, title and description with each keyword.
         Boolean fulltextComplete = false;
-        for (String propertyQuery : queryPropertyList)
+        for (String propertyQuery : QUERYPROPERTIESLIST)
         {
             for (int i = 0; i < keywords.size(); i++)
             {

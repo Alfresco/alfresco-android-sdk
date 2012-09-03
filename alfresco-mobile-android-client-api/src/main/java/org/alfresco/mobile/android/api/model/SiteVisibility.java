@@ -26,7 +26,7 @@ public enum SiteVisibility
 {
     PRIVATE("PRIVATE"), MODERATED("MODERATED"), PUBLIC("PUBLIC");
 
-    final String value;
+    private final String value;
 
     SiteVisibility(String v)
     {

@@ -18,127 +18,199 @@
 package org.alfresco.mobile.android.api.constants;
 
 /**
- * Provides all public constants necessary for an OnPremise Alfresco server. <br/>
+ * Provides all constants necessary for an OnPremise Alfresco server. <br/>
  * Generally it's used for parsing data (json, atompub xml).
  * 
  * @author Jean Marie Pascal
  */
-public class OnPremiseConstant
+public interface OnPremiseConstant
 {
-    //TICKET LOGIN
-    public static final String LOGIN_USERNAME_VALUE = "username";
-    public static final String LOGIN_PASSWORD_VALUE = "password";
-    public static final String LOGIN_DATA_VALUE = "data";
-    public static final String LOGIN_TICKET_VALUE = "ticket";
+    // TICKET LOGIN
+    static final String LOGIN_USERNAME_VALUE = "username";
 
-    
-    //EDITION
-    public static final String ALFRESCO_VENDOR = "Alfresco";
-    public static final String ALFRESCO_EDITION_COMMUNITY = "Community";
-    public static final String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
-    public static final String ALFRESCO_EDITION_UNKNOWN = "unknown";
-    public static final String THIRD_CMIS_EDITION= "thirdcmis";
-    
-    //VERSION NUMBER
-    public static final int ALFRESCO_VERSION_4 = 4;
-    public static final int ALFRESCO_VERSION_3 = 3;
+    static final String LOGIN_PASSWORD_VALUE = "password";
 
-    //SITES
-    public static final String URL_VALUE = "url";
-    public static final String TITLE_VALUE = "title";
-    public static final String DESCRIPTION_VALUE = "description";
-    public static final String SITEPRESET_VALUE = "sitePreset";
-    public static final String SHORTNAME_VALUE = "shortName";
-    public static final String NODE_VALUE = "node";
-    public static final String TAGSCOPE_VALUE = "tagScope";
-    public static final String ISPUBLIC_VALUE = "isPublic";
-    public static final String VISIBILITY_VALUE = "visibility";
-    public static final String MANAGERS_VALUE = "siteManagers";
-    
-    //COMMENTS
-    public static final String NODEREF_VALUE = "nodeRef";
-    public static final String NAME_VALUE = "name";
-    public static final String CONTENT_VALUE = "content";
-    public static final String CREATEDON_VALUE = "createdOn";
-    public static final String MODIFIEDON_VALUE = "modifiedOn";
-    public static final String ISUPDATED_VALUE = "isUpdated";
-    public static final String TOTAL_VALUE = "total";
-    public static final String ITEMS_VALUE = "items";
-    public static final String ITEMCOUNT_VALUE = "itemCount";
-    public static final String ITEM_VALUE = "item";
+    static final String LOGIN_DATA_VALUE = "data";
 
-    //PEOPLE
-    public static final String USERNAME_VALUE = "userName";
-    public static final String LASTNAME_VALUE = "lastName";
-    public static final String FIRSTNAME_VALUE = "firstName";
-    public static final String AUTHOR_VALUE = "author";
-    public static final String AVATAR_REF_VALUE = "avatarRef";
-    public static final String AVATAR_VALUE = "avatar";
+    static final String LOGIN_TICKET_VALUE = "ticket";
 
-    //ACTIVITY EVENT
-    public static final String ID_VALUE = "id";
-    public static final String SITENETWORK_VALUE = "siteNetwork";
-    public static final String FEEDUSERID_VALUE = "feedUserId";
-    public static final String POSTUSERID_VALUE = "postUserId";
-    public static final String POSTDATE_VALUE = "postDate";
-    public static final String SUMMARY_VALUE = "activitySummary";
-    public static final String PAGE_VALUE = "page";
-    public static final String ACTIVITYTYPE_VALUE = "activityType";
-    public static final String FORMAT_VALUE = "activitySummaryFormat";
-    public static final String MEMBERLASTNAME_VALUE = "memberLastName";
-    public static final String ROLE_VALUE = "role";
-    public static final String STATUS_VALUE = "status";
-    public static final String MEMEBERUSERNAME_VALUE = "memberUserName";
-    public static final String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
-    
-    //CONTAINERS
-    public static final String CONTAINER_VALUE = "containers";
+    // EDITION
+    static final String ALFRESCO_VENDOR = "Alfresco";
 
-    //TAG
-    public static final String TYPE_VALUE = "type";
-    public static final String ISCONTAINER_VALUE = "isContainer";
-    public static final String MODIFIED_VALUE = "modified";
-    public static final String MODIFIER_VALUE = "modifier";
-    public static final String DISPLAYPATH_VALUE = "displayPath";
-    public static final String SELECTABLE_VALUE = "selectable";
+    static final String ALFRESCO_EDITION_COMMUNITY = "Community";
 
-    //PERMISSION
-    public static final String PERMISSION_VALUE = "permissions";
-    public static final String EDIT_VALUE = "edit";
-    public static final String DELETE_VALUE = "delete";
-    
-    //RATINGS
-    public static final String DATA_VALUE = "data";
-    public static final String RATINGS_VALUE = "ratings";
-    public static final String RATINGSCHEME_VALUE = "ratingScheme";
-    public static final String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
-    public static final String RATING_VALUE = "rating";
-    public static final String APPLIEDAT_VALUE = "appliedAt";
-    public static final String APPLIEDBY_VALUE = "appliedBy";
-    public static final String NODESTATISTICS_VALUE = "nodeStatistics";
-    public static final String AVERAGERATING_VALUE = "averageRating";
-    public static final String RATINGSTOTAL_VALUE = "ratingsTotal";
-    public static final String RATINGSCOUNT_VALUE = "ratingsCount";
+    static final String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
 
-    //ACTIONS
-    public static final String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
-    public static final String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
-    public static final String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
-    public static final String ACTION_EXECUTE_SCRIPT = "script";
-    public static final String ACTIONSCRIPTREF_VALUE = "script-ref";
-    public static final String ACTIONPARAMETER_VALUE = "parameterValues";
-    
-    
-    //THUMBNAILS
-    public static final String THUMBNAILNAME_VALUE = "thumbnailName";
+    static final String ALFRESCO_EDITION_UNKNOWN = "unknown";
 
-    //Parameters
-    public static final String PARAM_ASYNC = "async";
-    public static final String PARAM_AS = "as";
-    public static final String PARAM_SIZE = "size";
-    public static final String PARAM_POSITION = "pos";
-    public static final String PARAM_STARTINDEX = "startIndex";
-    public static final String PARAM_PAGESIZE = "pageSize";
-    public static final String PARAM_REVERSE = "reverse";
+    static final String THIRD_CMIS_EDITION = "thirdcmis";
+
+    // VERSION NUMBER
+    static final int ALFRESCO_VERSION_4 = 4;
+
+    static final int ALFRESCO_VERSION_3 = 3;
+
+    // SITES
+    static final String URL_VALUE = "url";
+
+    static final String TITLE_VALUE = "title";
+
+    static final String DESCRIPTION_VALUE = "description";
+
+    static final String SITEPRESET_VALUE = "sitePreset";
+
+    static final String SHORTNAME_VALUE = "shortName";
+
+    static final String NODE_VALUE = "node";
+
+    static final String TAGSCOPE_VALUE = "tagScope";
+
+    static final String IS_VALUE = "is";
+
+    static final String VISIBILITY_VALUE = "visibility";
+
+    static final String MANAGERS_VALUE = "siteManagers";
+
+    // COMMENTS
+    static final String NODEREF_VALUE = "nodeRef";
+
+    static final String NAME_VALUE = "name";
+
+    static final String CONTENT_VALUE = "content";
+
+    static final String CREATEDON_VALUE = "createdOn";
+
+    static final String MODIFIEDON_VALUE = "modifiedOn";
+
+    static final String ISUPDATED_VALUE = "isUpdated";
+
+    static final String TOTAL_VALUE = "total";
+
+    static final String ITEMS_VALUE = "items";
+
+    static final String ITEMCOUNT_VALUE = "itemCount";
+
+    static final String ITEM_VALUE = "item";
+
+    // PEOPLE
+    static final String USERNAME_VALUE = "userName";
+
+    static final String USERNAME_L_VALUE = "username";
+
+    static final String LASTNAME_VALUE = "lastName";
+
+    static final String FIRSTNAME_VALUE = "firstName";
+
+    static final String AUTHOR_VALUE = "author";
+
+    static final String AVATAR_REF_VALUE = "avatarRef";
+
+    static final String AVATAR_VALUE = "avatar";
+
+    // ACTIVITY EVENT
+    static final String ID_VALUE = "id";
+
+    static final String SITENETWORK_VALUE = "siteNetwork";
+
+    static final String FEEDUSERID_VALUE = "feedUserId";
+
+    static final String POSTUSERID_VALUE = "postUserId";
+
+    static final String POSTDATE_VALUE = "postDate";
+
+    static final String SUMMARY_VALUE = "activitySummary";
+
+    static final String PAGE_VALUE = "page";
+
+    static final String ACTIVITYTYPE_VALUE = "activityType";
+
+    static final String FORMAT_VALUE = "activitySummaryFormat";
+
+    static final String MEMBERLASTNAME_VALUE = "memberLastName";
+
+    static final String ROLE_VALUE = "role";
+
+    static final String STATUS_VALUE = "status";
+
+    static final String MEMEBERUSERNAME_VALUE = "memberUserName";
+
+    static final String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
+
+    // CONTAINERS
+    static final String CONTAINER_VALUE = "containers";
+
+    // TAG
+    static final String TYPE_VALUE = "type";
+
+    static final String ISCONTAINER_VALUE = "isContainer";
+
+    static final String MODIFIED_VALUE = "modified";
+
+    static final String MODIFIER_VALUE = "modifier";
+
+    static final String DISPLAYPATH_VALUE = "displayPath";
+
+    static final String SELECTABLE_VALUE = "selectable";
+
+    // PERMISSION
+    static final String PERMISSION_VALUE = "permissions";
+
+    static final String EDIT_VALUE = "edit";
+
+    static final String DELETE_VALUE = "delete";
+
+    // RATINGS
+    static final String DATA_VALUE = "data";
+
+    static final String RATINGS_VALUE = "ratings";
+
+    static final String RATINGSCHEME_VALUE = "ratingScheme";
+
+    static final String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
+
+    static final String RATING_VALUE = "rating";
+
+    static final String APPLIEDAT_VALUE = "appliedAt";
+
+    static final String APPLIEDBY_VALUE = "appliedBy";
+
+    static final String NODESTATISTICS_VALUE = "nodeStatistics";
+
+    static final String AVERAGERATING_VALUE = "averageRating";
+
+    static final String RATINGSTOTAL_VALUE = "ratingsTotal";
+
+    static final String RATINGSCOUNT_VALUE = "ratingsCount";
+
+    // ACTIONS
+    static final String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
+
+    static final String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
+
+    static final String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
+
+    static final String ACTION_EXECUTE_SCRIPT = "script";
+
+    static final String ACTIONSCRIPTREF_VALUE = "script-ref";
+
+    static final String ACTIONPARAMETER_VALUE = "parameterValues";
+
+    // THUMBNAILS
+    static final String THUMBNAILNAME_VALUE = "thumbnailName";
+
+    // Parameters
+    static final String PARAM_ASYNC = "async";
+
+    static final String PARAM_AS = "as";
+
+    static final String PARAM_SIZE = "size";
+
+    static final String PARAM_POSITION = "pos";
+
+    static final String PARAM_STARTINDEX = "startIndex";
+
+    static final String PARAM_PAGESIZE = "pageSize";
+
+    static final String PARAM_REVERSE = "reverse";
 
 }

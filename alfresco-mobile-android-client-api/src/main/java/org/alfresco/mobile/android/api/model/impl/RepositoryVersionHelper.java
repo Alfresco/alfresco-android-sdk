@@ -34,7 +34,12 @@ public final class RepositoryVersionHelper
     // ////////////////////////////////////////////////////////////////////////////////////
     // Internal
     // ////////////////////////////////////////////////////////////////////////////////////
-    private static final Pattern versionPattern = Pattern.compile("\\d*\\d*\\d*.*");
+    private static final Pattern VERSIONPATTERN = Pattern.compile("\\d*\\d*\\d*.*");
+
+    private RepositoryVersionHelper()
+    {
+
+    }
 
     /**
      * Internal methods to have the specific number version (major, minor,
@@ -45,7 +50,7 @@ public final class RepositoryVersionHelper
      */
     public static String getVersionString(String productVersion, int level)
     {
-        if (!isVersion(productVersion)) return null;
+        if (!isVersion(productVersion)) { return null; }
         String[] versions = productVersion.split("\\.");
         if (versions.length >= level + 1) { return versions[level]; }
         return null;
@@ -78,7 +83,7 @@ public final class RepositoryVersionHelper
      */
     private static boolean isVersion(String productVersion)
     {
-        Matcher matcher = versionPattern.matcher(productVersion);
+        Matcher matcher = VERSIONPATTERN.matcher(productVersion);
         return matcher.matches();
     }
 

@@ -47,7 +47,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public Site getSite(String siteShortName) throws AlfrescoServiceException;
+    Site getSite(String siteShortName) throws AlfrescoServiceException;
 
     /**
      * @return Return a list of all the sites in the repository the current user
@@ -55,7 +55,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getAllSites() throws AlfrescoServiceException;
+    List<Site> getAllSites() throws AlfrescoServiceException;
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -67,7 +67,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getAllSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getAllSites(ListingContext listingContext) throws AlfrescoServiceException;
 
     /**
      * @return Returns a list of sites the current user has a explicit
@@ -75,7 +75,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getSites() throws AlfrescoServiceException;
+    List<Site> getSites() throws AlfrescoServiceException;
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -87,7 +87,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getSites(ListingContext listingContext) throws AlfrescoServiceException;
 
     /**
      * @return Returns a list of sites the current user has a explicit
@@ -95,7 +95,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getFavoriteSites() throws AlfrescoServiceException;
+    List<Site> getFavoriteSites() throws AlfrescoServiceException;
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -107,7 +107,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException;
 
     /**
      * Get the documents container folder for the given site.
@@ -117,6 +117,6 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public Folder getDocumentLibrary(Site site) throws AlfrescoServiceException;
+    Folder getDocumentLibrary(Site site) throws AlfrescoServiceException;
 
 }
