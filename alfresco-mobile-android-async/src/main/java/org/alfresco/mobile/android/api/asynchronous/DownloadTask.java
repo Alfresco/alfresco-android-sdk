@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Provides an asynchronous task to download the content of a document
@@ -42,12 +43,10 @@ import android.os.AsyncTask;
  */
 public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
 {
+    
+    private static final String TAG = "DownloadTask";
 
     private static final int MAX_BUFFER_SIZE = 1024;
-
-    public static final int DOWNLOADING = 0;
-
-    public int state;
 
     private int downloaded;
 
@@ -70,11 +69,11 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
 
     public interface DownloadTaskListener
     {
-        public void onPreExecute();
+        void onPreExecute();
 
-        public void onPostExecute(ContentFile f);
+        void onPostExecute(ContentFile f);
 
-        public void onProgressUpdate(Integer... values);
+        void onProgressUpdate(Integer... values);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+           Log.e(TAG, e.getStackTrace().toString());
         }
         return null;
     }
@@ -125,7 +124,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
     }
 
-    public boolean copyFile(InputStream src, long size, File dest) throws IOException
+    public boolean copyFile(InputStream src, long size, File dest)
     {
         IOUtils.ensureOrCreatePathAndFile(dest);
         OutputStream os = null;
@@ -137,7 +136,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
-            while (state == DOWNLOADING && size > 0)
+            while (size > 0)
             {
                 if (size - downloaded < MAX_BUFFER_SIZE)
                 {
@@ -145,7 +144,9 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
                 }
 
                 int read = src.read(buffer);
-                if (read == -1) break;
+                if (read == -1){
+                    break;
+                }
 
                 os.write(buffer, 0, read);
                 downloaded += read;
@@ -156,7 +157,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, e.getStackTrace().toString());
             copied = false;
         }
         finally

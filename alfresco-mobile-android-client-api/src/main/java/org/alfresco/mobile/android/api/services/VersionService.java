@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -38,7 +37,7 @@ public interface VersionService
      * @return Returns a list of documents representing the version history for
      *         the given document.
      */
-    List<Document> getVersions(Document document) throws AlfrescoServiceException;
+    List<Document> getVersions(Document document);
 
     /**
      * Get the version history that relates to the referenced document.
@@ -50,7 +49,6 @@ public interface VersionService
      * @return Returns a paged list of documents representing the version
      *         history for the given document.
      */
-    PagingResult<Document> getVersions(Document document, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Document> getVersions(Document document, ListingContext listingContext);
 
 }

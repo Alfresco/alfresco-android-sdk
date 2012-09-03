@@ -69,8 +69,7 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
     protected UrlBuilder getSiteActivitiesUrl(String siteIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getSiteActivitiesUrl(session, siteIdentifier);
-        UrlBuilder url = new UrlBuilder(link);
-        return url;
+        return new UrlBuilder(link);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////

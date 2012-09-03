@@ -25,7 +25,7 @@ import java.io.Serializable;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class ContentImpl implements Serializable
+public class ContentImpl implements Serializable
 {
 
     protected static final long serialVersionUID = 1L;

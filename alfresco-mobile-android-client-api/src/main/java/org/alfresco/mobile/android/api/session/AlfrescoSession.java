@@ -41,33 +41,33 @@ public interface AlfrescoSession
      * Define the specific implementation of all services. Must be a full
      * qualified classname.
      */
-    static final String ONPREMISE_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.onpremise";
+    String ONPREMISE_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.onpremise";
 
-    static final String CLOUD_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.cloud";
+    String CLOUD_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.cloud";
 
-    static final String AUTHENTICATOR_CLASSNAME = "org.alfresco.mobile.api.authenticator.classname";
+    String AUTHENTICATOR_CLASSNAME = "org.alfresco.mobile.api.authenticator.classname";
 
     /**
      * Allow metadata extraction during file import. Value must be a boolean.
      * Default : false
      */
-    static final String EXTRACT_METADATA = "org.alfresco.mobile.features.extractmetadata";
+    String EXTRACT_METADATA = "org.alfresco.mobile.features.extractmetadata";
 
     /**
      * Allow thumbnail generation during file import. Value must be a boolean.
      * Default : false
      */
-    static final String CREATE_THUMBNAIL = "org.alfresco.mobile.features.generatethumbnails";
+    String CREATE_THUMBNAIL = "org.alfresco.mobile.features.generatethumbnails";
 
     // ///////////////////////////////////////////////
     // LISTING
     // ///////////////////////////////////////////////
-    static final String LISTING_MAX_ITEMS = "org.alfresco.mobile.api.listing.maxitems";
+    String LISTING_MAX_ITEMS = "org.alfresco.mobile.api.listing.maxitems";
 
     // ///////////////////////////////////////////////
     // CACHE
     // ///////////////////////////////////////////////
-    static final String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
+    String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
 
     // ///////////////////////////////////////////////
     // METHODS

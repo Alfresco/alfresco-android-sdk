@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.services.impl;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -53,10 +52,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * Allow currently logged in user to get their activity stream.
      * 
      * @return the activity stream/feed as a list of ActivityEntry
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public List<ActivityEntry> getActivityStream() throws AlfrescoServiceException
+    public List<ActivityEntry> getActivityStream() 
     {
         return getActivityStream((ListingContext) null).getList();
     }
@@ -68,10 +67,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * 
      * @param listingContext : define characteristics of the result
      * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext) 
     {
         return computeActivities(getUserActivitiesUrl(listingContext), listingContext);
     }
@@ -80,10 +79,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * Allow to retrieve activities feed for a specific user.
      * 
      * @return the activity stream/feed as a list of ActivityEntry
-     * @throws AlfrescoServiceException : If personIdentifier is undefined or if
+     * @ : If personIdentifier is undefined or if
      *             network or internal problems occur during the process.
      */
-    public List<ActivityEntry> getActivityStream(String personIdentifier) throws AlfrescoServiceException
+    public List<ActivityEntry> getActivityStream(String personIdentifier) 
     {
         return getActivityStream(personIdentifier, (ListingContext) null).getList();
     }
@@ -96,11 +95,11 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * @param personIdentifier : a specific user
      * @param listingContext : define characteristics of result
      * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @throws AlfrescoServiceException : If personIdentifier is undefined or if
+     * @ : If personIdentifier is undefined or if
      *             network or internal problems occur during the process.
      */
     public PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -121,10 +120,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * 
      * @param siteName : Share site short name
      * @return the activity stream/feed as a list of ActivityEntry
-     * @throws AlfrescoServiceException : If siteName is undefined or if network
+     * @ : If siteName is undefined or if network
      *             or internal problems occur during the process.
      */
-    public List<ActivityEntry> getSiteActivityStream(String siteName) throws AlfrescoServiceException
+    public List<ActivityEntry> getSiteActivityStream(String siteName) 
     {
         return getSiteActivityStream(siteName, null).getList();
     }
@@ -138,11 +137,11 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * @param siteName : Share site short name
      * @param listingContext : define characteristics of the result
      * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @throws AlfrescoServiceException : If siteName is undefined or if network
+     * @ : If siteName is undefined or if network
      *             or internal problems occur during the process.
      */
     public PagingResult<ActivityEntry> getSiteActivityStream(String siteIdentifier, ListingContext listingContext)
-            throws AlfrescoServiceException
+            
     {
         try
         {

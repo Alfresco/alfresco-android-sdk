@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.alfresco.mobile.android.api.model.Site;
 
-public class AlphaComparator implements Comparator<Site>
+public class AlphaComparator implements Serializable, Comparator<Site>
 {
 
+    private static final long serialVersionUID = 1L;
     private boolean asc;
 
     public AlphaComparator(boolean asc)

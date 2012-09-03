@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -260,7 +259,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
                 tags.add(new TagImpl(tag));
                 continue;
             }
-            tag = results[i].substring(0, results[i].lastIndexOf(",".charAt(0)));
+            tag = results[i].substring(0, results[i].lastIndexOf(","));
             tags.add(new TagImpl(tag));
         }
 

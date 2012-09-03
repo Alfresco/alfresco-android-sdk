@@ -23,13 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.AlphaComparator;
@@ -183,7 +181,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         HttpUtils.Response resp = read(url);
 
         List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
-        int size = (json != null) ? json.size() : 0;
+        int size = json.size();
 
         List<Site> result = new ArrayList<Site>();
         int fromIndex = 0, toIndex = size;

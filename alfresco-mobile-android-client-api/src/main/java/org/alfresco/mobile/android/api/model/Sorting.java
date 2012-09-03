@@ -29,21 +29,21 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 public interface Sorting
 {
     /** Sorting based on the name of the object. */
-    public static final String NAME = ContentModel.PROP_NAME;
+    String NAME = ContentModel.PROP_NAME;
 
     /** Sorting based on the name of the object. */
-    public static final String SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
+    String SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
 
     /** Sorting based on the name of the object. */
-    public static final String TITLE = ContentModel.PROP_TITLE;
+    String TITLE = ContentModel.PROP_TITLE;
 
     /** Sorting based on the name of the object. */
-    public static final String DESCRIPTION = ContentModel.PROP_DESCRIPTION;
+    String DESCRIPTION = ContentModel.PROP_DESCRIPTION;
 
     /** Sorting based on the creation date of the object. */
-    public static final String CREATED_AT = ContentModel.PROP_CREATED;
+    String CREATED_AT = ContentModel.PROP_CREATED;
 
     /** Sorting based on the modification date of the object. */
-    public static final String MODIFIED_AT = ContentModel.PROP_MODIFIED;
+    String MODIFIED_AT = ContentModel.PROP_MODIFIED;
 
 }

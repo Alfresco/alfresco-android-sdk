@@ -27,7 +27,7 @@ import java.util.Locale;
  * 
  * @author Jean Marie Pascal
  */
-public class DateUtils
+public final class DateUtils
 {
     
     private DateUtils(){

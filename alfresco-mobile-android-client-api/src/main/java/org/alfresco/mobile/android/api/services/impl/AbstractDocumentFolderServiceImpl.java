@@ -134,10 +134,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param parentFolder : context folder
      * @return a list of Nodes (could contains Folder and/or Documents objects)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> getChildren(Folder parentFolder) throws AlfrescoServiceException
+    public List<Node> getChildren(Folder parentFolder) 
     {
         return getChildren(parentFolder, null).getList();
     }
@@ -152,10 +152,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      *            ListingContext}
      * @return PagingResult object that contains a list of Nodes (could contains
      *         Folder and/or Documents objects)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Node> getChildren(Folder parentFolder, ListingContext lcontext) throws AlfrescoServiceException
+    public PagingResult<Node> getChildren(Folder parentFolder, ListingContext lcontext) 
     {
         try
         {
@@ -222,10 +222,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param path : path from the root folder.
      * @return a node object available at the specified path.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public Node getChildByPath(String path) throws AlfrescoServiceException
+    public Node getChildByPath(String path) 
     {
         return getChildByPath(getRootFolder(), path);
     }
@@ -237,7 +237,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param relativePathFromFolder : relative path from the root folder.
      * @return a node object available at the specified path.
      */
-    public Node getChildByPath(Folder folder, String relativePathFromFolder) throws AlfrescoServiceException
+    public Node getChildByPath(Folder folder, String relativePathFromFolder) 
     {
         try
         {
@@ -289,10 +289,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param identifier : unique identifier
      * @return a node object available with the specified identifier.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public Node getNodeByIdentifier(String identifier) throws AlfrescoServiceException
+    public Node getNodeByIdentifier(String identifier) 
     {
         try
         {
@@ -322,10 +322,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param parentFolder : Parent Folder
      * @return a list of folder object child of the parent folder
      * @see #getFolders(Folder, ListingContext)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public List<Folder> getFolders(Folder parentFolder) throws AlfrescoServiceException
+    public List<Folder> getFolders(Folder parentFolder) 
     {
         return getFolders(parentFolder, null).getList();
     }
@@ -336,11 +336,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param parentFolder : Parent Folder
      * @return folder children as a pagingResult
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public PagingResult<Folder> getFolders(Folder folder, ListingContext listingContext)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -369,10 +369,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param parentFolder : Parent Folder
      * @return a list of document object child of the parent folder
      * @see #getDocuments(Folder, ListingContext)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public List<Document> getDocuments(Folder folder) throws AlfrescoServiceException
+    public List<Document> getDocuments(Folder folder) 
     {
         return getDocuments(folder, null).getList();
     }
@@ -383,11 +383,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param parentFolder : Parent Folder
      * @return document children as a pagingResult
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public PagingResult<Document> getDocuments(Folder folder, ListingContext listingContext)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -417,10 +417,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param node : Node object (Folder or Document).
      * @return parent folder object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public Folder getParentFolder(Node node) throws AlfrescoServiceException
+    public Folder getParentFolder(Node node) 
     {
         try
         {
@@ -462,11 +462,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param folderName : Name of the future folder
      * @param properties : Map of properties to apply to the new folder
      * @return Returns the newly created folder
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -512,11 +512,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param contentFile : (Optional) ContentFile that contains data stream or
      *            file
      * @return the newly created document object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
-            ContentFile contentFile) throws AlfrescoServiceException
+            ContentFile contentFile) 
     {
         try
         {
@@ -579,7 +579,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Force metadata extraction for a specific node identifier.
      * 
      * @param identifier : unique identifier of a node (Document)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     private void extractMetadata(String identifier)
@@ -613,7 +613,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             convertException(e);
         }
     }
@@ -622,7 +621,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Force creation of the doclib thumbnail.
      * 
      * @param identifier : unique identifier of a node (Document)
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     private void generateThumbnail(String identifier)
@@ -662,18 +661,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Deletes the specified object.
      * 
      * @param node : Node object (Folder or Document).
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public void deleteNode(Node node) throws AlfrescoServiceException
+    public void deleteNode(Node node) 
     {
         try
         {
-            if (node.isDocument())
+            if (node.isDocument() && node instanceof Document)
             {
                 delete((Document) node);
             }
-            else if (node.isFolder())
+            else if (node.isFolder() && node instanceof Folder)
             {
                 delete((Folder) node);
             }
@@ -688,10 +687,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Deletes the specified document.
      * 
      * @param document : Document to delete.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    private void delete(Document document) throws AlfrescoServiceException
+    private void delete(Document document) 
     {
         Permissions perm = getPermissions(document);
         if (!perm.canDelete()) { throw new AlfrescoServiceException(Messagesl18n.getString("DocumentFolderService.1")); }
@@ -713,10 +712,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Deletes the specified folder object and all its children.
      * 
      * @param folder : folder to delete.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    private void delete(Folder folder) throws AlfrescoServiceException
+    private void delete(Folder folder) 
     {
         Permissions perm = getPermissions(folder);
         if (!perm.canDelete()) { throw new AlfrescoServiceException(Messagesl18n.getString("DocumentFolderService.24")); }
@@ -743,10 +742,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param node : Node to update
      * @param properties : Properties to update.
      * @return : Newly update node.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public Node updateProperties(Node node, Map<String, Serializable> properties) throws AlfrescoServiceException
+    public Node updateProperties(Node node, Map<String, Serializable> properties) 
     {
         try
         {
@@ -798,10 +797,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param document : Document object
      * @param file : File that is going to replace document content
      * @return newly updated Document.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public Document updateContent(Document content, ContentFile contentFile) throws AlfrescoServiceException
+    public Document updateContent(Document content, ContentFile contentFile) 
     {
         Document newContent = null;
         try
@@ -840,7 +839,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param document : Document object
      * @return the contentFile representation that contains file informations +
      *         inputStream of the content.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     @Override
@@ -860,7 +859,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     @Override
     public org.alfresco.mobile.android.api.model.ContentStream getContentStream(Document document)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -880,7 +879,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     }
 
     public org.alfresco.mobile.android.api.model.ContentStream downloadContentStream(String identifier)
-            throws AlfrescoServiceException
+            
     {
         try
         {
@@ -912,10 +911,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param document
      * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public String getDownloadUrl(Document document) throws AlfrescoServiceException
+    public String getDownloadUrl(Document document) 
     {
         try
         {
@@ -939,14 +938,14 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param identifier : Node (Document in general) Identifier
      * @param type : Type of rendition available
      * @return Inputstream wrap inside a contentfile object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier,
             String type);
 
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)
-            throws AlfrescoServiceException
+            
     {
         return getRenditionStream(node.getIdentifier(), type);
     }
@@ -956,10 +955,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * 
      * @param type : Type of rendition available
      * @return Inputstream wrap inside a contentfile object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
-    public ContentFile getRendition(Node node, String type) throws AlfrescoServiceException
+    public ContentFile getRendition(Node node, String type) 
     {
         return saveContentStream(getRenditionStream(node.getIdentifier(), type),
                 NodeRefUtils.getNodeIdentifier(node.getIdentifier()), RENDITION_CACHE);
@@ -976,7 +975,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param identifier : Node Identifier
      * @return {@link org.alfresco.mobile.android.api.model.Permissions} object
      *         that contains permissions.
-     * @throws AlfrescoServiceException : if network or internal problems occur
+     * @ : if network or internal problems occur
      *             during the process.
      */
     public Permissions getPermissions(Node node)

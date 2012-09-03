@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.session.CloudSignupRequest;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudUrlRegistry
+public final class CloudUrlRegistry
 {
     
     private CloudUrlRegistry()

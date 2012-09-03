@@ -50,8 +50,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext);
 
     /**
      * Executes a query statement against the contents of the repository using
@@ -65,7 +64,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException;
+    List<Node> search(String statement, SearchLanguage language);
 
     /**
      * A space delimited list of keywords to search for. The options object
@@ -82,8 +81,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext);
 
     /**
      * A space delimited list of keywords to search for. The options object
@@ -96,6 +94,6 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException;
+    List<Node> keywordSearch(String keywords, KeywordSearchOptions options);
 
 }

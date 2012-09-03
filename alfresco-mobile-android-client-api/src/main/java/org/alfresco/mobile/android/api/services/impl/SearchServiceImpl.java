@@ -81,7 +81,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException
+    public List<Node> search(String statement, SearchLanguage language)
     {
         return search(statement, language, null).getList();
     }
@@ -98,7 +98,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException
+    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options)
     {
         KeywordSearchOptions tmpOptions = options;
         if (tmpOptions == null)
@@ -118,7 +118,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException
      */
     public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
-            throws AlfrescoServiceException
+
     {
         String statement = createQuery(keywords, options.doesIncludeContent(), options.isExactMatch(),
                 options.getFolder(), options.doesIncludeDescendants());
@@ -136,7 +136,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      *             during the process.
      */
     public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
-            throws AlfrescoServiceException
+
     {
         try
         {
@@ -237,7 +237,9 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         List<String> keywords = Arrays.asList(TextUtils.split(query.trim(), "\\s+"));
         StringBuilder sb = new StringBuilder(QUERY_DOCUMENT);
         String[] fullText = new String[0];
-        if (fulltext) fullText = new String[keywords.size()];
+        if (fulltext){
+            fullText = new String[keywords.size()];  
+        }
         String[] words = new String[keywords.size()];
 
         // First IN_FOLDER or IN_DESCENDANTS
@@ -267,13 +269,15 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                     {
                         words[i] = propertyQuery + "= '" + keywords.get(i) + "'" + OPERTATOR_OR + " UPPER("
                                 + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + " CONTAINS("+propertyQuery.substring(1, 2)+",'" + propertyQuery.substring(3)  + ":\\\'" + keywords.get(i) + "\\\'')";
+                                + " CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
+                                + ":\\\'" + keywords.get(i) + "\\\'')";
                     }
                     else
                     {
                         words[i] = propertyQuery + "LIKE '%" + keywords.get(i) + "%'" + OPERTATOR_OR + "UPPER("
                                 + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + "CONTAINS("+propertyQuery.substring(1, 2)+",'" + propertyQuery.substring(3) + ":\\\'\\*" + keywords.get(i) + "\\*\\\'')";
+                                + "CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
+                                + ":\\\'\\*" + keywords.get(i) + "\\*\\\'')";
                     }
 
                     if (fulltext && !fulltextComplete)
@@ -297,8 +301,9 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             sb.append(OPERTATOR_OR);
         }
         join(sb, OPERTATOR_OR, fullText);
-        
-        if (f != null){
+
+        if (f != null)
+        {
             sb.append(")");
         }
 

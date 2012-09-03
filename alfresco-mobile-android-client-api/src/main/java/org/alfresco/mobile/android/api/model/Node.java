@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 
 import android.os.Parcelable;
@@ -120,7 +120,7 @@ public interface Node extends Serializable, Parcelable
     /**
      * Returns all the aspects applied to the node.
      */
-     ArrayList<String> getAspects();
+     List<String> getAspects();
 
     // ////////////////////////////////////////////////////
     // Types

@@ -32,7 +32,7 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
 
     private static final long serialVersionUID = 1L;
 
-    private transient InputStream inputStream;
+    private InputStream inputStream;
 
     public ContentStreamImpl()
     {

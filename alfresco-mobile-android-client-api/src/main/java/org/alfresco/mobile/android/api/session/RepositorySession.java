@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
  */
 public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
 {
-    
+
     /** Define the specific repository identifier. By default not necessary. */
     public static final String REPOSITORY_ID = "org.alfresco.mobile.binding.repository.id";
 
@@ -48,7 +48,7 @@ public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
      * @throws AlfrescoConnectionException
      */
     public static RepositorySession connect(String url, String username, String password,
-            Map<String, Serializable> parameters) throws AlfrescoConnectionException
+            Map<String, Serializable> parameters)
     {
         return new RepositorySessionImpl(url, username, password, parameters);
     }
@@ -67,7 +67,6 @@ public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
      * @return a RepositorySession object that is not bind with the repository.
      */
     public static RepositorySession connect(String url, String username, String password)
-            throws AlfrescoConnectionException
     {
         return connect(url, username, password, null);
     }

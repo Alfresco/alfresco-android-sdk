@@ -64,7 +64,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public ContentStream getAvatarStream(String username) throws AlfrescoServiceException
+    public ContentStream getAvatarStream(String username)
     {
         try
         {

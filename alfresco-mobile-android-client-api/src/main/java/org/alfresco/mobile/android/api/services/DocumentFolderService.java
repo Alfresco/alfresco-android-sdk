@@ -60,7 +60,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     List<Node> getChildren(Folder folder) throws AlfrescoServiceException;
+    List<Node> getChildren(Folder folder);
 
     /**
      * Lists immediate child nodes of the given context folder.
@@ -75,7 +75,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     PagingResult<Node> getChildren(Folder folder, ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Node> getChildren(Folder folder, ListingContext listingContext);
 
     /**
      * Gets the node object stored at the specified path.
@@ -85,7 +85,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Node getChildByPath(String path) throws AlfrescoServiceException;
+    Node getChildByPath(String path);
 
     /**
      * Gets the node object stored at the relative specified path from the
@@ -96,13 +96,13 @@ public interface DocumentFolderService
      * @return Returns the node object stored at the given path relative from
      *         the given folder.
      */
-     Node getChildByPath(Folder folder, String relativePath) throws AlfrescoServiceException;
+    Node getChildByPath(Folder folder, String relativePath);
 
     /**
      * @param identifier
      * @return Returns the node object with the specified identifier.
      */
-     Node getNodeByIdentifier(String identifier) throws AlfrescoServiceException;
+    Node getNodeByIdentifier(String identifier);
 
     /**
      * Lists all immediate child documents of the given context node </br>Note:
@@ -115,7 +115,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     List<Document> getDocuments(Folder folder) throws AlfrescoServiceException;
+    List<Document> getDocuments(Folder folder);
 
     /**
      * Lists all immediate child documents of the given context folder.
@@ -129,8 +129,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     PagingResult<Document> getDocuments(Folder folder, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Document> getDocuments(Folder folder, ListingContext listingContext);
 
     /**
      * Lists all immediate child folders of the given context folder.
@@ -142,7 +141,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     List<Folder> getFolders(Folder folder) throws AlfrescoServiceException;
+    List<Folder> getFolders(Folder folder);
 
     /**
      * Lists all immediate child folders of the given context folder.
@@ -157,15 +156,14 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     PagingResult<Folder> getFolders(Folder folder, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Folder> getFolders(Folder folder, ListingContext listingContext);
 
     /**
      * @return Returns the root folder of the repository.
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Folder getRootFolder() throws AlfrescoServiceException;
+    Folder getRootFolder();
 
     /**
      * Gets the direct parent folder object.
@@ -176,7 +174,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Folder getParentFolder(Node node) throws AlfrescoServiceException;
+    Folder getParentFolder(Node node);
 
     /**
      * Creates a folder object in the specified location with an optional set of
@@ -189,8 +187,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Folder createFolder(Folder folder, String folderName, Map<String, Serializable> properties)
-            throws AlfrescoServiceException;
+    Folder createFolder(Folder folder, String folderName, Map<String, Serializable> properties);
 
     /**
      * Creates a document object in the specified location with an optional set
@@ -208,8 +205,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Document createDocument(Folder folder, String documentName, Map<String, Serializable> properties,
-            ContentFile file) throws AlfrescoServiceException;
+    Document createDocument(Folder folder, String documentName, Map<String, Serializable> properties, ContentFile file);
 
     /**
      * Deletes the specified node.
@@ -218,7 +214,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     void deleteNode(Node node) throws AlfrescoServiceException;
+    void deleteNode(Node node);
 
     /**
      * Updates the properties of the specified node. Can accept Alfresco Content
@@ -230,7 +226,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Node updateProperties(Node node, Map<String, Serializable> properties) throws AlfrescoServiceException;
+    Node updateProperties(Node node, Map<String, Serializable> properties);
 
     /**
      * Updates the content on the given document using the provided local file.
@@ -241,7 +237,7 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     Document updateContent(Document document, ContentFile file) throws AlfrescoServiceException;
+    Document updateContent(Document document, ContentFile file);
 
     /**
      * Downloads the content for the given document.
@@ -252,23 +248,23 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     ContentFile getContent(Document document) throws AlfrescoServiceException;
+    ContentFile getContent(Document document);
 
-     ContentStream getContentStream(Document document) throws AlfrescoServiceException;
+    ContentStream getContentStream(Document document);
 
     /**
      * @param node
      * @return Returns a Permissions object representing the allowed actions for
      *         the current user on the given node.
      */
-     Permissions getPermissions(Node node) throws AlfrescoServiceException;
+    Permissions getPermissions(Node node);
 
     /**
      * Represent the unique identifier for thumbnail rendition.
      * 
      * @see #getRendition(Node, String)
      */
-     static final String RENDITION_THUMBNAIL = "doclib";
+    static final String RENDITION_THUMBNAIL = "doclib";
 
     /**
      * Retrieve a specific type of Rendition for the specified identifier.
@@ -280,8 +276,8 @@ public interface DocumentFolderService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-     ContentFile getRendition(Node node, String type) throws AlfrescoServiceException;
+    ContentFile getRendition(Node node, String type);
 
-     ContentStream getRenditionStream(Node node, String type) throws AlfrescoServiceException;
+    ContentStream getRenditionStream(Node node, String type);
 
 }

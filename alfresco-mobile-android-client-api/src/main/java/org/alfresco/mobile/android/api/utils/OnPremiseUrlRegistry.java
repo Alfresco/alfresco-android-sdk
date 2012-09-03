@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
  * 
  * @author Jean Marie Pascal
  */
-public class OnPremiseUrlRegistry
+public final class OnPremiseUrlRegistry
 {
     private OnPremiseUrlRegistry(){
         

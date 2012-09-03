@@ -65,7 +65,7 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Document> getVersions(Document document) throws AlfrescoServiceException
+    public List<Document> getVersions(Document document)
     {
 
         return getVersions(document, null).getList();

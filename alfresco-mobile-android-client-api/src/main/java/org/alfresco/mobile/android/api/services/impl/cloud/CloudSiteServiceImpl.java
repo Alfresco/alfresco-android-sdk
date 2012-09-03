@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
@@ -180,14 +179,12 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
 
     @Override
     protected PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException
     {
         return computeSites(url, false);
     }
 
     @Override
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException
     {
         return computeSites(url, true);
     }

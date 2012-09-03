@@ -50,7 +50,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If node is not defined or If network
      *             problems occur during the process.
      */
-     List<Comment> getComments(Node node) throws AlfrescoServiceException;
+    List<Comment> getComments(Node node);
 
     /**
      * List the available comments for the specified node. </br> Order supports
@@ -63,7 +63,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If node is not defined or if network
      *             or internal problems occur during the process.
      */
-     PagingResult<Comment> getComments(Node node, ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Comment> getComments(Node node, ListingContext listingContext);
 
     /**
      * Add a comment to the specified Node (Folder or Document).
@@ -74,7 +74,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If content or node is not defined or
      *             if network or internal problems occur during the process.
      */
-     Comment addComment(Node node, String content) throws AlfrescoServiceException;
+    Comment addComment(Node node, String content);
 
     /**
      * Updates the given comment with the provided content.
@@ -84,7 +84,7 @@ public interface CommentService
      * @throws AlfrescoServiceException : If content or comment is not defined
      *             or if network or internal problems occur during the process.
      */
-     Comment updateComment(Node node, Comment comment, String content) throws AlfrescoServiceException;
+    Comment updateComment(Node node, Comment comment, String content);
 
     /**
      * Remove the specified comment from the repository.
@@ -93,6 +93,6 @@ public interface CommentService
      * @throws AlfrescoServiceException : If comment is not defined or if
      *             network or internal problems occur during the process.
      */
-     void deleteComment(Node node, Comment comment) throws AlfrescoServiceException;
+    void deleteComment(Node node, Comment comment);
 
 }

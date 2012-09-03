@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.api.constants;
 
 /**
- * Provides all  constants necessary for Alfresco Cloud. <br/>
+ * Provides all constants necessary for Alfresco Cloud. <br/>
  * Generally it's used for parsing data (json, atompub xml).
  * 
  * @author Jean Marie Pascal
@@ -27,134 +27,134 @@ public interface CloudConstant extends OnPremiseConstant
 {
 
     // EDITION
-     static final String ALFRESCO_EDITION_CLOUD = "Alfresco in the Cloud";
+    String ALFRESCO_EDITION_CLOUD = "Alfresco in the Cloud";
 
     // JSON LIST
-     static final String LIST_VALUE = "list";
+    String LIST_VALUE = "list";
 
-     static final String PAGINATION_VALUE = "pagination";
+    String PAGINATION_VALUE = "pagination";
 
-     static final String COUNT_VALUE = "count";
+    String COUNT_VALUE = "count";
 
-     static final String HAS_MORE_ITEMS_VALUE = "hasMoreItems";
+    String HAS_MORE_ITEMS_VALUE = "hasMoreItems";
 
-     static final String TOTAL_ITEMS_VALUE = "totalItems";
+    String TOTAL_ITEMS_VALUE = "totalItems";
 
-     static final String SKIP_COUNT_VALUE = "skipCount";
+    String SKIP_COUNT_VALUE = "skipCount";
 
-     static final String MAX_ITEMS_VALUE = "maxItems";
+    String MAX_ITEMS_VALUE = "maxItems";
 
-     static final String ENTRIES_VALUE = "entries";
+    String ENTRIES_VALUE = "entries";
 
-     static final String ENTRY_VALUE = "entry";
+    String ENTRY_VALUE = "entry";
 
     // SITES
-     static final String SITE_VALUE = "site";
+    String SITE_VALUE = "site";
 
-     static final String FOLDERID_VALUE = "folderId";
+    String FOLDERID_VALUE = "folderId";
 
-     static final String DOCUMENTLIBRARY_VALUE = "documentLibrary";
+    String DOCUMENTLIBRARY_VALUE = "documentLibrary";
 
     // Networks
-     static final String NETWORK_VALUE = "network";
+    String NETWORK_VALUE = "network";
 
-     static final String ENABLED_VALUE = "enabled";
+    String ENABLED_VALUE = "enabled";
 
-     static final String QUOTAS_VALUE = "quotas";
+    String QUOTAS_VALUE = "quotas";
 
-     static final String LIMIT_VALUE = "limit";
+    String LIMIT_VALUE = "limit";
 
-     static final String USAGE_VALUE = "usage";
+    String USAGE_VALUE = "usage";
 
-     static final String ACCOUNTCLASSNAME_VALUE = "accountClassName";
+    String ACCOUNTCLASSNAME_VALUE = "accountClassName";
 
-     static final String ACCOUNTTYPE_VALUE = "accountType";
+    String ACCOUNTTYPE_VALUE = "accountType";
 
-     static final String ACCOUNTCLASSDISPLAYNAME_VALUE = "accountClassDisplayName";
+    String ACCOUNTCLASSDISPLAYNAME_VALUE = "accountClassDisplayName";
 
     // Comments
-     static final String CREATEDAT_VALUE = "createdAt";
+    String CREATEDAT_VALUE = "createdAt";
 
-     static final String CREATEDBY_VALUE = "createdBy";
+    String CREATEDBY_VALUE = "createdBy";
 
-     static final String CREATOR_VALUE = "creator";
+    String CREATOR_VALUE = "creator";
 
-     static final String MODIFIEDAT_VALUE = "modifiedAt";
+    String MODIFIEDAT_VALUE = "modifiedAt";
 
-     static final String MODIFIEDBY_VALUE = "modifiedBy";
+    String MODIFIEDBY_VALUE = "modifiedBy";
 
-     static final String CANEDIT_VALUE = "canEdit";
+    String CANEDIT_VALUE = "canEdit";
 
-     static final String CANDELETE_VALUE = "canDelete";
+    String CANDELETE_VALUE = "canDelete";
 
-     static final String EDITED_VALUE = "edited";
+    String EDITED_VALUE = "edited";
 
     // Tags
-     static final String TAG_VALUE = "tag";
+    String TAG_VALUE = "tag";
 
     // RATINGS
-     static final String LIKES_VALUE = "likes";
+    String LIKES_VALUE = "likes";
 
-     static final String AGGREGATE_VALUE = "aggregate";
+    String AGGREGATE_VALUE = "aggregate";
 
-     static final String NUMBEROFRATINGS_VALUE = "numberOfRatings";
+    String NUMBEROFRATINGS_VALUE = "numberOfRatings";
 
-     static final String RATEDAT_VALUE = "ratedAt";
+    String RATEDAT_VALUE = "ratedAt";
 
-     static final String MYRATING_VALUE = "myRating";
+    String MYRATING_VALUE = "myRating";
 
     // ACTIVITIES
-     static final String SITEID_VALUE = "siteId";
+    String SITEID_VALUE = "siteId";
 
-     static final String FEEDPERSONID_VALUE = "feedPersonId";
+    String FEEDPERSONID_VALUE = "feedPersonId";
 
-     static final String POSTPERSONID_VALUE = "postPersonId";
+    String POSTPERSONID_VALUE = "postPersonId";
 
-     static final String ACTIVITYTYPE_VALUE = "activityType";
+    String ACTIVITYTYPE_VALUE = "activityType";
 
-     static final String ACTIVITYSUMMARY_VALUE = "activitySummary";
+    String ACTIVITYSUMMARY_VALUE = "activitySummary";
 
-     static final String OBJECTID_VALUE = "objectId";
+    String OBJECTID_VALUE = "objectId";
 
-     static final String NETWORKID_VALUE = "networkId";
+    String NETWORKID_VALUE = "networkId";
 
-     static final String POSTEDAT_VALUE = "postedAt";
+    String POSTEDAT_VALUE = "postedAt";
 
     // REGISTRATION
-     static final String CLOUD_EMAIL_VALUE = "email";
+    String CLOUD_EMAIL_VALUE = "email";
 
-     static final String CLOUD_FIRSTNAME_VALUE = "firstName";
+    String CLOUD_FIRSTNAME_VALUE = "firstName";
 
-     static final String CLOUD_LASTNAME_VALUE = "lastName";
+    String CLOUD_LASTNAME_VALUE = "lastName";
 
-     static final String CLOUD_PASSWORD_VALUE = "password";
+    String CLOUD_PASSWORD_VALUE = "password";
 
-     static final String CLOUD_SOURCE_VALUE = "source";
+    String CLOUD_SOURCE_VALUE = "source";
 
-     static final String CLOUD_SOURCEURL_VALUE = "sourceUrl";
+    String CLOUD_SOURCEURL_VALUE = "sourceUrl";
 
-     static final String CLOUD_KEY = "key";
+    String CLOUD_KEY = "key";
 
-     static final String CLOUD_REGISTRATIONDATE = "registrationDate";
+    String CLOUD_REGISTRATIONDATE = "registrationDate";
 
-     static final String CLOUD_REGISTRATION = "registration";
+    String CLOUD_REGISTRATION = "registration";
 
-     static final String CLOUD_REGISTRATION_KEY = "key";
+    String CLOUD_REGISTRATION_KEY = "key";
 
-     static final String CLOUD_ISREGISTERED = "isRegistered";
+    String CLOUD_ISREGISTERED = "isRegistered";
 
-     static final String CLOUD_ISACTIVATED = "isActivated";
+    String CLOUD_ISACTIVATED = "isActivated";
 
-     static final String CLOUD_ISPREREGISTERED = "isPreRegistered";
+    String CLOUD_ISPREREGISTERED = "isPreRegistered";
 
     // NETWORKS
-     static final String SUBSCRIPTIONLEVEL_VALUE = "subscriptionLevel";
+    String SUBSCRIPTIONLEVEL_VALUE = "subscriptionLevel";
 
-     static final String PAIDNETWORK_VALUE = "paidNetwork";
+    String PAIDNETWORK_VALUE = "paidNetwork";
 
-     static final String HOMENETWORK_VALUE = "homeNetwork";
+    String HOMENETWORK_VALUE = "homeNetwork";
 
     // PEOPLE
-     static final String AVATARID_VALUE = "avatarId";
+    String AVATARID_VALUE = "avatarId";
 
 }

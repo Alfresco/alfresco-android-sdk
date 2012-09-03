@@ -28,8 +28,6 @@ import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
-import org.apache.chemistry.opencmis.client.api.Session;
 
 /**
  * Provides a registry of all services that are available for the current
@@ -62,14 +60,12 @@ public abstract class AbstractServiceRegistry implements ServiceRegistry
 
     protected final AlfrescoSession session;
 
-    protected final Session cmisSession;
 
     protected PersonService personService;
 
     public AbstractServiceRegistry(AlfrescoSession session)
     {
         this.session = session;
-        this.cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
         this.versionService = new VersionServiceImpl(session);
         this.searchService = new SearchServiceImpl(session);
     }

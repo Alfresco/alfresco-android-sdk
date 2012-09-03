@@ -51,9 +51,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     protected String baseUrl;
 
-    protected String userIdentifier;
+    private String userIdentifier;
 
-    protected String password;
+    private String password;
 
     /** Root Folder for the specific session. */
     protected Folder rootNode;

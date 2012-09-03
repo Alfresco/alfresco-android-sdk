@@ -26,191 +26,191 @@ package org.alfresco.mobile.android.api.constants;
 public interface OnPremiseConstant
 {
     // TICKET LOGIN
-    static final String LOGIN_USERNAME_VALUE = "username";
+    String LOGIN_USERNAME_VALUE = "username";
 
-    static final String LOGIN_PASSWORD_VALUE = "password";
+    String LOGIN_PASSWORD_VALUE = "password";
 
-    static final String LOGIN_DATA_VALUE = "data";
+    String LOGIN_DATA_VALUE = "data";
 
-    static final String LOGIN_TICKET_VALUE = "ticket";
+    String LOGIN_TICKET_VALUE = "ticket";
 
     // EDITION
-    static final String ALFRESCO_VENDOR = "Alfresco";
+    String ALFRESCO_VENDOR = "Alfresco";
 
-    static final String ALFRESCO_EDITION_COMMUNITY = "Community";
+    String ALFRESCO_EDITION_COMMUNITY = "Community";
 
-    static final String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
+    String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
 
-    static final String ALFRESCO_EDITION_UNKNOWN = "unknown";
+    String ALFRESCO_EDITION_UNKNOWN = "unknown";
 
-    static final String THIRD_CMIS_EDITION = "thirdcmis";
+    String THIRD_CMIS_EDITION = "thirdcmis";
 
     // VERSION NUMBER
-    static final int ALFRESCO_VERSION_4 = 4;
+    int ALFRESCO_VERSION_4 = 4;
 
-    static final int ALFRESCO_VERSION_3 = 3;
+    int ALFRESCO_VERSION_3 = 3;
 
     // SITES
-    static final String URL_VALUE = "url";
+    String URL_VALUE = "url";
 
-    static final String TITLE_VALUE = "title";
+    String TITLE_VALUE = "title";
 
-    static final String DESCRIPTION_VALUE = "description";
+    String DESCRIPTION_VALUE = "description";
 
-    static final String SITEPRESET_VALUE = "sitePreset";
+    String SITEPRESET_VALUE = "sitePreset";
 
-    static final String SHORTNAME_VALUE = "shortName";
+    String SHORTNAME_VALUE = "shortName";
 
-    static final String NODE_VALUE = "node";
+    String NODE_VALUE = "node";
 
-    static final String TAGSCOPE_VALUE = "tagScope";
+    String TAGSCOPE_VALUE = "tagScope";
 
-    static final String IS_VALUE = "is";
+    String IS_VALUE = "is";
 
-    static final String VISIBILITY_VALUE = "visibility";
+    String VISIBILITY_VALUE = "visibility";
 
-    static final String MANAGERS_VALUE = "siteManagers";
+    String MANAGERS_VALUE = "siteManagers";
 
     // COMMENTS
-    static final String NODEREF_VALUE = "nodeRef";
+    String NODEREF_VALUE = "nodeRef";
 
-    static final String NAME_VALUE = "name";
+    String NAME_VALUE = "name";
 
-    static final String CONTENT_VALUE = "content";
+    String CONTENT_VALUE = "content";
 
-    static final String CREATEDON_VALUE = "createdOn";
+    String CREATEDON_VALUE = "createdOn";
 
-    static final String MODIFIEDON_VALUE = "modifiedOn";
+    String MODIFIEDON_VALUE = "modifiedOn";
 
-    static final String ISUPDATED_VALUE = "isUpdated";
+    String ISUPDATED_VALUE = "isUpdated";
 
-    static final String TOTAL_VALUE = "total";
+    String TOTAL_VALUE = "total";
 
-    static final String ITEMS_VALUE = "items";
+    String ITEMS_VALUE = "items";
 
-    static final String ITEMCOUNT_VALUE = "itemCount";
+    String ITEMCOUNT_VALUE = "itemCount";
 
-    static final String ITEM_VALUE = "item";
+    String ITEM_VALUE = "item";
 
     // PEOPLE
-    static final String USERNAME_VALUE = "userName";
+    String USERNAME_VALUE = "userName";
 
-    static final String USERNAME_L_VALUE = "username";
+    String USERNAME_L_VALUE = "username";
 
-    static final String LASTNAME_VALUE = "lastName";
+    String LASTNAME_VALUE = "lastName";
 
-    static final String FIRSTNAME_VALUE = "firstName";
+    String FIRSTNAME_VALUE = "firstName";
 
-    static final String AUTHOR_VALUE = "author";
+    String AUTHOR_VALUE = "author";
 
-    static final String AVATAR_REF_VALUE = "avatarRef";
+    String AVATAR_REF_VALUE = "avatarRef";
 
-    static final String AVATAR_VALUE = "avatar";
+    String AVATAR_VALUE = "avatar";
 
     // ACTIVITY EVENT
-    static final String ID_VALUE = "id";
+    String ID_VALUE = "id";
 
-    static final String SITENETWORK_VALUE = "siteNetwork";
+    String SITENETWORK_VALUE = "siteNetwork";
 
-    static final String FEEDUSERID_VALUE = "feedUserId";
+    String FEEDUSERID_VALUE = "feedUserId";
 
-    static final String POSTUSERID_VALUE = "postUserId";
+    String POSTUSERID_VALUE = "postUserId";
 
-    static final String POSTDATE_VALUE = "postDate";
+    String POSTDATE_VALUE = "postDate";
 
-    static final String SUMMARY_VALUE = "activitySummary";
+    String SUMMARY_VALUE = "activitySummary";
 
-    static final String PAGE_VALUE = "page";
+    String PAGE_VALUE = "page";
 
-    static final String ACTIVITYTYPE_VALUE = "activityType";
+    String ACTIVITYTYPE_VALUE = "activityType";
 
-    static final String FORMAT_VALUE = "activitySummaryFormat";
+    String FORMAT_VALUE = "activitySummaryFormat";
 
-    static final String MEMBERLASTNAME_VALUE = "memberLastName";
+    String MEMBERLASTNAME_VALUE = "memberLastName";
 
-    static final String ROLE_VALUE = "role";
+    String ROLE_VALUE = "role";
 
-    static final String STATUS_VALUE = "status";
+    String STATUS_VALUE = "status";
 
-    static final String MEMEBERUSERNAME_VALUE = "memberUserName";
+    String MEMEBERUSERNAME_VALUE = "memberUserName";
 
-    static final String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
+    String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
 
     // CONTAINERS
-    static final String CONTAINER_VALUE = "containers";
+    String CONTAINER_VALUE = "containers";
 
     // TAG
-    static final String TYPE_VALUE = "type";
+    String TYPE_VALUE = "type";
 
-    static final String ISCONTAINER_VALUE = "isContainer";
+    String ISCONTAINER_VALUE = "isContainer";
 
-    static final String MODIFIED_VALUE = "modified";
+    String MODIFIED_VALUE = "modified";
 
-    static final String MODIFIER_VALUE = "modifier";
+    String MODIFIER_VALUE = "modifier";
 
-    static final String DISPLAYPATH_VALUE = "displayPath";
+    String DISPLAYPATH_VALUE = "displayPath";
 
-    static final String SELECTABLE_VALUE = "selectable";
+    String SELECTABLE_VALUE = "selectable";
 
     // PERMISSION
-    static final String PERMISSION_VALUE = "permissions";
+    String PERMISSION_VALUE = "permissions";
 
-    static final String EDIT_VALUE = "edit";
+    String EDIT_VALUE = "edit";
 
-    static final String DELETE_VALUE = "delete";
+    String DELETE_VALUE = "delete";
 
     // RATINGS
-    static final String DATA_VALUE = "data";
+    String DATA_VALUE = "data";
 
-    static final String RATINGS_VALUE = "ratings";
+    String RATINGS_VALUE = "ratings";
 
-    static final String RATINGSCHEME_VALUE = "ratingScheme";
+    String RATINGSCHEME_VALUE = "ratingScheme";
 
-    static final String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
+    String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
 
-    static final String RATING_VALUE = "rating";
+    String RATING_VALUE = "rating";
 
-    static final String APPLIEDAT_VALUE = "appliedAt";
+    String APPLIEDAT_VALUE = "appliedAt";
 
-    static final String APPLIEDBY_VALUE = "appliedBy";
+    String APPLIEDBY_VALUE = "appliedBy";
 
-    static final String NODESTATISTICS_VALUE = "nodeStatistics";
+    String NODESTATISTICS_VALUE = "nodeStatistics";
 
-    static final String AVERAGERATING_VALUE = "averageRating";
+    String AVERAGERATING_VALUE = "averageRating";
 
-    static final String RATINGSTOTAL_VALUE = "ratingsTotal";
+    String RATINGSTOTAL_VALUE = "ratingsTotal";
 
-    static final String RATINGSCOUNT_VALUE = "ratingsCount";
+    String RATINGSCOUNT_VALUE = "ratingsCount";
 
     // ACTIONS
-    static final String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
+    String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
 
-    static final String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
+    String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
 
-    static final String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
+    String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
 
-    static final String ACTION_EXECUTE_SCRIPT = "script";
+    String ACTION_EXECUTE_SCRIPT = "script";
 
-    static final String ACTIONSCRIPTREF_VALUE = "script-ref";
+    String ACTIONSCRIPTREF_VALUE = "script-ref";
 
-    static final String ACTIONPARAMETER_VALUE = "parameterValues";
+    String ACTIONPARAMETER_VALUE = "parameterValues";
 
     // THUMBNAILS
-    static final String THUMBNAILNAME_VALUE = "thumbnailName";
+    String THUMBNAILNAME_VALUE = "thumbnailName";
 
     // Parameters
-    static final String PARAM_ASYNC = "async";
+    String PARAM_ASYNC = "async";
 
-    static final String PARAM_AS = "as";
+    String PARAM_AS = "as";
 
-    static final String PARAM_SIZE = "size";
+    String PARAM_SIZE = "size";
 
-    static final String PARAM_POSITION = "pos";
+    String PARAM_POSITION = "pos";
 
-    static final String PARAM_STARTINDEX = "startIndex";
+    String PARAM_STARTINDEX = "startIndex";
 
-    static final String PARAM_PAGESIZE = "pageSize";
+    String PARAM_PAGESIZE = "pageSize";
 
-    static final String PARAM_REVERSE = "reverse";
+    String PARAM_REVERSE = "reverse";
 
 }
