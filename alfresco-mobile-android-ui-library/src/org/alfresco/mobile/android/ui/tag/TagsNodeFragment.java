@@ -61,14 +61,14 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
     public Loader<LoaderResult<PagingResult<Tag>>> onCreateLoader(int id, Bundle ba)
     {
         setListShown(false);
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
         ListingContext lc = null, lcorigin = null;
-        if (b != null)
+        if (bundle != null)
         {
-            node = (Node) b.getSerializable(ARGUMENT_NODE);
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            node = (Node) bundle.getSerializable(ARGUMENT_NODE);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
         TagsLoader tg = new TagsLoader(getActivity(), alfSession, node);
         tg.setListingContext(lc);

@@ -59,15 +59,15 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
         }
 
         // Case Init & case Reload
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
 
-        if (b != null)
+        if (bundle != null)
         {
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
         calculateSkipCount(lc);
         ActivityStreamLoader loader = new ActivityStreamLoader(getActivity(), alfSession);

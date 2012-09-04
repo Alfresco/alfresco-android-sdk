@@ -26,9 +26,21 @@ import org.alfresco.mobile.android.ui.R;
 import android.content.Context;
 import android.content.res.Resources;
 
-public class Formatter
+public final class Formatter
 {
 
+    private static final int MINUTE_IN_SECONDS = 60;
+    private static final int HOUR_IN_SECONDS = 3600;
+    private static final int HOUR_IN_MINUTES = 60;
+    private static final int DAY_IN_SECONDS = 86400;
+    private static final int DAY_IN_HOURS = 24;
+    private static final int YEAR_IN_SECONDS = 31536000;
+    private static final int YEAR_IN_DAYS = 365;
+
+    
+    private Formatter(){
+    }
+    
     /**
      * Format a date into a relative human readable date.
      * 
@@ -38,39 +50,41 @@ public class Formatter
      */
     public static String formatToRelativeDate(Context c, Date date)
     {
-        if (date == null) return null;
+        if (date == null) {
+            return null;
+        }
 
         Resources res = c.getResources();
 
         Date todayDate = new Date();
-        long ti = (todayDate.getTime() - date.getTime()) / 1000;
+        float ti = (todayDate.getTime() - date.getTime()) / 1000;
 
         if (ti < 1)
         {
             return res.getString(R.string.relative_date_just_now);
         }
-        else if (ti < 60)
+        else if (ti < MINUTE_IN_SECONDS)
         {
             return res.getString(R.string.relative_date_less_than_a_minute_ago);
         }
-        else if (ti < 3600)
+        else if (ti < HOUR_IN_SECONDS)
         {
-            int diff = Math.round(ti / 60);
+            int diff = Math.round(ti / MINUTE_IN_SECONDS);
             return String.format(res.getQuantityString(R.plurals.relative_date_minutes_ago, diff), diff);
         }
-        else if (ti < 86400)
+        else if (ti < DAY_IN_SECONDS)
         {
-            int diff = Math.round(ti / 60 / 60);
+            int diff = Math.round(ti / MINUTE_IN_SECONDS / HOUR_IN_MINUTES);
             return String.format(res.getQuantityString(R.plurals.relative_date_hours_ago, diff), diff);
         }
-        else if (ti < 31536000)
+        else if (ti < YEAR_IN_SECONDS)
         {
-            int diff = Math.round(ti / 60 / 60 / 24);
+            int diff = Math.round(ti / MINUTE_IN_SECONDS / HOUR_IN_MINUTES / DAY_IN_HOURS);
             return String.format(res.getQuantityString(R.plurals.relative_date_days_ago, diff), diff);
         }
         else
         {
-            int diff = Math.round(ti / 60 / 60 / 24 / 365);
+            int diff = Math.round(ti / MINUTE_IN_SECONDS / HOUR_IN_MINUTES / DAY_IN_HOURS / YEAR_IN_DAYS);
             return String.format(res.getQuantityString(R.plurals.relative_date_years_ago, diff), diff);
         }
     }

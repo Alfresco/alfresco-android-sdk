@@ -60,15 +60,15 @@ public abstract class VersionsFragment extends BaseListFragment implements
     {
         setListShown(false);
 
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
-        if (b != null)
+        if (bundle != null)
         {
-            node = b.getParcelable(ARGUMENT_NODE);
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            node = bundle.getParcelable(ARGUMENT_NODE);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
 
         calculateSkipCount(lc);
@@ -85,8 +85,7 @@ public abstract class VersionsFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new VersionsAdapter(getActivity(), alfSession, R.layout.sdk_list_version,
-                    new ArrayList<Document>(0));
+            adapter = new VersionsAdapter(getActivity(), R.layout.sdk_list_version, new ArrayList<Document>(0));
         }
         if (!checkException(results))
         {

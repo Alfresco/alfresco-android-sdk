@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Comment;
 
 public interface OnCommentCreateListener
 {
-    public void beforeCommentCreation(String content);
-    public void afterCommentCreation(Comment comment);
+    void beforeCommentCreation(String content);
+
+    void afterCommentCreation(Comment comment);
 }

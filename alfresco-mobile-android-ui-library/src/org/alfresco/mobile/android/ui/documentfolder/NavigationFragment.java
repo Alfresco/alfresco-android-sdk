@@ -98,21 +98,21 @@ public abstract class NavigationFragment extends BaseListFragment implements
         }
 
         // Case Init & case Reload
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         Folder f = null;
         String path = null;
         Site s = null;
         ListingContext lc = null, lcorigin = null;
 
-        if (b != null)
+        if (bundle != null)
         {
-            f = (Folder) b.getSerializable(ARGUMENT_FOLDER);
-            path = b.getString(ARGUMENT_FOLDERPATH);
-            s = (Site) b.getSerializable(ARGUMENT_SITE);
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            f = (Folder) bundle.getSerializable(ARGUMENT_FOLDER);
+            path = bundle.getString(ARGUMENT_FOLDERPATH);
+            s = (Site) bundle.getSerializable(ARGUMENT_SITE);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
         f = (f != null) ? f : (Folder) alfSession.getRootFolder();
         parentFolder = f;

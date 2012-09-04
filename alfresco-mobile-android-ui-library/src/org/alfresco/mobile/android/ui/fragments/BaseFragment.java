@@ -21,12 +21,17 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.app.DialogFragment;
 
+/**
+ * Base Fragment for All fragments available inside the UI Library.
+ * 
+ * @author Jean Marie Pascal
+ */
 public abstract class BaseFragment extends DialogFragment
 {
-	/** RepositorySession */
-	protected AlfrescoSession alfSession;
-	
-	public void setSession(AlfrescoSession session)
+    /** RepositorySession */
+    protected AlfrescoSession alfSession;
+
+    public void setSession(AlfrescoSession session)
     {
         this.alfSession = session;
     }

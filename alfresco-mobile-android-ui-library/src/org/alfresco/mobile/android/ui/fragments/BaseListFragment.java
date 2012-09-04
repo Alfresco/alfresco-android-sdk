@@ -96,7 +96,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     protected int loadState = LOAD_AUTO;
 
-    protected Bundle b;
+    protected Bundle bundle;
 
     protected int loaderId;
 
@@ -141,7 +141,10 @@ public abstract class BaseListFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         checkSession(checkSession);
-        if (initLoader) continueLoading(loaderId, callback);
+        if (initLoader)
+        {
+            continueLoading(loaderId, callback);
+        }
     }
 
     protected void checkSession(boolean activate)
@@ -189,7 +192,9 @@ public abstract class BaseListFragment extends BaseFragment
                 lv.removeFooterView(footer);
             }
             else
+            {
                 footers.add(footer);
+            }
         }
         if (!isFullLoad)
         {
@@ -226,7 +231,6 @@ public abstract class BaseListFragment extends BaseFragment
                     fView.findViewById(R.id.loading_progress).setVisibility(View.VISIBLE);
                     fView.findViewById(R.id.loading_label).setVisibility(View.VISIBLE);
                     fView.findViewById(R.id.loading_button).setVisibility(View.GONE);
-                    ;
                     loadMore();
                 }
             });
@@ -293,7 +297,6 @@ public abstract class BaseListFragment extends BaseFragment
 
         lv.setOnItemLongClickListener(new OnItemLongClickListener()
         {
-
             @Override
             public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id)
             {
@@ -303,11 +306,9 @@ public abstract class BaseListFragment extends BaseFragment
 
         lv.setOnScrollListener(new OnScrollListener()
         {
-
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState)
             {
-                // if (scrollState == 0) savePosition();
             }
 
             @Override
@@ -320,7 +321,6 @@ public abstract class BaseListFragment extends BaseFragment
                     loadMore();
                     isLockVisibleLoader = Boolean.TRUE;
                 }
-
             }
         });
     }
@@ -352,8 +352,10 @@ public abstract class BaseListFragment extends BaseFragment
             skipCount = lc.getSkipCount();
             maxItems = lc.getMaxItems();
             if (hasmore)
+            {
                 skipCount = (adapter != null) ? (((ArrayAdapter<Object>) adapter)).getCount() : lc.getSkipCount()
                         + lc.getMaxItems();
+            }
             lc.setSkipCount(skipCount);
         }
     }
@@ -430,14 +432,20 @@ public abstract class BaseListFragment extends BaseFragment
                     hasmore = data.hasMoreItems();
                     Log.d("BrowserFragment", hasmore + " - Total Items : " + data.getTotalItems() + " Results : "
                             + data.getList().size() + " Adapter " + ((ArrayAdapter<Object>) adapter).getCount());
-                    if (doesLoadMore()) loadMore();
+                    if (doesLoadMore())
+                    {
+                        loadMore();
+                    }
                     displayLoadingFooter();
                     lv.setAdapter(adapter);
                 }
             }
             setListShown(true);
         }
-        if (selectedPosition != 0) lv.setSelection(selectedPosition);
+        if (selectedPosition != 0)
+        {
+            lv.setSelection(selectedPosition);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -448,14 +456,7 @@ public abstract class BaseListFragment extends BaseFragment
         {
             return false;
         }
-        else if (data.getList() != null && !data.getList().contains(arrayAdapter.getItem(arrayAdapter.getCount() - 1)))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        else return !(data.getList() != null && !data.getList().contains(arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
     }
 
     public void refreshListView()
@@ -510,7 +511,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     protected void loadMore()
     {
-        getLoaderManager().restartLoader(loaderId, b, callback);
+        getLoaderManager().restartLoader(loaderId, bundle, callback);
         getLoaderManager().getLoader(loaderId).forceLoad();
     }
 

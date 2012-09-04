@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.ui.version;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
@@ -45,7 +44,7 @@ public class VersionsAdapter extends BaseListAdapter<Document, GenericVersionVie
 
     private Resources res;
 
-    public VersionsAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Document> listItems)
+    public VersionsAdapter(Activity context, int textViewResourceId, List<Document> listItems)
     {
         super(context, textViewResourceId, listItems);
         res = getContext().getResources();

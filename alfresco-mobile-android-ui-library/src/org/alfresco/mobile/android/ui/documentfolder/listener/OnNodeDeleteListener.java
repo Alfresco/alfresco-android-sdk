@@ -19,9 +19,9 @@ package org.alfresco.mobile.android.ui.documentfolder.listener;
 
 import org.alfresco.mobile.android.api.model.Node;
 
-
 public interface OnNodeDeleteListener
 {
-    public void beforeDelete(Node node);
-    public void afterDelete(Node node);
+    void beforeDelete(Node node);
+
+    void afterDelete(Node node);
 }

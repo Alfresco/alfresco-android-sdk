@@ -77,19 +77,19 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         }
 
         // Case Init & case Reload
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
         File f = null;
         String path = null;
 
-        if (b != null)
+        if (bundle != null)
         {
-            f = (File) b.getSerializable(ARGUMENT_FOLDER);
-            path = b.getString(ARGUMENT_FOLDERPATH);
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            f = (File) bundle.getSerializable(ARGUMENT_FOLDER);
+            path = bundle.getString(ARGUMENT_FOLDERPATH);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
         calculateSkipCount(lc);
 
