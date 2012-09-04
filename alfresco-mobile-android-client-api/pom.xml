@@ -43,14 +43,14 @@
 		</plugins>
 	</build>
 
-	  <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.annotations</groupId>
-				<artifactId>annotations</artifactId>
+			<groupId>com.google.android</groupId>
+			<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.chemistry.opencmis</groupId>

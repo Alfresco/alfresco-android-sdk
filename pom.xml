@@ -123,7 +123,7 @@
 		<maven.compile.source>1.6</maven.compile.source>
 		<maven.compile.target>1.6</maven.compile.target>
 		<android.version.number>14</android.version.number>
-		<android.version>4.0.1.2</android.version>
+		<android.version>4.1.1.4</android.version>
 		<chemistry.opencmis.version>0.8.0-SNAPSHOT</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.4-ANDROID</alfresco.opencmis.version>
 		<site.basedir>${project.parent.basedir}</site.basedir>
@@ -440,10 +440,9 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.google.android.annotations</groupId>
+				<groupId>com.google.android</groupId>
 				<artifactId>annotations</artifactId>
-				<version>20.0.1</version>
-				<scope>provided</scope>
+				<version>${android.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

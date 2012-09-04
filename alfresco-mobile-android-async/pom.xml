@@ -31,8 +31,8 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.annotations</groupId>
-				<artifactId>annotations</artifactId>
+			<groupId>com.google.android</groupId>
+			<artifactId>annotations</artifactId>
 		</dependency>
 	</dependencies>
 </project>
