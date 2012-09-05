@@ -27,7 +27,7 @@ public class Messagesl18n
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, new Locale("en","US"));
 
-    private Messagesl18n()
+    public Messagesl18n()
     {
     }
 
