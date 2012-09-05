@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -36,11 +37,10 @@ import org.alfresco.mobile.android.api.services.SearchService;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.spi.DiscoveryService;
@@ -103,6 +103,8 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      */
     public List<Node> keywordSearch(String keywords, KeywordSearchOptions options)
     {
+        if (keywords == null || keywords.length() == 0) { throw new AlfrescoServiceException(
+                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.4")); }
         KeywordSearchOptions tmpOptions = options;
         if (tmpOptions == null)
         {
@@ -143,11 +145,11 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     {
         try
         {
-            if (!SearchLanguage.CMIS.equals(language)) { throw new IllegalArgumentException(
-                    Messagesl18n.getString("SearchService.2")); }
-
-            if (statement == null) { throw new IllegalArgumentException(Messagesl18n.getString("SearchService.0")); }
-
+            if (statement == null || statement.length() == 0) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.3")); }
+            if (language == null) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.2")); }
+            
             DiscoveryService discoveryService = cmisSession.getBinding().getDiscoveryService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();

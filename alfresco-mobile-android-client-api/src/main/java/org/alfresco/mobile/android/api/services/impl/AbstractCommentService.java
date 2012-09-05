@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -30,7 +32,7 @@ import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -91,7 +93,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     {
         try
         {
-            if (node == null) { throw new IllegalArgumentException(Messagesl18n.getString("CommentService.0")); }
+            if (node == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.0")); }
             return computeComment(getCommentsUrl(node, listingContext));
         }
         catch (Exception e)
@@ -116,7 +118,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     {
         try
         {
-            if (node == null || content == null) { throw new IllegalArgumentException(
+            if (node == null || content == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
                     Messagesl18n.getString("CommentService.1")); }
 
             // build URL
@@ -159,7 +161,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     {
         try
         {
-            if (comment == null) { throw new IllegalArgumentException(Messagesl18n.getString("CommentService.2")); }
+            if (comment == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("CommentService.2")); }
             delete(getCommentUrl(node, comment));
         }
         catch (Exception e)
@@ -178,7 +180,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     {
         try
         {
-            if (comment == null || content == null) { throw new IllegalArgumentException(
+            if (comment == null || content == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
                     Messagesl18n.getString("CommentService.3")); }
 
             // build URL

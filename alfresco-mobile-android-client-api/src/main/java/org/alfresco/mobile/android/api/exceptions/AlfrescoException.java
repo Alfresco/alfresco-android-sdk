@@ -22,7 +22,7 @@ package org.alfresco.mobile.android.api.exceptions;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoException extends RuntimeException
+public abstract class AlfrescoException extends RuntimeException implements ErrorCodeRegistry
 {
 
     private static final long serialVersionUID = 1L;
@@ -30,28 +30,24 @@ public abstract class AlfrescoException extends RuntimeException
     /** Content the of the error page returned by server. */
     private String errorContent;
 
+    /** Error Code. */
+    private int errorCode;
+
     /**
      * Default constructor.
      */
-    protected AlfrescoException(String detailsMessage)
+    /*protected AlfrescoException(String detailsMessage)
     {
         super(detailsMessage);
-    }
+    }*/
 
     /**
      * Default constructor.
      */
-    protected AlfrescoException(String detailsMessage, Throwable throwable)
-    {
-        super(detailsMessage, throwable);
-    }
-
-    /**
-     * Default constructor.
-     */
-    protected AlfrescoException(Throwable throwable)
+    protected AlfrescoException(int errorCode, Throwable throwable)
     {
         super(throwable);
+        this.errorCode = errorCode;
     }
 
     /**
@@ -60,10 +56,16 @@ public abstract class AlfrescoException extends RuntimeException
      * @param message error message
      * @param errorContent error page content
      */
-    protected AlfrescoException(String message, String errorContent)
+   /* protected AlfrescoException(String message, String errorContent)
     {
         super(message);
         this.errorContent = errorContent;
+    }*/
+
+    public AlfrescoException(int errorCode, String message)
+    {
+        super(message);
+        this.errorCode = errorCode;
     }
 
     /**
@@ -75,6 +77,22 @@ public abstract class AlfrescoException extends RuntimeException
     public String getErrorContent()
     {
         return errorContent;
+    }
+
+    /**
+     * Error code send by the API.
+     * 
+     * @return the error code.
+     */
+    public int getErrorCode()
+    {
+        return errorCode;
+    }
+    
+    @Override
+    public String getLabelErrorCode(int errorCode)
+    {
+        return null;
     }
 
 }

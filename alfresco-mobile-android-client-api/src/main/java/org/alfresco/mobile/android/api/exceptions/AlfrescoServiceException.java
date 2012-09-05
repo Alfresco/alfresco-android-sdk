@@ -31,18 +31,24 @@ public class AlfrescoServiceException extends AlfrescoException
     /**
      * Default constructor.
      */
-    public AlfrescoServiceException(String detailsMessage)
+   /* public AlfrescoServiceException(String detailsMessage)
     {
         super(detailsMessage);
-    }
-
-    public AlfrescoServiceException(String message, Throwable e)
-    {
-        super(message, e);
     }
 
     public AlfrescoServiceException(String message, String errorContent)
     {
         super(message, errorContent);
+    }*/
+    
+    public AlfrescoServiceException(int errorCode, Throwable e)
+    {
+        super(errorCode, e);
     }
+    
+    public AlfrescoServiceException(int errorCode, String message)
+    {
+        super(errorCode, message);
+    }
+
 }

@@ -19,12 +19,14 @@ package org.alfresco.mobile.android.api.services.impl;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
@@ -51,11 +53,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
     /**
      * Allow currently logged in user to get their activity stream.
      * 
-     * @return the activity stream/feed as a list of ActivityEntry
-     * @ : if network or internal problems occur
-     *             during the process.
+     * @return the activity stream/feed as a list of ActivityEntry @ : if
+     *         network or internal problems occur during the process.
      */
-    public List<ActivityEntry> getActivityStream() 
+    public List<ActivityEntry> getActivityStream()
     {
         return getActivityStream((ListingContext) null).getList();
     }
@@ -66,11 +67,10 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * Allow currently logged in user to get their activity stream.
      * 
      * @param listingContext : define characteristics of the result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @ : if network or internal problems occur
-     *             during the process.
+     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
+     *         if network or internal problems occur during the process.
      */
-    public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext) 
+    public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext)
     {
         return computeActivities(getUserActivitiesUrl(listingContext), listingContext);
     }
@@ -78,11 +78,11 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
     /**
      * Allow to retrieve activities feed for a specific user.
      * 
-     * @return the activity stream/feed as a list of ActivityEntry
-     * @ : If personIdentifier is undefined or if
-     *             network or internal problems occur during the process.
+     * @return the activity stream/feed as a list of ActivityEntry @ : If
+     *         personIdentifier is undefined or if network or internal problems
+     *         occur during the process.
      */
-    public List<ActivityEntry> getActivityStream(String personIdentifier) 
+    public List<ActivityEntry> getActivityStream(String personIdentifier)
     {
         return getActivityStream(personIdentifier, (ListingContext) null).getList();
     }
@@ -94,16 +94,16 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * 
      * @param personIdentifier : a specific user
      * @param listingContext : define characteristics of result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @ : If personIdentifier is undefined or if
-     *             network or internal problems occur during the process.
+     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
+     *         If personIdentifier is undefined or if network or internal
+     *         problems occur during the process.
      */
     public PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext)
-            
+
     {
         try
         {
-            if (personIdentifier == null) { throw new IllegalArgumentException(
+            if (personIdentifier == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
                     Messagesl18n.getString("ActivityStreamService.0")); }
             return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
         }
@@ -119,11 +119,11 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * private site then user must be a member or an admin user).
      * 
      * @param siteName : Share site short name
-     * @return the activity stream/feed as a list of ActivityEntry
-     * @ : If siteName is undefined or if network
-     *             or internal problems occur during the process.
+     * @return the activity stream/feed as a list of ActivityEntry @ : If
+     *         siteName is undefined or if network or internal problems occur
+     *         during the process.
      */
-    public List<ActivityEntry> getSiteActivityStream(String siteName) 
+    public List<ActivityEntry> getSiteActivityStream(String siteName)
     {
         return getSiteActivityStream(siteName, null).getList();
     }
@@ -136,16 +136,16 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
      * 
      * @param siteName : Share site short name
      * @param listingContext : define characteristics of the result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry
-     * @ : If siteName is undefined or if network
-     *             or internal problems occur during the process.
+     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
+     *         If siteName is undefined or if network or internal problems occur
+     *         during the process.
      */
     public PagingResult<ActivityEntry> getSiteActivityStream(String siteIdentifier, ListingContext listingContext)
-            
+
     {
         try
         {
-            if (siteIdentifier == null) { throw new IllegalArgumentException(
+            if (siteIdentifier == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
                     Messagesl18n.getString("ActivityStreamService.1")); }
             return computeActivities(getSiteActivitiesUrl(siteIdentifier, listingContext), listingContext);
         }

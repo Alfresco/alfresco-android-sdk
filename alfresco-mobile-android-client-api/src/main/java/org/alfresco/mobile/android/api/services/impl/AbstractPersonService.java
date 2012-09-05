@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
@@ -51,6 +54,8 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      */
     public Person getPerson(String personIdentifier)
     {
+        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
+                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
         try
         {
             return computePerson(getPersonDetailssUrl(personIdentifier));
@@ -71,12 +76,15 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      */
     public ContentStream getAvatarStream(String username)
     {
+        // Implemented by child
         return null;
     }
 
-    public ContentFile getAvatar(String username)
+    public ContentFile getAvatar(String personIdentifier)
     {
-        return saveContentStream(getAvatarStream(username), username, RENDITION_CACHE);
+        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
+                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
+        return saveContentStream(getAvatarStream(personIdentifier), personIdentifier, RENDITION_CACHE);
     }
 
     /**
@@ -88,6 +96,8 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      */
     public ContentFile getAvatar(Person person)
     {
+        if (person == null || person.getIdentifier() == null || person.getIdentifier().length() == 0) { throw new AlfrescoServiceException(
+                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
         return saveContentStream(getAvatarStream(person.getIdentifier()), person.getIdentifier(), RENDITION_CACHE);
     }
 

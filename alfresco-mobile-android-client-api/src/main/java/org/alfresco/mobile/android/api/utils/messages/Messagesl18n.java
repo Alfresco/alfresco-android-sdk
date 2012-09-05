@@ -15,14 +15,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.utils;
+package org.alfresco.mobile.android.api.utils.messages;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messagesl18n
 {
-    private static final String BUNDLE_NAME = "org.alfresco.mobile.android.api.utils.messages";
+    private static final String BUNDLE_NAME = "org.alfresco.mobile.android.api.utils.messages.messages";
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

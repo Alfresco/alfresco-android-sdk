@@ -78,84 +78,49 @@ public class RepositorySessionImpl extends RepositorySession
      */
     private void authenticate()
     {
-        try
+        // default factory implementation
+        SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
+        Map<String, String> param = retrieveSessionParameters();
+
+        cmisSession = createSession(sessionFactory, param);
+
+        // Check RepositoryInfo for Alfresco Version
+        // If Alfresco is not a V4, bind with CMIS webscript implementation
+        boolean isAlfresco = cmisSession.getRepositoryInfo().getProductName()
+                .startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
+        String version = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo().getProductVersion(),
+                0);
+        if (isAlfresco && version != null && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
-            // default factory implementation
-            SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
-            Map<String, String> param = retrieveSessionParameters();
-            cmisSession = createSession(sessionFactory, param);
-
-            // Check RepositoryInfo for Alfresco Version
-            // If Alfresco is not a V4, bind with CMIS webscript implementation
-            boolean isAlfresco = cmisSession.getRepositoryInfo().getProductName()
-                    .startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
-            String version = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo()
-                    .getProductVersion(), 0);
-            if (isAlfresco && version != null && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
+            param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
+            Session cmisSession2 = null;
+            try
             {
-                param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
-                Session cmisSession2 = null;
-                try
-                {
-                    cmisSession2 = createSession(sessionFactory, param);
-                }
-                catch (Exception e)
-                {
-                    cmisSession2 = null;
-                }
-                cmisSession = (cmisSession2 != null) ? cmisSession2 : cmisSession;
+                cmisSession2 = createSession(sessionFactory, param);
             }
-
-            // Init Services + Object
-            rootNode = new FolderImpl(cmisSession.getRootFolder());
-            repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
-
-            // Extension Point to implement and manage services
-            if (hasParameter(ONPREMISE_SERVICES_CLASSNAME))
+            catch (Exception e)
             {
-                services = createServiceRegistry((String) getParameter(ONPREMISE_SERVICES_CLASSNAME));
+                cmisSession2 = null;
             }
-            else
-            {
-                services = new OnPremiseServiceRegistry(this);
-            }
-
-            passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
-            authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator).getAlfrescoAuthenticationProvider();
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoConnectionException(e.getMessage(), e);
-        }
-    }
-
-    private Session createSession(SessionFactory sessionFactory, Map<String, String> param)
-    {
-        try
-        {
-            if (param.get(SessionParameter.REPOSITORY_ID) != null)
-            {
-                return sessionFactory.createSession(param);
-            }
-            else
-            {
-                return sessionFactory.getRepositories(param).get(0).createSession();
-            }
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoConnectionException(e.getMessage(), e);
+            cmisSession = (cmisSession2 != null) ? cmisSession2 : cmisSession;
         }
 
-    }
+        // Init Services + Object
+        rootNode = new FolderImpl(cmisSession.getRootFolder());
+        repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
-    @Override
-    public void disconnect()
-    {
-        this.authenticator = null;
-        this.cmisSession = null;
-        this.repositoryInfo = null;
-        this.rootNode = null;
-        this.services = null;
+        // Extension Point to implement and manage services
+        if (hasParameter(ONPREMISE_SERVICES_CLASSNAME))
+        {
+            services = createServiceRegistry((String) getParameter(ONPREMISE_SERVICES_CLASSNAME));
+        }
+        else
+        {
+            services = new OnPremiseServiceRegistry(this);
+        }
+
+        passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
+        authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
+                .getAlfrescoAuthenticationProvider();
     }
 }

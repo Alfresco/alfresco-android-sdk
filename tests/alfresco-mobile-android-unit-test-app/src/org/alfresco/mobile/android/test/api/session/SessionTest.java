@@ -24,6 +24,7 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
@@ -111,15 +112,26 @@ public class SessionTest extends AlfrescoSDKTestCase
             // Start the authentication and catch an error.
             // Can't bind with fake baseurl http://
             RepositorySession.connect("http://", null, null);
-
             Assert.fail();
         }
         catch (AlfrescoConnectionException e)
         {
-            // Catch an AlfrescoConnectionException
-            Assert.assertTrue(true);
-            e.printStackTrace();
+            Assert.assertEquals(ErrorCodeRegistry.SESSION_GENERIC, e.getErrorCode());
         }
+        
+        try
+        {
+            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
+            settings.put(BINDING_URL, ALFRESCO_CMIS_ATOMPUB_URL);
+            alfsession = RepositorySession.connect(ALFRESCO_CMIS_ATOMPUB_URL, FAKE_USERNAME, ALFRESCO_CMIS_PASSWORD,
+                    settings);
+            Assert.fail();
+        }
+        catch (AlfrescoConnectionException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e.getErrorCode());
+        }
+        
     }
 
     /**

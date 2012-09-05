@@ -21,19 +21,22 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
@@ -70,7 +73,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Tag> getAllTags() 
+    public List<Tag> getAllTags()
     {
         return getAllTags(null).getList();
     }
@@ -80,7 +83,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Tag> getAllTags(ListingContext listingContext) 
+    public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
         {
@@ -114,7 +117,8 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     {
         try
         {
-            if (node == null) { throw new IllegalArgumentException(Messagesl18n.getString("TaggingService.0")); }
+            if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                    Messagesl18n.getString("TaggingService.0")); }
 
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
@@ -139,8 +143,10 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     {
         try
         {
-            if (node == null || tags == null) { throw new IllegalArgumentException(
-                    Messagesl18n.getString("TaggingService.1")); }
+            if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                    Messagesl18n.getString("TaggingService.0")); }
+            if (tags == null || tags.isEmpty()) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("TaggingService.1")); }
 
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Node;
@@ -32,8 +33,7 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
-import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
@@ -184,7 +184,7 @@ public abstract class AlfrescoService
      */
     protected Node convertNode(CmisObject object)
     {
-        if (object == null) { throw new IllegalArgumentException(Messagesl18n.getString("AlfrescoService.1")); }
+        if (object == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("AlfrescoService.1")); }
 
         /* determine type */
         switch (object.getBaseTypeId())
@@ -194,7 +194,7 @@ public abstract class AlfrescoService
             case CMIS_FOLDER:
                 return new FolderImpl(object);
             default:
-                throw new AlfrescoServiceException(Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
         }
     }
 
@@ -220,11 +220,14 @@ public abstract class AlfrescoService
         }
         catch (CmisBaseException cmisException)
         {
-            throw new AlfrescoServiceException(cmisException.getMessage(), cmisException.getErrorContent());
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, cmisException.getErrorContent());
+        }
+        catch (IllegalArgumentException e) {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException(e.getMessage(), e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
         }
     }
 
@@ -237,8 +240,7 @@ public abstract class AlfrescoService
      */
     public static void convertStatusCode(HttpUtils.Response resp)
     {
-        Map<String, Object> json = JsonUtils.parseObject(resp.getErrorContent());
-        throw new AlfrescoServiceException((String) json.get("message"), resp.getErrorContent());
+        throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_HTTP_RESP, resp.getErrorContent());
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.json.parser.ContainerFactory;
 import org.apache.chemistry.opencmis.commons.impl.json.parser.JSONParser;
 
@@ -66,7 +68,7 @@ public final class JsonUtils
 
         if (obj instanceof Map) { return (Map<String, Object>) obj; }
 
-        throw new AlfrescoServiceException("Unexpected object!");
+        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, Messagesl18n.getString("JsonUtils.0"));
     }
 
     /**
@@ -79,7 +81,7 @@ public final class JsonUtils
 
         if (obj instanceof List) { return (List<Object>) obj; }
 
-        throw new AlfrescoServiceException("Unexpected object!");
+        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, Messagesl18n.getString("JsonUtils.0"));
     }
 
     @SuppressWarnings("unchecked")
@@ -94,7 +96,7 @@ public final class JsonUtils
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException("Parsing exception!", e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, e);
         }
         return null;
     }
@@ -116,7 +118,7 @@ public final class JsonUtils
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException("Parsing exception!", e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, e);
         }
         finally
         {
@@ -141,7 +143,7 @@ public final class JsonUtils
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException("Parsing exception!", e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, e);
         }
         finally
         {

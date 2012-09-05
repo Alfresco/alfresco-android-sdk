@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
@@ -118,7 +119,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                     }
                     catch (IOException ex)
                     {
-                        throw new AlfrescoServiceException("Error with config files");
+                        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
                     }
                 }  
             }

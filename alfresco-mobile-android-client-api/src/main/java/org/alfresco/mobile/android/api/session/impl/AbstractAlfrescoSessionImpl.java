@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
@@ -36,8 +37,10 @@ import org.alfresco.mobile.android.api.session.authentication.AuthenticationProv
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 
 /**
  * AlfrescoSession is the base class for all connection to a repository.
@@ -291,6 +294,41 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
         return lc;
     }
+    
+    
+    protected Session createSession(SessionFactory sessionFactory, Map<String, String> param)
+    {
+        try
+        {
+            if (param.get(SessionParameter.REPOSITORY_ID) != null)
+            {
+                return sessionFactory.createSession(param);
+            }
+            else
+            {
+                return sessionFactory.getRepositories(param).get(0).createSession();
+            }
+        }
+        catch (CmisPermissionDeniedException e)
+        {
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+        }
+
+    }
+
+    @Override
+    public void disconnect()
+    {
+        this.authenticator = null;
+        this.cmisSession = null;
+        this.repositoryInfo = null;
+        this.rootNode = null;
+        this.services = null;
+    }
 
     // ///////////////////////////////////////////////
     // BINDINGS
@@ -424,7 +462,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException(e.getMessage(), e);
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_CUSTOM_SERVICEREGISTRY, e);
         }
         return s;
     }
