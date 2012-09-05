@@ -192,7 +192,7 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
             Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (Throwable e)
         {
             Assert.assertTrue(true);
             e.printStackTrace();
@@ -205,7 +205,7 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
             Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (Throwable e)
         {
             Assert.assertTrue(true);
             e.printStackTrace();

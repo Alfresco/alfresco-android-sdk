@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils.messages;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -24,7 +25,7 @@ public class Messagesl18n
 {
     private static final String BUNDLE_NAME = "org.alfresco.mobile.android.api.utils.messages.messages";
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, new Locale("en","US"));
 
     private Messagesl18n()
     {
@@ -34,7 +35,11 @@ public class Messagesl18n
     {
         try
         {
-            return RESOURCE_BUNDLE.getString(key);
+            if (key != null && key.length() > 0){
+                return RESOURCE_BUNDLE.getString(key);
+            } else {
+                return "";
+            }
         }
         catch (MissingResourceException e)
         {
