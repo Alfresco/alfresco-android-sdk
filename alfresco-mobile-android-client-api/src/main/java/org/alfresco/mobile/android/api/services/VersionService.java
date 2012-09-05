@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -30,6 +31,33 @@ import org.alfresco.mobile.android.api.model.PagingResult;
  */
 public interface VersionService
 {
+    
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_NAME = ContentModel.PROP_NAME;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
+
+    /**
+     * Allowable sorting property : Description
+     */
+    String SORT_PROPERTY_DESCRIPTION = ContentModel.PROP_DESCRIPTION;
+
+    /**
+     * Allowable sorting property : Creation Date
+     */
+    String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
+
+    /**
+     * Allowable sorting property : Modification Date
+     */
+    String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
+    
+    
     /**
      * Get the version history that relates to the referenced document.
      * 

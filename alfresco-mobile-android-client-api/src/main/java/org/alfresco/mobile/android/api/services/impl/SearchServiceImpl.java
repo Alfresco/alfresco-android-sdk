@@ -20,7 +20,9 @@ package org.alfresco.mobile.android.api.services.impl;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -38,6 +40,7 @@ import org.alfresco.mobile.android.api.utils.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.spi.DiscoveryService;
@@ -151,16 +154,19 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
             BigInteger maxItems = BigInteger.valueOf(ListingContext.DEFAULT_MAX_ITEMS);
             BigInteger skipCount = BigInteger.valueOf(0);
+
+            String tmpStatement = statement;
             if (listingContext != null)
             {
                 skipCount = BigInteger.valueOf((long) listingContext.getSkipCount());
                 maxItems = BigInteger.valueOf((long) listingContext.getMaxItems());
+                tmpStatement += getSorting(listingContext.getSortProperty(), listingContext.isSortAscending());
             }
 
-            Log.d(TAG, maxItems + " " + skipCount + " " + statement);
+            Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
 
             // fetch the data
-            ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), statement,
+            ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), tmpStatement,
                     false, ctxt.isIncludeAllowableActions(), ctxt.getIncludeRelationships(),
                     ctxt.getRenditionFilterString(), maxItems, skipCount, null);
 
@@ -204,6 +210,10 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String QUERY_DESCENDANTS = " IN_TREE(d,'" + PARAM_NODEREF + "')";
 
     private static final String PARAM_NAME = " d.cmis:name ";
+    
+    private static final String PARAM_CREATED_AT = " d.cmis:creationDate ";
+
+    private static final String PARAM_MODIFIED_AT = " d.cmis:lastModificationDate ";
 
     private static final String PARAM_TITLE = " t.cm:title ";
 
@@ -237,8 +247,9 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         List<String> keywords = Arrays.asList(TextUtils.split(query.trim(), "\\s+"));
         StringBuilder sb = new StringBuilder(QUERY_DOCUMENT);
         String[] fullText = new String[0];
-        if (fulltext){
-            fullText = new String[keywords.size()];  
+        if (fulltext)
+        {
+            fullText = new String[keywords.size()];
         }
         String[] words = new String[keywords.size()];
 
@@ -333,6 +344,42 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             }
             sb.append(token);
         }
+    }
+
+    @SuppressWarnings("serial")
+    private static Map<String, String> sortingMap = new HashMap<String, String>()
+    {
+        {
+            put(SORT_PROPERTY_NAME, PARAM_NAME);
+            put(SORT_PROPERTY_TITLE, PARAM_TITLE);
+            put(SORT_PROPERTY_DESCRIPTION, PARAM_DESCRIPTION);
+            put(SORT_PROPERTY_CREATED_AT, PARAM_CREATED_AT);
+            put(SORT_PROPERTY_MODIFIED_AT, PARAM_MODIFIED_AT);
+        }
+    };
+
+    private String getSorting(String sortingKey, boolean modifier)
+    {
+        String s;
+        if (sortingMap.containsKey(sortingKey))
+        {
+            s = sortingMap.get(sortingKey);
+        }
+        else
+        {
+            return "";
+        }
+
+        if (modifier)
+        {
+            s += " ASC";
+        }
+        else
+        {
+            s += " DESC";
+        }
+
+        return " ORDER BY " + s;
     }
 
 }

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -31,6 +32,7 @@ import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.Messagesl18n;
+import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -139,6 +141,10 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
                     }
                     result.add((Document) doc);
                 }
+            }
+            
+            if (listingContext != null){
+                Collections.sort(result, new NodeComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
             }
 
             return new PagingResultImpl<Document>(result, hasMoreItems, size);

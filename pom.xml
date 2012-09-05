@@ -443,6 +443,7 @@
 				<groupId>com.google.android</groupId>
 				<artifactId>annotations</artifactId>
 				<version>${android.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

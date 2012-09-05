@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Sorting;
+import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.samples.utils.UIUtils;
@@ -57,7 +57,7 @@ public class CommentsFragment extends CommentFragment
         CommentsFragment bf = new CommentsFragment();
         ListingContext lc = new ListingContext();
         lc.setMaxItems(15);
-        lc.setSortProperty(Sorting.CREATED_AT);
+        lc.setSortProperty(CommentService.SORT_PROPERTY_CREATED_AT);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(lc, LOAD_MANUAL);
         b.putAll(createBundleArgs(n));
@@ -114,7 +114,7 @@ public class CommentsFragment extends CommentFragment
             commentText.setEnabled(true);
             commentText.setText("");
             bAdd.setEnabled(true);
-            reload(b, loaderId, callback);
+            reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
         }
     };

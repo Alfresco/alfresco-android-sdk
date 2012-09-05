@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Sorting;
 import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractCommentService;
@@ -69,7 +68,7 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
         UrlBuilder url = new UrlBuilder(link);
         if (listingContext != null)
         {
-            if (Sorting.CREATED_AT.equals(listingContext.getSortProperty()))
+            if (SORT_PROPERTY_CREATED_AT.equals(listingContext.getSortProperty()))
             {
                 url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
             }

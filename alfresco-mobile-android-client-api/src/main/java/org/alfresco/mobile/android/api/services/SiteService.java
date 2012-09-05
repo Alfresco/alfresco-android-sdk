@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -39,6 +41,16 @@ import org.alfresco.mobile.android.api.model.Site;
  */
 public interface SiteService
 {
+    
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
 
     /**
      * @param siteShortName : Unique identifier name of the site.

@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -34,6 +35,33 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
  */
 public interface SearchService
 {
+    
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_NAME = ContentModel.PROP_NAME;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
+
+    /**
+     * Allowable sorting property : Description
+     */
+    String SORT_PROPERTY_DESCRIPTION = ContentModel.PROP_DESCRIPTION;
+
+    /**
+     * Allowable sorting property : Creation Date
+     */
+    String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
+
+    /**
+     * Allowable sorting property : Modification Date
+     */
+    String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
+    
+    
     /**
      * Executes a query statement against the contents of the repository using
      * the given search language.

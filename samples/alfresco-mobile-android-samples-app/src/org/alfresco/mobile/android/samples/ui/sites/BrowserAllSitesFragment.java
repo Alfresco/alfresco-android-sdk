@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.samples.ui.sites;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.model.Sorting;
+import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.activity.MainActivity;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
@@ -45,7 +45,7 @@ public class BrowserAllSitesFragment extends SitesFragment
     {
         BrowserAllSitesFragment bf = new BrowserAllSitesFragment();
         ListingContext lc = new ListingContext();
-        lc.setSortProperty(Sorting.NAME);
+        lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
         lc.setIsSortAscending(true);
         bf.setArguments(createBundleArgs(lc, LOAD_AUTO));
         return bf;

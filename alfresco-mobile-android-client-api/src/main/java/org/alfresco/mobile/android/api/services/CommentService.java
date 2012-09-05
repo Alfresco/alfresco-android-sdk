@@ -19,12 +19,12 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Sorting;
 
 /**
  * CommentService allows managing comments to any node inside an Alfresco
@@ -42,6 +42,11 @@ import org.alfresco.mobile.android.api.model.Sorting;
 public interface CommentService
 {
     /**
+     * Allowable sorting property : Creation Date
+     */
+    String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
+    
+    /**
      * List the available comments for the specified node. </br> Maximum result
      * : 10 by default </br> Order : Older first </br>
      * 
@@ -54,7 +59,7 @@ public interface CommentService
 
     /**
      * List the available comments for the specified node. </br> Order supports
-     * : {@link Sorting#CREATED_AT} </br>
+     * : {@link #SORT_PROPERTY_CREATED_AT} </br>
      * 
      * @param node : Node object (Folder or Document).
      * @param listingContext : define characteristics of the result

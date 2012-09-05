@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -49,6 +50,32 @@ import org.alfresco.mobile.android.api.model.Permissions;
  */
 public interface DocumentFolderService
 {
+
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_NAME = ContentModel.PROP_NAME;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
+
+    /**
+     * Allowable sorting property : Description
+     */
+    String SORT_PROPERTY_DESCRIPTION = ContentModel.PROP_DESCRIPTION;
+
+    /**
+     * Allowable sorting property : Creation Date
+     */
+    String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
+
+    /**
+     * Allowable sorting property : Modification Date
+     */
+    String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
+
     /**
      * Lists all immediate child nodes of the given context folder. </br> By
      * default, this list contains a maximum of 50 elements. </br> Use

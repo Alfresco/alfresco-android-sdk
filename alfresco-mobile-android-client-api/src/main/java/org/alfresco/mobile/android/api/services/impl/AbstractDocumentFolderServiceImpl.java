@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
-import org.alfresco.mobile.android.api.model.Sorting;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.PermissionsImpl;
@@ -1005,9 +1004,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     private static Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
-            put(Sorting.NAME, PropertyIds.NAME);
-            put(Sorting.CREATED_AT, PropertyIds.CREATION_DATE);
-            put(Sorting.MODIFIED_AT, PropertyIds.LAST_MODIFICATION_DATE);
+            put(SORT_PROPERTY_NAME, PropertyIds.NAME);
+            put(SORT_PROPERTY_TITLE, SORT_PROPERTY_TITLE);
+            put(SORT_PROPERTY_DESCRIPTION, SORT_PROPERTY_DESCRIPTION);
+            put(SORT_PROPERTY_CREATED_AT, PropertyIds.CREATION_DATE);
+            put(SORT_PROPERTY_MODIFIED_AT, PropertyIds.LAST_MODIFICATION_DATE);
         }
     };
 
@@ -1022,7 +1023,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             return null;
         }
-        // s = PropertyIds.NAME;
 
         if (modifier)
         {

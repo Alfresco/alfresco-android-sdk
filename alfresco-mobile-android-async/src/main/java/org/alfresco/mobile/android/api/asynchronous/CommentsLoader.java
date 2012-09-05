@@ -21,7 +21,6 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Sorting;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;

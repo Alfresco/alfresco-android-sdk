@@ -209,7 +209,12 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             result.add(SiteImpl.parseJson((Map<String, Object>) json.get(i)));
         }
-        Collections.sort(result, new AlphaComparator(true));
+        
+        if (listingContext != null)
+        {
+            Collections.sort(result,
+                    new AlphaComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
+        }
 
         return new PagingResultImpl<Site>(result, hasMoreItems, size);
 
