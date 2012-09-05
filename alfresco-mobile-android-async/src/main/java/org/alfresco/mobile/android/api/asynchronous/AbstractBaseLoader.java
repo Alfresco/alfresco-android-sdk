@@ -46,9 +46,15 @@ public abstract class AbstractBaseLoader<T> extends AsyncTaskLoader<T>
     @Override
     protected void onStartLoading()
     {
-        if (data != null) deliverResult(data);
+        if (data != null)
+        {
+            deliverResult(data);
+        }
 
-        if (takeContentChanged() || data == null) forceLoad();
+        if (takeContentChanged() || data == null)
+        {
+            forceLoad();
+        }
     }
 
     @Override

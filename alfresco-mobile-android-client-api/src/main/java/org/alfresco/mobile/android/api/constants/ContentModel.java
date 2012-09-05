@@ -18,98 +18,98 @@
 package org.alfresco.mobile.android.api.constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Provides all public identifier that are available inside Alfresco Mobile SDK. <br/>
- * Use those constant if you need to get a specific property or aspect.
+ * Provides all identifiers that are available inside Alfresco Mobile SDK. <br/>
+ * Use those constants if you need to get a specific property or aspect.
  * 
  * @see org.alfresco.mobile.android.api.model.Node#getProperty(String)
  * @see org.alfresco.mobile.android.api.model.Node#hasAspect(String)
- * 
  * @author Jean Marie Pascal
  */
-public class ContentModel
+public interface ContentModel
 {
-    
-    ////////////////////////////////////////////////////////////////
+
+    // //////////////////////////////////////////////////////////////
     // NAMESPACES
-    ///////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
     /** System Model URI */
-    static final String SYSTEM_MODEL_1_0_URI = "http://www.alfresco.org/model/system/1.0";
+    String SYSTEM_MODEL_1_0_URI = "http://www.alfresco.org/model/system/1.0";
 
     /** System Model Prefix */
-    static final String SYSTEM_MODEL_PREFIX = "sys";
-    
+    String SYSTEM_MODEL_PREFIX = "sys";
+
     /** Content Model URI */
-    public static final String CONTENT_MODEL_1_0_URI = "http://www.alfresco.org/model/content/1.0";
+    String CONTENT_MODEL_1_0_URI = "http://www.alfresco.org/model/content/1.0";
 
     /** Content Model Prefix */
-    public static final String CONTENT_MODEL_PREFIX = "cm";
+    String CONTENT_MODEL_PREFIX = "cm";
 
     /** Audio Model URI */
-    public static final String AUDIO_MODEL_1_0_URI = "http://www.alfresco.org/model/audio/1.0";
-    
+    String AUDIO_MODEL_1_0_URI = "http://www.alfresco.org/model/audio/1.0";
+
     /** Audio Model Prefix */
-    public static final String AUDIO_MODEL_PREFIX = "audio";
-    
+    String AUDIO_MODEL_PREFIX = "audio";
+
     /** EXIF Model URI */
-    public static final String EXIF_MODEL_1_0_URI = "http://www.alfresco.org/model/exif/1.0";
+    String EXIF_MODEL_1_0_URI = "http://www.alfresco.org/model/exif/1.0";
 
     /** EXIF Model Prefix */
-    public static final String EXIF_MODEL_PREFIX = "exif";
-    
-    ////////////////////////////////////////////////////////////////
+    String EXIF_MODEL_PREFIX = "exif";
+
+    // //////////////////////////////////////////////////////////////
     // PROPERTIES & ASPECTS
-    ///////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////
     // tag for localized nodes
-    public static final String ASPECT_LOCALIZED = SYSTEM_MODEL_PREFIX.concat(":localized");
+    String ASPECT_LOCALIZED = SYSTEM_MODEL_PREFIX.concat(":localized");
 
-    public static final String PROP_LOCALE = SYSTEM_MODEL_PREFIX.concat(":locale");
+    String PROP_LOCALE = SYSTEM_MODEL_PREFIX.concat(":locale");
 
-    public static final String PROP_NAME = CONTENT_MODEL_PREFIX.concat(":name");
+    String PROP_NAME = CONTENT_MODEL_PREFIX.concat(":name");
 
     // title aspect
-    public static final String ASPECT_TITLED = CONTENT_MODEL_PREFIX.concat(":titled");
+    String ASPECT_TITLED = CONTENT_MODEL_PREFIX.concat(":titled");
 
-    public static final String PROP_TITLE = CONTENT_MODEL_PREFIX.concat(":title");
+    String PROP_TITLE = CONTENT_MODEL_PREFIX.concat(":title");
 
-    public static final String PROP_DESCRIPTION = CONTENT_MODEL_PREFIX.concat(":description");
+    String PROP_DESCRIPTION = CONTENT_MODEL_PREFIX.concat(":description");
 
     // auditable aspect
-    public static final String ASPECT_AUDITABLE = CONTENT_MODEL_PREFIX.concat(":auditable");
+    String ASPECT_AUDITABLE = CONTENT_MODEL_PREFIX.concat(":auditable");
 
-    public static final String PROP_CREATED = CONTENT_MODEL_PREFIX.concat(":created");
+    String PROP_CREATED = CONTENT_MODEL_PREFIX.concat(":created");
 
-    public static final String PROP_CREATOR = CONTENT_MODEL_PREFIX.concat(":creator");
+    String PROP_CREATOR = CONTENT_MODEL_PREFIX.concat(":creator");
 
-    public static final String PROP_MODIFIED = CONTENT_MODEL_PREFIX.concat(":modified");
+    String PROP_MODIFIED = CONTENT_MODEL_PREFIX.concat(":modified");
 
-    public static final String PROP_MODIFIER = CONTENT_MODEL_PREFIX.concat(":modifier");
+    String PROP_MODIFIER = CONTENT_MODEL_PREFIX.concat(":modifier");
 
     // author aspect
-    public static final String ASPECT_AUTHOR = CONTENT_MODEL_PREFIX.concat(":author");
+    String ASPECT_AUTHOR = CONTENT_MODEL_PREFIX.concat(":author");
 
-    public static final String PROP_AUTHOR = CONTENT_MODEL_PREFIX.concat(":author");
+    String PROP_AUTHOR = CONTENT_MODEL_PREFIX.concat(":author");
 
     // tags - a subsection of categories
-    public static final String ASPECT_TAGGABLE = CONTENT_MODEL_PREFIX.concat(":taggable");
+    String ASPECT_TAGGABLE = CONTENT_MODEL_PREFIX.concat(":taggable");
 
-    public static final String PROP_TAGS = CONTENT_MODEL_PREFIX.concat(":taggable");
+    String PROP_TAGS = CONTENT_MODEL_PREFIX.concat(":taggable");
 
     // version aspect
-    public static final String ASPECT_VERSIONABLE = CONTENT_MODEL_PREFIX.concat(":versionable");
+    String ASPECT_VERSIONABLE = CONTENT_MODEL_PREFIX.concat(":versionable");
 
-    public static final String PROP_VERSION_LABEL = CONTENT_MODEL_PREFIX.concat(":versionLabel");
+    String PROP_VERSION_LABEL = CONTENT_MODEL_PREFIX.concat(":versionLabel");
 
     // Geographic Aspect.
-    public static final String ASPECT_GEOGRAPHIC = CONTENT_MODEL_PREFIX.concat(":geographic");
+    String ASPECT_GEOGRAPHIC = CONTENT_MODEL_PREFIX.concat(":geographic");
 
-    public static final String PROP_LATITUDE = CONTENT_MODEL_PREFIX.concat(":latitude");
+    String PROP_LATITUDE = CONTENT_MODEL_PREFIX.concat(":latitude");
 
-    public static final String PROP_LONGITUDE = CONTENT_MODEL_PREFIX.concat(":longitude");
+    String PROP_LONGITUDE = CONTENT_MODEL_PREFIX.concat(":longitude");
 
     @SuppressWarnings("serial")
-    public static final ArrayList<String> ASPECT_GEOGRAPHIC_PROPS = new ArrayList<String>(2)
+    List<String> ASPECT_GEOGRAPHIC_PROPS = new ArrayList<String>(2)
     {
         {
             add(PROP_LATITUDE);
@@ -120,40 +120,40 @@ public class ContentModel
     //
     // EXIF
     //
-    public static final String ASPECT_EXIF = EXIF_MODEL_PREFIX.concat(":exif");
+    String ASPECT_EXIF = EXIF_MODEL_PREFIX.concat(":exif");
 
-    public static final String PROP_DATETIME_ORIGINAL = EXIF_MODEL_PREFIX.concat(":dateTimeOriginal");
+    String PROP_DATETIME_ORIGINAL = EXIF_MODEL_PREFIX.concat(":dateTimeOriginal");
 
-    public static final String PROP_PIXELX_DIMENSION = EXIF_MODEL_PREFIX.concat(":pixelXDimension");
+    String PROP_PIXELX_DIMENSION = EXIF_MODEL_PREFIX.concat(":pixelXDimension");
 
-    public static final String PROP_PIXELY_DIMENSION = EXIF_MODEL_PREFIX.concat(":pixelYDimension");
+    String PROP_PIXELY_DIMENSION = EXIF_MODEL_PREFIX.concat(":pixelYDimension");
 
-    public static final String PROP_EXPOSURE_TIME = EXIF_MODEL_PREFIX.concat(":exposureTime");
+    String PROP_EXPOSURE_TIME = EXIF_MODEL_PREFIX.concat(":exposureTime");
 
-    public static final String PROP_FNUMBER = EXIF_MODEL_PREFIX.concat(":fNumber");
+    String PROP_FNUMBER = EXIF_MODEL_PREFIX.concat(":fNumber");
 
-    public static final String PROP_FLASH_ACTIVATED = EXIF_MODEL_PREFIX.concat(":flash");
+    String PROP_FLASH_ACTIVATED = EXIF_MODEL_PREFIX.concat(":flash");
 
-    public static final String PROP_FOCAL_LENGTH = EXIF_MODEL_PREFIX.concat(":focalLength");
+    String PROP_FOCAL_LENGTH = EXIF_MODEL_PREFIX.concat(":focalLength");
 
-    public static final String PROP_ISO_SPEED = EXIF_MODEL_PREFIX.concat(":isoSpeedRatings");
+    String PROP_ISO_SPEED = EXIF_MODEL_PREFIX.concat(":isoSpeedRatings");
 
-    public static final String PROP_MANUFACTURER = EXIF_MODEL_PREFIX.concat(":manufacturer");
+    String PROP_MANUFACTURER = EXIF_MODEL_PREFIX.concat(":manufacturer");
 
-    public static final String PROP_MODEL = EXIF_MODEL_PREFIX.concat(":model");
+    String PROP_MODEL = EXIF_MODEL_PREFIX.concat(":model");
 
-    public static final String PROP_SOFTWARE = EXIF_MODEL_PREFIX.concat(":software");
+    String PROP_SOFTWARE = EXIF_MODEL_PREFIX.concat(":software");
 
-    public static final String PROP_ORIENTATION = EXIF_MODEL_PREFIX.concat(":orientation");
+    String PROP_ORIENTATION = EXIF_MODEL_PREFIX.concat(":orientation");
 
-    public static final String PROP_XRESOLUTION = EXIF_MODEL_PREFIX.concat(":xResolution");
+    String PROP_XRESOLUTION = EXIF_MODEL_PREFIX.concat(":xResolution");
 
-    public static final String PROP_YRESOLUTION = EXIF_MODEL_PREFIX.concat(":yResolution");
+    String PROP_YRESOLUTION = EXIF_MODEL_PREFIX.concat(":yResolution");
 
-    public static final String PROP_RESOLUTION_UNIT = EXIF_MODEL_PREFIX.concat(":resolutionUnit");
+    String PROP_RESOLUTION_UNIT = EXIF_MODEL_PREFIX.concat(":resolutionUnit");
 
     @SuppressWarnings("serial")
-    public static final ArrayList<String> ASPECT_EXIF_PROPS = new ArrayList<String>(15)
+    List<String> ASPECT_EXIF_PROPS = new ArrayList<String>(15)
     {
         {
             add(PROP_DATETIME_ORIGINAL);
@@ -177,32 +177,32 @@ public class ContentModel
     //
     // AUDIO
     //
-    public static final String ASPECT_AUDIO = AUDIO_MODEL_PREFIX.concat(":audio");
+    String ASPECT_AUDIO = AUDIO_MODEL_PREFIX.concat(":audio");
 
-    public static final String PROP_ALBUM = AUDIO_MODEL_PREFIX.concat(":album");
+    String PROP_ALBUM = AUDIO_MODEL_PREFIX.concat(":album");
 
-    public static final String PROP_ARTIST = AUDIO_MODEL_PREFIX.concat(":artist");
+    String PROP_ARTIST = AUDIO_MODEL_PREFIX.concat(":artist");
 
-    public static final String PROP_COMPOSER = AUDIO_MODEL_PREFIX.concat(":composer");
+    String PROP_COMPOSER = AUDIO_MODEL_PREFIX.concat(":composer");
 
-    public static final String PROP_ENGINEER = AUDIO_MODEL_PREFIX.concat(":engineer");
+    String PROP_ENGINEER = AUDIO_MODEL_PREFIX.concat(":engineer");
 
-    public static final String PROP_GENRE = AUDIO_MODEL_PREFIX.concat(":genre");
+    String PROP_GENRE = AUDIO_MODEL_PREFIX.concat(":genre");
 
-    public static final String PROP_TRACK_NUMBER = AUDIO_MODEL_PREFIX.concat(":trackNumber");
+    String PROP_TRACK_NUMBER = AUDIO_MODEL_PREFIX.concat(":trackNumber");
 
-    public static final String PROP_RELEASE_DATE = AUDIO_MODEL_PREFIX.concat(":releaseDate");
+    String PROP_RELEASE_DATE = AUDIO_MODEL_PREFIX.concat(":releaseDate");
 
-    public static final String PROP_SAMPLE_RATE = AUDIO_MODEL_PREFIX.concat(":sampleRate");
+    String PROP_SAMPLE_RATE = AUDIO_MODEL_PREFIX.concat(":sampleRate");
 
-    public static final String PROP_SAMPLE_TYPE = AUDIO_MODEL_PREFIX.concat(":sampleType");
+    String PROP_SAMPLE_TYPE = AUDIO_MODEL_PREFIX.concat(":sampleType");
 
-    public static final String PROP_CHANNEL_TYPE = AUDIO_MODEL_PREFIX.concat(":channelType");
+    String PROP_CHANNEL_TYPE = AUDIO_MODEL_PREFIX.concat(":channelType");
 
-    public static final String PROP_COMPRESSOR = AUDIO_MODEL_PREFIX.concat(":compressor");
+    String PROP_COMPRESSOR = AUDIO_MODEL_PREFIX.concat(":compressor");
 
     @SuppressWarnings("serial")
-    public static final ArrayList<String> ASPECT_AUDIO_PROPS = new ArrayList<String>(11)
+    List<String> ASPECT_AUDIO_PROPS = new ArrayList<String>(11)
     {
         {
             add(PROP_ALBUM);
@@ -219,5 +219,9 @@ public class ContentModel
         }
     };
 
-    public static final String ASPECT_GENERAL = "general";
+    /**
+     * This aspect is specific for having all default general properties like
+     * name, created at, created by, version number...
+     */
+    String ASPECT_GENERAL = "general";
 }

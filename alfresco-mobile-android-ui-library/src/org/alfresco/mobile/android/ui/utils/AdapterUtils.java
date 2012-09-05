@@ -26,11 +26,15 @@ import android.view.View;
  * 
  * @author Jean Marie Pascal
  */
-public class AdapterUtils
+public final class AdapterUtils
 {
+    private AdapterUtils()
+    {
+    }
 
     /**
      * Create or recycle View inside a listview.
+     * 
      * @param c : Android context.
      * @param v : list view item.
      * @param layoutId : Unique identifier for the ressource layout.

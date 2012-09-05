@@ -32,22 +32,22 @@ public interface Site extends Serializable
     /**
      * Returns the short name of the site.
      */
-    public String getShortName();
+    String getShortName();
 
     /**
      * Returns the unique identifier of the site.
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Returns the description of the site.
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Returns the visibility of the site i.e. “public”, “moderated” or
      * “private”, represented by an enum.
      */
-    public SiteVisibility getVisibility();
+    SiteVisibility getVisibility();
 
 }

@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 
 import android.os.Parcelable;
@@ -38,48 +38,48 @@ public interface Node extends Serializable, Parcelable
     /**
      * Returns unique identifier of the node.
      */
-    public String getIdentifier();
+     String getIdentifier();
 
     /**
      * Returns the name of the node.
      */
-    public String getName();
+     String getName();
 
     /**
      * Returns the title of the Node
      */
-    public String getTitle();
+     String getTitle();
 
     /**
      * Returns the description of the Node
      */
-    public String getDescription();
+     String getDescription();
 
     /**
      * Returns the type of this Node
      */
-    public String getType();
+     String getType();
 
     /**
      * Returns the username of the person who created the node.
      */
-    public String getCreatedBy();
+     String getCreatedBy();
 
     /**
      * Returns the timestamp in the session’s locale when the node was created.
      */
-    public GregorianCalendar getCreatedAt();
+     GregorianCalendar getCreatedAt();
 
     /**
      * Returns the username of the person who modified the node.
      */
-    public String getModifiedBy();
+     String getModifiedBy();
 
     /**
      * @return Returns the timestamp in the session’s locale when the node was
      *         modified.
      */
-    public GregorianCalendar getModifiedAt();
+     GregorianCalendar getModifiedAt();
 
     // ////////////////////////////////////////////////////
     // Properties and Aspects
@@ -92,7 +92,7 @@ public interface Node extends Serializable, Parcelable
      * @param name : unique identifier of your property.
      * @return Property object.
      */
-    public Property getProperty(String name);
+     Property getProperty(String name);
 
     /**
      * Returns a Map of all available properties for the specific node object. <br>
@@ -100,7 +100,7 @@ public interface Node extends Serializable, Parcelable
      * 
      * @return map of properties object
      */
-    public Map<String, Property> getProperties();
+     Map<String, Property> getProperties();
 
     /**
      * Returns the value of the property with the given name.
@@ -115,12 +115,12 @@ public interface Node extends Serializable, Parcelable
      * @param aspectName : unique identifier of aspect Name.
      * @return true if the specified aspect is present, false otherwise
      */
-    public boolean hasAspect(String aspectName);
+     boolean hasAspect(String aspectName);
 
     /**
      * Returns all the aspects applied to the node.
      */
-    public ArrayList<String> getAspects();
+     List<String> getAspects();
 
     // ////////////////////////////////////////////////////
     // Types
@@ -130,11 +130,11 @@ public interface Node extends Serializable, Parcelable
      * Return true if this instance represents a folder, false if this
      * represents a document
      */
-    public boolean isFolder();
+     boolean isFolder();
 
     /**
      * Return true if this instance represents a document, false if this
      * represents a folder
      */
-    public boolean isDocument();
+     boolean isDocument();
 }

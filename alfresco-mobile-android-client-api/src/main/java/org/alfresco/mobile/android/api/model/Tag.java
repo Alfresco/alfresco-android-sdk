@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
-
 /**
  * Tag :
  * 
@@ -29,10 +28,10 @@ public interface Tag
     /**
      * Returns unique identifier of the tag.
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      * Returns the value of the tag.
      */
-    public String getValue();
+    String getValue();
 }

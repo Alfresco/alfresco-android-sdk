@@ -28,23 +28,23 @@ public interface Permissions extends Serializable
 {
 
     /**
-     * @return Determines whether the current user can edit the node.
+     * Returns Determines whether the current user can edit the node.
      */
-    public boolean canEdit();
+    boolean canEdit();
 
     /**
-     * @return Determines whether the current user can delete the node.
+     * Returns Determines whether the current user can delete the node.
      */
-    public boolean canDelete();
+    boolean canDelete();
 
     /**
-     * @return Determines whether the current user can add children to the node.
+     * Returns Determines whether the current user can add children to the node.
      */
-    public boolean canAddChildren();
+    boolean canAddChildren();
 
     /**
-     * @return Determines whether the current user can comment on the node.
+     * Returns Determines whether the current user can comment on the node.
      */
-    public boolean canComment();
+    boolean canComment();
 
 }

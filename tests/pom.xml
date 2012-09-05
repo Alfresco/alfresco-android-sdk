@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
-	<artifactId>alfresco-mobile-android-sdk</artifactId>
+		<artifactId>alfresco-mobile-android-sdk</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -17,11 +17,39 @@
 		<module>alfresco-mobile-android-unit-test-app</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>emulator-14</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<emulator>
+								<avd>14</avd>
+								<wait>30000</wait>
+								<options>-no-skin</options>
+							</emulator>
+							<testPackages>
+								<testPackage>org.alfresco.mobile.android.test</testPackage>
+							</testPackages>
+						</configuration>
+						<executions>
+							<execution>
+								<id>startemulator</id>
+								<phase>initialize</phase>
+								<goals>
+									<goal>emulator-start</goal>
+								</goals>
+							</execution>
+						</executions>
+						<extensions>true</extensions>
+					</plugin>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
-		</dependency>
-	</dependencies>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

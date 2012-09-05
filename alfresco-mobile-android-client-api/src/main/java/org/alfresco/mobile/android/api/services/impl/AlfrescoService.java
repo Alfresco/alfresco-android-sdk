@@ -85,9 +85,8 @@ public abstract class AlfrescoService
      * Performs a GET on an URL, checks the response code and returns the
      * result.
      * 
-     * @param url : requested URL.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @param url : requested URL. @ : if network or internal problems occur
+     *            during the process.
      */
     protected HttpUtils.Response read(UrlBuilder url)
     {
@@ -95,17 +94,17 @@ public abstract class AlfrescoService
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() != HttpStatus.SC_OK) convertStatusCode(resp);
+        if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
 
     /**
      * Performs a POST on an URL, checks the response code and returns the
-     * result.
-     * 
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * result. @ : if network or internal problems occur during the process.
      */
     protected HttpUtils.Response post(UrlBuilder url, String contentType, HttpUtils.Output writer)
     {
@@ -113,42 +112,45 @@ public abstract class AlfrescoService
         HttpUtils.Response resp = HttpUtils.invokePOST(url, contentType, writer, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != 201) convertStatusCode(resp);
+        if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
 
     /**
      * Performs a DELETE on an URL, checks the response code and returns the
-     * result.
-     * 
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * result. @ : if network or internal problems occur during the process.
      */
-    protected void delete(UrlBuilder url) throws AlfrescoServiceException
+    protected void delete(UrlBuilder url)
     {
         // make the call
         HttpUtils.Response resp = HttpUtils.invokeDELETE(url, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_NO_CONTENT && resp.getResponseCode() != HttpStatus.SC_OK)
+        {
             convertStatusCode(resp);
+        }
+
     }
 
     /**
      * Performs a PUT on an URL, checks the response code and returns the
-     * result.
-     * 
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * result. @ : if network or internal problems occur during the process.
      */
     protected HttpUtils.Response put(UrlBuilder url, String contentType, Map<String, String> headers,
-            HttpUtils.Output writer) throws AlfrescoServiceException
+            HttpUtils.Output writer)
     {
         HttpUtils.Response resp = HttpUtils.invokePUT(url, contentType, headers, writer, getSessionHttp());
 
         // check response code
-        if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299)) convertStatusCode(resp);
+        if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299))
+        {
+            convertStatusCode(resp);
+        }
 
         return resp;
     }
@@ -203,11 +205,10 @@ public abstract class AlfrescoService
      * Catch all underlying CMIS or not exception and throw them as
      * {@link AlfrescoServiceException}
      * 
-     * @param t : exceptions catched
-     * @throws AlfrescoServiceException : Reasons why the requested response
-     *             code is not valid.
+     * @param t : exceptions catched @ : Reasons why the requested response code
+     *            is not valid.
      */
-    protected static void convertException(Throwable t)
+    protected static void convertException(Exception t)
     {
         try
         {
@@ -221,7 +222,7 @@ public abstract class AlfrescoService
         {
             throw new AlfrescoServiceException(cmisException.getMessage(), cmisException.getErrorContent());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             throw new AlfrescoServiceException(e.getMessage(), e);
         }
@@ -231,11 +232,10 @@ public abstract class AlfrescoService
      * Throws exception if http response doesn't match the expected response
      * code.
      * 
-     * @param resp : http response.
-     * @throws AlfrescoServiceException : Reasons why the requested response
-     *             code is not valid.
+     * @param resp : http response. @ : Reasons why the requested response code
+     *            is not valid.
      */
-    public static void convertStatusCode(HttpUtils.Response resp) throws AlfrescoServiceException
+    public static void convertStatusCode(HttpUtils.Response resp)
     {
         Map<String, Object> json = JsonUtils.parseObject(resp.getErrorContent());
         throw new AlfrescoServiceException((String) json.get("message"), resp.getErrorContent());
@@ -246,12 +246,13 @@ public abstract class AlfrescoService
     // /////////////////////////////////////////////////////////////////////////////////////////
 
     protected static final int RENDITION_CACHE = 1;
+
     protected static final int CONTENT_CACHE = 2;
 
     protected ContentFile saveContentStream(ContentStream contentStream, String cacheFileName, int storageType)
-            throws AlfrescoServiceException
+
     {
-        if (contentStream == null || contentStream.getInputStream() == null) return null;
+        if (contentStream == null || contentStream.getInputStream() == null) { return null; }
 
         try
         {
@@ -267,13 +268,13 @@ public abstract class AlfrescoService
                 default:
                     break;
             }
-            
+
             File f = new File(folderName, cacheFileName);
             IOUtils.ensureOrCreatePathAndFile(f);
             IOUtils.copyFile(contentStream.getInputStream(), f);
             return new ContentFileImpl(f, contentStream.getFileName(), contentStream.getMimeType());
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

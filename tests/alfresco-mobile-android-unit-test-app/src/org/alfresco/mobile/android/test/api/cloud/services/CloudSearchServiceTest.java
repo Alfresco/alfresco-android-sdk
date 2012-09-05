@@ -1,13 +1,8 @@
 package org.alfresco.mobile.android.test.api.cloud.services;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.api.services.SearchServiceTest;
@@ -90,20 +85,5 @@ public class CloudSearchServiceTest extends SearchServiceTest
         List<Node> result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(1, result.size());*/
 
-    }
-    
-    // FIXME Error server side with SOLR
-    public void testSearchService()
-    {
-        try
-        {
-            super.testSearchService();
-            Assert.fail();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Assert.assertTrue(true);
-        }
     }
 }

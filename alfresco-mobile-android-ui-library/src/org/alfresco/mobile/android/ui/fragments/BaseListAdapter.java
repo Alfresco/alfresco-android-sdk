@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,25 +37,32 @@ import android.widget.ArrayAdapter;
 
 public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
 {
-    
+
+    private static final String TAG = "BaseListAdapter";
+
     // ///////////////////////////////////////////////
     // ADAPTER
     // ///////////////////////////////////////////////
     public static final String DISPLAY_ICON = "org.alfresco.mobile.ui.adapter.display.icon";
 
     public static final int DISPLAY_ICON_NONE = 0;
+
     public static final int DISPLAY_ICON_DEFAULT = 1;
+
     public static final int DISPLAY_ICON_CREATOR = 2;
 
     public static final String DISPLAY_DATE = "org.alfresco.mobile.ui.adapter.display.date";
 
     public static final int DISPLAY_DATE_NONE = 0;
+
     public static final int DISPLAY_DATE_RELATIVE = 1;
+
     public static final int DISPLAY_DATE_DATETIME = 2;
+
     public static final int DISPLAY_DATE_DATE = 3;
+
     public static final int DISPLAY_DATE_TIME = 4;
-    
-    
+
     // ///////////////////////////////////////////////
     // MEMBERS
     // ///////////////////////////////////////////////
@@ -124,9 +132,9 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
             Constructor<?> t = c.getDeclaredConstructor(View.class);
             s = (VH) t.newInstance(v);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, e.getStackTrace().toString());
         }
         return s;
     }
@@ -136,14 +144,18 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
         if (fragmentSettings != null)
         {
             if (fragmentSettings.containsKey(DISPLAY_DATE))
+            {
                 dateFormatType = (Integer) fragmentSettings.get(DISPLAY_DATE);
+            }
             if (fragmentSettings.containsKey(DISPLAY_ICON))
+            {
                 iconItemType = (Integer) fragmentSettings.get(DISPLAY_ICON);
+            }
         }
     }
-    
-    
-    public String formatDate(Context c, Date date){
+
+    public String formatDate(Context c, Date date)
+    {
         switch (dateFormatType)
         {
             case DISPLAY_DATE_RELATIVE:

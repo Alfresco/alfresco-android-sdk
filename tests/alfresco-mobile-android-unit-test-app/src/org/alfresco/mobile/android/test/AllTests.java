@@ -26,6 +26,11 @@ public class AllTests extends TestSuite
 
     public static Test suite()
     {
+        return new TestSuiteBuilder(AllTests.class).includeAllPackagesUnderHere().build();
+    }
+    
+    public static Test CloudSuite()
+    {
         return new TestSuiteBuilder(AllTests.class).includeAllPackagesUnderHere().excludePackages("org.alfresco.mobile.android.test.api.cloud.services", "org.alfresco.mobile.android.test.api.cloud.session").build();
     }
 }

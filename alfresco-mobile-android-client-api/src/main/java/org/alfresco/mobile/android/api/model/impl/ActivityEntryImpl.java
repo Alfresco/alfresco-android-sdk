@@ -88,7 +88,7 @@ public class ActivityEntryImpl implements ActivityEntry
         String activitySummaryValue = JSONConverter.getString(jo, OnPremiseConstant.SUMMARY_VALUE);
         Map<String, Object> activitySummary = JsonUtils.parseObject(activitySummaryValue);
 
-        activityItem.data = new HashMap<String, String>(10);
+        activityItem.data = new HashMap<String, String>();
         activityItem.data.put(OnPremiseConstant.FEEDUSERID_VALUE,
                 JSONConverter.getString(jo, OnPremiseConstant.FEEDUSERID_VALUE));
         activityItem.data.put(OnPremiseConstant.FORMAT_VALUE,
@@ -133,12 +133,10 @@ public class ActivityEntryImpl implements ActivityEntry
 
         activityItem.type = JSONConverter.getString(jo, CloudConstant.ACTIVITYTYPE_VALUE);
 
-        // String activitySummaryValue = JSONConverter.getString(jo,
-        // CloudConstant.ACTIVITYSUMMARY_VALUE);
         Map<String, Object> activitySummary = (Map<String, Object>) ((Map<String, Object>) jo)
                 .get(CloudConstant.ACTIVITYSUMMARY_VALUE);
 
-        activityItem.data = new HashMap<String, String>(10);
+        activityItem.data = new HashMap<String, String>();
         activityItem.data.put(CloudConstant.FEEDUSERID_VALUE,
                 JSONConverter.getString(jo, CloudConstant.FEEDUSERID_VALUE));
         activityItem.data.put(CloudConstant.FORMAT_VALUE, JSONConverter.getString(jo, CloudConstant.FORMAT_VALUE));

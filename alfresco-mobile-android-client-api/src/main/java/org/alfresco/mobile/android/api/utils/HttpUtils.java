@@ -15,8 +15,12 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
-public class HttpUtils
+public final class HttpUtils
 {
+    
+    private HttpUtils(){
+        
+    }
 
     private static final int BUFFER_SIZE = 2 * 1024 * 1024;
 

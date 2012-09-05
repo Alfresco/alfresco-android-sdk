@@ -82,7 +82,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 					formData.write(out);
 				}
 			});
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			convertException(e);
 		}
 	}
@@ -100,7 +100,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 			String link = OnPremiseUrlRegistry.getRatingsUrl(session, node.getIdentifier());
 			UrlBuilder url = new UrlBuilder(link);
 			return computeRating(url);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			convertException(e);
 		}
 		return null;
@@ -118,7 +118,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 			String link = OnPremiseUrlRegistry.getRatingsUrl(session, node.getIdentifier());
 			UrlBuilder url = new UrlBuilder(link);
 			return computeMyRating(url);
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			convertException(e);
 		}
 		return -1f;

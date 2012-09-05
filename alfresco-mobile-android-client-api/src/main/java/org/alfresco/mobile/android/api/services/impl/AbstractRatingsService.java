@@ -59,7 +59,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public void like(Node node) throws AlfrescoServiceException
+    public void like(Node node)
     {
         try
         {
@@ -75,7 +75,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -90,13 +90,13 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public void unlike(Node node) throws AlfrescoServiceException
+    public void unlike(Node node)
     {
         try
         {
             delete(getUnlikeUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -109,13 +109,13 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public int getLikeCount(Node node) throws AlfrescoServiceException
+    public int getLikeCount(Node node)
     {
         try
         {
             return computeRatingsCount(getRatingsUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -129,13 +129,13 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public boolean isLiked(Node node) throws AlfrescoServiceException
+    public boolean isLiked(Node node)
     {
         try
         {
             return computeIsRated(getRatingsUrl(node));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

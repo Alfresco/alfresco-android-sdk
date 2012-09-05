@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Node;
 
 public interface OnNodeUpdateListener
 {
-    public void beforeUpdate(Node node);
-    public void afterUpdate(Node node);
+    void beforeUpdate(Node node);
+
+    void afterUpdate(Node node);
 }

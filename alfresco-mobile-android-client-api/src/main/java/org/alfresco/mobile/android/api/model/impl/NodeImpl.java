@@ -49,19 +49,19 @@ public class NodeImpl implements Node
     private static final long serialVersionUID = 1L;
 
     /** NodeRef of the Node (Unique reference). */
-    protected String identifier;
+    private String identifier;
 
     /** Map of properties available for this Node. */
-    protected Map<String, Property> properties;
+    private Map<String, Property> properties;
 
     /** List of Aspects available for this Node. */
-    protected ArrayList<String> aspects;
+    private ArrayList<String> aspects;
 
     /** List of allowable actions. */
-    protected ArrayList<String> allowableActions;
+    private ArrayList<String> allowableActions;
 
     /** CMIS Object associated to a Node. */
-    protected transient CmisObject object;
+    private transient CmisObject object;
 
     // ////////////////////////////////////////////////////
     // Constructors
@@ -172,8 +172,7 @@ public class NodeImpl implements Node
     {
         // Match specific alfresco metadata name to its translated cmis version
         // if necessary.
-        name = AbstractDocumentFolderServiceImpl.getPropertyName(name);
-        return getProp(name);
+        return getProp(AbstractDocumentFolderServiceImpl.getPropertyName(name));
     }
 
     /**
@@ -245,18 +244,19 @@ public class NodeImpl implements Node
      */
     public boolean hasAspect(String aspectName)
     {
+        String tmpAspectName = aspectName;
         if (!aspectName.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS))
         {
-            aspectName = AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS + aspectName;
+            tmpAspectName = AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS + aspectName;
         }
         if (object != null)
         {
             AlfrescoAspects alf = (AlfrescoAspects) object;
-            return alf.hasAspect(aspectName);
+            return alf.hasAspect(tmpAspectName);
         }
         else if (aspects != null)
         {
-            return aspects.contains(aspectName);
+            return aspects.contains(tmpAspectName);
         }
         else
         {

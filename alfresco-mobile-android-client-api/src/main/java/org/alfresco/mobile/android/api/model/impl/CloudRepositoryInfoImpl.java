@@ -140,7 +140,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
     {
         if (capabilities == null)
         {
-            capabilities = new CloudRepositoryCapabilitiesImpl(this);
+            capabilities = new CloudRepositoryCapabilitiesImpl();
         }
         return capabilities;
     }

@@ -65,19 +65,19 @@ public abstract class SitesFragment extends BaseListFragment implements
     {
         setListShown(false);
 
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
         SitesLoader st = null;
-        if (b != null)
+        if (bundle != null)
         {
-            if (b.containsKey(ARGUMENT_USER_FAV_SITES))
+            if (bundle.containsKey(ARGUMENT_USER_FAV_SITES))
             {
-                favorite = b.getBoolean(ARGUMENT_USER_FAV_SITES);
+                favorite = bundle.getBoolean(ARGUMENT_USER_FAV_SITES);
             }
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
             st = new SitesLoader(getActivity(), alfSession, favorite);
         }
         else

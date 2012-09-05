@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Person;
@@ -47,17 +46,16 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
 
     /**
      * @return Returns Person object with the specified userName. Null if not
-     *         present
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *         present @ : if network or internal problems occur during the
+     *         process.
      */
-    public Person getPerson(String personIdentifier) throws AlfrescoServiceException
+    public Person getPerson(String personIdentifier)
     {
         try
         {
             return computePerson(getPersonDetailssUrl(personIdentifier));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -68,16 +66,15 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      * Retrieves the avatar rendition for the specified username.
      * 
      * @param username : Username of person
-     * @return Returns the contentFile associated to the avatar picture.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return Returns the contentFile associated to the avatar picture. @ : if
+     *         network or internal problems occur during the process.
      */
-    public ContentStream getAvatarStream(String username) throws AlfrescoServiceException
+    public ContentStream getAvatarStream(String username)
     {
         return null;
     }
 
-    public ContentFile getAvatar(String username) throws AlfrescoServiceException
+    public ContentFile getAvatar(String username)
     {
         return saveContentStream(getAvatarStream(username), username, RENDITION_CACHE);
     }
@@ -86,11 +83,10 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      * Retrieves the avatar rendition for the specified username.
      * 
      * @param person : Person object
-     * @return Returns the contentFile associated to the avatar picture.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return Returns the contentFile associated to the avatar picture. @ : if
+     *         network or internal problems occur during the process.
      */
-    public ContentFile getAvatar(Person person) throws AlfrescoServiceException
+    public ContentFile getAvatar(Person person)
     {
         return saveContentStream(getAvatarStream(person.getIdentifier()), person.getIdentifier(), RENDITION_CACHE);
     }
@@ -98,5 +94,5 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
-    protected abstract Person computePerson(UrlBuilder url) throws AlfrescoServiceException;
+    protected abstract Person computePerson(UrlBuilder url);
 }

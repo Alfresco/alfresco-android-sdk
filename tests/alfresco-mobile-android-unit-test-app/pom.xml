@@ -70,7 +70,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.annotations</groupId>
+			<groupId>com.google.android</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>

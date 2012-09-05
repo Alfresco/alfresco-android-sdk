@@ -66,7 +66,8 @@ public class JsonDataWriter
 
     private void writeLine(OutputStream out, String s) throws Exception
     {
-        s = (s == null ? CRLF : s + CRLF);
-        out.write(s.getBytes("UTF-8"));
+        String tmpString = s;
+        tmpString = (s == null ? CRLF : s + CRLF);
+        out.write(tmpString.getBytes("UTF-8"));
     }
 }

@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 /**
  * ContentFile represents an abstract way to share inputstream between the
- * client remote api and server.
+ * client api and server.
  * 
  * @author Jean Marie Pascal
  */
@@ -31,5 +31,5 @@ public interface ContentStream extends Content
     /**
      * @return Returns an InputStream to the content.
      */
-    public InputStream getInputStream();
+    InputStream getInputStream();
 }

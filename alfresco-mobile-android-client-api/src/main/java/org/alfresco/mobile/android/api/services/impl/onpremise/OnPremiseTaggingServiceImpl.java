@@ -21,14 +21,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -72,7 +70,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Tag> getAllTags() throws AlfrescoServiceException
+    public List<Tag> getAllTags() 
     {
         return getAllTags(null).getList();
     }
@@ -82,7 +80,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Tag> getAllTags(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Tag> getAllTags(ListingContext listingContext) 
     {
         try
         {
@@ -90,7 +88,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             UrlBuilder url = new UrlBuilder(link);
             return computeTag(url, listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -122,7 +120,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             UrlBuilder url = new UrlBuilder(link);
             return computeSimpleTag(url, listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -163,7 +161,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -172,8 +170,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
-    private PagingResult<Tag> computeTag(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException, JSONException
+    private PagingResult<Tag> computeTag(UrlBuilder url, ListingContext listingContext) throws JSONException
     {
         HttpUtils.Response resp = read(url);
 

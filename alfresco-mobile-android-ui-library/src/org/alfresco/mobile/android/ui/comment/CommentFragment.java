@@ -72,16 +72,16 @@ public abstract class CommentFragment extends BaseListFragment implements
         }
 
         // Case Init & case Reload
-        b = (ba == null) ? getArguments() : ba;
+        bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
 
-        if (b != null)
+        if (bundle != null)
         {
-            node = b.getParcelable(ARGUMENT_NODE);
-            lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
+            node = bundle.getParcelable(ARGUMENT_NODE);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            loadState = b.getInt(LOAD_STATE);
+            loadState = bundle.getInt(LOAD_STATE);
         }
         calculateSkipCount(lc);
         CommentsLoader loader = new CommentsLoader(getActivity(), alfSession, node);

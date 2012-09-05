@@ -24,27 +24,27 @@ public interface CloudNetwork
     /**
      * Returns the identifier of the network.
      */
-    public String getIdentifier();
+    String getIdentifier();
 
     /**
      * Returns the subscription level of of the network, will be one of “Free”,
      * “Standard” or “Enterprise”.
      */
-    public String getSubscriptionLevel();
+    String getSubscriptionLevel();
 
     /**
      * Returns true if this network is a “paid for” account.
      */
-    public boolean isPaidNetwork();
+    boolean isPaidNetwork();
 
     /**
      * Returns true if this is the current users home network.
      */
-    public boolean isHomeNetwork();
+    boolean isHomeNetwork();
 
     /**
      * Returns the time this network was created.
      */
-    public GregorianCalendar getCreatedAt();
+    GregorianCalendar getCreatedAt();
 
 }

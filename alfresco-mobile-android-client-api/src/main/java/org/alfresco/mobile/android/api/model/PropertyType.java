@@ -26,7 +26,7 @@ public enum PropertyType
 {
     STRING("String"), ID("Id"), INTEGER("Integer"), DECIMAL("Decimal"), DATETIME("DateTime"), BOOLEAN("Boolean");
 
-    final String value;
+    private final String value;
 
     PropertyType(String v)
     {

@@ -42,7 +42,7 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<ActivityEntry> getActivityStream() throws AlfrescoServiceException;
+    List<ActivityEntry> getActivityStream();
 
     /**
      * Allow currently logged in user to get their activity stream.
@@ -52,7 +52,7 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext);
 
     /**
      * Allow to retrieve activities feed for a specific user.
@@ -62,7 +62,7 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : If username is undefined or if network
      *             or internal problems occur during the process.
      */
-    public List<ActivityEntry> getActivityStream(String personIdentifier) throws AlfrescoServiceException;
+    List<ActivityEntry> getActivityStream(String personIdentifier);
 
     /**
      * Allow to retrieve activities feed for a specific user.
@@ -73,8 +73,7 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : If username is undefined or if network
      *             or internal problems occur during the process.
      */
-    public PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext);
 
     /**
      * Allow currently logged in user to get feed for a specified site (if
@@ -86,7 +85,7 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : If siteName is undefined or if network
      *             or internal problems occur during the process.
      */
-    public List<ActivityEntry> getSiteActivityStream(String siteName) throws AlfrescoServiceException;
+    List<ActivityEntry> getSiteActivityStream(String siteName);
 
     /**
      * Allow currently logged in user to get feed for a specified site (if
@@ -99,7 +98,6 @@ public interface ActivityStreamService
      * @throws AlfrescoServiceException : If siteName is undefined or if network
      *             or internal problems occur during the process.
      */
-    public PagingResult<ActivityEntry> getSiteActivityStream(String siteName, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<ActivityEntry> getSiteActivityStream(String siteName, ListingContext listingContext);
 
 }

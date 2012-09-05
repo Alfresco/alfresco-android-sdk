@@ -26,8 +26,14 @@ import org.alfresco.mobile.android.api.session.CloudSignupRequest;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudUrlRegistry
+public final class CloudUrlRegistry
 {
+    
+    private CloudUrlRegistry()
+    {
+        
+    }
+    
     public static final String VARIABLE_PERSONID = "{personId}";
 
     public static final String VARIABLE_SITEID = "{siteId}";
@@ -256,7 +262,7 @@ public class CloudUrlRegistry
                 .concat(BINDING_NETWORK_CMISATOM)
                 .replace(CloudUrlRegistry.VARIABLE_NETWORKID, session.getNetwork().getIdentifier())
                 .concat(URL_RENDITION.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_RENDITIONID,
-                        thumbnailIdentifier)).toString();
+                        thumbnailIdentifier));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

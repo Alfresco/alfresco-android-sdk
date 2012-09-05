@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 public interface AuthenticationProvider extends Serializable
 {
 
-    public Map<String, List<String>> getHTTPHeaders(AlfrescoSession session);
-    public Map<String, List<String>> getHTTPHeaders();
+    Map<String, List<String>> getHTTPHeaders(AlfrescoSession session);
+    Map<String, List<String>> getHTTPHeaders();
 
 }

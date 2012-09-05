@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
-import org.alfresco.mobile.android.api.model.RepositoryInfo;
 
 /**
  * 
@@ -38,7 +37,7 @@ public class CloudRepositoryCapabilitiesImpl implements RepositoryCapabilities
      * @param repositoryInfo : cmis object.
      * @param rootNode
      */
-    public CloudRepositoryCapabilitiesImpl(RepositoryInfo repositoryInfo)
+    public CloudRepositoryCapabilitiesImpl()
     {
         capabilities.put(CAPABILITY_LIKE, supportLikingNodes());
         capabilities.put(CAPABILITY_COMMENTS_COUNT, supportCommentsCount());

@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -39,6 +41,16 @@ import org.alfresco.mobile.android.api.model.Site;
  */
 public interface SiteService
 {
+    
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
 
     /**
      * @param siteShortName : Unique identifier name of the site.
@@ -47,7 +59,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public Site getSite(String siteShortName) throws AlfrescoServiceException;
+    Site getSite(String siteShortName);
 
     /**
      * @return Return a list of all the sites in the repository the current user
@@ -55,7 +67,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getAllSites() throws AlfrescoServiceException;
+    List<Site> getAllSites();
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -67,7 +79,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getAllSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getAllSites(ListingContext listingContext);
 
     /**
      * @return Returns a list of sites the current user has a explicit
@@ -75,7 +87,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getSites() throws AlfrescoServiceException;
+    List<Site> getSites();
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -87,7 +99,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getSites(ListingContext listingContext);
 
     /**
      * @return Returns a list of sites the current user has a explicit
@@ -95,7 +107,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Site> getFavoriteSites() throws AlfrescoServiceException;
+    List<Site> getFavoriteSites();
 
     /**
      * @param listingContext : Listing context that define the behaviour of
@@ -107,7 +119,7 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException;
+    PagingResult<Site> getFavoriteSites(ListingContext listingContext);
 
     /**
      * Get the documents container folder for the given site.
@@ -117,6 +129,6 @@ public interface SiteService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public Folder getDocumentLibrary(Site site) throws AlfrescoServiceException;
+    Folder getDocumentLibrary(Site site);
 
 }

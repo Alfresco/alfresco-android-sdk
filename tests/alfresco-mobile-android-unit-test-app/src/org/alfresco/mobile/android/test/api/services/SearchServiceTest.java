@@ -178,6 +178,43 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
          * Assert.assertEquals(2, result7.size());
          */
     }
+    
+    /**
+     * Just check if no error raised during creation of query with order by.
+     */
+    public void testSortingSearchService(){
+        // Create Session
+        initSession();
+        
+        KeywordSearchOptions options = new KeywordSearchOptions();
+        options.setExactMatch(false);
+        options.setDoesIncludeContent(false);
+        
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
+        
+        String keywords = "documentTestSearch";
+        List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());
+        
+        lc.setSortProperty(SearchService.SORT_PROPERTY_NAME);
+        result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());
+        
+        lc.setSortProperty(SearchService.SORT_PROPERTY_DESCRIPTION);
+        result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());
+        
+        lc.setSortProperty(SearchService.SORT_PROPERTY_MODIFIED_AT);
+        result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());
+        
+        lc.setSortProperty(SearchService.SORT_PROPERTY_CREATED_AT);
+        result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());
+    }
+
+    
 
     public void testQuickSearchService()
     {

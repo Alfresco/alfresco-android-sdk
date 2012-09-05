@@ -33,46 +33,46 @@ public interface ServiceRegistry
     /**
      * Returns the ActivityStreamService instance for the session.
      */
-    public ActivityStreamService getActivityStreamService();
+    ActivityStreamService getActivityStreamService();
 
     /**
      * Returns the CommentService instance for the session.
      */
-    public CommentService getCommentService();
+    CommentService getCommentService();
 
     /**
      * Returns the DocumentFolderService instance for the session.
      */
-    public DocumentFolderService getDocumentFolderService();
+    DocumentFolderService getDocumentFolderService();
 
     /**
      * Returns the PersonService instance for the session.
      */
-    public PersonService getPersonService();
+    PersonService getPersonService();
 
     /**
      * Returns the RatingService instance for the session.
      */
-    public RatingService getRatingService();
+    RatingService getRatingService();
 
     /**
      * Returns the SearchService instance for the session.
      */
-    public SearchService getSearchService();
+    SearchService getSearchService();
 
     /**
      * Returns the SiteService instance for the session.
      */
-    public SiteService getSiteService();
+    SiteService getSiteService();
 
     /**
      * Returns the TaggingService instance for the session.
      */
-    public TaggingService getTaggingService();
+    TaggingService getTaggingService();
 
     /**
      * Returns the VersionService instance for the session.
      */
-    public VersionService getVersionService();
+    VersionService getVersionService();
 
 }

@@ -30,10 +30,12 @@ public class ListingContext implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
+    
+    public static final int DEFAULT_MAX_ITEMS = 50;
 
     private String sorting = null;
 
-    private int maxItems = 50;
+    private int maxItems = DEFAULT_MAX_ITEMS;
 
     private int skipCount = 0;
 

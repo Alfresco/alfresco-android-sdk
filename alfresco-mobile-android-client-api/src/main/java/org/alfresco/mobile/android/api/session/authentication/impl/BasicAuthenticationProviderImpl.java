@@ -35,17 +35,21 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
 {
 
     private static final long serialVersionUID = 1L;
-    
+
     private boolean sendBasicAuth = true;
-    private String  user;
+
+    private String user;
+
     private String password;
+
     private Map<String, Serializable> parameters;
+
     private Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>();
 
     public BasicAuthenticationProviderImpl(Map<String, Serializable> parameters)
     {
-        //this.user = username;
-        //this.password = password;
+        // this.user = username;
+        // this.password = password;
         this.parameters = parameters;
         init();
     }
@@ -55,7 +59,7 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
         this.cmisSession = cmisSession;
         init();
     }
-    
+
     public Map<String, List<String>> getHTTPHeaders(AlfrescoSession session)
     {
         return getHTTPHeaders();
@@ -66,37 +70,45 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
         Map<String, List<String>> result = new HashMap<String, List<String>>(fixedHeaders);
         return result.isEmpty() ? null : result;
     }
-    
-    private String  getParameter(String key){
-        if (session != null && session.getParameter(key) != null && session.getParameter(key) instanceof String){
+
+    private String getParameter(String key)
+    {
+        if (session != null && session.getParameter(key) != null && session.getParameter(key) instanceof String)
+        {
             return (String) session.getParameter(key);
-        } else if (cmisSession != null && cmisSession.get(key) != null && cmisSession.get(key) instanceof String){
+        }
+        else if (cmisSession != null && cmisSession.get(key) != null && cmisSession.get(key) instanceof String)
+        {
             return (String) cmisSession.get(key);
-        }  else if (parameters != null && parameters.containsKey(key) && parameters.get(key) instanceof String){
-            return (String) parameters.get(key);
-        }  
+        }
+        else if (parameters != null && parameters.containsKey(key) && parameters.get(key) instanceof String) { return (String) parameters
+                .get(key); }
         return null;
     }
-    
-    private void init(){
+
+    private void init()
+    {
         // authentication
-        if (sendBasicAuth) {
+        if (sendBasicAuth)
+        {
             // get user and password
-            String user = getUser();
-            String password = getPassword();
+            String mUser = getUser();
+            String mPassword = getPassword();
 
             // if no user is set, don't set basic auth header
-            if (user != null) {
-                fixedHeaders.put("Authorization", createBasicAuthHeaderValue(user, password));
+            if (mUser != null)
+            {
+                fixedHeaders.put("Authorization", createBasicAuthHeaderValue(mUser, mPassword));
             }
 
             // get proxy user and password
-            
+
             String proxyUser = getParameter(SessionParameter.PROXY_USER);
             String proxyPassword = getParameter(SessionParameter.PROXY_PASSWORD);
 
             // if no proxy user is set, don't set basic auth header
-            if (proxyUser != null) {
+            if (proxyUser != null)
+            {
                 fixedHeaders.put("Proxy-Authorization", createBasicAuthHeaderValue(proxyUser, proxyPassword));
             }
         }
@@ -104,17 +116,23 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
         // other headers
         int x = 0;
         Object headerParam;
-        while ((headerParam = getParameter(SessionParameter.HEADER + "." + x)) != null) {
+        while ((headerParam = getParameter(SessionParameter.HEADER + "." + x)) != null)
+        {
             String header = headerParam.toString();
             int colon = header.indexOf(':');
-            if (colon > -1) {
+            if (colon > -1)
+            {
                 String key = header.substring(0, colon).trim();
-                if (key.length() > 0) {
+                if (key.length() > 0)
+                {
                     String value = header.substring(colon + 1).trim();
                     List<String> values = fixedHeaders.get(key);
-                    if (values == null) {
+                    if (values == null)
+                    {
                         fixedHeaders.put(key, Collections.singletonList(value));
-                    } else {
+                    }
+                    else
+                    {
                         List<String> newValues = new ArrayList<String>(values);
                         newValues.add(value);
                         fixedHeaders.put(key, newValues);
@@ -124,40 +142,44 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
             x++;
         }
     }
-    
+
     private String getPassword()
     {
-        if (password != null){
-            return password;
-        } else if (getParameter(SessionParameter.PASSWORD) != null){
-            return getParameter(SessionParameter.PASSWORD);
+        if (password == null && getParameter(SessionParameter.PASSWORD) != null)
+        {
+            password = getParameter(SessionParameter.PASSWORD);
         }
-        return null;
+        return password;
     }
 
     private String getUser()
     {
-        if (user != null){
-            return user;
-        } else if (getParameter(SessionParameter.USER) != null){
-            return getParameter(SessionParameter.USER);
-        }        
-        return null;
+        if (user == null && getParameter(SessionParameter.USER) != null)
+        {
+            user = getParameter(SessionParameter.USER);
+        }
+        return user;
     }
 
     /**
      * Creates a basic authentication header value from a username and a
      * password.
      */
-    protected List<String> createBasicAuthHeaderValue(String username, String password) {
-        if (password == null) {
-            password = "";
+    private List<String> createBasicAuthHeaderValue(String username, String password)
+    {
+        String tmpPassword = password;
+        if (tmpPassword == null)
+        {
+            tmpPassword = "";
         }
 
-        try {
+        try
+        {
             return Collections.singletonList("Basic "
-                    + Base64.encodeBytes((username + ":" + password).getBytes("ISO-8859-1")));
-        } catch (UnsupportedEncodingException e) {
+                    + Base64.encodeBytes((username + ":" + tmpPassword).getBytes("ISO-8859-1")));
+        }
+        catch (UnsupportedEncodingException e)
+        {
             // shouldn't happen...
             return Collections.emptyList();
         }
@@ -167,14 +189,11 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
      * Returns <code>true</code> if the given parameter exists in the session
      * and is set to true, <code>false</code> otherwise.
      */
-    protected boolean isTrue(Object value) {
-        if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue();
-        }
+    protected boolean isTrue(Object value)
+    {
+        if (value instanceof Boolean) { return ((Boolean) value).booleanValue(); }
 
-        if (value instanceof String) {
-            return Boolean.parseBoolean((String) value);
-        }
+        if (value instanceof String) { return Boolean.parseBoolean((String) value); }
 
         return false;
     }

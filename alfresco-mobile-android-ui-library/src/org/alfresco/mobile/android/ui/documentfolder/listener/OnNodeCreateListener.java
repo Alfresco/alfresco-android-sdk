@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Node;
 
 public interface OnNodeCreateListener
 {
-    public void beforeContentCreation(String name);
-    public void afterContentCreation(Node node);
+    void beforeContentCreation(String name);
+
+    void afterContentCreation(Node node);
 }

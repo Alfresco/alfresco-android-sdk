@@ -18,127 +18,199 @@
 package org.alfresco.mobile.android.api.constants;
 
 /**
- * Provides all public constants necessary for an OnPremise Alfresco server. <br/>
+ * Provides all constants necessary for an OnPremise Alfresco server. <br/>
  * Generally it's used for parsing data (json, atompub xml).
  * 
  * @author Jean Marie Pascal
  */
-public class OnPremiseConstant
+public interface OnPremiseConstant
 {
-    //TICKET LOGIN
-    public static final String LOGIN_USERNAME_VALUE = "username";
-    public static final String LOGIN_PASSWORD_VALUE = "password";
-    public static final String LOGIN_DATA_VALUE = "data";
-    public static final String LOGIN_TICKET_VALUE = "ticket";
+    // TICKET LOGIN
+    String LOGIN_USERNAME_VALUE = "username";
 
-    
-    //EDITION
-    public static final String ALFRESCO_VENDOR = "Alfresco";
-    public static final String ALFRESCO_EDITION_COMMUNITY = "Community";
-    public static final String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
-    public static final String ALFRESCO_EDITION_UNKNOWN = "unknown";
-    public static final String THIRD_CMIS_EDITION= "thirdcmis";
-    
-    //VERSION NUMBER
-    public static final int ALFRESCO_VERSION_4 = 4;
-    public static final int ALFRESCO_VERSION_3 = 3;
+    String LOGIN_PASSWORD_VALUE = "password";
 
-    //SITES
-    public static final String URL_VALUE = "url";
-    public static final String TITLE_VALUE = "title";
-    public static final String DESCRIPTION_VALUE = "description";
-    public static final String SITEPRESET_VALUE = "sitePreset";
-    public static final String SHORTNAME_VALUE = "shortName";
-    public static final String NODE_VALUE = "node";
-    public static final String TAGSCOPE_VALUE = "tagScope";
-    public static final String ISPUBLIC_VALUE = "isPublic";
-    public static final String VISIBILITY_VALUE = "visibility";
-    public static final String MANAGERS_VALUE = "siteManagers";
-    
-    //COMMENTS
-    public static final String NODEREF_VALUE = "nodeRef";
-    public static final String NAME_VALUE = "name";
-    public static final String CONTENT_VALUE = "content";
-    public static final String CREATEDON_VALUE = "createdOn";
-    public static final String MODIFIEDON_VALUE = "modifiedOn";
-    public static final String ISUPDATED_VALUE = "isUpdated";
-    public static final String TOTAL_VALUE = "total";
-    public static final String ITEMS_VALUE = "items";
-    public static final String ITEMCOUNT_VALUE = "itemCount";
-    public static final String ITEM_VALUE = "item";
+    String LOGIN_DATA_VALUE = "data";
 
-    //PEOPLE
-    public static final String USERNAME_VALUE = "userName";
-    public static final String LASTNAME_VALUE = "lastName";
-    public static final String FIRSTNAME_VALUE = "firstName";
-    public static final String AUTHOR_VALUE = "author";
-    public static final String AVATAR_REF_VALUE = "avatarRef";
-    public static final String AVATAR_VALUE = "avatar";
+    String LOGIN_TICKET_VALUE = "ticket";
 
-    //ACTIVITY EVENT
-    public static final String ID_VALUE = "id";
-    public static final String SITENETWORK_VALUE = "siteNetwork";
-    public static final String FEEDUSERID_VALUE = "feedUserId";
-    public static final String POSTUSERID_VALUE = "postUserId";
-    public static final String POSTDATE_VALUE = "postDate";
-    public static final String SUMMARY_VALUE = "activitySummary";
-    public static final String PAGE_VALUE = "page";
-    public static final String ACTIVITYTYPE_VALUE = "activityType";
-    public static final String FORMAT_VALUE = "activitySummaryFormat";
-    public static final String MEMBERLASTNAME_VALUE = "memberLastName";
-    public static final String ROLE_VALUE = "role";
-    public static final String STATUS_VALUE = "status";
-    public static final String MEMEBERUSERNAME_VALUE = "memberUserName";
-    public static final String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
-    
-    //CONTAINERS
-    public static final String CONTAINER_VALUE = "containers";
+    // EDITION
+    String ALFRESCO_VENDOR = "Alfresco";
 
-    //TAG
-    public static final String TYPE_VALUE = "type";
-    public static final String ISCONTAINER_VALUE = "isContainer";
-    public static final String MODIFIED_VALUE = "modified";
-    public static final String MODIFIER_VALUE = "modifier";
-    public static final String DISPLAYPATH_VALUE = "displayPath";
-    public static final String SELECTABLE_VALUE = "selectable";
+    String ALFRESCO_EDITION_COMMUNITY = "Community";
 
-    //PERMISSION
-    public static final String PERMISSION_VALUE = "permissions";
-    public static final String EDIT_VALUE = "edit";
-    public static final String DELETE_VALUE = "delete";
-    
-    //RATINGS
-    public static final String DATA_VALUE = "data";
-    public static final String RATINGS_VALUE = "ratings";
-    public static final String RATINGSCHEME_VALUE = "ratingScheme";
-    public static final String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
-    public static final String RATING_VALUE = "rating";
-    public static final String APPLIEDAT_VALUE = "appliedAt";
-    public static final String APPLIEDBY_VALUE = "appliedBy";
-    public static final String NODESTATISTICS_VALUE = "nodeStatistics";
-    public static final String AVERAGERATING_VALUE = "averageRating";
-    public static final String RATINGSTOTAL_VALUE = "ratingsTotal";
-    public static final String RATINGSCOUNT_VALUE = "ratingsCount";
+    String ALFRESCO_EDITION_ENTERPRISE = "Enterprise";
 
-    //ACTIONS
-    public static final String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
-    public static final String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
-    public static final String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
-    public static final String ACTION_EXECUTE_SCRIPT = "script";
-    public static final String ACTIONSCRIPTREF_VALUE = "script-ref";
-    public static final String ACTIONPARAMETER_VALUE = "parameterValues";
-    
-    
-    //THUMBNAILS
-    public static final String THUMBNAILNAME_VALUE = "thumbnailName";
+    String ALFRESCO_EDITION_UNKNOWN = "unknown";
 
-    //Parameters
-    public static final String PARAM_ASYNC = "async";
-    public static final String PARAM_AS = "as";
-    public static final String PARAM_SIZE = "size";
-    public static final String PARAM_POSITION = "pos";
-    public static final String PARAM_STARTINDEX = "startIndex";
-    public static final String PARAM_PAGESIZE = "pageSize";
-    public static final String PARAM_REVERSE = "reverse";
+    String THIRD_CMIS_EDITION = "thirdcmis";
+
+    // VERSION NUMBER
+    int ALFRESCO_VERSION_4 = 4;
+
+    int ALFRESCO_VERSION_3 = 3;
+
+    // SITES
+    String URL_VALUE = "url";
+
+    String TITLE_VALUE = "title";
+
+    String DESCRIPTION_VALUE = "description";
+
+    String SITEPRESET_VALUE = "sitePreset";
+
+    String SHORTNAME_VALUE = "shortName";
+
+    String NODE_VALUE = "node";
+
+    String TAGSCOPE_VALUE = "tagScope";
+
+    String IS_VALUE = "is";
+
+    String VISIBILITY_VALUE = "visibility";
+
+    String MANAGERS_VALUE = "siteManagers";
+
+    // COMMENTS
+    String NODEREF_VALUE = "nodeRef";
+
+    String NAME_VALUE = "name";
+
+    String CONTENT_VALUE = "content";
+
+    String CREATEDON_VALUE = "createdOn";
+
+    String MODIFIEDON_VALUE = "modifiedOn";
+
+    String ISUPDATED_VALUE = "isUpdated";
+
+    String TOTAL_VALUE = "total";
+
+    String ITEMS_VALUE = "items";
+
+    String ITEMCOUNT_VALUE = "itemCount";
+
+    String ITEM_VALUE = "item";
+
+    // PEOPLE
+    String USERNAME_VALUE = "userName";
+
+    String USERNAME_L_VALUE = "username";
+
+    String LASTNAME_VALUE = "lastName";
+
+    String FIRSTNAME_VALUE = "firstName";
+
+    String AUTHOR_VALUE = "author";
+
+    String AVATAR_REF_VALUE = "avatarRef";
+
+    String AVATAR_VALUE = "avatar";
+
+    // ACTIVITY EVENT
+    String ID_VALUE = "id";
+
+    String SITENETWORK_VALUE = "siteNetwork";
+
+    String FEEDUSERID_VALUE = "feedUserId";
+
+    String POSTUSERID_VALUE = "postUserId";
+
+    String POSTDATE_VALUE = "postDate";
+
+    String SUMMARY_VALUE = "activitySummary";
+
+    String PAGE_VALUE = "page";
+
+    String ACTIVITYTYPE_VALUE = "activityType";
+
+    String FORMAT_VALUE = "activitySummaryFormat";
+
+    String MEMBERLASTNAME_VALUE = "memberLastName";
+
+    String ROLE_VALUE = "role";
+
+    String STATUS_VALUE = "status";
+
+    String MEMEBERUSERNAME_VALUE = "memberUserName";
+
+    String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
+
+    // CONTAINERS
+    String CONTAINER_VALUE = "containers";
+
+    // TAG
+    String TYPE_VALUE = "type";
+
+    String ISCONTAINER_VALUE = "isContainer";
+
+    String MODIFIED_VALUE = "modified";
+
+    String MODIFIER_VALUE = "modifier";
+
+    String DISPLAYPATH_VALUE = "displayPath";
+
+    String SELECTABLE_VALUE = "selectable";
+
+    // PERMISSION
+    String PERMISSION_VALUE = "permissions";
+
+    String EDIT_VALUE = "edit";
+
+    String DELETE_VALUE = "delete";
+
+    // RATINGS
+    String DATA_VALUE = "data";
+
+    String RATINGS_VALUE = "ratings";
+
+    String RATINGSCHEME_VALUE = "ratingScheme";
+
+    String LIKERATINGSSCHEME_VALUE = "likesRatingScheme";
+
+    String RATING_VALUE = "rating";
+
+    String APPLIEDAT_VALUE = "appliedAt";
+
+    String APPLIEDBY_VALUE = "appliedBy";
+
+    String NODESTATISTICS_VALUE = "nodeStatistics";
+
+    String AVERAGERATING_VALUE = "averageRating";
+
+    String RATINGSTOTAL_VALUE = "ratingsTotal";
+
+    String RATINGSCOUNT_VALUE = "ratingsCount";
+
+    // ACTIONS
+    String ACTIONEDUPONNODE_VALUE = "actionedUponNode";
+
+    String ACTIONDEFINITIONNAME_VALUE = "actionDefinitionName";
+
+    String ACTION_EXTRACTMETADATA_VALUE = "extract-metadata";
+
+    String ACTION_EXECUTE_SCRIPT = "script";
+
+    String ACTIONSCRIPTREF_VALUE = "script-ref";
+
+    String ACTIONPARAMETER_VALUE = "parameterValues";
+
+    // THUMBNAILS
+    String THUMBNAILNAME_VALUE = "thumbnailName";
+
+    // Parameters
+    String PARAM_ASYNC = "async";
+
+    String PARAM_AS = "as";
+
+    String PARAM_SIZE = "size";
+
+    String PARAM_POSITION = "pos";
+
+    String PARAM_STARTINDEX = "startIndex";
+
+    String PARAM_PAGESIZE = "pageSize";
+
+    String PARAM_REVERSE = "reverse";
 
 }

@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
  * Comment :
  * <ul>
  * <li>is a convenient way to provide users with information or notes specific
- * to that content</li>
+ * to that content (can be a folder or a document)</li>
  * </ul>
  * 
  * @author Jean Marie Pascal
@@ -34,53 +34,53 @@ public interface Comment extends Serializable
     /**
      * Returns the unique identifier of the comment.
      */
-    public String getIdentifier();
+     String getIdentifier();
 
     /**
      * Returns the name of this comment.
      */
-    public String getName();
+     String getName();
 
     /**
      * Returns the title of this comment.
      */
-    public String getTitle();
+     String getTitle();
 
     /**
      * Returns the timestamp in the session’s locale when this comment was
      * created.
      */
-    public GregorianCalendar getCreatedAt();
+     GregorianCalendar getCreatedAt();
 
     /**
      * Returns the timestamp in the session’s locale when this comment has been
      * modified.
      */
-    public GregorianCalendar getModifiedAt();
+     GregorianCalendar getModifiedAt();
 
     /**
      * Returns the HTML formatted content of the comment.
      */
-    public String getContent();
+     String getContent();
 
     /**
      * Returns the username of the user who created the comment.
      */
-    public String getCreatedBy();
+     String getCreatedBy();
 
     /**
      * Indicates whether the comment has been edited since it was initially
      * created.
      */
-    public boolean isEdited();
+     boolean isEdited();
 
     /**
      * Returns true if the current user can edit this comment.
      */
-    public boolean canEdit();
+     boolean canEdit();
 
     /**
      * Returns true if the current user can delete this comment.
      */
-    public boolean canDelete();
+     boolean canDelete();
 }

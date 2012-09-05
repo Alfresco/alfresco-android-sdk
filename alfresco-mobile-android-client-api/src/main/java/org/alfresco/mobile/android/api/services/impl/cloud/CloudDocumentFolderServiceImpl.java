@@ -97,7 +97,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             }
             return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

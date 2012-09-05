@@ -45,14 +45,20 @@ public class CloudNetworkImpl implements CloudNetwork
         network.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         network.isHomeNetwork = JSONConverter.getBoolean(json, CloudConstant.HOMENETWORK_VALUE);
 
-        json = (Map<String, Object>) json.get(CloudConstant.NETWORK_VALUE);
+        //TODO Delete before release
+        Map<String, Object> jso = (Map<String, Object>) json.get(CloudConstant.NETWORK_VALUE);
+        if (jso == null){
+            jso = json;
+        }
 
-        network.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
-        network.subscriptionLevel = JSONConverter.getString(json, CloudConstant.SUBSCRIPTIONLEVEL_VALUE);
-        network.isPaidNetwork = JSONConverter.getBoolean(json, CloudConstant.PAIDNETWORK_VALUE);
+        if (jso.containsKey(CloudConstant.ID_VALUE)){
+            network.identifier = JSONConverter.getString(jso, CloudConstant.ID_VALUE);
+        }
+        network.subscriptionLevel = JSONConverter.getString(jso, CloudConstant.SUBSCRIPTIONLEVEL_VALUE);
+        network.isPaidNetwork = JSONConverter.getBoolean(jso, CloudConstant.PAIDNETWORK_VALUE);
 
         GregorianCalendar g = new GregorianCalendar();
-        g.setTime(DateUtils.parseJsonDate(JSONConverter.getString(json, CloudConstant.CREATEDAT_VALUE)));
+        g.setTime(DateUtils.parseJsonDate(JSONConverter.getString(jso, CloudConstant.CREATEDAT_VALUE)));
         network.creationTime = g;
 
         return network;

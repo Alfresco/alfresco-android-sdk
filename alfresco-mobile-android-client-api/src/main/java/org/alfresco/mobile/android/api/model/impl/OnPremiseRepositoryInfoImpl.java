@@ -162,7 +162,9 @@ public class OnPremiseRepositoryInfoImpl implements RepositoryInfo
     @Override
     public RepositoryCapabilities getCapabilities()
     {
-        if (capabilities == null) capabilities = new OnPremiseRepositoryCapabilitiesImpl(this);
+        if (capabilities == null){
+            capabilities = new OnPremiseRepositoryCapabilitiesImpl(this);
+        }
         return capabilities;
     }
 }

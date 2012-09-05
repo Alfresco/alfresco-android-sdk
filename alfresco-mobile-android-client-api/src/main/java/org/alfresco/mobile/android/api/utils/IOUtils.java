@@ -37,8 +37,12 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class IOUtils
+public final class IOUtils
 {
+    
+    private IOUtils(){
+        
+    }
 
     public static final int MAX_BUFFER_SIZE = 1024;
 

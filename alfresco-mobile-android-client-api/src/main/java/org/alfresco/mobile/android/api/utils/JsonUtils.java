@@ -34,8 +34,13 @@ import org.apache.chemistry.opencmis.commons.impl.json.parser.JSONParser;
  * 
  * @author Jean Marie Pascal
  */
-public class JsonUtils
+public final class JsonUtils
 {
+    private JsonUtils()
+    {
+
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected static final ContainerFactory SIMPLE_CONTAINER_FACTORY = new ContainerFactory()
     {
@@ -130,7 +135,9 @@ public class JsonUtils
         {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             while ((line = reader.readLine()) != null)
+            {
                 sb.append(line + "\n");
+            }
         }
         catch (Exception e)
         {

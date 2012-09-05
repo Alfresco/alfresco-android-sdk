@@ -26,21 +26,21 @@ package org.alfresco.mobile.android.api.model;
 public interface RepositoryCapabilities
 {
 
-    public final static String CAPABILITY_LIKE = "CAPABILITY_LIKE";
+    String CAPABILITY_LIKE = "CAPABILITY_LIKE";
 
-    public final static String CAPABILITY_COMMENTS_COUNT = "CAPABILITY_COMMENTS_COUNT";
+    String CAPABILITY_COMMENTS_COUNT = "CAPABILITY_COMMENTS_COUNT";
 
     /**
      * Indicates whether the current repository allows nodes to be liked i.e. if
      * it’s an Alfresco v4.x server onwards.
      */
-    public boolean doesSupportLikingNodes();
+    boolean doesSupportLikingNodes();
 
     /**
      * Indicates whether the current repository provides counts of comments i.e.
      * if it’s an Alfresco v4.x server onwards.
      */
-    public boolean doesSupportCommentsCount();
+    boolean doesSupportCommentsCount();
 
     /**
      * Determines whether the repository supports the given capability.
@@ -48,6 +48,6 @@ public interface RepositoryCapabilities
      * @param capability : One of the constant present in RepositoryCapabilities
      *            interface.
      */
-    public boolean doesSupportCapability(String capability);
+    boolean doesSupportCapability(String capability);
 
 }

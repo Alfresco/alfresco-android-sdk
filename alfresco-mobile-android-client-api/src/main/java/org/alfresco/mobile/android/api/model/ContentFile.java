@@ -21,7 +21,7 @@ import java.io.File;
 
 /**
  * ContentFile represents an abstract way to share file between the client
- * remote api and server.
+ * api and server.
  * 
  * @author Jean Marie Pascal
  */
@@ -31,6 +31,6 @@ public interface ContentFile extends Content
     /**
      * @return Returns the File object representing the content.
      */
-    public File getFile();
+    File getFile();
 
 }

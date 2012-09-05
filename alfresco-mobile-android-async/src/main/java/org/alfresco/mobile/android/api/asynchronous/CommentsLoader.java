@@ -21,7 +21,6 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Sorting;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
@@ -42,7 +41,7 @@ public class CommentsLoader extends AbstractPagingLoader<LoaderResult<PagingResu
 
     /**
      * List the available comments for the specified node. </br> Sorting
-     * supported : {@link Sorting#CREATION_DATE} </br> Use
+     * supported : {@link Sorting#CREATED_AT} </br> Use
      * {@link #setListingContext(ListingContext)} to define characteristics of
      * the PagingResult.
      * 

@@ -20,7 +20,9 @@ package org.alfresco.mobile.android.api.services.impl;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -38,6 +40,7 @@ import org.alfresco.mobile.android.api.utils.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.spi.DiscoveryService;
@@ -81,7 +84,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException
+    public List<Node> search(String statement, SearchLanguage language)
     {
         return search(statement, language, null).getList();
     }
@@ -98,13 +101,14 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException
+    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options)
     {
-        if (options == null)
+        KeywordSearchOptions tmpOptions = options;
+        if (tmpOptions == null)
         {
-            options = new KeywordSearchOptions();
+            tmpOptions = new KeywordSearchOptions();
         }
-        return keywordSearch(keywords, options, null).getList();
+        return keywordSearch(keywords, tmpOptions, null).getList();
     }
 
     /**
@@ -117,7 +121,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @throws AlfrescoServiceException
      */
     public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
-            throws AlfrescoServiceException
+
     {
         String statement = createQuery(keywords, options.doesIncludeContent(), options.isExactMatch(),
                 options.getFolder(), options.doesIncludeDescendants());
@@ -135,7 +139,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      *             during the process.
      */
     public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
-            throws AlfrescoServiceException
+
     {
         try
         {
@@ -148,18 +152,21 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
-            BigInteger maxItems = BigInteger.valueOf(50);
+            BigInteger maxItems = BigInteger.valueOf(ListingContext.DEFAULT_MAX_ITEMS);
             BigInteger skipCount = BigInteger.valueOf(0);
+
+            String tmpStatement = statement;
             if (listingContext != null)
             {
                 skipCount = BigInteger.valueOf((long) listingContext.getSkipCount());
                 maxItems = BigInteger.valueOf((long) listingContext.getMaxItems());
+                tmpStatement += getSorting(listingContext.getSortProperty(), listingContext.isSortAscending());
             }
 
-            Log.d(TAG, maxItems + " " + skipCount + " " + statement);
+            Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
 
             // fetch the data
-            ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), statement,
+            ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), tmpStatement,
                     false, ctxt.isIncludeAllowableActions(), ctxt.getIncludeRelationships(),
                     ctxt.getRenditionFilterString(), maxItems, skipCount, null);
 
@@ -184,7 +191,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                 return new PagingResultImpl<Node>(page, false, -1);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -203,6 +210,10 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String QUERY_DESCENDANTS = " IN_TREE(d,'" + PARAM_NODEREF + "')";
 
     private static final String PARAM_NAME = " d.cmis:name ";
+    
+    private static final String PARAM_CREATED_AT = " d.cmis:creationDate ";
+
+    private static final String PARAM_MODIFIED_AT = " d.cmis:lastModificationDate ";
 
     private static final String PARAM_TITLE = " t.cm:title ";
 
@@ -213,7 +224,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String OPERTATOR_AND = " AND ";
 
     @SuppressWarnings("serial")
-    private static final List<String> queryPropertyList = new ArrayList<String>(3)
+    private static final List<String> QUERYPROPERTIESLIST = new ArrayList<String>(3)
     {
         {
             add(PARAM_NAME);
@@ -236,7 +247,10 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         List<String> keywords = Arrays.asList(TextUtils.split(query.trim(), "\\s+"));
         StringBuilder sb = new StringBuilder(QUERY_DOCUMENT);
         String[] fullText = new String[0];
-        if (fulltext) fullText = new String[keywords.size()];
+        if (fulltext)
+        {
+            fullText = new String[keywords.size()];
+        }
         String[] words = new String[keywords.size()];
 
         // First IN_FOLDER or IN_DESCENDANTS
@@ -256,7 +270,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
         // Request name, title and description with each keyword.
         Boolean fulltextComplete = false;
-        for (String propertyQuery : queryPropertyList)
+        for (String propertyQuery : QUERYPROPERTIESLIST)
         {
             for (int i = 0; i < keywords.size(); i++)
             {
@@ -266,13 +280,15 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                     {
                         words[i] = propertyQuery + "= '" + keywords.get(i) + "'" + OPERTATOR_OR + " UPPER("
                                 + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + " CONTAINS("+propertyQuery.substring(1, 2)+",'" + propertyQuery.substring(3)  + ":\\\'" + keywords.get(i) + "\\\'')";
+                                + " CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
+                                + ":\\\'" + keywords.get(i) + "\\\'')";
                     }
                     else
                     {
                         words[i] = propertyQuery + "LIKE '%" + keywords.get(i) + "%'" + OPERTATOR_OR + "UPPER("
                                 + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + "CONTAINS("+propertyQuery.substring(1, 2)+",'" + propertyQuery.substring(3) + ":\\\'\\*" + keywords.get(i) + "\\*\\\'')";
+                                + "CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
+                                + ":\\\'\\*" + keywords.get(i) + "\\*\\\'')";
                     }
 
                     if (fulltext && !fulltextComplete)
@@ -296,8 +312,9 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             sb.append(OPERTATOR_OR);
         }
         join(sb, OPERTATOR_OR, fullText);
-        
-        if (f != null){
+
+        if (f != null)
+        {
             sb.append(")");
         }
 
@@ -327,6 +344,42 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             }
             sb.append(token);
         }
+    }
+
+    @SuppressWarnings("serial")
+    private static Map<String, String> sortingMap = new HashMap<String, String>()
+    {
+        {
+            put(SORT_PROPERTY_NAME, PARAM_NAME);
+            put(SORT_PROPERTY_TITLE, PARAM_TITLE);
+            put(SORT_PROPERTY_DESCRIPTION, PARAM_DESCRIPTION);
+            put(SORT_PROPERTY_CREATED_AT, PARAM_CREATED_AT);
+            put(SORT_PROPERTY_MODIFIED_AT, PARAM_MODIFIED_AT);
+        }
+    };
+
+    private String getSorting(String sortingKey, boolean modifier)
+    {
+        String s;
+        if (sortingMap.containsKey(sortingKey))
+        {
+            s = sortingMap.get(sortingKey);
+        }
+        else
+        {
+            return "";
+        }
+
+        if (modifier)
+        {
+            s += " ASC";
+        }
+        else
+        {
+            s += " DESC";
+        }
+
+        return " ORDER BY " + s;
     }
 
 }

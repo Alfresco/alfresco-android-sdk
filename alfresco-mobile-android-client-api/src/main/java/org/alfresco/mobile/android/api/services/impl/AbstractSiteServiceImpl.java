@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.api.services.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -61,11 +60,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /**
      * List the available sites.
      * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public List<Site> getAllSites() throws AlfrescoServiceException
+    public List<Site> getAllSites()
     {
         return getAllSites(null).getList();
     }
@@ -73,12 +70,10 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     protected abstract UrlBuilder getAllSitesUrl(ListingContext listingContext);
 
     /**
-     * List the available sites.
-     * 
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * List the available sites. @ : if network or internal problems occur
+     * during the process.
      */
-    public PagingResult<Site> getAllSites(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Site> getAllSites(ListingContext listingContext)
     {
         return computeAllSites(getAllSitesUrl(listingContext), listingContext);
     }
@@ -87,11 +82,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * Returns a list of sites that the session user has a explicit membership
      * to.
      * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public List<Site> getSites() throws AlfrescoServiceException
+    public List<Site> getSites()
     {
         return getSites(null).getList();
     }
@@ -102,11 +95,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * Returns a list of sites that the session user has a explicit membership
      * to.
      * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public PagingResult<Site> getSites(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Site> getSites(ListingContext listingContext)
     {
         try
         {
@@ -115,7 +106,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
             return computeSites(getUserSitesUrl(session.getPersonIdentifier(), listingContext), listingContext);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -126,11 +117,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * Returns a list of sites that the session user has a explicit membership
      * to and has marked as a favourite.
      * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public List<Site> getFavoriteSites() throws AlfrescoServiceException
+    public List<Site> getFavoriteSites()
     {
         return getFavoriteSites(null).getList();
     }
@@ -139,11 +128,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * Returns a list of sites that the session user has a explicit membership
      * to and has marked as a favourite.
      * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public PagingResult<Site> getFavoriteSites(ListingContext listingContext) throws AlfrescoServiceException
+    public PagingResult<Site> getFavoriteSites(ListingContext listingContext)
     {
         return null;
     }
@@ -157,11 +144,10 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * is returned.
      * 
      * @param siteShortName : Unique identifier name of the site.
-     * @return the site object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return the site object. @ : if network or internal problems occur during
+     *         the process.
      */
-    public Site getSite(String siteIdentifier) throws AlfrescoServiceException
+    public Site getSite(String siteIdentifier)
     {
         try
         {
@@ -170,7 +156,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
             return parseData(json);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -183,18 +169,16 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * Get the documents container reference for the site with the given name.
      * 
      * @param siteName
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * @return @ : if network or internal problems occur during the process.
      */
-    public Folder getDocumentLibrary(Site site) throws AlfrescoServiceException
+    public Folder getDocumentLibrary(Site site)
     {
         try
         {
             String ref = parseContainer(getDocContainerSiteUrl(site));
             return (Folder) session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(ref);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -204,11 +188,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
-    protected abstract PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    protected abstract PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext);
 
-    protected abstract PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    protected abstract PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext);
 
-    protected abstract String parseContainer(String link) throws AlfrescoServiceException;
+    protected abstract String parseContainer(String link);
 }

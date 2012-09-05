@@ -27,8 +27,13 @@ import java.util.Locale;
  * 
  * @author Jean Marie Pascal
  */
-public class DateUtils
+public final class DateUtils
 {
+    
+    private DateUtils(){
+        
+    }
+    
     public static final String FORMAT_1 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static final String FORMAT_2 = "yyyy-MM-dd'T'HH:mm:ss'Z'";

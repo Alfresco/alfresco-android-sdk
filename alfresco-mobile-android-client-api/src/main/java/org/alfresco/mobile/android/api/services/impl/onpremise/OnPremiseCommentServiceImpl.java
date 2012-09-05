@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Sorting;
 import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractCommentService;
@@ -69,8 +68,10 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
         UrlBuilder url = new UrlBuilder(link);
         if (listingContext != null)
         {
-            if (Sorting.CREATION_DATE.equals(listingContext.getSortProperty()))
+            if (SORT_PROPERTY_CREATED_AT.equals(listingContext.getSortProperty()))
+            {
                 url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
+            }
 
             url.addParameter(OnPremiseConstant.PARAM_STARTINDEX, listingContext.getSkipCount());
             url.addParameter(OnPremiseConstant.PARAM_PAGESIZE, listingContext.getMaxItems());
@@ -99,12 +100,13 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
         HttpUtils.Response resp = read(url);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-        if (json == null) { return null; }
         List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);
         List<Comment> result = new ArrayList<Comment>(jo.size());
 
         for (Object obj : jo)
+        {
             result.add(CommentImpl.parseJson((Map<String, Object>) obj));
+        }
 
         int pageSize = (JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE) != null) ? Integer
                 .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE)) : 0;

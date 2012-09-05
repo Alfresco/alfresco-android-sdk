@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -34,6 +35,33 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
  */
 public interface SearchService
 {
+    
+    /**
+     * Allowable sorting property : Name of the document or folder.
+     */
+    String SORT_PROPERTY_NAME = ContentModel.PROP_NAME;
+
+    /**
+     * Allowable sorting property : Title of the document or folder.
+     */
+    String SORT_PROPERTY_TITLE = ContentModel.PROP_TITLE;
+
+    /**
+     * Allowable sorting property : Description
+     */
+    String SORT_PROPERTY_DESCRIPTION = ContentModel.PROP_DESCRIPTION;
+
+    /**
+     * Allowable sorting property : Creation Date
+     */
+    String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
+
+    /**
+     * Allowable sorting property : Modification Date
+     */
+    String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
+    
+    
     /**
      * Executes a query statement against the contents of the repository using
      * the given search language.
@@ -50,8 +78,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext);
 
     /**
      * Executes a query statement against the contents of the repository using
@@ -65,7 +92,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> search(String statement, SearchLanguage language) throws AlfrescoServiceException;
+    List<Node> search(String statement, SearchLanguage language);
 
     /**
      * A space delimited list of keywords to search for. The options object
@@ -82,8 +109,7 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
-            throws AlfrescoServiceException;
+    PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext);
 
     /**
      * A space delimited list of keywords to search for. The options object
@@ -96,6 +122,6 @@ public interface SearchService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public List<Node> keywordSearch(String keywords, KeywordSearchOptions options) throws AlfrescoServiceException;
+    List<Node> keywordSearch(String keywords, KeywordSearchOptions options);
 
 }

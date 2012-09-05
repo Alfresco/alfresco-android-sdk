@@ -29,7 +29,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.model.Sorting;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.samples.R;
@@ -98,7 +98,7 @@ public class ChildrenFragment extends NavigationFragment
         ChildrenFragment bf = new ChildrenFragment();
         ListingContext lc = new ListingContext();
         lc.setMaxItems(10);
-        lc.setSortProperty(Sorting.NAME);
+        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(parentFolder, pathFolder, site);
         b.putAll(createBundleArgs(lc, LOAD_MANUAL));

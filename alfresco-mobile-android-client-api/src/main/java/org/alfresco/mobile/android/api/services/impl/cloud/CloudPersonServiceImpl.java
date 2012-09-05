@@ -64,7 +64,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public ContentStream getAvatarStream(String username) throws AlfrescoServiceException
+    public ContentStream getAvatarStream(String username)
     {
         try
         {
@@ -73,7 +73,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
                     .downloadContentStream(person.getAvatarIdentifier());
             return st;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }
@@ -84,7 +84,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    protected Person computePerson(UrlBuilder url) throws AlfrescoServiceException
+    protected Person computePerson(UrlBuilder url)
     {
         HttpUtils.Response resp = read(url);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());

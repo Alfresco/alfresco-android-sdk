@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -40,7 +39,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     }
 
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type)
-            throws AlfrescoServiceException
     {
         try
         {
@@ -64,7 +62,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             }
             return cf;
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             convertException(e);
         }

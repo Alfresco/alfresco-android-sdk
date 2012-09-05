@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
@@ -50,9 +51,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     protected String baseUrl;
 
-    protected String userIdentifier;
+    private String userIdentifier;
 
-    protected String password;
+    private String password;
 
     /** Root Folder for the specific session. */
     protected Folder rootNode;
@@ -76,50 +77,51 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     // ///////////////////////
     protected void initSettings(String url, String username, String password, Map<String, Serializable> settings)
     {
-        if (settings == null)
+        Map<String, Serializable> tmpSettings = settings;
+        if (tmpSettings == null)
         {
-            settings = new HashMap<String, Serializable>(1);
+            tmpSettings = new HashMap<String, Serializable>(1);
         }
 
         if (username != null && username.length() > 0)
         {
-            settings.put(SessionParameter.USER, username);
+            tmpSettings.put(SessionParameter.USER, username);
             this.userIdentifier = username;
         }
         if (password != null && password.length() > 0)
         {
-            settings.put(SessionParameter.PASSWORD, password);
+            tmpSettings.put(SessionParameter.PASSWORD, password);
             this.password = password;
         }
 
-        if (!settings.containsKey(BASE_URL))
+        if (!tmpSettings.containsKey(BASE_URL))
         {
             baseUrl = url;
-            settings.put(BASE_URL, url);
+            tmpSettings.put(BASE_URL, url);
         }
         else
         {
-            baseUrl = (String) settings.get(BASE_URL);
+            baseUrl = (String) tmpSettings.get(BASE_URL);
         }
 
         // default cache storage
-        if (!settings.containsKey(CACHE_FOLDER))
+        if (!tmpSettings.containsKey(CACHE_FOLDER))
         {
-            settings.put(CACHE_FOLDER, CACHE_FOLDER_PATH);
+            tmpSettings.put(CACHE_FOLDER, CACHE_FOLDER_PATH);
         }
 
-        if (!settings.containsKey(SessionParameter.AUTHENTICATION_PROVIDER_CLASS))
+        if (!tmpSettings.containsKey(SessionParameter.AUTHENTICATION_PROVIDER_CLASS))
         {
-            settings.put(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
+            tmpSettings.put(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
                     "org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl");
         }
 
-        if (!settings.containsKey(AUTHENTICATOR_CLASSNAME))
+        if (!tmpSettings.containsKey(AUTHENTICATOR_CLASSNAME))
         {
-            settings.put(AUTHENTICATOR_CLASSNAME,
+            tmpSettings.put(AUTHENTICATOR_CLASSNAME,
                     "org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl");
         }
-        userParameters = settings;
+        userParameters = tmpSettings;
     }
 
     // ////////////////////////
@@ -127,7 +129,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     // ///////////////////////
     protected Map<String, Serializable> userParameters;
 
-    private Map<String, String> sessionParameters = new HashMap<String, String>(5);
+    private Map<String, String> sessionParameters = new HashMap<String, String>();
 
     private ListingContext lc;
 
@@ -239,7 +241,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     private void addParameterIfExist(String keySettings, String keyParameters)
     {
-        if (hasParameter(keySettings)) sessionParameters.put(keyParameters, (String) getParameter(keySettings));
+        if (hasParameter(keySettings)){
+            sessionParameters.put(keyParameters, (String) getParameter(keySettings));
+        }
     }
 
     private void createAlfrescoCmisSettings()
@@ -247,10 +251,11 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         createCmisSettings();
 
         // Binding with Alfresco Webscript CMIS implementation
-        if (hasParameter(BASE_URL) && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
+        if (hasParameter(BASE_URL) && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL)){
             sessionParameters.put(SessionParameter.ATOMPUB_URL,
                     ((String) getParameter(BASE_URL)).concat(OnPremiseUrlRegistry.BINDING_CMIS));
-
+        }
+           
         // Object Factory
         sessionParameters.put(SessionParameter.OBJECT_FACTORY_CLASS,
                 "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
@@ -261,11 +266,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     {
         createCmisSettings();
 
-        if (!sessionParameters.containsKey(BINDING_URL))
+        if (!sessionParameters.containsKey(BINDING_URL)){
             sessionParameters.put(
                     SessionParameter.ATOMPUB_URL,
                     ((String) getParameter(BASE_URL)).concat(CloudUrlRegistry.BINDING_NETWORK_CMISATOM).replace(
                             CloudUrlRegistry.VARIABLE_NETWORKID, (String) getParameter(CloudSession.CLOUD_NETWORK_ID)));
+        }
 
         // Object Factory
         sessionParameters.put(SessionParameter.OBJECT_FACTORY_CLASS,
@@ -416,9 +422,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
             Constructor<?> t = c.getDeclaredConstructor(AlfrescoSession.class);
             s = (ServiceRegistry) t.newInstance(this);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            throw new AlfrescoServiceException(e.getMessage(), e);
         }
         return s;
     }

@@ -17,27 +17,43 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.services.SiteService;
 
-public class AlphaComparator implements Comparator<Site>
+public class AlphaComparator implements Serializable, Comparator<Site>
 {
 
+    private static final long serialVersionUID = 1L;
     private boolean asc;
+    private String propertySorting;
 
-    public AlphaComparator(boolean asc)
+    public AlphaComparator(boolean asc, String propertySorting)
     {
         super();
         this.asc = asc;
+        this.propertySorting = propertySorting;
     }
 
     public int compare(Site siteA, Site siteB)
     {
-        int b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
+        int b = 0;
+        if (SiteService.SORT_PROPERTY_SHORTNAME.equals(propertySorting)){
+            b = siteA.getShortName().compareToIgnoreCase(siteB.getShortName());
+        } else if (SiteService.SORT_PROPERTY_TITLE.equals(propertySorting)){
+            b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
+        } else {
+            b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
+        }
         if (asc)
+        {
             return b;
+        }
         else
+        {
             return -b;
+        }
     }
 }
