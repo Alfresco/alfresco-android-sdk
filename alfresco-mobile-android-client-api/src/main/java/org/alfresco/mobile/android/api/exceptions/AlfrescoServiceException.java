@@ -31,7 +31,7 @@ public class AlfrescoServiceException extends AlfrescoException
     /**
      * Default constructor.
      */
-   /* public AlfrescoServiceException(String detailsMessage)
+    public AlfrescoServiceException(String detailsMessage)
     {
         super(detailsMessage);
     }
@@ -39,7 +39,7 @@ public class AlfrescoServiceException extends AlfrescoException
     public AlfrescoServiceException(String message, String errorContent)
     {
         super(message, errorContent);
-    }*/
+    }
     
     public AlfrescoServiceException(int errorCode, Throwable e)
     {

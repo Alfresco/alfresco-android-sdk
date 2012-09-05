@@ -36,10 +36,10 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
     /**
      * Default constructor.
      */
-    /*protected AlfrescoException(String detailsMessage)
+    protected AlfrescoException(String detailsMessage)
     {
         super(detailsMessage);
-    }*/
+    }
 
     /**
      * Default constructor.
@@ -56,11 +56,11 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
      * @param message error message
      * @param errorContent error page content
      */
-   /* protected AlfrescoException(String message, String errorContent)
+    protected AlfrescoException(String message, String errorContent)
     {
         super(message);
         this.errorContent = errorContent;
-    }*/
+    }
 
     public AlfrescoException(int errorCode, String message)
     {
