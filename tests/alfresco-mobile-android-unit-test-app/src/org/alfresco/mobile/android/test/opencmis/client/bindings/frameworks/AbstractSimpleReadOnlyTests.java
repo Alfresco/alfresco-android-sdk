@@ -335,7 +335,7 @@ public abstract class AbstractSimpleReadOnlyTests extends AbstractCmisTestCase {
         if (supportsQuery()) {
             String repId = getTestRepositoryId();
 
-            ObjectList rs = getBinding().getDiscoveryService().query(repId, "SELECT * FROM cmis:document", null, null,
+            ObjectList rs = getBinding().getDiscoveryService().query(repId, "SELECT * FROM cmis:document WHERE cmis:name LIKE '%test%' ", null, null,
                     null, null, null, null, null);
             assertNotNull(rs);
 
