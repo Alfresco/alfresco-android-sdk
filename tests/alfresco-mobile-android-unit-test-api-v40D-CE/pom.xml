@@ -17,14 +17,13 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>alfresco-mobile-android-unit-test-api</artifactId>
+	<artifactId>alfresco-mobile-android-unit-test-api-40D-CE</artifactId>
 
 	<packaging>apk</packaging>
-	<name>Alfresco Mobile Android - Tests API</name>
+	<name>Alfresco Mobile Android - Tests API 4.0.D Community Edition</name>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -35,6 +34,53 @@
 					</testPackages>
 				</configuration>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<configuration>
+							<target>
+								<property name="basedir" value="${maven.basedir}" />
+								<property name="project.build.directory" value="${basedir}/target" />
+								<property name="gendir" value="${project.build.directory}/tests-core" />
+								<property name="commons-api"
+									value="${basedir}/../alfresco-mobile-android-unit-test-api" />
+								<property name="sourcefiles" value="src" />
+								<copy todir="${gendir}">
+									<fileset dir="${commons-api}/${sourcefiles}">
+										<include name="**/*.java" />
+										<exclude name="org/alfresco/mobile/android/test/constant/*.java" />
+									</fileset>
+								</copy>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/tests-core</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

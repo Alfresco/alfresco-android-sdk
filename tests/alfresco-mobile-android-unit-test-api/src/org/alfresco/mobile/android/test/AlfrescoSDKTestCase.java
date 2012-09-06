@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.test.constant.ConfigurationConstant;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.content.Context;
@@ -60,12 +61,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
      * file constant.
      */
     protected static final boolean ENABLE_CONFIG_FILE = true;
-    private static final String CMIS_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cmis-config.properties";
-    private static final String ONPREMISE_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/onpremise-config.properties";
 
-    ////////////////////////////////////////////////////////////////////////
+    private static final String CMIS_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
+            + "/alfresco-mobile/cmis-config.properties";
+
+    private static final String ONPREMISE_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
+            + "/alfresco-mobile/" + ConfigurationConstant.ONPREMISE_FILENAME;
+
+    // //////////////////////////////////////////////////////////////////////
     // SERVER TEST CONFIG
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
 
@@ -80,32 +85,35 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public static final String ALFRESCO_CMIS_USER = "admin";
 
     public static final String ALFRESCO_CMIS_PASSWORD = "admin";
-    
+
     protected static final String BINDING_URL = "org.alfresco.mobile.binding.url";
+
     protected static final String BASE_URL = "org.alfresco.mobile.binding.baseurl";
+
     protected static final String USER = "org.alfresco.mobile.credential.user";
+
     protected static final String PASSWORD = "org.alfresco.mobile.credential.password";
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // CONSTANT
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     public static final String ALFRESCO_CMIS_NAME = "Main Repository";
-    
+
     protected static final String FAKE_USERNAME = "FAKE_USERNAME";
+
     protected static final String FAKE_SITENAME = "FAKE_SITENAME";
 
     public static final String CMIS_VERSION = "1.0";
 
     public final static String ROOT_TEST_FOLDER_NAME = "android-mobile-test";
-    
+
     /** Default Site available in Alfresco. */
     public final static String SITENAME = "swsdp";
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Members
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     protected AlfrescoSession alfsession;
-
 
     /**
      * Create a default CMIS Session defined by </br> Constant :
@@ -170,10 +178,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
      * 
      * @return Repository session
      */
-    public RepositorySession createRepositorySession(){
+    public RepositorySession createRepositorySession()
+    {
         return createRepositorySession(null);
     }
-    
+
     public RepositorySession createRepositorySession(Map<String, Serializable> parameters)
     {
         String url = ALFRESCO_CMIS_BASE_URL;
@@ -203,16 +212,19 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         RepositorySession session = null;
         try
         {
-            if (parameters != null){
+            if (parameters != null)
+            {
                 if (parameters.containsKey(USER)) user = (String) parameters.remove(USER);
                 if (parameters.containsKey(PASSWORD)) password = (String) parameters.remove(PASSWORD);
-            } else {
+            }
+            else
+            {
                 parameters = new HashMap<String, Serializable>();
             }
 
             parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
             parameters.put(SessionParameter.READ_TIMEOUT, "180000");
-            
+
             session = RepositorySession.connect(url, user, password, parameters);
         }
         catch (Exception e)
@@ -247,55 +259,55 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     {
         return createNewFolder(alfsession, alfsession.getRootFolder(), ROOT_TEST_FOLDER_NAME, null);
     }
-    
+
     public Folder createUnitTestFolder(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
             return createNewFolder(session, session.getRootFolder(), ROOT_TEST_FOLDER_NAME, null);
-        else if (session instanceof CloudSession)
-            return AlfrescoSDKCloudTestCase.createCloudFolder(alfsession);
+        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.createCloudFolder(alfsession);
         return null;
     }
-    
-    public static String getUnitTestFolderPath(AlfrescoSession session){
+
+    public static String getUnitTestFolderPath(AlfrescoSession session)
+    {
         if (session instanceof RepositorySession)
             return getFolderPath();
-        else if (session instanceof CloudSession)
-            return AlfrescoSDKCloudTestCase.getCloudFolderPath();
+        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.getCloudFolderPath();
         return null;
     }
-    
-    public static String getSampleDataPath(AlfrescoSession session){
+
+    public static String getSampleDataPath(AlfrescoSession session)
+    {
         if (session instanceof RepositorySession)
             return getOnPremiseSampleDataPath();
-        else if (session instanceof CloudSession)
-            return AlfrescoSDKCloudTestCase.getCloudSampleDataFolderPath();
+        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.getCloudSampleDataFolderPath();
         return null;
-        
+
     }
-    
+
     private static String getOnPremiseSampleDataPath()
     {
         return "/Sample data";
     }
 
-    public static String getSiteName(AlfrescoSession session){
+    public static String getSiteName(AlfrescoSession session)
+    {
         if (session instanceof RepositorySession)
             return SITENAME;
-        else if (session instanceof CloudSession)
-            return AlfrescoSDKCloudTestCase.SITENAME;
+        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.SITENAME;
         return null;
     }
-    
-    public static SiteVisibility getSiteVisibility(AlfrescoSession session){
+
+    public static SiteVisibility getSiteVisibility(AlfrescoSession session)
+    {
         if (session instanceof RepositorySession)
             return SiteVisibility.PUBLIC;
-        else if (session instanceof CloudSession)
-            return SiteVisibility.PRIVATE;
+        else if (session instanceof CloudSession) return SiteVisibility.PRIVATE;
         return null;
     }
-    
-    private static String getFolderPath(){
+
+    private static String getFolderPath()
+    {
         return "/" + ROOT_TEST_FOLDER_NAME;
     }
 
@@ -364,7 +376,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             {
                 Assert.fail();
             }
-            //wait(3000);
+            // wait(3000);
         }
     }
 
@@ -406,26 +418,28 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             {
                 e.printStackTrace();
             }
-            docfolderservice.createDocument(root, SAMPLE_DOC_NAME + "-" + i + ".txt", newFolderProps, new ContentFileImpl(f));
-            //wait(3000);
+            docfolderservice.createDocument(root, SAMPLE_DOC_NAME + "-" + i + ".txt", newFolderProps,
+                    new ContentFileImpl(f));
+            // wait(3000);
         }
     }
-    
+
     protected Context getContext()
     {
         return getInstrumentation().getContext();
     }
-    
+
     protected Context getTargetContext()
     {
         return getInstrumentation().getTargetContext();
     }
 
-    protected ContentFile createContentFile(String contentValue){
+    protected ContentFile createContentFile(String contentValue)
+    {
         File f = null;
         byte[] buf = null;
         ByteArrayInputStream input = null;
-        
+
         f = new File(getTargetContext().getCacheDir(), SAMPLE_DOC_NAME + ".txt");
         buf = null;
         try
@@ -438,7 +452,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         {
             e.printStackTrace();
         }
-        
+
         ContentFile cf = new ContentFileImpl(f);
         return cf;
     }
@@ -447,14 +461,17 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     {
 
         DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
-        
+
         AssetManager assetManager = getContext().getAssets();
         ContentFile cf = null;
-        try {
+        try
+        {
             File f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH, assetName);
             IOUtils.copyFile(assetManager.open(assetName), f);
             cf = new ContentFileImpl(f);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
             Assert.fail();
         }
@@ -465,8 +482,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
         return docfolderservice.createDocument(root, assetName, newFolderProps, cf);
     }
-    
-    protected void wait(int milliseconds){
+
+    protected void wait(int milliseconds)
+    {
         try
         {
             Thread.sleep(milliseconds);
@@ -476,17 +494,18 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             ex.printStackTrace();
         }
     }
-    
-    protected boolean isAlfrescoV4(){
+
+    protected boolean isAlfrescoV4()
+    {
         if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return false;
         return (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
-    
-    protected boolean isAlfresco(){
+
+    protected boolean isAlfresco()
+    {
         return RepositoryVersionHelper.isAlfrescoProduct(alfsession);
     }
-    
-    
+
     @Override
     protected void setUp() throws Exception
     {
@@ -494,7 +513,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         Log.d(TAG, "Create Session : " + (alfsession != null));
         initSession();
     }
-    
+
     protected abstract void initSession();
 
     @Override

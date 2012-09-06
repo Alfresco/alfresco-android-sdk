@@ -17,6 +17,7 @@
 		<module>alfresco-mobile-android-unit-test-foundation</module>
 		<module>alfresco-mobile-android-unit-test-api</module>
 		<module>alfresco-mobile-android-unit-test-api-cloud</module>
+		<module>alfresco-mobile-android-unit-test-api-v40D-CE</module>
 	</modules>
 
 	<build>
