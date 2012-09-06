@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
@@ -29,9 +30,13 @@ import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
+
+import android.util.Log;
 
 /**
  * The PersonService can be used to get informations about people.
@@ -59,23 +64,25 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
     /**
      * Retrieves the avatar rendition for the specified username.
      * 
-     * @param username : Username of person
+     * @param personIdentifier : Username of person
      * @return Returns the contentFile associated to the avatar picture.
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    public ContentStream getAvatarStream(String username)
+    public ContentStream getAvatarStream(String personIdentifier)
     {
+        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
+                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
         try
         {
             ContentStream cf = null;
 
-            String url = getAvatarURL(username);
+            String url = getAvatarURL(personIdentifier);
 
             // Alfresco Version before V4
             if (session.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4)
             {
-                Person person = getPerson(username);
+                Person person = getPerson(personIdentifier);
                 url = OnPremiseUrlRegistry.getThumbnailsUrl(session, person.getAvatarIdentifier(),
                         OnPremiseConstant.AVATAR_VALUE);
             }
@@ -109,8 +116,16 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
 
     protected Person computePerson(UrlBuilder url)
     {
-        // read and parse
-        HttpUtils.Response resp = read(url);
+        Log.d("URL", url.toString());
+        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+
+        // check response code
+        if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.PERSON_NOT_FOUND, resp.getErrorContent());
+        } else  if (resp.getResponseCode() != HttpStatus.SC_OK){
+            convertStatusCode(resp);
+        }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 

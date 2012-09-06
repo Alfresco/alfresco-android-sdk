@@ -14,7 +14,8 @@
 	<name>Alfresco Android SDK - Tests (Parent)</name>
 
 	<modules>
-		<module>alfresco-mobile-android-unit-test-app</module>
+	    <module>alfresco-mobile-android-unit-test-foundation</module>
+		<module>alfresco-mobile-android-unit-test-api</module>
 	</modules>
 
 	<profiles>

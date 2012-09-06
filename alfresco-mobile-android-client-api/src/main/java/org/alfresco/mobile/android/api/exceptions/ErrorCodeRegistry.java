@@ -37,6 +37,9 @@ public interface ErrorCodeRegistry
     /** Something happens wrong with the filesystem. */
     int GENERAL_IO = 3;
 
+    // ///////////////////////////////////
+    // SESSION ERRORS
+    // ///////////////////////////////////
     /** Generic error for all session error. */
     int SESSION_GENERIC = 100;
 
@@ -55,10 +58,18 @@ public interface ErrorCodeRegistry
     /** An error happens during the creation of custom service registry. */
     int SESSION_CUSTOM_SERVICEREGISTRY = 106;
 
+    // ///////////////////////////////////
+    // PARSING ERRORS
+    // ///////////////////////////////////
+    /** Generic Parsing Error. */
     int PARSING_GENERIC = 200;
 
+    /** JsonData Empty. */
     int PARSING_JSONDATA_EMPTY = 201;
 
+    // ///////////////////////////////////
+    // DOCUMENT FOLDER ERRORS
+    // ///////////////////////////////////
     int DOCFOLDER_GENERIC = 600;
 
     int DOCFOLDER_PERMISSIONS = 601;
@@ -72,8 +83,7 @@ public interface ErrorCodeRegistry
     int DOCFOLDER_DOCUMENT_NULL = 605;
 
     int DOCFOLDER_NODE_NOT_FOUND = 606;
-    
-    
+
     /**
      * Wrong node type. A folder/Document has been returned instead of
      * document/folder.
@@ -83,8 +93,12 @@ public interface ErrorCodeRegistry
     /** You don't have the permission to execute this action. */
     int DOCFOLDER_NO_PERMISSION = 608;
 
-    
-    
+    // ///////////////////////////////////
+    // PERSON ERRORS
+    // ///////////////////////////////////
+    /** Person not found */
+    int PERSON_NOT_FOUND = 802;
+
     /**
      * Displays a human readable summary of the error code.
      * 
