@@ -55,7 +55,7 @@ public class SimpleReadOnlyTests extends AbstractSimpleReadOnlyTests {
         fTests.add(TEST_TYPES);
         fTests.add(TEST_NAVIGATION);
         fTests.add(TEST_CONTENT_STREAM);
-        fTests.add(TEST_QUERY);
+        //fTests.add(TEST_QUERY);
         fTests.add(TEST_CHECKEDOUT);
         fTests.add(TEST_CONTENT_CHANGES);
     }
