@@ -36,18 +36,6 @@
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- <includes> <include>**/org/alfresco/mobile/android/test/*.java</include> 
-						</includes> -->
-					<excludes>
-						<exclude>**/org/alfresco/mobile/android/test/**/*.java</exclude>
-						<exclude>**/org/apache/chemistry/opencmis/android/*.java</exclude>
-						<exclude>**/org/alfresco/cmis/client/test/*.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
@@ -65,6 +53,7 @@
 								<copy todir="${gendir}">
 									<fileset dir="${commons-api}/${sourcefiles}">
 										<include name="org/alfresco/mobile/android/test/*.java" />
+										<include name="org/alfresco/mobile/android/test/constant/*.java" />
 									</fileset>
 								</copy>
 							</target>
