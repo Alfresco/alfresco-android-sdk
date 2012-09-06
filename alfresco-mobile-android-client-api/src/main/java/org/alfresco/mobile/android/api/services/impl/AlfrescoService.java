@@ -18,10 +18,7 @@
 package org.alfresco.mobile.android.api.services.impl;
 
 import java.io.File;
-import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -246,29 +243,6 @@ public abstract class AlfrescoService
         throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_HTTP_RESP, resp.getErrorContent());
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////////
-    // MESSAGES
-    // /////////////////////////////////////////////////////////////////////////////////////////
-    private static final String BUNDLE_NAME = "org.alfresco.mobile.android.api.utils.messages.messages";
-
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, new Locale("en","US"));
-    
-    protected String getString(String key)
-    {
-        try
-        {
-            if (key != null && key.length() > 0){
-                return RESOURCE_BUNDLE.getString(key);
-            } else {
-                return "";
-            }
-        }
-        catch (MissingResourceException e)
-        {
-            return '!' + key + '!';
-        }
-    }
-    
     // //////////////////////////////////////////////////////////////////////////////////////////
     // CACHE
     // /////////////////////////////////////////////////////////////////////////////////////////

@@ -85,11 +85,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk</groupId>
-			<artifactId>alfresco-mobile-android-client-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android-test</artifactId>
 		</dependency>
@@ -108,7 +103,7 @@
 							<emulator>
 								<avd>14</avd>
 								<wait>30000</wait>
-								<options>-no-window -noaudio -no-skin</options>
+								<options>-no-window -noaudio</options>
 							</emulator>
 							<testPackages>
 								<testPackage>org.alfresco.mobile.android.test</testPackage>

@@ -29,7 +29,7 @@
 							<emulator>
 								<avd>14</avd>
 								<wait>30000</wait>
-								<options>-no-skin</options>
+								<options>-no-window -noaudio</options>
 							</emulator>
 							<testPackages>
 								<testPackage>org.alfresco.mobile.android.test</testPackage>

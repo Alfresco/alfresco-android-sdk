@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
@@ -103,7 +104,7 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         try
         {
             if (personIdentifier == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    getString("ActivityStreamService.0")); }
+                    Messagesl18n.getString("ActivityStreamService.0")); }
             return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
         }
         catch (Exception e)
@@ -145,7 +146,7 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         try
         {
             if (siteIdentifier == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    getString("ActivityStreamService.1")); }
+                    Messagesl18n.getString("ActivityStreamService.1")); }
             return computeActivities(getSiteActivitiesUrl(siteIdentifier, listingContext), listingContext);
         }
         catch (Exception e)

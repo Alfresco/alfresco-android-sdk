@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -91,7 +92,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         try
         {
             if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    getString("CommentService.0")); }
+                    Messagesl18n.getString("CommentService.0")); }
             return computeComment(getCommentsUrl(node, listingContext));
         }
         catch (Exception e)
@@ -117,7 +118,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         try
         {
             if (node == null || content == null) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, getString("CommentService.1")); }
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.1")); }
 
             // build URL
             UrlBuilder url = getCommentsUrl(node, null);
@@ -159,7 +160,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         try
         {
             if (comment == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    getString("CommentService.2")); }
+                    Messagesl18n.getString("CommentService.2")); }
             delete(getCommentUrl(node, comment));
         }
         catch (Exception e)
@@ -178,7 +179,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         try
         {
             if (comment == null || content == null) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, getString("CommentService.3")); }
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.3")); }
 
             // build URL
             UrlBuilder url = getCommentUrl(node, comment);

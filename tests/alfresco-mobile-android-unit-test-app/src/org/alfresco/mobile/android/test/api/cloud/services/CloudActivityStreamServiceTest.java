@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -192,9 +193,9 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
             Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
             Assert.fail();
         }
-        catch (Throwable e)
+        catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
         }
 
 
@@ -204,9 +205,9 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
             Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
             Assert.fail();
         }
-        catch (Throwable e)
+        catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
         }
     }
 }
