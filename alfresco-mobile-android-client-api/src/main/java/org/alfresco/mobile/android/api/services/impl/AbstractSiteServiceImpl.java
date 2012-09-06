@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
@@ -104,7 +103,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         try
         {
             if (session.getPersonIdentifier() == null) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SiteService.username.error")); }
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, getString("SiteService.username.error")); }
 
             return computeSites(getUserSitesUrl(session.getPersonIdentifier(), listingContext), listingContext);
         }
@@ -154,7 +153,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         try
         {
             if (siteIdentifier == null || siteIdentifier.length() == 0) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("SiteService.0")); }
+                    getString("SiteService.0")); }
             
             HttpUtils.Response resp = read(getSiteUrl(siteIdentifier));
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
@@ -181,7 +180,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         try
         {
             if (site == null || site.getShortName() == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("SiteService.0")); }
+                    getString("SiteService.0")); }
             String ref = parseContainer(getDocContainerSiteUrl(site));
             return (Folder) session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(ref);
         }

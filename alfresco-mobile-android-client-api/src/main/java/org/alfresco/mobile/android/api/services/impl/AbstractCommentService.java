@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -68,11 +67,10 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
      * : 10 by default </br> Order : Older first </br>
      * 
      * @param node : Node object (Folder or Document).
-     * @return a list of Comment object.
-     * @ : If node is not defined or If network
-     *             problems occur during the process.
+     * @return a list of Comment object. @ : If node is not defined or If
+     *         network problems occur during the process.
      */
-    public List<Comment> getComments(Node node) 
+    public List<Comment> getComments(Node node)
     {
         return getComments(node, null).getList();
     }
@@ -85,15 +83,15 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
      * 
      * @param node : Node object (Folder or Document).
      * @param listingContext : define characteristics of the result
-     * @return a list of Comment object.
-     * @ : If comment is not defined or if
-     *             network or internal problems occur during the process.
+     * @return a list of Comment object. @ : If comment is not defined or if
+     *         network or internal problems occur during the process.
      */
-    public PagingResult<Comment> getComments(Node node, ListingContext listingContext) 
+    public PagingResult<Comment> getComments(Node node, ListingContext listingContext)
     {
         try
         {
-            if (node == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.0")); }
+            if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                    getString("CommentService.0")); }
             return computeComment(getCommentsUrl(node, listingContext));
         }
         catch (Exception e)
@@ -110,16 +108,16 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
      * 
      * @param node : Node object (Folder or Document).
      * @param content : Comment Content
-     * @return the newly created comment object.
-     * @ : If content or node is not defined or
-     *             if network or internal problems occur during the process.
+     * @return the newly created comment object. @ : If content or node is not
+     *         defined or if network or internal problems occur during the
+     *         process.
      */
-    public Comment addComment(Node node, String content) 
+    public Comment addComment(Node node, String content)
     {
         try
         {
-            if (node == null || content == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("CommentService.1")); }
+            if (node == null || content == null) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, getString("CommentService.1")); }
 
             // build URL
             UrlBuilder url = getCommentsUrl(node, null);
@@ -153,15 +151,15 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     /**
      * Remove the specified comment.
      * 
-     * @param CommentImpl : comment object.
-     * @ : If comment is not defined or if
-     *             network or internal problems occur during the process.
+     * @param CommentImpl : comment object. @ : If comment is not defined or if
+     *            network or internal problems occur during the process.
      */
-    public void deleteComment(Node node, Comment comment) 
+    public void deleteComment(Node node, Comment comment)
     {
         try
         {
-            if (comment == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("CommentService.2")); }
+            if (comment == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                    getString("CommentService.2")); }
             delete(getCommentUrl(node, comment));
         }
         catch (Exception e)
@@ -173,15 +171,14 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
     /**
      * Update a comment content.
      * 
-     * @param comment : new content of a comment.
-     * @
+     * @param comment : new content of a comment. @
      */
-    public Comment updateComment(Node node, Comment comment, String content) 
+    public Comment updateComment(Node node, Comment comment, String content)
     {
         try
         {
-            if (comment == null || content == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("CommentService.3")); }
+            if (comment == null || content == null) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_INVALID_ARG, getString("CommentService.3")); }
 
             // build URL
             UrlBuilder url = getCommentUrl(node, comment);
