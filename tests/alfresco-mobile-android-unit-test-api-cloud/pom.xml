@@ -17,10 +17,10 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>alfresco-mobile-android-unit-test-foundation</artifactId>
+	<artifactId>alfresco-mobile-android-unit-test-api-cloud</artifactId>
 
 	<packaging>apk</packaging>
-	<name>Alfresco Mobile Android - Tests Foundation</name>
+	<name>Alfresco Mobile Android - Tests API Cloud</name>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -30,22 +30,10 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<testPackages>
-						<testPackage>org.alfresco.mobile.android.test</testPackage>
+						<testPackage>org.alfresco.mobile.android.test.api.cloud</testPackage>
 					</testPackages>
 				</configuration>
 				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- <includes> <include>**/org/alfresco/mobile/android/test/*.java</include> 
-						</includes> -->
-					<excludes>
-						<exclude>**/org/alfresco/mobile/android/test/**/*.java</exclude>
-						<exclude>**/org/apache/chemistry/opencmis/android/*.java</exclude>
-						<exclude>**/org/alfresco/cmis/client/test/*.java</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -65,6 +53,7 @@
 								<copy todir="${gendir}">
 									<fileset dir="${commons-api}/${sourcefiles}">
 										<include name="org/alfresco/mobile/android/test/*.java" />
+										<include name="org/alfresco/mobile/android/test/api/services/*.java" />
 									</fileset>
 								</copy>
 							</target>
@@ -118,6 +107,17 @@
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-client-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
+			<artifactId>alfresco-mobile-android-samples-extension</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>

@@ -24,6 +24,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -34,18 +35,6 @@
 					</testPackages>
 				</configuration>
 				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- <includes> <include>**/org/alfresco/mobile/android/test/*.java</include> 
-						</includes> -->
-					<excludes>
-						<exclude>**/org/alfresco/mobile/android/test/**/*.java</exclude>
-						<exclude>**/org/apache/chemistry/opencmis/android/*.java</exclude>
-						<exclude>**/org/alfresco/cmis/client/test/*.java</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -89,41 +78,4 @@
 			<artifactId>android-test</artifactId>
 		</dependency>
 	</dependencies>
-
-
-	<profiles>
-		<profile>
-			<id>emulator-14</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-						<artifactId>android-maven-plugin</artifactId>
-						<configuration>
-							<emulator>
-								<avd>14</avd>
-								<wait>30000</wait>
-								<options>-no-window -noaudio</options>
-							</emulator>
-							<testPackages>
-								<testPackage>org.alfresco.mobile.android.test</testPackage>
-							</testPackages>
-						</configuration>
-						<executions>
-							<execution>
-								<id>startemulator</id>
-								<phase>initialize</phase>
-								<goals>
-									<goal>emulator-start</goal>
-								</goals>
-							</execution>
-						</executions>
-						<extensions>true</extensions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 </project>

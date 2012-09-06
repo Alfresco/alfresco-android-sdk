@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.test;
+package org.alfresco.mobile.android.test.api.cloud;
 
 import android.test.suitebuilder.TestSuiteBuilder;
 import junit.framework.Test;
@@ -23,7 +23,6 @@ import junit.framework.TestSuite;
 
 public class AllTests extends TestSuite
 {
-
     public static Test suite()
     {
         return new TestSuiteBuilder(AllTests.class).includeAllPackagesUnderHere().build();
