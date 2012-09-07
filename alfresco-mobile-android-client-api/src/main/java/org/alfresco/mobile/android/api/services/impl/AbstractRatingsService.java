@@ -20,10 +20,12 @@ package org.alfresco.mobile.android.api.services.impl;
 import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -61,6 +63,8 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      */
     public void like(Node node)
     {
+        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("RatingService.0")); }
         try
         {
             // build URL
@@ -92,6 +96,8 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      */
     public void unlike(Node node)
     {
+        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("RatingService.0")); }
         try
         {
             delete(getUnlikeUrl(node));
@@ -111,6 +117,8 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      */
     public int getLikeCount(Node node)
     {
+        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("RatingService.0")); }
         try
         {
             return computeRatingsCount(getRatingsUrl(node));
@@ -131,6 +139,8 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
      */
     public boolean isLiked(Node node)
     {
+        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("RatingService.0")); }
         try
         {
             return computeIsRated(getRatingsUrl(node));

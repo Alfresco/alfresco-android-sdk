@@ -22,13 +22,16 @@ package org.alfresco.mobile.android.api.exceptions;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoException extends RuntimeException
+public abstract class AlfrescoException extends RuntimeException implements ErrorCodeRegistry
 {
 
     private static final long serialVersionUID = 1L;
 
     /** Content the of the error page returned by server. */
     private String errorContent;
+
+    /** Error Code. */
+    private int errorCode;
 
     /**
      * Default constructor.
@@ -41,17 +44,10 @@ public abstract class AlfrescoException extends RuntimeException
     /**
      * Default constructor.
      */
-    protected AlfrescoException(String detailsMessage, Throwable throwable)
-    {
-        super(detailsMessage, throwable);
-    }
-
-    /**
-     * Default constructor.
-     */
-    protected AlfrescoException(Throwable throwable)
+    protected AlfrescoException(int errorCode, Throwable throwable)
     {
         super(throwable);
+        this.errorCode = errorCode;
     }
 
     /**
@@ -66,6 +62,12 @@ public abstract class AlfrescoException extends RuntimeException
         this.errorContent = errorContent;
     }
 
+    public AlfrescoException(int errorCode, String message)
+    {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
     /**
      * Returns the content of the error page sent by the server
      * 
@@ -75,6 +77,22 @@ public abstract class AlfrescoException extends RuntimeException
     public String getErrorContent()
     {
         return errorContent;
+    }
+
+    /**
+     * Error code send by the API.
+     * 
+     * @return the error code.
+     */
+    public int getErrorCode()
+    {
+        return errorCode;
+    }
+    
+    @Override
+    public String getLabelErrorCode(int errorCode)
+    {
+        return null;
     }
 
 }

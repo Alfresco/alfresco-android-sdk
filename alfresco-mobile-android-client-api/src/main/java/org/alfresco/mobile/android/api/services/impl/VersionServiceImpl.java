@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -31,8 +32,8 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -94,7 +95,7 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
     {
         try
         {
-            if (document == null) { throw new IllegalArgumentException(Messagesl18n.getString("VersionService.0")); }
+            if (document == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("VersionService.0")); }
 
             Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
 

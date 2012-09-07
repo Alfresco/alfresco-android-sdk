@@ -14,8 +14,42 @@
 	<name>Alfresco Android SDK - Tests (Parent)</name>
 
 	<modules>
-		<module>alfresco-mobile-android-unit-test-app</module>
+		<module>alfresco-mobile-android-unit-test-foundation</module>
+		<module>alfresco-mobile-android-unit-test-api</module>
+		<module>alfresco-mobile-android-unit-test-api-cloud</module>
+		<module>alfresco-mobile-android-unit-test-api-v40D-CE</module>
 	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-antrun-plugin</artifactId>
+										<versionRange> [1.5,)</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<profiles>
 		<profile>
@@ -29,7 +63,7 @@
 							<emulator>
 								<avd>14</avd>
 								<wait>30000</wait>
-								<options>-no-skin</options>
+								<options>-no-window -noaudio</options>
 							</emulator>
 							<testPackages>
 								<testPackage>org.alfresco.mobile.android.test</testPackage>

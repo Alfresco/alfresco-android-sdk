@@ -25,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 
 import android.content.Context;
 import android.os.Environment;
@@ -50,7 +51,7 @@ public class StorageManager
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException(e.getMessage(), e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
         }
 
         return folder;
@@ -69,7 +70,7 @@ public class StorageManager
             }
             catch (IOException e)
             {
-                throw new AlfrescoServiceException(e.getMessage(), e);
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
             }
         }
 
@@ -138,7 +139,7 @@ public class StorageManager
         }
         catch (Exception e)
         {
-            throw new AlfrescoServiceException(e.getMessage(), e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
         }
 
         return folder;

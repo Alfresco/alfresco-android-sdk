@@ -33,18 +33,23 @@ public class AlfrescoConnectionException extends AlfrescoException
     /**
      * Default constructor.
      */
-    public AlfrescoConnectionException(String detailsMessage)
+   /* public AlfrescoConnectionException(String detailsMessage)
     {
         super(detailsMessage);
-    }
+    }*/
 
-    public AlfrescoConnectionException(String message, Throwable e)
+    public AlfrescoConnectionException(int errorCode, Throwable e)
     {
-        super(message, e);
+        super(errorCode, e);
     }
 
-    public AlfrescoConnectionException(String message, String errorContent)
+   /* public AlfrescoConnectionException(String message, String errorContent)
     {
         super(message, errorContent);
+    }*/
+    
+    public AlfrescoConnectionException(int errorCode, String message)
+    {
+        super(errorCode, message);
     }
 }

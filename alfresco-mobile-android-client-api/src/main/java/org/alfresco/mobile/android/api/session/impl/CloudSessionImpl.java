@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.CloudRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
@@ -41,12 +43,9 @@ import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
-import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
-import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
@@ -105,7 +104,7 @@ public class CloudSessionImpl extends CloudSession
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_CUSTOM_AUTHENTICATOR, e);
         }
         return s;
     }
@@ -124,7 +123,7 @@ public class CloudSessionImpl extends CloudSession
             // Retrieve & find Home Network or selected network.
             PagingResult<CloudNetwork> networks = getPagingNetworks();
             if (networks == null || networks.getTotalItems() == 0) { throw new AlfrescoConnectionException(
-                    "No Home Network available."); }
+                    ErrorCodeRegistry.SESSION_NO_NETWORK_FOUND, "No Home Network available."); }
 
             String networkIdentifier = null;
             if (hasParameter(CLOUD_NETWORK_ID))
@@ -152,14 +151,7 @@ public class CloudSessionImpl extends CloudSession
             Map<String, String> param = retrieveSessionParameters();
 
             // Create Session with selected network + parameters
-            try
-            {
-                cmisSession = createSession(SessionFactoryImpl.newInstance(), param);
-            }
-            catch (Exception e)
-            {
-                throw new AlfrescoConnectionException(e.getMessage(), e);
-            }
+            cmisSession = createSession(SessionFactoryImpl.newInstance(), param);
 
             // Init Services + Object
             rootNode = new FolderImpl(cmisSession.getRootFolder());
@@ -182,38 +174,8 @@ public class CloudSessionImpl extends CloudSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(e.getMessage(), e);
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
-    }
-
-    private Session createSession(SessionFactory sessionFactory, Map<String, String> param)
-    {
-        try
-        {
-            if (param.get(SessionParameter.REPOSITORY_ID) != null)
-            {
-                return sessionFactory.createSession(param);
-            }
-            else
-            {
-                return sessionFactory.getRepositories(param).get(0).createSession();
-            }
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoConnectionException(e.getMessage(), e);
-        }
-
-    }
-
-    @Override
-    public void disconnect()
-    {
-        this.authenticator = null;
-        this.cmisSession = null;
-        this.repositoryInfo = null;
-        this.rootNode = null;
-        this.services = null;
     }
 
     // //////////////////////////////////////////////////////////////
@@ -298,7 +260,7 @@ public class CloudSessionImpl extends CloudSession
         else
         {
             Log.d("error", resp.getErrorContent());
-            return null;
+            throw new AlfrescoServiceException(ErrorCodeRegistry.SESSION_SIGNUP_ERROR, resp.getErrorContent());
         }
     }
 

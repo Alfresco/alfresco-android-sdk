@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -35,6 +38,10 @@ public class PublicAPIResponse
     @SuppressWarnings("unchecked")
     public PublicAPIResponse(HttpUtils.Response resp)
     {
+        if (resp == null || resp.getStream() == null){
+            throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_JSONDATA_EMPTY, Messagesl18n.getString("ErrorCodeRegistry.PARSING_JSONDATA_EMPTY"));
+        }
+        
         // List
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 

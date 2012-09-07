@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -35,8 +37,8 @@ import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
-import org.alfresco.mobile.android.api.utils.Messagesl18n;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
@@ -113,7 +115,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
     {
         try
         {
-            if (node == null) { throw new IllegalArgumentException(Messagesl18n.getString("TaggingService.0")); }
+            if (node == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("TaggingService.0")); }
 
             String link = CloudUrlRegistry.getTagsUrl((CloudSession) session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
@@ -143,7 +145,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
     {
         try
         {
-            if (node == null || tags == null) { throw new IllegalArgumentException(
+            if (node == null || tags == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
                     Messagesl18n.getString("TaggingService.1")); }
 
             String link = CloudUrlRegistry.getTagsUrl((CloudSession) session, node.getIdentifier());
