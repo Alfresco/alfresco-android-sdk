@@ -91,6 +91,14 @@
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android-test</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
 			<artifactId>alfresco-mobile-android-samples-app</artifactId>
 			<version>${project.version}</version>
@@ -103,14 +111,6 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
 		</dependency>
 	</dependencies>
 </project>
