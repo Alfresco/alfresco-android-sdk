@@ -35,36 +35,6 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
         initSession();
     }
 
-    // FIXME Error server side with SOLR
-    public void testCRUDNode()
-    {
-        try
-        {
-            super.testCRUDNode();
-            Assert.fail();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Assert.assertTrue(true);
-        }
-    }
-
-    // FIXME Error server side with SOLR
-    public void testNavigationPaging()
-    {
-        try
-        {
-            super.testNavigationPaging();
-            Assert.fail();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            Assert.assertTrue(true);
-        }
-    }
-
     public void testRenditionExtractionAfterUpload()
     {
         // Create Session with extract metadata and create thumbnail true.
