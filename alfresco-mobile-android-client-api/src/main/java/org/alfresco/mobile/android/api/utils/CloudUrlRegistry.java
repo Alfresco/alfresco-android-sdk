@@ -155,7 +155,7 @@ public final class CloudUrlRegistry
     public static String getTagsUrl(CloudSession session, String nodeRef)
     {
         return createPrefix(session)
-                .append(URL_TAGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeRef))).toString();
+                .append(URL_TAGS.replace(VARIABLE_NODEID,nodeRef)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -208,14 +208,14 @@ public final class CloudUrlRegistry
     public static String getCommentsUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session).append(
-                URL_COMMENTS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier))).toString();
+                URL_COMMENTS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getCommentUrl(CloudSession session, String nodeIdentifier, String commentIdentifier)
     {
         return createPrefix(session).append(
                 URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_COMMENTID,
-                        NodeRefUtils.getCleanIdentifier(commentIdentifier))).toString();
+                        commentIdentifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -226,13 +226,13 @@ public final class CloudUrlRegistry
     public static String getRatingsUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session).append(
-                URL_RATINGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier))).toString();
+                URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getUnlikeUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session)
-                .append(URL_RATINGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier)))
+                .append(URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier))
                 .append("/").append(CloudConstant.LIKES_VALUE).toString();
     }
 
