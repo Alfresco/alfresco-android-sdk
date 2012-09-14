@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -32,6 +34,7 @@ import org.alfresco.mobile.android.api.services.impl.AbstractCommentService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
@@ -81,6 +84,8 @@ public class CloudCommentServiceImpl extends AbstractCommentService
 
     protected UrlBuilder getCommentUrl(Node node, Comment comment)
     {
+        if (isObjectNull(node)) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("CommentService.2")); }
         return new UrlBuilder(CloudUrlRegistry.getCommentUrl((CloudSession) session, node.getIdentifier(),
                 comment.getIdentifier()));
     }

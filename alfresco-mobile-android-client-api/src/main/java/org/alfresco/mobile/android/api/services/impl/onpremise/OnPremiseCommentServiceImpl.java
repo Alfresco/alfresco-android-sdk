@@ -66,15 +66,15 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
     {
         String link = OnPremiseUrlRegistry.getCommentsUrl(session, node.getIdentifier());
         UrlBuilder url = new UrlBuilder(link);
+        
+
         if (listingContext != null)
         {
-            if (SORT_PROPERTY_CREATED_AT.equals(listingContext.getSortProperty()))
-            {
-                url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
-            }
-
+            url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
             url.addParameter(OnPremiseConstant.PARAM_STARTINDEX, listingContext.getSkipCount());
             url.addParameter(OnPremiseConstant.PARAM_PAGESIZE, listingContext.getMaxItems());
+        } else {
+            url.addParameter(OnPremiseConstant.PARAM_REVERSE, true);
         }
         return url;
     }

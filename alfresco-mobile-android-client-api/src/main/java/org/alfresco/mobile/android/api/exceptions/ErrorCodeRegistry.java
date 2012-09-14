@@ -92,6 +92,10 @@ public interface ErrorCodeRegistry
 
     /** You don't have the permission to execute this action. */
     int DOCFOLDER_NO_PERMISSION = 608;
+    
+    /** Content Already Exist. */
+    int DOCFOLDER_CONTENT_ALREADY_EXIST = 609;
+
 
     // ///////////////////////////////////
     // PERSON ERRORS

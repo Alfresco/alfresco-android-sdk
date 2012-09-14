@@ -34,5 +34,18 @@
 			</excludes>
 		</fileSet>
 	</fileSets>
+	
+	<dependencySets>
+		<dependencySet>
+			<includes>
+			    <include>org.slf4j:slf4j-android:jar:1.6.1-RC1</include>
+				<include>org.apache.chemistry.opencmis:chemistry-opencmis-android-client:jar:${chemistry.opencmis.version}</include>
+				<include>org.alfresco.cmis.client:alfresco-opencmis-extension:jar:${alfresco.opencmis.version}</include>
+				<include>${project.groupId}:alfresco-mobile-android-client-api:jar:${project.version}</include>
+				<include>${project.groupId}:alfresco-mobile-android-async:jar:${project.version}</include>
+			</includes>
+			<outputDirectory>/libs</outputDirectory>
+		</dependencySet>
+	</dependencySets>
 
 </assembly>

@@ -131,7 +131,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
             return;
         }
         // Create Root Test Folder
-        Folder unitTestFolder = createUnitTestRootFolder();
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
 
         // Retrieve Service
         customRatingsService = (CustomRatingsService) alfsession.getServiceRegistry().getRatingService();

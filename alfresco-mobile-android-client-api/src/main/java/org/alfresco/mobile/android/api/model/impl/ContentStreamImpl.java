@@ -44,12 +44,16 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
      * 
      * @param content
      */
-    public ContentStreamImpl(org.apache.chemistry.opencmis.commons.data.ContentStream content)
+    public ContentStreamImpl(String fileName, org.apache.chemistry.opencmis.commons.data.ContentStream content)
     {
         this.length = content.getLength();
         this.mimeType = content.getMimeType();
         this.inputStream = content.getStream();
-        this.fileName = content.getFileName();
+        if(content.getFileName() != null && content.getFileName().trim().length() > 0){
+            this.fileName = content.getFileName();
+        } else {
+            this.fileName = fileName;
+        }
     }
 
     /**
@@ -57,6 +61,14 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
      * @param mimetype
      * @param length
      */
+    public ContentStreamImpl(String fileName, InputStream stream, String mimetype, long length)
+    {
+        this.fileName = fileName;
+        this.length = length;
+        this.mimeType = mimetype;
+        this.inputStream = stream;
+    }
+    
     public ContentStreamImpl(InputStream stream, String mimetype, long length)
     {
         this.length = length;

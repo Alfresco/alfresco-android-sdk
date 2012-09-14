@@ -26,14 +26,17 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
@@ -44,6 +47,9 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
  */
 public class CommentServiceTest extends AlfrescoSDKTestCase
 {
+
+    // TODO
+    //
 
     protected CommentService commentService;
 
@@ -86,6 +92,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Folder folder = createNewFolder(alfsession, unitTestFolder, COMMENT_FOLDER, properties);
 
         // Check comment not available
+        // No comments are available on the specified node
         List<Comment> comments = commentService.getComments(folder);
         Assert.assertNotNull(comments);
         Assert.assertTrue(comments.isEmpty());
@@ -93,11 +100,12 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Add Comment
         // ////////////////////////////////////////////////////
-
         // Add comment
         commentService.addComment(folder, COMMENT_CONTENT);
 
         // Check comment available
+        // 1 comment available on the specified node, added by the logged in
+        // user
         comments = commentService.getComments(folder);
         Assert.assertNotNull(comments);
         Assert.assertFalse(comments.isEmpty());
@@ -121,6 +129,58 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(comments.isEmpty());
 
         // ////////////////////////////////////////////////////
+        // Add Comment Special character
+        // ////////////////////////////////////////////////////
+        // Comments contain Foregin language characters: ß
+        commentService.addComment(folder, FOREIGN_CHARACTER);
+        comments = commentService.getComments(folder);
+        Assert.assertNotNull(comments);
+        Assert.assertFalse(comments.isEmpty());
+        Assert.assertEquals(1, comments.size());
+
+        comment = comments.get(0);
+        Assert.assertEquals(FOREIGN_CHARACTER, comment.getContent());
+        Assert.assertNotNull(comment.getCreatedBy());
+
+        // Update comment with foreign language character
+        commentService.updateComment(folder, comment, FOREIGN_CHARACTER_DOUBLE_BYTE);
+        comments = commentService.getComments(folder);
+        Assert.assertNotNull(comments);
+        Assert.assertFalse(comments.isEmpty());
+        Assert.assertEquals(1, comments.size());
+
+        comment = comments.get(0);
+        Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, comment.getContent());
+
+        commentService.deleteComment(folder, comment);
+
+        // Comments contain Foregin language characters: Double Byte : 平
+        commentService.addComment(folder, FOREIGN_CHARACTER_DOUBLE_BYTE);
+        comments = commentService.getComments(folder);
+        Assert.assertNotNull(comments);
+        Assert.assertFalse(comments.isEmpty());
+        Assert.assertEquals(1, comments.size());
+
+        comment = comments.get(0);
+        Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, comment.getContent());
+        Assert.assertNotNull(comment.getCreatedBy());
+
+        commentService.deleteComment(folder, comment);
+
+        // ////////////////////////////////////////////////////
+        // Add Comment without content
+        // ////////////////////////////////////////////////////
+        try
+        {
+            commentService.addComment(folder, "");
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+        }
+
+        // ////////////////////////////////////////////////////
         // Add Comments
         // ////////////////////////////////////////////////////
         commentService.addComment(folder, COMMENT_CONTENT + " 1 ");
@@ -128,20 +188,20 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         commentService.addComment(folder, COMMENT_CONTENT + " 3 ");
 
         // Check comment available
-        // TODO REverse en params via order sur le temps !
         comments = commentService.getComments(folder);
         Assert.assertNotNull(comments);
         Assert.assertFalse(comments.isEmpty());
         Assert.assertEquals(3, comments.size());
 
-        // reverse true;
-        // Assert.assertEquals(COMMENT_CONTENT + " 1 ",
-        // comments.get(0).getContent());
-        // Assert.assertEquals(COMMENT_CONTENT + " 2 ",
-        // comments.get(1).getContent());
-
         Assert.assertEquals(comments.get(0).getCreatedBy(), comments.get(1).getCreatedBy());
         Assert.assertEquals(comments.get(1).getCreatedBy(), comments.get(2).getCreatedBy());
+
+        if (isAlfrescoV4() || !isOnPremise(alfsession))
+        {
+            Assert.assertEquals(COMMENT_CONTENT + " 3 ", comments.get(0).getContent());
+            Assert.assertEquals(COMMENT_CONTENT + " 2 ", comments.get(1).getContent());
+            Assert.assertEquals(COMMENT_CONTENT + " 1 ", comments.get(2).getContent());
+        }
 
         // ////////////////////////////////////////////////////
         // Delete Comments
@@ -208,7 +268,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // Paging Comments
         // ////////////////////////////////////////////////////
         for (int i = 0; i < 20; i++)
+        {
             commentService.addComment(folder, COMMENT_CONTENT + " " + i + " ");
+        }
 
         ListingContext lc = new ListingContext();
         lc.setMaxItems(5);
@@ -236,6 +298,39 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(20, pagingComments.getTotalItems());
         Assert.assertEquals(0, pagingComments.getList().size());
         Assert.assertFalse(pagingComments.hasMoreItems());
+
+        // ////////////////////////////////////////////////////
+        // Incorrect Listing context
+        // ////////////////////////////////////////////////////
+        // Incorrect settings in listingContext: Such as inappropriate maxItems
+        // (-1)
+        lc.setSkipCount(0);
+        lc.setMaxItems(-1);
+        pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(20, pagingComments.getTotalItems());
+        Assert.assertEquals(20, pagingComments.getList().size());
+        Assert.assertFalse(pagingComments.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate maxItems
+        // (0)
+        lc.setSkipCount(0);
+        lc.setMaxItems(0);
+        pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(20, pagingComments.getTotalItems());
+        Assert.assertEquals(20, pagingComments.getList().size());
+        Assert.assertFalse(pagingComments.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate skipCount
+        // (-1)
+        lc.setSkipCount(-1);
+        lc.setMaxItems(5);
+        pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(20, pagingComments.getTotalItems());
+        Assert.assertEquals(5, pagingComments.getList().size());
+        Assert.assertTrue(pagingComments.hasMoreItems());
     }
 
     public void testCRUDCommentOnDocument()
@@ -352,16 +447,35 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(updatedComment.canDelete());
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // CONSTANT
+    // //////////////////////////////////////////////////////////////////////
+    protected static final String SAMPLE_DATA_COMMENT_FOLDER = "Comment";
+
+    protected static final String SAMPLE_DATA_COMMENT_FILE = "file.txt";
+
+    protected static final String SAMPLE_DATA_PATH_COMMENT_FILE = "/" + SAMPLE_DATA_COMMENT_FOLDER + "/"
+            + SAMPLE_DATA_COMMENT_FILE;
+
+    // //////////////////////////////////////////////////////////////////////
+    // FAILURE TESTS
+    // //////////////////////////////////////////////////////////////////////
     /**
-     * Test to check siteService methods error case.
+     * Failure Tests for CommentService public Method.
      */
     public void testCommentsMethodsError()
     {
+
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        // Empty comment object
         Comment commentError = new CommentImpl();
 
         // ////////////////////////////////////////////////////
-        // Error on list comment
+        // Error on getComments()
         // ////////////////////////////////////////////////////
+        // Node does not exist (anymore?)
         try
         {
             commentService.getComments(null);
@@ -369,7 +483,25 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+        }
+
+        // TODO Remove it in a future when having multiple cloud account
+        AlfrescoSession session = null;
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
+            Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+            try
+            {
+                session.getServiceRegistry().getCommentService().getComments(doc);
+                Assert.fail();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+            }
         }
 
         // ////////////////////////////////////////////////////
@@ -382,7 +514,27 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+        }
+
+        try
+        {
+            commentService.addComment(unitTestFolder, "");
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+        }
+
+        try
+        {
+            commentService.addComment(unitTestFolder, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -395,7 +547,14 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            if (isOnPremise(alfsession))
+            {
+                Assert.assertEquals(ErrorCodeRegistry.GENERAL_GENERIC, e.getErrorCode());
+            }
+            else
+            {
+                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            }
         }
 
         try
@@ -405,7 +564,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -418,8 +577,14 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
-        }
+            if (isOnPremise(alfsession))
+            {
+                Assert.assertEquals(ErrorCodeRegistry.GENERAL_GENERIC, e.getErrorCode());
+            }
+            else
+            {
+                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            }        }
 
         try
         {
@@ -428,7 +593,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(true);
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
         }
     }
 

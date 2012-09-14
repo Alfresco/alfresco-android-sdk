@@ -40,6 +40,11 @@ import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
@@ -175,7 +180,6 @@ public abstract class AlfrescoService
     // //////////////////////////////////////////////////////////////////////////////////////////
     // UTILS
     // /////////////////////////////////////////////////////////////////////////////////////////
-
     /**
      * Wrap and transform cmisobject into NodeObject
      * 
@@ -184,7 +188,8 @@ public abstract class AlfrescoService
      */
     protected Node convertNode(CmisObject object)
     {
-        if (object == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("AlfrescoService.1")); }
+        if (object == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
+                Messagesl18n.getString("AlfrescoService.1")); }
 
         /* determine type */
         switch (object.getBaseTypeId())
@@ -194,8 +199,19 @@ public abstract class AlfrescoService
             case CMIS_FOLDER:
                 return new FolderImpl(object);
             default:
-                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
+                        Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
         }
+    }
+
+    protected boolean isObjectNull(Object o)
+    {
+        return (o == null);
+    }
+
+    protected boolean isStringNull(String s)
+    {
+        return (s == null || s.length() == 0 || s.trim().length() == 0);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -218,11 +234,27 @@ public abstract class AlfrescoService
         {
             throw e;
         }
+        catch (CmisConstraintException e) {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+        }
+        catch (CmisContentAlreadyExistsException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e);
+        }
+        catch (CmisPermissionDeniedException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e);
+        }
+        catch (CmisInvalidArgumentException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+        }
         catch (CmisBaseException cmisException)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, cmisException.getErrorContent());
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, cmisException);
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException e)
+        {
             throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
         }
         catch (Exception e)
@@ -280,6 +312,5 @@ public abstract class AlfrescoService
             convertException(e);
         }
         return null;
-
     }
 }

@@ -40,7 +40,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
     public void testVersionService() throws AlfrescoException
     {
         // Create Root Test Folder
-        Folder unitTestFolder = createUnitTestRootFolder();
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
 
         if (RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return;
 

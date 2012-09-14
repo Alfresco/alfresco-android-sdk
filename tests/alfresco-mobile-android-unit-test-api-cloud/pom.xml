@@ -54,6 +54,7 @@
 									<fileset dir="${commons-api}/${sourcefiles}">
 										<include name="org/alfresco/mobile/android/test/*.java" />
 										<include name="org/alfresco/mobile/android/test/api/services/*.java" />
+										<include name="org/alfresco/mobile/android/test/api/model/*.java" />
 										<include name="org/alfresco/mobile/android/test/constant/*.java" />
 									</fileset>
 								</copy>

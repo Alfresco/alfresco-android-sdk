@@ -14,6 +14,11 @@ import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
+/**
+ * Test class for PersonService.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class PersonServiceTest extends AlfrescoSDKTestCase
 {
     protected PersonService personService;
@@ -30,7 +35,7 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
         {
             alfsession = createRepositorySession();
         }
-        
+
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         personService = alfsession.getServiceRegistry().getPersonService();
