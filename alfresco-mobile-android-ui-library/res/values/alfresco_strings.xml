@@ -99,21 +99,24 @@
 
     <!-- Actions -->
     <string name="action_create">Create</string>
-    <string name="action_open">Open in..</string>
+    <string name="action_open">Open in</string>
     <string name="action_comments">Comments</string>
     <string name="action_versions">Version History</string>
     <string name="action_tags">Tags</string>
-    <string name="action_add">Add..</string>
+    <string name="action_add">Add</string>
     <string name="action_create_folder">Create folder</string>
     <string name="action_downlaod">Download</string>
-    <string name="action_upload">Upload..</string>
+    <string name="action_upload">Upload file</string>
+    <string name="action_photo">Take photo</string>
+    <string name="action_video">Make video</string>
+    <string name="action_audio">Record audio</string>
     <string name="action_search">Search</string>
     <string name="action_share">Share</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_delete">Delete</string>
     <string name="action_edit">Edit</string>
     <string name="action_like">Like</string>
-    <string name="action_save_back">Save back..</string>
+    <string name="action_save_back">Save back</string>
     <string name="action_save_back_description"> has been modified. Do you want to upload this new version ?</string>
     <string name="action_save_back_sucess"> has been uploaded successfully.</string>
     <string name="action_delete_desc">Are you sure you want to delete this item :</string>
