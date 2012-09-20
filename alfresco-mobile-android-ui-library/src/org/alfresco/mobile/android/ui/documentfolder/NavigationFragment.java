@@ -65,6 +65,11 @@ public abstract class NavigationFragment extends BaseListFragment implements
         emptyListMessageId = R.string.empty_child;
     }
 
+    public Folder getParent()
+    {
+        return parentFolder;
+    }
+    
     public static Bundle createBundleArgs(Folder folder)
     {
         return createBundleArgs(folder, null, null);
