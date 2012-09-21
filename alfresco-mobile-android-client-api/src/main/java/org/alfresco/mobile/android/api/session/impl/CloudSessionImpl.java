@@ -17,7 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.impl;
 
-import java.io.OutputStream;
+import static org.alfresco.mobile.android.api.constants.OAuthConstant.CLOUD_URL;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.CloudRepositoryInfoImpl;
@@ -36,25 +36,16 @@ import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2AuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
-import org.alfresco.mobile.android.api.utils.JsonDataWriter;
-import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
-import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
-import org.apache.http.HttpStatus;
-
-import android.util.Log;
-import static org.alfresco.mobile.android.api.constants.OAuthConstant.CLOUD_URL;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -248,72 +239,4 @@ public class CloudSessionImpl extends CloudSession
     {
         currentNetwork = network;
     }
-
-    // TODO Replace by official one.
-    private static final String SIGNUP_CLOUD_URL = "http://devapis.alfresco.com";
-
-    // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
-
-    @SuppressWarnings("unchecked")
-    public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
-            String apiKey)
-    {
-        UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getCloudSignupUrl(SIGNUP_CLOUD_URL));
-
-        // prepare json data
-        JSONObject jo = new JSONObject();
-        jo.put(CloudConstant.CLOUD_EMAIL_VALUE, emailAddress);
-        jo.put(CloudConstant.CLOUD_FIRSTNAME_VALUE, firstName);
-        jo.put(CloudConstant.CLOUD_LASTNAME_VALUE, lastName);
-        jo.put(CloudConstant.CLOUD_PASSWORD_VALUE, password);
-        jo.put(CloudConstant.CLOUD_KEY, apiKey);
-        jo.put(CloudConstant.CLOUD_SOURCE_VALUE, "mobile-android");
-
-        final JsonDataWriter formData = new JsonDataWriter(jo);
-
-        // send and parse
-        HttpUtils.Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(url,
-                formData.getContentType(), new HttpUtils.Output()
-                {
-                    public void write(OutputStream out) throws Exception
-                    {
-                        formData.write(out);
-                    }
-                });
-
-        if (resp.getErrorContent() == null)
-        {
-            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-            return CloudSignupRequestImpl.parsePublicAPIJson((Map<String, Object>) json
-                    .get(CloudConstant.CLOUD_REGISTRATION));
-        }
-        else
-        {
-            Log.d("error", resp.getErrorContent());
-            throw new AlfrescoServiceException(ErrorCodeRegistry.SESSION_SIGNUP_ERROR, resp.getErrorContent());
-        }
-    }
-
-    public static boolean checkAccount(CloudSignupRequest signupRequest)
-    {
-        UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getVerifiedAccountUrl(signupRequest, SIGNUP_CLOUD_URL));
-
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, null);
-        if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
-        {
-            return true;
-        }
-        else if (resp.getErrorContent() == null)
-        {
-            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-            CloudSignupRequestImpl request = (CloudSignupRequestImpl) CloudSignupRequestImpl.parsePublicAPIJson(json);
-            return request.isActivated() && request.isRegistered();
-        }
-        else
-        {
-            Log.d("error", resp.getErrorContent());
-            return false;
-        }
-    }
-
 }

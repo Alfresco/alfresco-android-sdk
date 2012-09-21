@@ -25,7 +25,6 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
 import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 
 public class CloudSessionTest extends AlfrescoSDKCloudTestCase
@@ -116,21 +115,5 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
         Assert.assertNotNull(network.getSubscriptionLevel());
         Assert.assertNotNull(network.isHomeNetwork());
         Assert.assertNotNull(network.isPaidNetwork());
-    }
-    
-    
-    public final static String firstName = "firstName";
-    public final static String lastName = "lastName";
-    public final static String emailAddress = "jeanmarie.pascal@neuf.fr";
-    public final static String password = "password";
-    public final static String apiKey = "apiKey";
-
-    
-    public void testSignUp(){
-        CloudSignupRequest request = CloudSession.signup(firstName, lastName, emailAddress, password, apiKey);
-        Assert.assertNotNull(request);
-        
-        Boolean b = CloudSession.isAccountVerified(request);
-        Assert.assertFalse(b);
     }
 }

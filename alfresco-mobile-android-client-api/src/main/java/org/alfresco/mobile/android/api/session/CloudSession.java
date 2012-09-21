@@ -42,34 +42,6 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     public static final String CLOUD_NETWORK_ID = "org.alfresco.mobile.bindings.api.cloud.network.id";
 
     /**
-     * Registers a new user for an account on the Alfresco in the cloud server.
-     * 
-     * @param firstName
-     * @param lastName
-     * @param emailAddress
-     * @param password
-     * @param apiKey
-     * @return
-     */
-    public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
-            String apiKey)
-    {
-        return CloudSessionImpl.signup(firstName, lastName, emailAddress, password, apiKey);
-    }
-
-    /**
-     * Determines whether an account represented by a previous signup request
-     * has been verified yet.
-     * 
-     * @param signupRequest
-     * @return
-     */
-    public static boolean isAccountVerified(CloudSignupRequest signupRequest)
-    {
-        return CloudSessionImpl.checkAccount(signupRequest);
-    }
-
-    /**
      * Connects to the Alfresco in the Cloud server in the context of the users
      * home network.
      * 

@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
 
 /**
  * List of all alfresco specific url used inside the SDK.
@@ -49,30 +48,6 @@ public final class CloudUrlRegistry
     public static final String PREFIX_PUBLIC_API = "/public/alfresco/versions/1";
 
     public static final String BINDING_NETWORK_CMISATOM = "/{networkId}/public/cmis/versions/1.0/atom/";
-
-    // ///////////////////////////////////////////////////////////////////////////////
-    // CLOUD ACCOUNT
-    // //////////////////////////////////////////////////////////////////////////////
-
-    public static final String CLOUD_SIGNUP = "/alfresco/service/internal/cloud/accounts/signupqueue";
-
-    public static final String VARIABLE_ACCOUNTID = "{accountid}";
-
-    public static final String VARIABLE_ACCOUNTKEY = "{accountkey}";
-
-    public static final String CLOUD_SIGNUP_ACCOUNT = CLOUD_SIGNUP + "/{accountid}?key={accountkey}";
-
-    public static String getCloudSignupUrl(String baseUrl)
-    {
-        return new StringBuilder(baseUrl).append(CLOUD_SIGNUP).toString();
-    }
-
-    public static String getVerifiedAccountUrl(CloudSignupRequest request, String baseUrl)
-    {
-        return new StringBuilder(baseUrl).append(
-                CLOUD_SIGNUP_ACCOUNT.replace(VARIABLE_ACCOUNTID, request.getIdentifier()).replace(VARIABLE_ACCOUNTKEY,
-                        request.getRegistrationKey())).toString();
-    }
 
     // ///////////////////////////////////////////////////////////////////////////////
     // SITES
