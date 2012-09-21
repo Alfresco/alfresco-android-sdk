@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.services.impl.onpremise;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.impl.AbstractRatingsService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -50,11 +51,13 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getRatingsUrl(Node node)
     {
         return new UrlBuilder(OnPremiseUrlRegistry.getRatingsUrl(session, node.getIdentifier()));
     }
 
+    /** {@inheritDoc} */
     protected JSONObject getRatingsObject()
     {
         JSONObject jo = new JSONObject();
@@ -63,6 +66,7 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
         return jo;
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUnlikeUrl(Node node)
     {
         return new UrlBuilder(OnPremiseUrlRegistry.getUnlikeUrl(session, node.getIdentifier()));
@@ -75,7 +79,7 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
     protected int computeRatingsCount(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         Map<String, Object> j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
@@ -95,7 +99,7 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
     protected boolean computeIsRated(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         Map<String, Object> j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);

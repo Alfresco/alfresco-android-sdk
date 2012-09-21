@@ -99,8 +99,6 @@ public class DocumentTest extends AlfrescoSDKTestCase
         docs = docfolderservice.getDocuments(folder);
         Assert.assertEquals(1, docs.size());
 
-        GregorianCalendar referenceCalendar = new GregorianCalendar();
-        referenceCalendar.setTime(new Date());
 
         // Check Properties
         Assert.assertNotNull(doc.getIdentifier());
@@ -109,9 +107,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, doc.getDescription());
         Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getType());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR), doc.getCreatedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR), doc.getModifiedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
         Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
@@ -207,9 +205,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
             props.put(PropertyIds.NAME, "");
             docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // Delete Document
@@ -224,9 +222,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertNull(doc.getDescription());
         Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getType());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR), doc.getCreatedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR), doc.getModifiedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
         Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);

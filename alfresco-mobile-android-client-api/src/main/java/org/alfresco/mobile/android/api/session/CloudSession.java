@@ -22,12 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
 /**
- * DRAFT Represents a connection to the Alfresco Cloud repository as a specific
- * user.
+ * Represents a connection to the Alfresco Cloud repository as a specific user.
  * 
  * @author Jean Marie Pascal
  */
@@ -69,34 +70,28 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     }
 
     /**
-     * Connects the given user to the Alfresco in the cloud server in the
-     * context of the users home network.
+     * Connects to the Alfresco in the Cloud server in the context of the users
+     * home network.
      * 
-     * @param emailAddress
-     * @param password
-     * @param apiKey
+     * @param oauthData
      * @param parameters
      * @return
      */
-    public static CloudSession connect(String emailAddress, String password, String apiKey,
-            Map<String, Serializable> parameters)
+    public static CloudSession connect(OAuthData oauthData, Map<String, Serializable> parameters)
     {
-        return new CloudSessionImpl(emailAddress, password, parameters);
+        return new CloudSessionImpl(oauthData, parameters);
     }
 
     /**
      * Connects the given user to the Alfresco in the cloud server in the
      * context of the given network.
      * 
-     * @param emailAddress
-     * @param password
-     * @param apiKey
+     * @param oauthData
      * @param networkId
      * @param parameters
      * @return
      */
-    public static CloudSession connect(String emailAddress, String password, String apiKey, String networkId,
-            Map<String, Serializable> parameters)
+    public static CloudSession connect(OAuth2DataImpl oauthData, String networkId, Map<String, Serializable> parameters)
     {
         Map<String, Serializable> tmpParameters = parameters;
         if (tmpParameters == null)
@@ -104,20 +99,16 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
             tmpParameters = new HashMap<String, Serializable>();
         }
         tmpParameters.put(CLOUD_NETWORK_ID, networkId);
-        return new CloudSessionImpl(emailAddress, password, tmpParameters);
+        return new CloudSessionImpl(oauthData, parameters);
     }
 
     /**
      * Returns the list of networks the current user has access to.
-     * 
-     * @return
      */
     public abstract List<CloudNetwork> getNetworks();
 
     /**
      * Returns the current network for the session.
-     * 
-     * @return
      */
     public abstract CloudNetwork getNetwork();
 

@@ -37,6 +37,11 @@ public class CloudNetworkImpl implements CloudNetwork
 
     private GregorianCalendar creationTime;
 
+    /**
+     * Parse a public API Response to create a CloudNetwork object.
+     * @param json : JsonResponse from the Public API
+     * @return CloudNetwork object
+     */
     @SuppressWarnings("unchecked")
     public static CloudNetworkImpl parsePublicAPIJson(Map<String, Object> json)
     {
@@ -64,30 +69,35 @@ public class CloudNetworkImpl implements CloudNetwork
         return network;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getIdentifier()
     {
         return identifier;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getSubscriptionLevel()
     {
         return subscriptionLevel;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPaidNetwork()
     {
         return isPaidNetwork;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isHomeNetwork()
     {
         return isHomeNetwork;
     }
 
+    /** {@inheritDoc} */
     @Override
     public GregorianCalendar getCreatedAt()
     {

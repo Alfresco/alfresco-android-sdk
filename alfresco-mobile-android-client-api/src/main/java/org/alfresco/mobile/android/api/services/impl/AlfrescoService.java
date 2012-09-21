@@ -18,11 +18,15 @@
 package org.alfresco.mobile.android.api.services.impl;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoErrorContent;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.exceptions.impl.CloudErrorContent;
+import org.alfresco.mobile.android.api.exceptions.impl.OnPremiseErrorContent;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Node;
@@ -31,6 +35,8 @@ import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -43,7 +49,6 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
@@ -93,7 +98,7 @@ public abstract class AlfrescoService
      * @param url : requested URL. @ : if network or internal problems occur
      *            during the process.
      */
-    protected HttpUtils.Response read(UrlBuilder url)
+    protected HttpUtils.Response read(UrlBuilder url, int errorCode)
     {
         Log.d("URL", url.toString());
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
@@ -101,7 +106,7 @@ public abstract class AlfrescoService
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            convertStatusCode(resp);
+            convertStatusCode(resp, errorCode);
         }
 
         return resp;
@@ -111,7 +116,7 @@ public abstract class AlfrescoService
      * Performs a POST on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected HttpUtils.Response post(UrlBuilder url, String contentType, HttpUtils.Output writer)
+    protected HttpUtils.Response post(UrlBuilder url, String contentType, HttpUtils.Output writer, int errorCode)
     {
         // make the call
         HttpUtils.Response resp = HttpUtils.invokePOST(url, contentType, writer, getSessionHttp());
@@ -119,7 +124,7 @@ public abstract class AlfrescoService
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
         {
-            convertStatusCode(resp);
+            convertStatusCode(resp, errorCode);
         }
 
         return resp;
@@ -129,7 +134,7 @@ public abstract class AlfrescoService
      * Performs a DELETE on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected void delete(UrlBuilder url)
+    protected void delete(UrlBuilder url, int errorCode)
     {
         // make the call
         HttpUtils.Response resp = HttpUtils.invokeDELETE(url, getSessionHttp());
@@ -137,7 +142,7 @@ public abstract class AlfrescoService
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_NO_CONTENT && resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            convertStatusCode(resp);
+            convertStatusCode(resp, errorCode);
         }
 
     }
@@ -147,14 +152,14 @@ public abstract class AlfrescoService
      * result. @ : if network or internal problems occur during the process.
      */
     protected HttpUtils.Response put(UrlBuilder url, String contentType, Map<String, String> headers,
-            HttpUtils.Output writer)
+            HttpUtils.Output writer, int errorCode)
     {
         HttpUtils.Response resp = HttpUtils.invokePUT(url, contentType, headers, writer, getSessionHttp());
 
         // check response code
         if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299))
         {
-            convertStatusCode(resp);
+            convertStatusCode(resp, errorCode);
         }
 
         return resp;
@@ -165,11 +170,6 @@ public abstract class AlfrescoService
      *         the http request.
      */
     protected BindingSession getSessionHttp()
-    {
-        return getBindingSessionHttp(session);
-    }
-
-    public static BindingSession getBindingSessionHttp(AlfrescoSession session)
     {
         BindingSession s = new SessionImpl();
         s.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
@@ -188,8 +188,8 @@ public abstract class AlfrescoService
      */
     protected Node convertNode(CmisObject object)
     {
-        if (object == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("AlfrescoService.1")); }
+        if (isObjectNull(object)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
 
         /* determine type */
         switch (object.getBaseTypeId())
@@ -204,14 +204,48 @@ public abstract class AlfrescoService
         }
     }
 
+    /**
+     * Utils method to check if an object is null.
+     * 
+     * @param o : object to check
+     * @return true if the object is null.
+     */
     protected boolean isObjectNull(Object o)
     {
         return (o == null);
     }
 
+    /**
+     * Utils method to check if a string objec is null or empty.
+     * 
+     * @param s : String to check
+     * @return true if the string is null/empty.
+     */
     protected boolean isStringNull(String s)
     {
         return (s == null || s.length() == 0 || s.trim().length() == 0);
+    }
+
+    /**
+     * Utils method to check if a list is null/empty.
+     * 
+     * @param l : object to check
+     * @return true if the list is null or empty.
+     */
+    @SuppressWarnings("rawtypes")
+    protected boolean isListNull(List l)
+    {
+        return (l == null || l.isEmpty());
+    }
+
+    protected boolean isOnPremiseSession()
+    {
+        return (session instanceof AlfrescoSession);
+    }
+
+    protected boolean isCloudSession()
+    {
+        return (session instanceof CloudSession);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -221,8 +255,9 @@ public abstract class AlfrescoService
      * Catch all underlying CMIS or not exception and throw them as
      * {@link AlfrescoServiceException}
      * 
-     * @param t : exceptions catched @ : Reasons why the requested response code
-     *            is not valid.
+     * @param t : exceptions catched
+     * @throw AlfrescoServiceException : Reasons why the requested response code
+     *        is not valid.
      */
     protected static void convertException(Exception t)
     {
@@ -232,10 +267,11 @@ public abstract class AlfrescoService
         }
         catch (AlfrescoException e)
         {
-            throw e;
+            throw (AlfrescoException) t;
         }
-        catch (CmisConstraintException e) {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+        catch (CmisConstraintException e)
+        {
+            throw new IllegalArgumentException(e);
         }
         catch (CmisContentAlreadyExistsException e)
         {
@@ -247,7 +283,7 @@ public abstract class AlfrescoService
         }
         catch (CmisInvalidArgumentException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+            throw new IllegalArgumentException(e);
         }
         catch (CmisBaseException cmisException)
         {
@@ -255,7 +291,7 @@ public abstract class AlfrescoService
         }
         catch (IllegalArgumentException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+            throw e;
         }
         catch (Exception e)
         {
@@ -264,15 +300,56 @@ public abstract class AlfrescoService
     }
 
     /**
-     * Throws exception if http response doesn't match the expected response
-     * code.
+     * Try to convert error response from repository into high level
+     * ErrorContent object. This object allow developper to retrieve information
+     * on the exception.
      * 
-     * @param resp : http response. @ : Reasons why the requested response code
-     *            is not valid.
+     * @param resp : http response.
+     * @param serviceErrorCode : service from which the error occurs.
      */
-    public static void convertStatusCode(HttpUtils.Response resp)
+    public void convertStatusCode(HttpUtils.Response resp, int serviceErrorCode)
     {
-        throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_HTTP_RESP, resp.getErrorContent());
+        AlfrescoErrorContent er = null;
+        if (session instanceof RepositorySession)
+        {
+            try
+            {
+                er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+            }
+            catch (Exception ee)
+            {
+                // No format...
+            }
+        }
+        else if (session instanceof CloudSession)
+        {
+            try
+            {
+                er = CloudErrorContent.parseJson(resp.getErrorContent());
+                if (er == null){
+                    er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+                }
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+                }
+                catch (Exception ee)
+                {
+                    // No format...
+                }
+            }
+        }
+        if (er != null)
+        {
+            throw new AlfrescoServiceException(serviceErrorCode, er);
+        }
+        else
+        {
+            throw new AlfrescoServiceException(serviceErrorCode, resp.getErrorContent());
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -282,6 +359,16 @@ public abstract class AlfrescoService
 
     protected static final int CONTENT_CACHE = 2;
 
+    /**
+     * Allow to save a contentStream inside the devices file system. The content
+     * is saved as cache file inside a cache folder. It's possible to determine
+     * the subfolders.
+     * 
+     * @param contentStream : Content stream of any content
+     * @param cacheFileName : Name of the cache file
+     * @param storageType : Determine in which subfolders the content is stored
+     * @return ContentFile associated to the cache file.
+     */
     protected ContentFile saveContentStream(ContentStream contentStream, String cacheFileName, int storageType)
 
     {

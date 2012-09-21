@@ -212,5 +212,18 @@ public interface OnPremiseConstant
     String PARAM_PAGESIZE = "pageSize";
 
     String PARAM_REVERSE = "reverse";
+    
+    // ERROR
+    String CODE_VALUE = "code";
+    String MESSAGE_VALUE = "message";
+    String EXCEPTION_VALUE = "exception";
+    String CALLSTACK_VALUE = "callstack";
+
+
+
+
+
+
+
 
 }

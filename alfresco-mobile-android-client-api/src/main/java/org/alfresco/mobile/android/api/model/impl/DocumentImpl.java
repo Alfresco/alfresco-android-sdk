@@ -83,7 +83,7 @@ public class DocumentImpl extends NodeImpl implements Document
      */
     public Boolean isLatestVersion()
     {
-        return getPropertyValue(PropertyIds.IS_LATEST_MAJOR_VERSION);
+        return getPropertyValue(PropertyIds.IS_LATEST_VERSION);
     }
 
     // ////////////////////////////////////////////////////

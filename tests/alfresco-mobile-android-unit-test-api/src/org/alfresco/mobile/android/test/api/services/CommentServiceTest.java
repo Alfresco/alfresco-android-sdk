@@ -41,24 +41,28 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
- * Test class for Comment Service.
+ * Test class for CommentService. This test requires an Alfresco session and the
+ * Sample Data 'Cloud folder"
  * 
  * @author Jean Marie Pascal
  */
 public class CommentServiceTest extends AlfrescoSDKTestCase
 {
 
-    // TODO
-    //
-
+    /** Alfresco Comment Service. */
     protected CommentService commentService;
 
+    /** Alfresco/CMIS Document Folder Service. */
     protected DocumentFolderService docfolderservice;
 
+    // ////////////////////////////////////////////////////////////////////////////////////
+    // / CONSTANTS
+    // ////////////////////////////////////////////////////////////////////////////////////
     protected static final String COMMENT_CONTENT = "This is a comment made by unit test.";
 
     protected static final String COMMENT_FOLDER = "CommentTestFolder";
 
+    /** {@inheritDoc} */
     protected void initSession()
     {
         if (alfsession == null || alfsession instanceof CloudSession)
@@ -74,9 +78,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     }
 
     /**
-     * Simple test to check Alfresco Comment Service.
+     * All Tests for CommentService public methods which don't create an error.
      * 
-     * @throws AlfrescoServiceException
+     * @Requirement 7S1, 7S2, 7S4, 7S6, 7S7
      */
     public void testCRUDCommentService() throws AlfrescoServiceException
     {
@@ -175,9 +179,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             commentService.addComment(folder, "");
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -221,10 +225,6 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // Sleep 5 seconds to enable isUpdate Flag
         wait(5000);
 
-        // reverse true;
-        // Assert.assertEquals(COMMENT_CONTENT + " 3 ",
-        // comments.get(0).getContent());
-
         Comment updatedComment = commentService.updateComment(folder, comments.get(0), COMMENT_CONTENT);
 
         // Check comment
@@ -245,7 +245,13 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(updatedComment.canDelete());
     }
 
-    public void testPagingCommentService() throws AlfrescoServiceException
+    /**
+     * All Tests for CommentService public listing methods which don't create an
+     * error.
+     * 
+     * @Requirement 8F3
+     */
+    public void testPagingCommentService()
     {
 
         // ////////////////////////////////////////////////////
@@ -302,6 +308,18 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Incorrect Listing context
         // ////////////////////////////////////////////////////
+        // Incorrect settings in listingContext: Such as inappropriate
+        // sortProperty
+        // (-1)
+        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_TITLE);
+        lc.setSkipCount(0);
+        lc.setMaxItems(10);
+        pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(20, pagingComments.getTotalItems());
+        Assert.assertEquals(10, pagingComments.getList().size());
+        Assert.assertTrue(pagingComments.hasMoreItems());
+
         // Incorrect settings in listingContext: Such as inappropriate maxItems
         // (-1)
         lc.setSkipCount(0);
@@ -396,12 +414,6 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertFalse(comments.isEmpty());
         Assert.assertEquals(3, comments.size());
 
-        // reverse true;
-        // Assert.assertEquals(COMMENT_CONTENT + " 1 ",
-        // comments.get(0).getContent());
-        // Assert.assertEquals(COMMENT_CONTENT + " 2 ",
-        // comments.get(1).getContent());
-
         Assert.assertEquals(comments.get(0).getCreatedBy(), comments.get(1).getCreatedBy());
         Assert.assertEquals(comments.get(1).getCreatedBy(), comments.get(2).getCreatedBy());
 
@@ -422,10 +434,6 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Sleep 5 seconds to enable isUpdate Flag
         wait(5000);
-
-        // reverse true;
-        // Assert.assertEquals(COMMENT_CONTENT + " 3 ",
-        // comments.get(0).getContent());
 
         Comment updatedComment = commentService.updateComment(doc, comments.get(0), COMMENT_CONTENT);
 
@@ -448,49 +456,49 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // CONSTANT
-    // //////////////////////////////////////////////////////////////////////
-    protected static final String SAMPLE_DATA_COMMENT_FOLDER = "Comment";
-
-    protected static final String SAMPLE_DATA_COMMENT_FILE = "file.txt";
-
-    protected static final String SAMPLE_DATA_PATH_COMMENT_FILE = "/" + SAMPLE_DATA_COMMENT_FOLDER + "/"
-            + SAMPLE_DATA_COMMENT_FILE;
-
-    // //////////////////////////////////////////////////////////////////////
     // FAILURE TESTS
     // //////////////////////////////////////////////////////////////////////
     /**
-     * Failure Tests for CommentService public Method.
+     * All Tests for CommentsService public methods which create an error.
+     * 
+     * @Requirement 7F2, 8F1, 8F2
      */
     public void testCommentsMethodsError()
     {
-
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
         // Empty comment object
         Comment commentError = new CommentImpl();
 
+        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
         // ////////////////////////////////////////////////////
-        // Error on getComments()
+        // Error/Faillure on getComments()
         // ////////////////////////////////////////////////////
         // Node does not exist (anymore?)
+        try
+        {
+            commentService.getComments(deletedDocument);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
+        }
+
         try
         {
             commentService.getComments(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
-        // TODO Remove it in a future when having multiple cloud account
         AlfrescoSession session = null;
-        if (isOnPremise(alfsession))
+        if (isOnPremise())
         {
-            // User does not have access / privileges to the specified node
+            // User does not have access / priviledges to the specified node
             session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
             Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
             try
@@ -500,7 +508,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             }
             catch (AlfrescoServiceException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+                Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
             }
         }
 
@@ -512,9 +520,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             commentService.addComment(null, COMMENT_CONTENT);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -522,9 +530,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             commentService.addComment(unitTestFolder, "");
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -532,9 +540,18 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             commentService.addComment(unitTestFolder, null);
             Assert.fail();
         }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        try
+        {
+            commentService.addComment(deletedDocument, SAMPLE_DATA_COMMENT_FILE);
+        }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -551,10 +568,10 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             {
                 Assert.assertEquals(ErrorCodeRegistry.GENERAL_GENERIC, e.getErrorCode());
             }
-            else
-            {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
-            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
         }
 
         try
@@ -562,9 +579,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             commentService.updateComment(null, null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -581,19 +598,20 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             {
                 Assert.assertEquals(ErrorCodeRegistry.GENERAL_GENERIC, e.getErrorCode());
             }
-            else
-            {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
-            }        }
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
 
         try
         {
             commentService.deleteComment(null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
     }
 

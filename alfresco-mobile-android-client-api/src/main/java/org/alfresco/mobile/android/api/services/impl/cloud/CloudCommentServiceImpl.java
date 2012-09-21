@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -39,15 +38,7 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * CommentService allows managing comments to any node inside an Alfresco
- * repository. </br> There are various methods relating to the CommentService,
- * including the ability to:
- * <ul>
- * <li>Manage comments against nodes</li>
- * <li>Get existing comments</li>
- * <li>Post new comments</li>
- * <li>Delete comments</li>
- * </ul>
+ * Specific implementation of CommentService for Public Cloud API.
  * 
  * @author Jean Marie Pascal
  */
@@ -64,6 +55,7 @@ public class CloudCommentServiceImpl extends AbstractCommentService
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext)
     {
         String link = CloudUrlRegistry.getCommentsUrl((CloudSession) session, node.getIdentifier());
@@ -77,15 +69,17 @@ public class CloudCommentServiceImpl extends AbstractCommentService
     }
 
     @SuppressWarnings("unchecked")
+    /** {@inheritDoc} */
     protected Comment parseData(Map<String, Object> json)
     {
         return CommentImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.ENTRY_VALUE));
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getCommentUrl(Node node, Comment comment)
     {
-        if (isObjectNull(node)) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("CommentService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         return new UrlBuilder(CloudUrlRegistry.getCommentUrl((CloudSession) session, node.getIdentifier(),
                 comment.getIdentifier()));
     }
@@ -94,11 +88,11 @@ public class CloudCommentServiceImpl extends AbstractCommentService
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
+    /** {@inheritDoc} */
     protected PagingResult<Comment> computeComment(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url);
-
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Comment> result = new ArrayList<Comment>();

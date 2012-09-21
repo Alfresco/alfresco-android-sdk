@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication;
 
-
+/**
+ * Implementation of Basic AuthenticationProvider.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface BasicAuthenticationProvider extends AuthenticationProvider
 {
 

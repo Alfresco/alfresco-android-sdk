@@ -27,11 +27,16 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
+import org.alfresco.mobile.android.api.model.impl.NodeImpl;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.TaggingService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
@@ -45,7 +50,11 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
 
     protected TaggingService taggingService;
 
+    protected DocumentFolderService docfolderservice;
+
     protected static final String TAG_FOLDER = "TaggingServiceTestFolder";
+
+    protected static final String SAMPLE_DATA_PATH_DOCFOLDER_FOLDER = "/Tags";
 
     protected int totalItems = -1;
 
@@ -54,12 +63,14 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         if (alfsession == null || alfsession instanceof CloudSession)
         {
             alfsession = createRepositorySession();
-        } 
-        
+        }
+
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         taggingService = alfsession.getServiceRegistry().getTaggingService();
         Assert.assertNotNull(taggingService);
+        docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
+        Assert.assertNotNull(docfolderservice);
     }
 
     /**
@@ -110,6 +121,42 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertFalse(pagingTags.hasMoreItems());
 
         // ////////////////////////////////////////////////////
+        // Incorrect Listing context
+        // ////////////////////////////////////////////////////
+        // Incorrect settings in listingContext: Such as inappropriate
+        // maxItems
+        // (-1)
+        lc.setSkipCount(0);
+        lc.setMaxItems(-1);
+        pagingTags = taggingService.getAllTags(lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(getTotalItems(tags.size()), pagingTags.getTotalItems());
+        Assert.assertEquals(tags.size(), pagingTags.getList().size());
+        Assert.assertFalse(pagingTags.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate
+        // maxItems
+        // (0)
+        lc.setSkipCount(0);
+        lc.setMaxItems(0);
+        pagingTags = taggingService.getAllTags(lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(getTotalItems(tags.size()), pagingTags.getTotalItems());
+        Assert.assertEquals(tags.size(), pagingTags.getList().size());
+        Assert.assertFalse(pagingTags.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate
+        // skipCount
+        // (-1)
+        lc.setSkipCount(-1);
+        lc.setMaxItems(2);
+        pagingTags = taggingService.getAllTags(lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(getTotalItems(tags.size()), pagingTags.getTotalItems());
+        Assert.assertEquals(2, pagingTags.getList().size());
+        Assert.assertTrue(pagingTags.hasMoreItems());
+
+        // ////////////////////////////////////////////////////
         // Check and Add Tags
         // ////////////////////////////////////////////////////
         tags = taggingService.getTags(folder);
@@ -136,8 +183,9 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(tags);
         Assert.assertEquals(3, tags.size());
 
-        // Add new tag
+        // Add new tag twice
         addTags.clear();
+        addTags.add("new");
         addTags.add("new");
         taggingService.addTags(folder, addTags);
 
@@ -168,9 +216,164 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertFalse(pagingTags.hasMoreItems());
 
         // ////////////////////////////////////////////////////
+        // Incorrect Listing context
+        // ////////////////////////////////////////////////////
+        // Incorrect settings in listingContext: Such as inappropriate
+        // maxItems
+        // (-1)
+        lc.setSkipCount(0);
+        lc.setMaxItems(-1);
+        pagingTags = taggingService.getTags(folder, lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(tags.size(), pagingTags.getTotalItems());
+        Assert.assertEquals(tags.size(), pagingTags.getList().size());
+        Assert.assertFalse(pagingTags.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate
+        // maxItems
+        // (0)
+        lc.setSkipCount(0);
+        lc.setMaxItems(0);
+        pagingTags = taggingService.getTags(folder, lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(tags.size(), pagingTags.getTotalItems());
+        Assert.assertEquals(tags.size(), pagingTags.getList().size());
+        Assert.assertFalse(pagingTags.hasMoreItems());
+
+        // Incorrect settings in listingContext: Such as inappropriate
+        // skipCount
+        // (-1)
+        lc.setSkipCount(-1);
+        lc.setMaxItems(2);
+        pagingTags = taggingService.getTags(folder, lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(tags.size(), pagingTags.getTotalItems());
+        Assert.assertEquals(2, pagingTags.getList().size());
+        Assert.assertTrue(pagingTags.hasMoreItems());
+
+        // ////////////////////////////////////////////////////
         // Remove Tags
         // ////////////////////////////////////////////////////
+    }
 
+    /**
+     * Test to check siteService methods error case.
+     */
+    public void testTaggingServiceMethodsError()
+    {
+
+        // ////////////////////////////////////////////////////
+        // Error on getSite()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            taggingService.getTags(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            taggingService.getTags(new NodeImpl());
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        // TODO Remove it in a future when having multiple cloud account
+        AlfrescoSession session = null;
+        Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+        Assert.assertNotNull("Comment file is null" , doc);
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
+            try
+            {
+                session.getServiceRegistry().getTaggingService().getTags(doc);
+                Assert.fail();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
+            }
+        }
+
+        try
+        {
+            taggingService.addTags(null, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            taggingService.addTags(doc, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        List<String> tags = new ArrayList<String>(1);
+        try
+        {
+            taggingService.addTags(doc, tags);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        try
+        {
+            tags.add("(*, ?)");
+            taggingService.addTags(doc, tags);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
+        }
+
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            try
+            {
+                tags.clear();
+                tags.add("Alfresco123");
+                session.getServiceRegistry().getTaggingService().addTags(doc, tags);
+                Assert.fail();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
+            }
+            
+            //Read Only
+            Folder f = (Folder) session.getServiceRegistry().getDocumentFolderService()
+            .getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER);
+            try
+            {
+                session.getServiceRegistry().getTaggingService().addTags(f, tags);
+                Assert.fail();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
+            }
+        }
     }
 
     protected void addTags(Folder folder)

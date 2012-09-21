@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -33,11 +34,18 @@ import org.apache.http.HttpStatus;
 public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderServiceImpl
 {
 
+    /**
+     * Default Constructor. Only used inside ServiceRegistry.
+     * 
+     * @param repositorySession : Repository Session.
+     */
     public OnPremiseDocumentFolderServiceImpl(AlfrescoSession repositorySession)
     {
         super(repositorySession);
     }
 
+    @Override
+    /** {@inheritDoc} */
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type)
     {
         try
@@ -52,7 +60,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             }
             else if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
-                convertStatusCode(resp);
+                convertStatusCode(resp, ErrorCodeRegistry.DOCFOLDER_GENERIC);
                 cf = null;
             }
             else

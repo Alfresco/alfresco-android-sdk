@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -140,7 +141,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     protected PagingResult<Site> computeSites(UrlBuilder url, boolean isAllSite)
     {
 
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Site> result = new ArrayList<Site>();
@@ -162,7 +163,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     protected String parseContainer(String link)
     {
-        HttpUtils.Response resp = read(new UrlBuilder(link));
+        HttpUtils.Response resp = read(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         Map<String, Object> data = null;

@@ -18,11 +18,34 @@
 package org.alfresco.mobile.android.api.session.authentication;
 
 /**
- * DRAFT
+ * Class to embed informations about OAuth context.
  * 
  * @author Jean Marie Pascal
- */ 
-public interface CloudAuthenticationProvider extends AuthenticationProvider
+ */
+public interface OAuthData
 {
+    /**
+     * Returns the API key.
+     */
+    public String getApiKey();
 
+    /**
+     * Returns the API secret.
+     */
+    public String getApiSecret();
+
+    /**
+     * Returns the access token that can be used to make requests.
+     */
+    public String getAccessToken();
+
+    /**
+     * Returns the refresh token that can be used to get a new access token.
+     */
+    public String getRefreshToken();
+
+    /**
+     * Returns the redirect URL associated with the API key.
+     */
+    //public String getRedirectUrl();
 }

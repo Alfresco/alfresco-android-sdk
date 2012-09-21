@@ -25,8 +25,12 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.RatingService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
@@ -42,7 +46,11 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
 
     protected RatingService likeService;
 
+    protected DocumentFolderService docFolderService;
+
     protected static final String LIKE_FOLDER = "likeServiceTestFolder";
+    
+    protected AlfrescoSession session = null;
 
     protected void initSession()
     {
@@ -50,12 +58,15 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         {
             alfsession = createRepositorySession();
         }
-        
+
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         likeService = alfsession.getServiceRegistry().getRatingService();
+        docFolderService = alfsession.getServiceRegistry().getDocumentFolderService();
         if (alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
             Assert.assertNotNull(likeService);
+        }
     }
 
     /**
@@ -98,19 +109,37 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         likeService.like(folder);
         Assert.assertEquals(1, likeService.getLikeCount(folder));
         Assert.assertTrue(likeService.isLiked(folder));
-
+        
+        
+        // ////////////////////////////////////////////////////
+        // Add Like with other user
+        // ////////////////////////////////////////////////////
+        if (isOnPremise(alfsession))
+        {
+            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
+            session.getServiceRegistry().getRatingService().like(folder);
+            
+            Assert.assertEquals(2, likeService.getLikeCount(folder));
+            Assert.assertTrue(likeService.isLiked(folder));
+        }
         // ////////////////////////////////////////////////////
         // Remove Like
         // ////////////////////////////////////////////////////
         likeService.unlike(folder);
-        Assert.assertEquals(0, likeService.getLikeCount(folder));
+        if (isOnPremise(alfsession))
+        {
+            Assert.assertEquals(1, likeService.getLikeCount(folder));
+        } else {
+            Assert.assertEquals(0, likeService.getLikeCount(folder));
+        }
         Assert.assertFalse(likeService.isLiked(folder));
-        
+
         checkSecondUnlike(folder);
     }
-    
-    
-    protected void checkSecondUnlike(Folder folder){
+
+    //Error if unlike a node already liked.
+    protected void checkSecondUnlike(Folder folder)
+    {
         try
         {
             likeService.unlike(folder);
@@ -122,11 +151,135 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         }
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // FAILURE TESTS
+    // //////////////////////////////////////////////////////////////////////
+    /**
+     * Failure Tests for CommentService public Method.
+     */
+    public void testLikeServiceMethodsError()
+    {
+        // ////////////////////////////////////////////////////
+        // Error on like()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            likeService.like(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        Node doc = null;
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            //FIXME But it works ! 
+            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
+            doc = docFolderService.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+            try
+            {
+                session.getServiceRegistry().getRatingService().like(doc);
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.fail();
+                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+            }
+        }
+
+        // ////////////////////////////////////////////////////
+        // Error on unlike()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            likeService.unlike(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        if (isOnPremise(alfsession))
+        {
+            try
+            {
+                session.getServiceRegistry().getRatingService().unlike(doc);
+                Assert.fail();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertEquals(ErrorCodeRegistry.RATING_GENERIC, e.getErrorCode());
+            }
+        }
+
+        // ////////////////////////////////////////////////////
+        // Error on getLikeCount()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            likeService.getLikeCount(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            //FIXME But it works ! 
+            try
+            {
+                session.getServiceRegistry().getRatingService().getLikeCount(doc);
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.fail();
+                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+            }
+        }
+
+        // ////////////////////////////////////////////////////
+        // Error on isLiked()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            likeService.isLiked(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        if (isOnPremise(alfsession))
+        {
+            // User does not have access / privileges to the specified node
+            //FIXME But it works ! 
+            try
+            {
+                session.getServiceRegistry().getRatingService().isLiked(doc);
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.fail();
+                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+            }
+        }
+
+    }
+
     @Override
     protected void tearDown() throws Exception
     {
         alfsession = null;
         likeService = null;
+        docFolderService = null;
         super.tearDown();
     }
 

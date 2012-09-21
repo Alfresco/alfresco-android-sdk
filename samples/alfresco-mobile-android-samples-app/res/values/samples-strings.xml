@@ -14,8 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
--->
+   limitations under the License.-->
 <resources>
 
     <!-- Application -->
@@ -27,6 +26,10 @@
     <string name="api_reference_title">API Reference</string>
     <string name="api_reference_url">http://docs.alfresco.com/mobile_sdk_android_preview/index.jsp</string>
     <string name="learn_more_url">http://www.alfresco.com/products/mobile</string>
+    <!-- Choose Server -->
+    <string name="choose_server_title">Server Type</string>
+    <string name="server_onpremise">Repository</string>
+    <string name="server_cloud">Cloud</string>
     <!-- Menu Screen -->
     <string name="sample_title">Select Sample</string>
     <string name="sample_browse_company_home_option">Browse Company Home</string>
@@ -104,6 +107,7 @@
     <string name="required">Required</string>
     <string name="dialog_wait">Please wait</string>
     <string name="contact_server_progress">Contacting your server&#8230;</string>
+    <string name="validation_creadentials">Validation of your credentials&#8230;</string>
     <string name="document_actions">Actions</string>
 
 </resources>

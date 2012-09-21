@@ -48,7 +48,7 @@ public final class CloudUrlRegistry
 
     public static final String PREFIX_PUBLIC_API = "/public/alfresco/versions/1";
 
-    public static final String BINDING_NETWORK_CMISATOM = "/alfresco/a/{networkId}/public/cmis/versions/1.0/atom/";
+    public static final String BINDING_NETWORK_CMISATOM = "/{networkId}/public/cmis/versions/1.0/atom/";
 
     // ///////////////////////////////////////////////////////////////////////////////
     // CLOUD ACCOUNT
@@ -125,7 +125,7 @@ public final class CloudUrlRegistry
 
     public static String getUserNetworks(String baseUrl)
     {
-        return new StringBuilder(baseUrl).append("/alfresco/a").toString();
+        return new StringBuilder(baseUrl).toString();
     }
 
     public static String getUserNetworks(CloudSession session, String username)
@@ -276,8 +276,6 @@ public final class CloudUrlRegistry
     private static StringBuilder createPrefix(CloudSession session, String networkIdentifier)
     {
         StringBuilder sb = new StringBuilder(session.getBaseUrl());
-        sb.append("/alfresco");
-        sb.append("/a");
         sb.append("/");
         if (networkIdentifier != null)
         {

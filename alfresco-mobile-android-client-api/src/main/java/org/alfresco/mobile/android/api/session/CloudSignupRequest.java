@@ -2,6 +2,11 @@ package org.alfresco.mobile.android.api.session;
 
 import java.util.GregorianCalendar;
 
+/**
+ * Represents a request from a user to sign up to Alfresco Cloud.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface CloudSignupRequest
 {
 

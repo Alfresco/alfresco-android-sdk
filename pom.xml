@@ -16,7 +16,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Alfresco Android SDK (Parent)</name>
+	<name>Alfresco Mobile Android SDK (Parent)</name>
 	<description>Android SDK for using  Alfresco API for OnPremise and Cloud</description>
 	<url>http://www.alfresco.com/products/mobile</url>
 	<inceptionYear>2012</inceptionYear>
@@ -307,11 +307,6 @@
 
 
 	<repositories>
-		<repository>
-			<id>alfresco-internals</id>
-			<name>Alfresco Internal Repositories</name>
-			<url>https://artifacts.alfresco.com/nexus/content/groups/internal/</url>
-		</repository>
 		<repository>
 			<id>apache-repository</id>
 			<name>Apache Maven Repository</name>

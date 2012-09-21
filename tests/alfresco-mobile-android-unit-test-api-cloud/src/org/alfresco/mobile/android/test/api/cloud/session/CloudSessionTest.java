@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.test.api.cloud.session;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -35,7 +35,6 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
     protected void initSession()
     {
         // TODO Auto-generated method stub
-        
     }
     
     /**
@@ -45,10 +44,9 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
     {
         try
         {
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BASE_URL, CLOUD_BASE_URL);
+            Map<String, Serializable> settings = AlfrescoSDKCloudTestCase.getCloudParams(null);
 
-            CloudSession session = CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  settings);
+            CloudSession session = CloudSession.connect(null, settings);
 
             // Check informations has been collected from repository
             Assert.assertNotNull(session);
@@ -56,7 +54,7 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
 
             // Base Url
             Assert.assertNotNull(session.getBaseUrl());
-            Assert.assertEquals(CLOUD_BASE_URL, session.getBaseUrl());
+            Assert.assertEquals(settings.get(BASE_URL), session.getBaseUrl());
         }
         catch (Exception e)
         {
@@ -69,7 +67,7 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
     {
         try
         {
-            CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  null);
+            CloudSession.connect(null,  null);
             Assert.fail();
         }
         catch (Exception e)
@@ -82,19 +80,18 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
     {
         try
         {
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BASE_URL, CLOUD_BASE_URL);
+            Map<String, Serializable> settings = AlfrescoSDKCloudTestCase.getCloudParams(null);
             settings.put(CloudSession.CLOUD_NETWORK_ID, "opensourceecm.fr");
 
-            CloudSession session = CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  settings);
+            CloudSession session = CloudSession.connect(null,  settings);
 
             Assert.assertNotNull(session);
             Assert.assertNotNull(session.getRepositoryInfo());
-            Assert.assertEquals("opensourceecm.fr",session.getNetwork().getIdentifier());
+            Assert.assertEquals("opensourceecm.fr", session.getNetwork().getIdentifier());
 
             // Base Url
             Assert.assertNotNull(session.getBaseUrl());
-            Assert.assertEquals(CLOUD_BASE_URL, session.getBaseUrl());
+            Assert.assertEquals(settings.get(BASE_URL), session.getBaseUrl());
         }
         catch (Exception e)
         {

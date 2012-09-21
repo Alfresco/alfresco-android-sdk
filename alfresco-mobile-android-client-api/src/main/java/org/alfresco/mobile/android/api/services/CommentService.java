@@ -45,15 +45,17 @@ public interface CommentService
      * Allowable sorting property : Creation Date
      */
     String SORT_PROPERTY_CREATED_AT = ContentModel.PROP_CREATED;
-    
+
     /**
      * List the available comments for the specified node. </br> Maximum result
      * : 10 by default </br> Order : Older first </br>
      * 
      * @param node : Node object (Folder or Document).
      * @return Returns a list of the available comments for the specified node.
-     * @throws AlfrescoServiceException : If node is not defined or If network
-     *             problems occur during the process.
+     * @throws AlfrescoServiceException : {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#GENERAL_NOT_FOUND GENERAL_NOT_FOUND} : if node doesn't
+     *             exist.
+     * @throws AlfrescoServiceException : ErrorCodeRegistry.GENERAL_UNKNOWN : If network problems
+     *             occur during the process.
      */
     List<Comment> getComments(Node node);
 

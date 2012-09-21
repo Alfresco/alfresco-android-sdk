@@ -19,9 +19,7 @@ package org.alfresco.mobile.android.test.api.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,12 +96,16 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getProperty(ContentModel.PROP_NAME).getValue().toString());
 
         Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getCreatedBy());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.CREATED_BY).getValue().toString());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_CREATOR).getValue().toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.CREATED_BY).getValue()
+                .toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_CREATOR).getValue()
+                .toString());
 
         Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getModifiedBy());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.LAST_MODIFIED_BY).getValue().toString());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_MODIFIER).getValue().toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.LAST_MODIFIED_BY)
+                .getValue().toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_MODIFIER).getValue()
+                .toString());
 
         Assert.assertNotNull(folder.getCreatedAt());
         Assert.assertNotNull(folder.getModifiedBy());
@@ -152,9 +154,6 @@ public class FolderTest extends AlfrescoSDKTestCase
         docs = docfolderservice.getDocuments(folder);
         Assert.assertEquals(0, docs.size());
 
-        GregorianCalendar referenceCalendar = new GregorianCalendar();
-        referenceCalendar.setTime(new Date());
-
         // Check Properties
         Assert.assertNotNull(childFolder.getIdentifier());
         Assert.assertEquals(SAMPLE_FOLDER_NAME, childFolder.getName());
@@ -162,11 +161,9 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, childFolder.getDescription());
         Assert.assertEquals(ObjectType.FOLDER_BASETYPE_ID, childFolder.getType());
         Assert.assertEquals(alfsession.getPersonIdentifier(), childFolder.getCreatedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR),
-                childFolder.getCreatedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), childFolder.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), childFolder.getModifiedBy());
-        Assert.assertEquals(referenceCalendar.get(Calendar.DAY_OF_YEAR),
-                childFolder.getModifiedAt().get(Calendar.DAY_OF_YEAR));
+        Assert.assertTrue(compareDate(new Date(), childFolder.getModifiedAt().getTime()));
         Assert.assertNotNull(childFolder.getProperties());
         Assert.assertTrue(childFolder.getProperties().size() > 9);
         Assert.assertFalse(childFolder.isDocument());

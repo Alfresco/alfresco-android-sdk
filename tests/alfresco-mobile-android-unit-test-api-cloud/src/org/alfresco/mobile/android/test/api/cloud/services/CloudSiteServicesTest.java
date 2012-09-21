@@ -42,4 +42,9 @@ public class CloudSiteServicesTest extends SiteServicesTest
         siteService = alfsession.getServiceRegistry().getSiteService();
         Assert.assertNotNull(siteService);
     }
+    
+    protected int getTotalItems(int value)
+    {
+        return -1;
+    }
 }

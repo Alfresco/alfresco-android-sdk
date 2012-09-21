@@ -24,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -47,6 +49,9 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.test.constant.ConfigurationConstant;
+import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
+import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
+import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.content.Context;
@@ -79,6 +84,8 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
     public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
 
+    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http://repo.opencmis.org/inmemory/";
+
     public static final String CHEMISTRY_INMEMORY_USER = "admin";
 
     public static final String CHEMISTRY_INMEMORY_PASSWORD = "admin";
@@ -91,9 +98,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
     public static final String ALFRESCO_CMIS_PASSWORD = "admin";
 
-    protected static final String BINDING_URL = "org.alfresco.mobile.binding.url";
+    protected static final String BINDING_URL = "org.alfresco.mobile.binding.internal.url";
 
-    protected static final String BASE_URL = "org.alfresco.mobile.binding.baseurl";
+    protected static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     protected static final String USER = "org.alfresco.mobile.credential.user";
 
@@ -113,9 +120,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public static final String ROOT_TEST_FOLDER_NAME = "android-mobile-test";
 
     /** Default Site available in Alfresco. */
-    public static final  String SITENAME = "swsdp";
-    
+    public static final String SITENAME = "swsdp";
+
     public static final String FOREIGN_CHARACTER = "ß";
+
     public static final String FOREIGN_CHARACTER_DOUBLE_BYTE = "平";
 
     // //////////////////////////////////////////////////////////////////////
@@ -127,10 +135,22 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     // USERS
     // //////////////////////////////////////////////////////////////////////
     public static final String USER1 = "user1";
+
     public static final String USER2 = "user2";
 
     public static final String USER1_PASSWORD = "user1Alfresco";
+
     public static final String USER2_PASSWORD = "user2Alfresco";
+
+    // //////////////////////////////////////////////////////////////////////
+    // CONSTANT
+    // //////////////////////////////////////////////////////////////////////
+    protected static final String SAMPLE_DATA_COMMENT_FOLDER = "Comment";
+
+    protected static final String SAMPLE_DATA_COMMENT_FILE = "file.txt";
+
+    protected static final String SAMPLE_DATA_PATH_COMMENT_FILE = "/" + SAMPLE_DATA_COMMENT_FOLDER + "/"
+            + SAMPLE_DATA_COMMENT_FILE;
 
     // //////////////////////////////////////////////////////////////////////
     // MANAGE SESSION METHODS
@@ -279,6 +299,20 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
 
         return session;
+    }
+
+    /**
+     * TODO to remove...
+     * 
+     * @param alfsession
+     * @return
+     */
+    protected BindingSession getBindingSessionHttp(AlfrescoSession alfsession)
+    {
+        BindingSession s = new SessionImpl();
+        s.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
+                ((AbstractAlfrescoSessionImpl) alfsession).getPassthruAuthenticationProvider());
+        return s;
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -442,11 +476,12 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         ContentFile cf = new ContentFileImpl(f);
         return cf;
     }
-    
+
     /**
      * Reads the content from a content stream into a byte array.
      */
-    protected String readContent(ContentStream contentStream) throws Exception {
+    protected String readContent(ContentStream contentStream) throws Exception
+    {
         assertNotNull(contentStream);
         assertNotNull(contentStream.getInputStream());
 
@@ -455,11 +490,28 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
         byte[] buffer = new byte[4096];
         int b;
-        while ((b = stream.read(buffer)) > -1) {
+        while ((b = stream.read(buffer)) > -1)
+        {
             baos.write(buffer, 0, b);
         }
 
         return baos.toString();
+    }
+
+    protected Document createEmptyDocument(Folder root, String docName)
+    {
+        HashMap<String, Serializable> newFolderProps = new HashMap<String, Serializable>();
+        newFolderProps.put(ContentModel.PROP_TITLE, docName);
+        newFolderProps.put(ContentModel.PROP_DESCRIPTION, "Description : " + docName);
+        return alfsession.getServiceRegistry().getDocumentFolderService()
+                .createDocument(root, docName, newFolderProps, null);
+    }
+
+    protected Document createDeletedDocument(Folder root, String docName)
+    {
+        Document doc = createEmptyDocument(root, docName);
+        alfsession.getServiceRegistry().getDocumentFolderService().deleteNode(doc);
+        return doc;
     }
 
     protected Document createDocumentFromAsset(Folder root, String assetName) throws AlfrescoException
@@ -525,7 +577,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.SITENAME;
         return null;
     }
-    
+
     public static String getSitePath(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
@@ -545,11 +597,21 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     // //////////////////////////////////////////////////////////////////////////
     // UTILS TO GET CONTEXT
     // //////////////////////////////////////////////////////////////////////////
+    /**
+     * Retrieve the context of the test application.
+     * 
+     * @return test context
+     */
     protected Context getContext()
     {
         return getInstrumentation().getContext();
     }
 
+    /**
+     * Retrieve the context of the sample application.
+     * 
+     * @return tested application context
+     */
     protected Context getTargetContext()
     {
         return getInstrumentation().getTargetContext();
@@ -558,6 +620,12 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     // //////////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////////
+    /**
+     * Sometimes we have to wait...
+     * 
+     * @param milliseconds : milliseconds you want to wait before continuing
+     *            test.
+     */
     protected void wait(int milliseconds)
     {
         try
@@ -570,20 +638,47 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
     }
 
+    /**
+     * Detect if Alfresco repository server is on version 4 or above.
+     * 
+     * @return true if version 4 or below. False if version below or not
+     *         Alfresco server.
+     */
     protected boolean isAlfrescoV4()
     {
         if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return false;
         return (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 
+    /**
+     * Detect if it's an Alfresco Repository server.
+     * 
+     * @return true if alfresco vendor is Alfresco.
+     */
     protected boolean isAlfresco()
     {
         return RepositoryVersionHelper.isAlfrescoProduct(alfsession);
     }
 
+    /**
+     * Detect if the repository test server is OnPremise
+     * 
+     * @param session : specific alfresco session.
+     * @return true if on premise, else cloud.
+     */
     protected boolean isOnPremise(AlfrescoSession session)
     {
         return (session instanceof RepositorySession);
+    }
+
+    /**
+     * Detect if the repository test server is OnPremise
+     * 
+     * @return true if on premise, else cloud.
+     */
+    protected boolean isOnPremise()
+    {
+        return isOnPremise(alfsession);
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -596,6 +691,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         initSession();
     }
 
+    /**
+     * Generic initialization method to create an AlfrescoSession and retrieve
+     * some services.
+     */
     protected abstract void initSession();
 
     @Override
@@ -603,6 +702,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     {
         alfsession = null;
         super.tearDown();
+    }
+
+    public boolean compareDate(Date date1, Date date2)
+    {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2
+                .get(Calendar.DAY_OF_YEAR));
     }
 
 }

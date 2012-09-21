@@ -34,10 +34,13 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
+import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
@@ -78,8 +81,33 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     // ////////////////////////
     // Constructor
     // ///////////////////////
+    protected void initSettings(String url, Map<String, Serializable> settings)
+    {
+        String user = null, password = null;
+
+        // Basic Authentication Case.
+        // Retrieve credentials informations
+        if (settings.containsKey(USER))
+        {
+            user = (String) settings.get(USER);
+        }
+        if (settings.containsKey(PASSWORD))
+        {
+            password = (String) settings.get(PASSWORD);
+        }
+        if (settings.containsKey(BASE_URL))
+        {
+            url = (String) settings.get(BASE_URL);
+        }
+
+        initSettings(url, user, password, settings);
+    }
+
     protected void initSettings(String url, String username, String password, Map<String, Serializable> settings)
     {
+        if (url == null) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "url")); }
+
         Map<String, Serializable> tmpSettings = settings;
         if (tmpSettings == null)
         {
@@ -91,21 +119,15 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
             tmpSettings.put(SessionParameter.USER, username);
             this.userIdentifier = username;
         }
+
         if (password != null && password.length() > 0)
         {
             tmpSettings.put(SessionParameter.PASSWORD, password);
             this.password = password;
         }
 
-        if (!tmpSettings.containsKey(BASE_URL))
-        {
-            baseUrl = url;
-            tmpSettings.put(BASE_URL, url);
-        }
-        else
-        {
-            baseUrl = (String) tmpSettings.get(BASE_URL);
-        }
+        baseUrl = url;
+        tmpSettings.put(BASE_URL, url);
 
         // default cache storage
         if (!tmpSettings.containsKey(CACHE_FOLDER))
@@ -177,6 +199,13 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         return new ArrayList<String>(userParameters.keySet());
     }
 
+    /**
+     * VIM : This method allows to create the CMIS Session Parameters based on
+     * Public Session Parameters provided. Depending on session type, it creates
+     * the bunch of parameters OpenCMIS can understand.
+     * 
+     * @return OpenCMIS Map of Session Parameters.
+     */
     protected Map<String, String> retrieveSessionParameters()
     {
         init();
@@ -244,7 +273,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     private void addParameterIfExist(String keySettings, String keyParameters)
     {
-        if (hasParameter(keySettings)){
+        if (hasParameter(keySettings))
+        {
             sessionParameters.put(keyParameters, (String) getParameter(keySettings));
         }
     }
@@ -254,11 +284,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         createCmisSettings();
 
         // Binding with Alfresco Webscript CMIS implementation
-        if (hasParameter(BASE_URL) && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL)){
+        if (hasParameter(BASE_URL) && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
+        {
             sessionParameters.put(SessionParameter.ATOMPUB_URL,
                     ((String) getParameter(BASE_URL)).concat(OnPremiseUrlRegistry.BINDING_CMIS));
         }
-           
+
         // Object Factory
         sessionParameters.put(SessionParameter.OBJECT_FACTORY_CLASS,
                 "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
@@ -269,7 +300,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     {
         createCmisSettings();
 
-        if (!sessionParameters.containsKey(BINDING_URL)){
+        if (!sessionParameters.containsKey(BINDING_URL))
+        {
             sessionParameters.put(
                     SessionParameter.ATOMPUB_URL,
                     ((String) getParameter(BASE_URL)).concat(CloudUrlRegistry.BINDING_NETWORK_CMISATOM).replace(
@@ -279,7 +311,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         // Object Factory
         sessionParameters.put(SessionParameter.OBJECT_FACTORY_CLASS,
                 "org.alfresco.cmis.client.impl.AlfrescoObjectFactoryImpl");
-        
+
         addParameterIfExist(AlfrescoSession.CLOUD_SERVICES_CLASSNAME, AlfrescoSession.CLOUD_SERVICES_CLASSNAME);
     }
 
@@ -294,8 +326,34 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
         return lc;
     }
-    
-    
+
+    protected Session createSession(SessionFactory sessionFactory, AuthenticationProvider authenticator,
+            Map<String, String> param)
+    {
+        try
+        {
+            if (param.get(SessionParameter.REPOSITORY_ID) != null)
+            {
+                return ((SessionFactoryImpl) sessionFactory).createSession(param, null,
+                        new PassthruAuthenticationProviderImpl(authenticator), null);
+            }
+            else
+            {
+                return ((SessionFactoryImpl) sessionFactory)
+                        .getRepositories(param, null, new PassthruAuthenticationProviderImpl(authenticator), null)
+                        .get(0).createSession();
+            }
+        }
+        catch (CmisPermissionDeniedException e)
+        {
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+        }
+    }
+
     protected Session createSession(SessionFactory sessionFactory, Map<String, String> param)
     {
         try
@@ -317,7 +375,6 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         {
             throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
-
     }
 
     @Override
@@ -337,7 +394,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
      * Define the specific binding type associated with which we want to create
      * the session.
      */
-    private static final String BINDING_TYPE = "org.alfresco.mobile.binding";
+    private static final String BINDING_TYPE = "org.alfresco.mobile.internal.binding";
 
     /** CMIS Binding type. */
     private static final int BINDING_TYPE_CMIS = 1;
@@ -352,9 +409,13 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     /** Alfresco Cloud API Binding type. */
     private static final int BINDING_TYPE_ALFRESCO_CLOUD = 4;
 
-    private static final String BINDING_URL = "org.alfresco.mobile.binding.url";
+    private static final String BINDING_URL = "org.alfresco.mobile.binding.internal.url";
 
-    private static final String BASE_URL = "org.alfresco.mobile.binding.baseurl";
+    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
+
+    protected static final String USER = "org.alfresco.mobile.credential.user";
+
+    protected static final String PASSWORD = "org.alfresco.mobile.credential.password";
 
     // ////////////////////////
     // SHORTCUTS

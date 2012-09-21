@@ -24,14 +24,28 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 /**
- * Abstract base class for all AuthenticationProvider.
+ * Abstract base class for all Internal Alfresco AuthenticationProvider.
  * 
  * @author Jean Marie Pascal
  */
 public interface AuthenticationProvider extends Serializable
 {
 
+    /**
+     * Return the list of HTTTP Header that must be add to each HTTP request
+     * between the client and server.
+     * 
+     * @param session : Alfresco Session
+     * @return a List of Authentification HTTP Headers
+     */
     Map<String, List<String>> getHTTPHeaders(AlfrescoSession session);
+
+    /**
+     * Return the list of HTTTP Header that must be add to each HTTP request
+     * between the client and server.
+     * 
+     * @return a List of Authentification HTTP Headers
+     */
     Map<String, List<String>> getHTTPHeaders();
 
 }

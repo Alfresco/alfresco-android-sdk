@@ -25,17 +25,23 @@ package org.alfresco.mobile.android.api.exceptions;
 public interface ErrorCodeRegistry
 {
 
+    // ///////////////////////////////////
+    // GLOBAL ERRORS
+    // ///////////////////////////////////
     /** Default Generic Error for all API. */
     int GENERAL_GENERIC = 0;
 
-    /** Invalid argument exception. */
-    int GENERAL_INVALID_ARG = 1;
-
     /** Invalid HTTP Response code from the server. */
-    int GENERAL_HTTP_RESP = 2;
+    int GENERAL_HTTP_RESP = 1;
 
     /** Something happens wrong with the filesystem. */
-    int GENERAL_IO = 3;
+    int GENERAL_IO = 2;
+    
+    /** Node not found. */
+    int GENERAL_NODE_NOT_FOUND = 3;
+    
+    /** Access Denied / No rights. */
+    int GENERAL_ACCESS_DENIED = 4;
 
     // ///////////////////////////////////
     // SESSION ERRORS
@@ -68,40 +74,85 @@ public interface ErrorCodeRegistry
     int PARSING_JSONDATA_EMPTY = 201;
 
     // ///////////////////////////////////
+    // COMMENTS ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all commentService. */
+    int COMMENT_GENERIC = 300;
+
+    // ///////////////////////////////////
+    // SITE ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all siteService. */
+    int SITE_GENERIC = 400;
+
+    // ///////////////////////////////////
+    // ACTIVITI STREAM ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all ActivitstreamService. */
+    int ACTIVITISTREAM_GENERIC = 500;
+
+    // ///////////////////////////////////
     // DOCUMENT FOLDER ERRORS
     // ///////////////////////////////////
+    /** Generic error code for all Document Folder Service. */
     int DOCFOLDER_GENERIC = 600;
 
-    int DOCFOLDER_PERMISSIONS = 601;
+    /** Failed to retrieve permissions for node. */
+    // int DOCFOLDER_PERMISSIONS = 601;
 
-    int DOCFOLDER_FOLDER_NULL = 602;
+    /** Failed to convert folder. */
+    // int DOCFOLDER_FOLDER_NULL = 602;
 
-    int DOCFOLDER_NO_PARENT = 603;
+    /** No parent node found. */
+    // int DOCFOLDER_NO_PARENT = 603;
 
-    int DOCFOLDER_NO_RENDITION = 604;
+    /** You don't have the permission to execute this action. */
+    int DOCFOLDER_NO_PERMISSION = 604;
 
-    int DOCFOLDER_DOCUMENT_NULL = 605;
+    /** Failed to convert node. */
+    // int DOCFOLDER_DOCUMENT_NULL = 605;
 
-    int DOCFOLDER_NODE_NOT_FOUND = 606;
-
+    /** Node not found */
+    // int DOCFOLDER_NODE_NOT_FOUND = 606;
+    
     /**
      * Wrong node type. A folder/Document has been returned instead of
      * document/folder.
      */
     int DOCFOLDER_WRONG_NODE_TYPE = 607;
 
-    /** You don't have the permission to execute this action. */
-    int DOCFOLDER_NO_PERMISSION = 608;
-    
+    /** Rendition not found / Not authorized. */
+    // int DOCFOLDER_NO_RENDITION = 608;
+
     /** Content Already Exist. */
     int DOCFOLDER_CONTENT_ALREADY_EXIST = 609;
 
+    // ///////////////////////////////////
+    // TAGGING ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all TaggingService. */
+    int TAGGING_GENERIC = 700;
 
     // ///////////////////////////////////
     // PERSON ERRORS
     // ///////////////////////////////////
+    /** Generic error code for all PersonService. */
+    int PERSON_GENERIC = 800;
+
     /** Person not found */
     int PERSON_NOT_FOUND = 802;
+
+    // ///////////////////////////////////
+    // SEARCH ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all PersonService. */
+    int SEARCH_GENERIC = 900;
+
+    // ///////////////////////////////////
+    // RATINGS ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all RatingService. */
+    int RATING_GENERIC = 1000;
 
     /**
      * Displays a human readable summary of the error code.

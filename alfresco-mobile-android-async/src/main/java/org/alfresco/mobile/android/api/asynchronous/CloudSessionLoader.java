@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 
 import android.content.Context;
 
@@ -32,44 +33,17 @@ import android.content.Context;
  */
 public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<AlfrescoSession>>
 {
-    /** Unique SessionLoader identifier. */
-    public static final int ID = SessionLoader.class.hashCode();
+    public static final int ID = CloudSessionLoader.class.hashCode();
 
-    /** the username with which we want to create a session. */
-    private String username;
-
-    /** the password with which we want to create a session. */
-    private String password;
-
-    /**
-     * List of settings settings to apply to modify the behaviours of the
-     * session.
-     */
     private Map<String, Serializable> settings;
 
-    /**
-     * @param context : Android Context
-     * @param username : username with which we want to create a session
-     * @param password : password with which we want to create a session
-     */
-    public CloudSessionLoader(Context context, String username, String password)
-    {
-        this(context, username, password, null);
-    }
+    private OAuthData oauthData;
 
-    /**
-     * @param context : Android Context
-     * @param username : username with which we want to create a session
-     * @param password : password with which we want to create a session
-     * @param settings : settings to apply to modify the behaviours of the
-     *            session
-     */
-    public CloudSessionLoader(Context context, String username, String password, Map<String, Serializable> settings)
+    public CloudSessionLoader(Context context, OAuthData oauthData, Map<String, Serializable> settings)
     {
         super(context);
-        this.username = username;
-        this.password = password;
         this.settings = settings;
+        this.oauthData = oauthData;
     }
 
     @Override
@@ -80,7 +54,7 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
 
         try
         {
-            cloudSession = CloudSession.connect(username, password, null, settings);
+            cloudSession = CloudSession.connect(oauthData, settings);
         }
         catch (Exception e)
         {
@@ -91,5 +65,4 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
 
         return result;
     }
-
 }

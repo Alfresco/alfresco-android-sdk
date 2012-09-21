@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services.impl.cloud;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
@@ -33,18 +34,7 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 /**
- * DocumentFolderService manages Folders and Documents in an Alfresco
- * repository. The service provides methods to create and update nodes. The
- * DocumentFolderService supports the following methods:
- * <ul>
- * <li>Create nodes and set property values</li>
- * <li>Read node properties and content, read and navigate node associations
- * (browse folder)</li>
- * <li>Update properties and content of nodes.</li>
- * <li>Delete nodes. If the archive store is enabled, the node is not deleted
- * but moved from its current node to the archive node store; nodes in the
- * archive store can then be restored or purged.</li>
- * </ul>
+ * Cloud implementation of DocumentFolderService
  * 
  * @author Jean Marie Pascal
  */
@@ -56,12 +46,13 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
      * 
      * @param repositorySession : Repository Session.
      */
-    public CloudDocumentFolderServiceImpl(AlfrescoSession repositorySession)
+    public CloudDocumentFolderServiceImpl(AlfrescoSession cloudSession)
     {
-        super(repositorySession);
+        super(cloudSession);
     }
 
     @Override
+    /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String type)
     {
         try
@@ -87,7 +78,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             }
             else if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
-                convertStatusCode(resp);
+                convertStatusCode(resp, ErrorCodeRegistry.DOCFOLDER_GENERIC);
                 cf = null;
             }
             else
@@ -104,10 +95,18 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
         return null;
     }
 
+    /** Constant to retrieve cmis:thumbnail data inside the atompub response. */
     private static final String RENDITION_CMIS_THUMBNAIL = "cmis:thumbnail";
-
+ 
+    /** Constant to retrieve all rendition data inside the atompub response. */
     private static final String RENDITION_ALL = "*";
 
+    /**
+     * Internal method to retrieve unique identifier of a node rendition.
+     * @param identifier : node identifier
+     * @param type : kind of rendition
+     * @return unique identifier of rendition node.
+     */
     private String getRendition(String identifier, String type)
     {
         OperationContext context = cmisSession.createOperationContext();

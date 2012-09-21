@@ -31,17 +31,20 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.os.Environment;
+import android.util.Log;
 
+/**
+ * Base Abstract class for testing Mobile SDK.
+ * 
+ * @author Jean Marie Pascal
+ */
 public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
 {
     // //////////////////////////////////////////////////////////////////////
     // SERVER TEST CONFIG
     // //////////////////////////////////////////////////////////////////////
-
-    public static final String CLOUD_BASE_URL = "http://devapis.alfresco.com";
 
     public static final String CLOUD_USER = "jeanmarie.pascal@alfresco.com";
 
@@ -49,9 +52,10 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
 
     public final static String SITENAME = "jeanmarie-pascal-alfresco-com";
 
-    public static final String API_KEY = "FAKE_API_KEY";
-    
-    private static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cloud-config.properties";
+    private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
+
+    private static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
+            + "/alfresco-mobile/cloud-config.properties";
 
     protected CloudSession cloudSession;
 
@@ -70,10 +74,32 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
 
     public static CloudSession createCloudSession(Map<String, Serializable> parameters)
     {
+        CloudSession session = null;
+        try
+        {
+            Map<String, Serializable> params = getCloudParams(parameters);
+            session = CloudSession.connect(null, params);
+        }
+        catch (Exception e)
+        {
+            Assert.fail(e.getMessage());
+        }
+
+        if (session == null)
+        {
+            Assert.fail("Error during creating session. Check if " + ALFRESCO_CMIS_BASE_URL + " is available");
+        }
+
+        return session;
+    }
+    
+    public static Map<String, Serializable> getCloudParams(Map<String, Serializable> params){
         String url = null;
         String user = CLOUD_USER;
         String password = CLOUD_PASSWORD;
-
+        
+        Map<String, Serializable> parameters = params;
+        
         // Check Properties available inside the device
         File f = new File(CLOUD_CONFIG_PATH);
         if (f.exists() && ENABLE_CONFIG_FILE)
@@ -84,59 +110,31 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
                 // load a properties file
                 prop.load(new FileInputStream(f));
 
-                url = prop.getProperty("url");
+                url = prop.getProperty("url") != null ? prop.getProperty("url") : user;
                 user = prop.getProperty("user") != null ? prop.getProperty("user") : user;
                 password = prop.getProperty("password") != null ? prop.getProperty("password") : password;
             }
             catch (IOException ex)
             {
-                ex.printStackTrace();
+                Log.e(TAG, ex.getMessage());
             }
         }
-
-        CloudSession session = null;
-        try
+        
+        if (parameters == null)
         {
-            if (parameters != null)
-            {
-                if (parameters.containsKey(USER))
-                {
-                    user = (String) parameters.remove(USER);
-                }
-                if (parameters.containsKey(PASSWORD))
-                {
-                    password = (String) parameters.remove(PASSWORD);
-                }
-            }
-            else
-            {
-                parameters = new HashMap<String, Serializable>();
-            }
-
-            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
-            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
-
-            
-            if (url != null)
-            {
-                parameters.put(BASE_URL, url);
-            } else {
-                //parameters.put(BINDING_URL, CLOUD_ATOMPUB_URL);
-                parameters.put(BASE_URL, CLOUD_BASE_URL);
-            }
-
-            session = CloudSession.connect(user, password, API_KEY, parameters);
+            parameters = new HashMap<String, Serializable>();
         }
-        catch (Exception e)
+        
+        if (url != null)
         {
-            e.printStackTrace();
-            Assert.fail(e.getMessage());
+            parameters.put(BASE_URL, url);
         }
-
-        if (session == null)
-            Assert.fail("Error during creating session. Check if " + ALFRESCO_CMIS_BASE_URL + " is available");
-
-        return session;
+        
+        parameters.put(USER, user);
+        parameters.put(PASSWORD, password);
+        parameters.put(CLOUD_BASIC_AUTH, true);
+        
+        return parameters;
     }
 
     public static Folder createCloudFolder(AlfrescoSession session)
@@ -150,7 +148,7 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
     {
         return "Sites/" + SITENAME + "/documentLibrary/" + ROOT_TEST_FOLDER_NAME;
     }
-    
+
     public static String getCloudSampleDataFolderPath()
     {
         return "Sites/" + SITENAME + "/documentLibrary/Sample data";

@@ -58,7 +58,7 @@ public class DashBoardActivity extends CommonActivity
      */
     public void alfrescosdksamples(View v)
     {
-        startActivity(new Intent(this, LoginScreenActivity.class));
+        startActivity(new Intent(this, ChooseServerActivity.class));
     }
 
     /**

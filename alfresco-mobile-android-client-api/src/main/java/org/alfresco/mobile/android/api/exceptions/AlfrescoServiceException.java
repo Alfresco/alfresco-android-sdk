@@ -50,5 +50,10 @@ public class AlfrescoServiceException extends AlfrescoException
     {
         super(errorCode, message);
     }
+    
+    public AlfrescoServiceException(int errorCode, AlfrescoErrorContent content)
+    {
+        super(errorCode, content);
+    }
 
 }

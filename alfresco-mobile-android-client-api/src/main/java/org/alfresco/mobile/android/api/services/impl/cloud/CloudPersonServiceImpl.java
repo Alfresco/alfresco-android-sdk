@@ -56,28 +56,22 @@ public class CloudPersonServiceImpl extends AbstractPersonService
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getPersonDetailssUrl(String personIdentifier)
     {
         return new UrlBuilder(CloudUrlRegistry.getPersonDetailssUrl((CloudSession) session, personIdentifier));
     }
 
-    /**
-     * Retrieves the avatar rendition for the specified username.
-     * 
-     * @param personIdentifier : Username of person
-     * @return Returns the contentFile associated to the avatar picture.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public ContentStream getAvatarStream(String personIdentifier)
     {
-        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
+        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
         try
         {
             Person person = getPerson(personIdentifier);
-            ContentStream st = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry().getDocumentFolderService())
-                    .downloadContentStream(person.getAvatarIdentifier());
+            ContentStream st = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
+                    .getDocumentFolderService()).downloadContentStream(person.getAvatarIdentifier());
             return st;
         }
         catch (Exception e)
@@ -91,6 +85,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
+    /** {@inheritDoc} */
     protected Person computePerson(UrlBuilder url)
     {
         Log.d("URL", url.toString());
@@ -100,14 +95,15 @@ public class CloudPersonServiceImpl extends AbstractPersonService
         if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR)
         {
             throw new AlfrescoServiceException(ErrorCodeRegistry.PERSON_NOT_FOUND, resp.getErrorContent());
-        } else  if (resp.getResponseCode() != HttpStatus.SC_OK){
-            convertStatusCode(resp);
         }
-        
+        else if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
+        }
+
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
         Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json).get(CloudConstant.ENTRY_VALUE);
         return PersonImpl.parsePublicAPIJson(data);
     }
-    
 
 }

@@ -23,8 +23,26 @@ import junit.framework.TestSuite;
 
 public class AllTests extends TestSuite
 {
-    public static Test suite()
+    public static Test executeAllTests()
     {
         return new TestSuiteBuilder(AllTests.class).includeAllPackagesUnderHere().build();
+    }
+
+    public static Test executeServicesTests()
+    {
+        return new TestSuiteBuilder(AllTests.class).includePackages("org.alfresco.mobile.android.test.api.services")
+                .build();
+    }
+
+    public static Test executeModelTests()
+    {
+        return new TestSuiteBuilder(AllTests.class).includePackages("org.alfresco.mobile.android.test.api.model")
+                .build();
+    }
+
+    public static Test executeSessionTests()
+    {
+        return new TestSuiteBuilder(AllTests.class).includePackages("org.alfresco.mobile.android.test.api.session")
+                .build();
     }
 }

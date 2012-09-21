@@ -41,6 +41,8 @@ public class CloudTaggingServiceTest extends TaggingServiceTest
         Assert.assertNotNull(alfsession.getServiceRegistry());
         taggingService = alfsession.getServiceRegistry().getTaggingService();
         Assert.assertNotNull(taggingService);
+        docfolderservice= alfsession.getServiceRegistry().getDocumentFolderService();
+        Assert.assertNotNull(docfolderservice);
     }
 
     protected int getTotalItems(int value)

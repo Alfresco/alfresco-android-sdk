@@ -15,27 +15,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.session.authentication.impl;
+package org.alfresco.mobile.android.ui.oauth.listener;
 
-import java.util.List;
-import java.util.Map;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
 
-import org.alfresco.mobile.android.api.session.authentication.CloudAuthenticationProvider;
 
-/**
- * DRAFT
- * 
- * @author Jean Marie Pascal
- */
-public class CloudAuthenticationProviderImpl  extends AuthenticationProviderImpl implements CloudAuthenticationProvider
+public interface OnOAuthAccessTokenListener
 {
+    void beforeRequestAccessToken(OAuth2Manager manager);
+    
+    void failedRequestAccessToken(Exception e);
 
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public Map<String, List<String>> getHTTPHeaders()
-    {
-        return null;
-    }
-
+    void afterRequestAccessToken(OAuthData data);
 }

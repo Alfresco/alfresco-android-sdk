@@ -30,12 +30,8 @@ import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 /**
- * Provides a registry of all services that are available for the current
- * session. </br> Depending on repository session informations, certain service
- * may be unavailable.</br> To know if a service is available, you can ask this
- * service and check if it's not null or see doesMethods available at
- * {@link org.alfresco.mobile.android.api.model.RepositoryInfo
- * RepositoryInformation}
+ * Abstract class implementation of ServiceRegistry. Responsible of sharing
+ * common methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -59,7 +55,6 @@ public abstract class AbstractServiceRegistry implements ServiceRegistry
     protected RatingService ratingsService;
 
     protected final AlfrescoSession session;
-
 
     protected PersonService personService;
 

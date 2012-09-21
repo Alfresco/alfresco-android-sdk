@@ -58,6 +58,10 @@ public class SiteImpl implements Site
         site.name = JSONConverter.getString(json, OnPremiseConstant.SHORTNAME_VALUE);
         site.title = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
         site.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
+        if (site.description.length() == 0)
+        {
+            site.description = null;
+        }
 
         site.node = JSONConverter.getString(json, OnPremiseConstant.NODE_VALUE);
         int lastForwardSlash = site.node.lastIndexOf('/');

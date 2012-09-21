@@ -17,23 +17,23 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * Alfresco provides support for a news/activity feed in the context of an
- * enterprise generating and acting upon content.</br> Activities track a range
- * of changes, updates, events, and actions, allowing users to be aware of
- * details of the changes.
+ * Abstract class implementation of ActivityStreamService. Responsible of
+ * sharing common methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -50,62 +50,28 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         super(repositorySession);
     }
 
-    /**
-     * Allow currently logged in user to get their activity stream.
-     * 
-     * @return the activity stream/feed as a list of ActivityEntry @ : if
-     *         network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<ActivityEntry> getActivityStream()
     {
         return getActivityStream((ListingContext) null).getList();
     }
 
+    /**
+     * Internal method to retrieve logged user activity stream url. (depending
+     * on repository type)
+     * 
+     * @param listingContext : define characteristics of the result (Optional
+     *            for Onpremise)
+     * @return UrlBuilder to retrieve user activity stream.
+     */
     protected abstract UrlBuilder getUserActivitiesUrl(ListingContext listingContext);
 
-    /**
-     * Allow currently logged in user to get their activity stream.
-     * 
-     * @param listingContext : define characteristics of the result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
-     *         if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<ActivityEntry> getActivityStream(ListingContext listingContext)
-    {
-        return computeActivities(getUserActivitiesUrl(listingContext), listingContext);
-    }
-
-    /**
-     * Allow to retrieve activities feed for a specific user.
-     * 
-     * @return the activity stream/feed as a list of ActivityEntry @ : If
-     *         personIdentifier is undefined or if network or internal problems
-     *         occur during the process.
-     */
-    public List<ActivityEntry> getActivityStream(String personIdentifier)
-    {
-        return getActivityStream(personIdentifier, (ListingContext) null).getList();
-    }
-
-    protected abstract UrlBuilder getUserActivitiesUrl(String personIdentifier, ListingContext listingContext);
-
-    /**
-     * Allow to retrieve activities feed for a specific user.
-     * 
-     * @param personIdentifier : a specific user
-     * @param listingContext : define characteristics of result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
-     *         If personIdentifier is undefined or if network or internal
-     *         problems occur during the process.
-     */
-    public PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext)
-
     {
         try
         {
-            if (personIdentifier == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("ActivityStreamService.0")); }
-            return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
+            return computeActivities(getUserActivitiesUrl(listingContext), listingContext);
         }
         catch (Exception e)
         {
@@ -114,40 +80,92 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         return null;
     }
 
+    /** {@inheritDoc} */
+    public List<ActivityEntry> getActivityStream(String personIdentifier)
+    {
+        return getActivityStream(personIdentifier, (ListingContext) null).getList();
+    }
+
     /**
-     * Allow currently logged in user to get feed for a specified site (if
-     * private site then user must be a member or an admin user).
+     * Internal method to retrieve user activity stream url. (depending on
+     * repository type)
      * 
-     * @param siteName : Share site short name
-     * @return the activity stream/feed as a list of ActivityEntry @ : If
-     *         siteName is undefined or if network or internal problems occur
-     *         during the process.
+     * @param personIdentifier : a specific user
+     * @param listingContext : define characteristics of the result (Optional
+     *            for Onpremise)
+     * @return UrlBuilder to retrieve for a specific user its activity stream.
      */
+    protected abstract UrlBuilder getUserActivitiesUrl(String personIdentifier, ListingContext listingContext);
+
+    /** {@inheritDoc} */
+    public PagingResult<ActivityEntry> getActivityStream(String personIdentifier, ListingContext listingContext)
+
+    {
+        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+        try
+        {
+            return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
+        }
+        catch (CmisConnectionException e)
+        {
+            // OnPremise if returns 401 equals = the person or site doesn't
+            // exist
+            List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+            return new PagingResultImpl<ActivityEntry>(result, false, -1);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            // On Cloud username not found
+            if (isCloudSession() && e.getAlfrescoErrorContent() != null
+                    && e.getAlfrescoErrorContent().getMessage() != null)
+            {
+                if (e.getAlfrescoErrorContent().getMessage().contains("not found"))
+                {
+                    List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+                    return new PagingResultImpl<ActivityEntry>(result, false, -1);
+                }
+            }
+            throw e;
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
     public List<ActivityEntry> getSiteActivityStream(String siteName)
     {
         return getSiteActivityStream(siteName, null).getList();
     }
 
+    /**
+     * Internal method to retrieve for a specific site the activity stream url.
+     * (depending on repository type)
+     * 
+     * @param siteIdentifier : shortName of the site
+     * @param listingContext : define characteristics of the result (Optional
+     *            for Onpremise)
+     * @return UrlBuilder to retrieve for a specific site its activity stream.
+     */
     protected abstract UrlBuilder getSiteActivitiesUrl(String siteIdentifier, ListingContext listingContext);
 
-    /**
-     * Allow currently logged in user to get feed for a specified site (if
-     * private site then user must be a member or an admin user).
-     * 
-     * @param siteName : Share site short name
-     * @param listingContext : define characteristics of the result
-     * @return the activity stream/feed as a pagingResult of ActivityEntry @ :
-     *         If siteName is undefined or if network or internal problems occur
-     *         during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<ActivityEntry> getSiteActivityStream(String siteIdentifier, ListingContext listingContext)
-
     {
+        if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
         try
         {
-            if (siteIdentifier == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("ActivityStreamService.1")); }
             return computeActivities(getSiteActivitiesUrl(siteIdentifier, listingContext), listingContext);
+        }
+        catch (CmisConnectionException e)
+        {
+            // OnPremise if returns 401 equals = the site doesnt exist
+            List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+            return new PagingResultImpl<ActivityEntry>(result, false, -1);
         }
         catch (Exception e)
         {

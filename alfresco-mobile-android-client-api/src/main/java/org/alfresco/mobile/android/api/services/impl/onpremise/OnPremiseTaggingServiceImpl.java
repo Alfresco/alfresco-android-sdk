@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -68,21 +67,13 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         super(repositorySession);
     }
 
-    /**
-     * @return Returns all tags currently available inside the repository.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Tag> getAllTags()
     {
         return getAllTags(null).getList();
     }
 
-    /**
-     * @return Returns all tags currently available inside the repository.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
@@ -98,28 +89,19 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /**
-     * @return Returns all tags associated with the specific node.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Tag> getTags(Node node)
     {
         return getTags(node, null).getList();
     }
 
-    /**
-     * @return Returns all tags associated with the specific node.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Tag> getTags(Node node, ListingContext listingContext)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
-            if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("TaggingService.0")); }
-
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
             return computeSimpleTag(url, listingContext);
@@ -131,23 +113,16 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /**
-     * Add a list of tags to the specific node.
-     * 
-     * @param node
-     * @param tags
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public void addTags(Node node, List<String> tags)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        
+        if (isListNull(tags)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags")); }
         try
         {
-            if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("TaggingService.0")); }
-            if (tags == null || tags.isEmpty()) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("TaggingService.1")); }
-
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
 
@@ -165,7 +140,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.TAGGING_GENERIC);
         }
         catch (Exception e)
         {
@@ -178,7 +153,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     // ////////////////////////////////////////////////////////////////////////////////////
     private PagingResult<Tag> computeTag(UrlBuilder url, ListingContext listingContext) throws JSONException
     {
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
 
         String resultsString = JsonUtils.convertStreamToString(resp.getStream());
         List<Tag> tags = new ArrayList<Tag>();
@@ -217,7 +192,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
 
     private PagingResult<Tag> computeSimpleTag(UrlBuilder url, ListingContext listingContext)
     {
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
         String resultsString = JsonUtils.convertStreamToString(resp.getStream());
         List<Tag> tags = new ArrayList<Tag>();
 

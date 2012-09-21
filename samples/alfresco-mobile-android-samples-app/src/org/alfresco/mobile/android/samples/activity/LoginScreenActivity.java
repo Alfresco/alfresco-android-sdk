@@ -38,7 +38,7 @@ public class LoginScreenActivity extends CommonActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sdk_main);
+        setContentView(R.layout.sdkapp_main);
         loadLoginFragmentForm();
     }
 

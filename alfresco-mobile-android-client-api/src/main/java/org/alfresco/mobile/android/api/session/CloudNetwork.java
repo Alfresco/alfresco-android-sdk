@@ -19,6 +19,16 @@ package org.alfresco.mobile.android.api.session;
 
 import java.util.GregorianCalendar;
 
+/**
+ * A network is a group of users and sites that belong to a particular
+ * organization. Networks are organized by email domain. When you sign up for an
+ * Alfresco account, your email domain becomes your Home Network. If the network
+ * already exists for your domain, you're added to it. If the network does not
+ * exist, it's created. Colleagues with the same domain are instantly connected
+ * to each other when they sign up for an Alfresco account.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface CloudNetwork
 {
     /**

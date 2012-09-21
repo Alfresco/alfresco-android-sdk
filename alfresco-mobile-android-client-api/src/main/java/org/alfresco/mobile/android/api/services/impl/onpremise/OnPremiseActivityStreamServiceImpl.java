@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -34,10 +35,7 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * Alfresco provides support for a news/activity feed in the context of an
- * enterprise generating and acting upon content.</br> Activities track a range
- * of changes, updates, events, and actions, allowing users to be aware of
- * details of the changes.
+ * Specific implementation of ActivityStreamService for OnPremise REST API.
  * 
  * @author Jean Marie Pascal
  */
@@ -54,18 +52,21 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUserActivitiesUrl(ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserActivitiesUrl(session);
         return new UrlBuilder(link);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUserActivitiesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserActivitiesUrl(session, personIdentifier);
         return new UrlBuilder(link);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getSiteActivitiesUrl(String siteIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getSiteActivitiesUrl(session, siteIdentifier);
@@ -86,47 +87,39 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
     @SuppressWarnings("unchecked")
     protected PagingResult<ActivityEntry> computeActivities(UrlBuilder url, ListingContext listingContext)
     {
-        try
+        // read and parse
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
+
+        List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
+        int size = json.size();
+        ArrayList<ActivityEntry> result = new ArrayList<ActivityEntry>(size);
+
+        Boolean b = false;
+        if (listingContext != null)
         {
-            // read and parse
-            HttpUtils.Response resp = read(url);
+            int fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
 
-            List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
-            int size = json.size();
-            ArrayList<ActivityEntry> result = new ArrayList<ActivityEntry>(size);
-
-            Boolean b = false;
-            if (listingContext != null)
+            // Case if skipCount > result size
+            if (listingContext.getMaxItems() + fromIndex >= size)
             {
-                int fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
-
-                // Case if skipCount > result size
-                if (listingContext.getMaxItems() + fromIndex >= size)
-                {
-                    json = json.subList(fromIndex, size);
-                    b = false;
-                }
-                else
-                {
-                    json = json.subList(fromIndex, listingContext.getMaxItems() + fromIndex);
-                    b = true;
-                }
+                json = json.subList(fromIndex, size);
+                b = false;
             }
-
-            if (json != null)
+            else
             {
-                for (Object obj : json)
-                {
-                    result.add(ActivityEntryImpl.parseJson((Map<String, Object>) obj));
-                }
+                json = json.subList(fromIndex, listingContext.getMaxItems() + fromIndex);
+                b = true;
             }
-
-            return new PagingResultImpl<ActivityEntry>(result, b, size);
         }
-        catch (Exception e)
+
+        if (json != null)
         {
-            convertException(e);
+            for (Object obj : json)
+            {
+                result.add(ActivityEntryImpl.parseJson((Map<String, Object>) obj));
+            }
         }
-        return null;
+
+        return new PagingResultImpl<ActivityEntry>(result, b, size);
     }
 }

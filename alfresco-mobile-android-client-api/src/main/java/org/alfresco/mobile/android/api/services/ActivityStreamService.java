@@ -38,7 +38,8 @@ public interface ActivityStreamService
     /**
      * Allow currently logged in user to get their activity stream.
      * 
-     * @return Returns a list of activities for the current user.
+     * @return Returns a list of activities for the current user. The result
+     *         list can be empty list if there's no activity.
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
@@ -57,19 +58,23 @@ public interface ActivityStreamService
     /**
      * Allow to retrieve activities feed for a specific user.
      * 
-     * @param username : a specific user
-     * @return Returns a list of activities for the given user.
-     * @throws AlfrescoServiceException : If username is undefined or if network
-     *             or internal problems occur during the process.
+     * @param personIdentifier : a specific user
+     * @return Returns a list of activities for the given user. The result list
+     *         can be empty if there's no activity or personIdentifier doesn't
+     *         exist.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
      */
     List<ActivityEntry> getActivityStream(String personIdentifier);
 
     /**
      * Allow to retrieve activities feed for a specific user.
      * 
-     * @param username : a specific user
-     * @param listingContext : define characteristics of result
-     * @return Returns a paged list of activities for the given user.
+     * @param personIdentifier : a specific user
+     * @param listingContext : define characteristics of the paging result
+     * @return Returns a paged list of activities for the given user. The result
+     *         list can be empty if there's no activity or personIdentifier
+     *         doesn't exist.
      * @throws AlfrescoServiceException : If username is undefined or if network
      *             or internal problems occur during the process.
      */
@@ -81,9 +86,10 @@ public interface ActivityStreamService
      * 
      * @param siteName : Share site short name
      * @return Returns a list of activities for the current user and specified
-     *         site.
-     * @throws AlfrescoServiceException : If siteName is undefined or if network
-     *             or internal problems occur during the process.
+     *         site. The result list can be empty if there's no activity or
+     *         logged in user is not a member.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
      */
     List<ActivityEntry> getSiteActivityStream(String siteName);
 
@@ -94,7 +100,8 @@ public interface ActivityStreamService
      * @param siteName : Share site short name
      * @param listingContext : define characteristics of result
      * @return Returns a paged list of activities for the current user and
-     *         specified site.
+     *         specified site. The result list can be empty if there's no
+     *         activity or logged in user is not a member.
      * @throws AlfrescoServiceException : If siteName is undefined or if network
      *             or internal problems occur during the process.
      */

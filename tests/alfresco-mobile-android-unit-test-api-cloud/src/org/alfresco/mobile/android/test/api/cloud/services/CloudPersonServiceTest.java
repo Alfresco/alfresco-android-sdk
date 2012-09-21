@@ -34,9 +34,9 @@ public class CloudPersonServiceTest extends PersonServiceTest
             ((AbstractPersonService) personService).getAvatarStream(null);
             Assert.fail("null personIdentifier return an object");
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try

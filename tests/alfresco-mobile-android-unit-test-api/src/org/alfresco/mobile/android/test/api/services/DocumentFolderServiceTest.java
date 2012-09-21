@@ -533,7 +533,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.fail();
         }
-        Assert.assertNull(docfolderservice.getNodeByIdentifier(doc.getIdentifier()));
+        
+        try
+        {
+            docfolderservice.getNodeByIdentifier(doc.getIdentifier());
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e1)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e1.getErrorCode());
+        }
     }
 
     /**
@@ -648,9 +657,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getChildren(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         AlfrescoSession session = null;
@@ -683,9 +692,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getChildByPath(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         Assert.assertNull(docfolderservice.getChildByPath("/ABCDEF"));
@@ -712,9 +721,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getChildByPath(unitTestFolder, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -722,9 +731,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getChildByPath(unitTestFolder, "");
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         Assert.assertNull(docfolderservice.getChildByPath(unitTestFolder, "/ABCDEF"));
@@ -755,9 +764,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getNodeByIdentifier(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -765,9 +774,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getNodeByIdentifier("");
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -777,7 +786,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getErrorCode());
         }
 
         if (isOnPremise(alfsession))
@@ -802,9 +811,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getDocuments(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -828,9 +837,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getFolders(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -854,9 +863,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getParentFolder(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -880,9 +889,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.deleteNode(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -906,9 +915,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getPermissions(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -934,9 +943,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getContentStream(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // TODO Strange ?
@@ -947,9 +956,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -961,9 +970,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getContent(null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // TODO Strange ?
@@ -974,9 +983,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 session.getServiceRegistry().getDocumentFolderService().getContent(doc);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -988,9 +997,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getRendition(null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -998,9 +1007,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.getRendition(doc, "coolrendidition");
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -1011,9 +1020,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                         .getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -1025,9 +1034,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.updateContent(null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1035,9 +1044,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.updateContent(doc, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         if (isOnPremise(alfsession))
@@ -1047,9 +1056,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 session.getServiceRegistry().getDocumentFolderService().updateContent(doc, createContentFile("Test"));
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -1061,9 +1070,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.updateProperties(null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1071,9 +1080,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.updateProperties(doc, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         HashMap<String, Serializable> props = new HashMap<String, Serializable>(2);
@@ -1085,9 +1094,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 session.getServiceRegistry().getDocumentFolderService().updateProperties(doc, props);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -1099,9 +1108,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createFolder(null, null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1109,9 +1118,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createFolder(folder, null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1119,9 +1128,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createFolder(folder, null, props);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         Set<String> specialCharacter = new HashSet<String>(5);
@@ -1142,9 +1151,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 
@@ -1169,9 +1178,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createDocument(null, null, null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1179,9 +1188,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createDocument(folder, null, null, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -1189,9 +1198,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.createDocument(folder, null, props, null);
             Assert.fail();
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         for (String character : specialCharacter)
@@ -1201,9 +1210,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 docfolderservice.createDocument(folder, character, props, null);
                 Assert.fail();
             }
-            catch (AlfrescoServiceException e)
+            catch (IllegalArgumentException e)
             {
-                Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+                Assert.assertTrue(true);
             }
         }
 

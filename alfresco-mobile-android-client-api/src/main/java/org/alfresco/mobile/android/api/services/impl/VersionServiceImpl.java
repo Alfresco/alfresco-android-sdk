@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -42,7 +41,7 @@ import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.spi.VersioningService;
 
 /**
- * The Versioning service manages versions of individual document.
+ * Implementation of VersionService.
  * 
  * @author Jean Marie Pascal
  */
@@ -60,28 +59,14 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
         super(repositorySession);
     }
 
-    /**
-     * Get the version history that relates to the referenced document.
-     * 
-     * @param document : document object in version control.
-     * @return a list of versionning document.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Document> getVersions(Document document)
     {
 
         return getVersions(document, null).getList();
     }
 
-    /**
-     * Get the version history that relates to the referenced document.
-     * 
-     * @param document : document object in version control.
-     * @return a list of versionning document.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Document> getVersions(Document document, ListingContext listingContext)
             throws AlfrescoServiceException
     {
@@ -91,11 +76,21 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Internal method to compute data from server and transform it as high
+     * level object.
+     * 
+     * @param document : versionned document
+     * @param listingContext : define characteristics of the result
+     * @return Paging Result of document that represent one version of a
+     *         document.
+     */
     private PagingResult<Document> computeVersion(Document document, ListingContext listingContext)
     {
         try
         {
-            if (document == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,Messagesl18n.getString("VersionService.0")); }
+            if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
 
             Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
 
@@ -143,9 +138,11 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
                     result.add((Document) doc);
                 }
             }
-            
-            if (listingContext != null){
-                Collections.sort(result, new NodeComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
+
+            if (listingContext != null)
+            {
+                Collections.sort(result,
+                        new NodeComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
             }
 
             return new PagingResultImpl<Document>(result, hasMoreItems, size);

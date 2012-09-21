@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -30,7 +29,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -39,15 +37,8 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
 /**
- * CommentService allows managing comments to any node inside an Alfresco
- * repository. </br> There are various methods relating to the CommentService,
- * including the ability to:
- * <ul>
- * <li>Manage comments against nodes</li>
- * <li>Get existing comments</li>
- * <li>Post new comments</li>
- * <li>Delete comments</li>
- * </ul>
+ * Abstract class implementation of CommentService. Responsible of sharing
+ * common methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -64,38 +55,38 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         super(repositorySession);
     }
 
-    /**
-     * List the available comments for the specified node. </br> Maximum result
-     * : 10 by default </br> Order : Older first </br>
-     * 
-     * @param node : Node object (Folder or Document).
-     * @return a list of Comment object. @ : If node is not defined or If
-     *         network problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Comment> getComments(Node node)
     {
         return getComments(node, null).getList();
     }
 
+    /**
+     * Internal method to retrieve node comments url. (depending on repository
+     * type)
+     * 
+     * @param node : a commented node
+     * @param listingContext : define characteristics of the result (Optional
+     *            for Onpremise)
+     * @return UrlBuilder to retrieve for a specific user node comments url.
+     */
     protected abstract UrlBuilder getCommentsUrl(Node node, ListingContext listingContext);
 
-    /**
-     * List the available comments for the specified node. </br> Order supports
-     * : {@link Sorting#CREATED_AT} </br>
-     * 
-     * @param node : Node object (Folder or Document).
-     * @param listingContext : define characteristics of the result
-     * @return a list of Comment object. @ : If comment is not defined or if
-     *         network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Comment> getComments(Node node, ListingContext listingContext)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
-            if (isObjectNull(node)) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("CommentService.0")); }
             return computeComment(getCommentsUrl(node, listingContext));
         }
+        /*catch (AlfrescoServiceException er)
+        {
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null && er.getMessage().contains("Access Denied")) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.GENERAL_ACCESS_DENIED, er.getAlfrescoErrorContent()); }
+            throw er;
+        }*/
         catch (Exception e)
         {
             convertException(e);
@@ -103,24 +94,16 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         return null;
     }
 
-    protected abstract Comment parseData(Map<String, Object> json);
-
-    /**
-     * Add a comment to the specified Node (Folder or Document).
-     * 
-     * @param node : Node object (Folder or Document).
-     * @param content : Comment Content
-     * @return the newly created comment object. @ : If content or node is not
-     *         defined or if network or internal problems occur during the
-     *         process.
-     */
+    /** {@inheritDoc} */
     public Comment addComment(Node node, String content)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
+        if (isStringNull(content)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "content")); }
         try
         {
-            if (isObjectNull(node) || isStringNull(content)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.1")); }
-
             // build URL
             UrlBuilder url = getCommentsUrl(node, null);
 
@@ -136,7 +119,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.COMMENT_GENERIC);
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
             return parseData(json);
@@ -148,40 +131,28 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         return null;
     }
 
+    /**
+     * Internal method to retrieve a specific comment url. (depending on
+     * repository type)
+     * 
+     * @param node : a commented node
+     * @param comment : the comment object (cloud only)
+     * @return UrlBuilder to retrieve for a specific comment url.
+     */
     protected abstract UrlBuilder getCommentUrl(Node node, Comment comment);
 
-    /**
-     * Remove the specified comment.
-     * 
-     * @param CommentImpl : comment object. @ : If comment is not defined or if
-     *            network or internal problems occur during the process.
-     */
-    public void deleteComment(Node node, Comment comment)
-    {
-        try
-        {
-            if (isObjectNull(comment)) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("CommentService.2")); }
-            delete(getCommentUrl(node, comment));
-        }
-        catch (Exception e)
-        {
-            convertException(e);
-        }
-    }
-
-    /**
-     * Update a comment content.
-     * 
-     * @param comment : new content of a comment. @
-     */
+    /** {@inheritDoc} */
     public Comment updateComment(Node node, Comment comment, String content)
     {
+
+        if (isObjectNull(comment)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "comment")); }
+
+        if (isStringNull(content)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "content")); }
+
         try
         {
-            if (isObjectNull(comment) || isStringNull(content)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("CommentService.3")); }
-            
             // build URL
             UrlBuilder url = getCommentUrl(node, comment);
 
@@ -197,7 +168,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.COMMENT_GENERIC);
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
             return parseData(json);
@@ -209,9 +180,39 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         return null;
     }
 
+    /** {@inheritDoc} */
+    public void deleteComment(Node node, Comment comment)
+    {
+        if (isObjectNull(comment)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "comment")); }
+        try
+        {
+            delete(getCommentUrl(node, comment), ErrorCodeRegistry.COMMENT_GENERIC);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+    }
+
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Parse Json Data response from the repository.
+     * 
+     * @param json : Map of data.
+     * @return the Comment object representative of the data.
+     */
+    protected abstract Comment parseData(Map<String, Object> json);
+
+    /**
+     * Internal method to compute data from server and transform it as high
+     * level object.
+     * 
+     * @param url : Alfresco REST API activity url
+     * @return Paging Result of Comment.
+     */
     protected abstract PagingResult<Comment> computeComment(UrlBuilder url);
 
 }
