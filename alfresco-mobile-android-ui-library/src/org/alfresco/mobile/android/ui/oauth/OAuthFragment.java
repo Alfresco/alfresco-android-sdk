@@ -46,8 +46,6 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
 
     private OAuth2Manager oauthManager;
 
-    private OAuthData oauthData;
-
     private OnOAuthAccessTokenListener onOAuthAccessTokenListener;
 
     @Override
@@ -136,7 +134,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
             }
             else
             {
-                onOAuthAccessTokenListener.afterRequestAccessToken(oauthData);
+                onOAuthAccessTokenListener.afterRequestAccessToken(result.getData());
             }
         }
         else

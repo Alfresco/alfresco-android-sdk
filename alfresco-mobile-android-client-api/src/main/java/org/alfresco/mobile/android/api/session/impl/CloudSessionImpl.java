@@ -58,6 +58,8 @@ public class CloudSessionImpl extends CloudSession
     /** Internal : Activate Basic Authentication. */
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
+    private static final String USER_ME = "-me-";
+
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
 
@@ -74,6 +76,13 @@ public class CloudSessionImpl extends CloudSession
      */
     public CloudSessionImpl(OAuthData oauthData, Map<String, Serializable> parameters)
     {
+        // Add user identifier if it's not previously added
+        // By default for cloud don't use a specific username but -me-
+        if (oauthData != null && !parameters.containsKey(USER))
+        {
+            parameters.put(USER, USER_ME);
+        }
+        
         initSettings(CLOUD_URL, parameters);
 
         // Normal case : With OAuth data.

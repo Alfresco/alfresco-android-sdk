@@ -119,7 +119,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobileSampleApp"));
 
         // Specific for Test Instance server
-        if (url.startsWith(ALFRESCO_CLOUD_URL) || oauth != null)
+        if (oauth != null || (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
         {
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE)
@@ -141,14 +141,13 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                 }
             }
 
-            if (url.startsWith(ALFRESCO_CLOUD_URL))
+            if (url != null && url.startsWith(ALFRESCO_CLOUD_URL))
             {
                 settings.put(CLOUD_BASIC_AUTH, true);
                 settings.put(USER, username);
                 settings.put(PASSWORD, password);
             }
 
-            settings.put(BASE_URL, url);
             return new CloudSessionLoader(context, oauth, settings);
         }
         else
