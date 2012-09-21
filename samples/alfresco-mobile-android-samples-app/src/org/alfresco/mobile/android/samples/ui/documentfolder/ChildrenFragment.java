@@ -219,7 +219,7 @@ public class ChildrenFragment extends NavigationFragment
         outState.putParcelable("parentFolder", parentFolder);
     }
 
-    private Folder getParentFolder()
+    public Folder getParentFolder()
     {
         if (savedParentFolder != null)
         {
