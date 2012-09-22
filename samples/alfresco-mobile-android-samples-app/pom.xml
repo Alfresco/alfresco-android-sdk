@@ -38,7 +38,7 @@
 
 	<profiles>
 		<profile>
-			<id>sample-release</id>
+			<id>release</id>
 			<build>
 				<resources>
 					<resource>

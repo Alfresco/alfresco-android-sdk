@@ -21,4 +21,5 @@
     <string name="oauth_api_secret">${oauth_api_secret}</string>
     <string name="oauth_callback">${oauth_callback}</string>
     <string name="oauth_scope">${oauth_scope}</string>
+    <string name="hockeyapp_key">${hockeyapp_key}</string>
 </resources>
