@@ -19,7 +19,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
@@ -37,7 +36,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
     @Override
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }
@@ -99,7 +98,6 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(versions);
         Assert.assertEquals(2, versions.size());
-        doc = versions.get(0);
         
         vDocument = versions.get(0);
         Assert.assertNotNull(vDocument);

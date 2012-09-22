@@ -30,102 +30,124 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * Represents a ratings.
  * 
  * @author Jean Marie Pascal
- * 
  */
-public class StarRating {
+public class StarRating
+{
 
-	private float average = -1;
-	private float total = 0;
-	private int count = 0;
-	private boolean isRated = false;
-	private String appliedAt;
-	private float myRating = -1;
+    private float average = -1;
 
-	/**
-	 * Parse server json response.
-	 * 
-	 * @param json
-	 * @return StarRating value.
-	 */
-	@SuppressWarnings("unchecked")
-	public static StarRating parseJson(Map<String, Object> json) {
-		StarRating rating = new StarRating();
+    private float total = 0;
 
-		Map<String, Object> j, js, jso = null;
+    private int count = 0;
 
-		j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
-		if (j.size() != 0 && j.get(OnPremiseConstant.RATINGS_VALUE) != null) {
+    private boolean isRated = false;
 
-			if (j.get(OnPremiseConstant.RATINGS_VALUE) instanceof Map) {
-				js = (Map<String, Object>) j.get(OnPremiseConstant.RATINGS_VALUE);
-				if (js.size() != 0 && js.get(CustomConstant.STARSRATINGSCHEME_VALUE) != null)
-					jso = (Map<String, Object>) js.get(CustomConstant.STARSRATINGSCHEME_VALUE);
-			} else if (j.get(OnPremiseConstant.RATINGS_VALUE) instanceof List) {
-				List<Object> jsa = ((List<Object>) j.get(OnPremiseConstant.RATINGS_VALUE));
-				if (jsa != null && !jsa.isEmpty())
-					jso = (Map<String, Object>) jsa.get(0);
-			}
-			if (jso != null) {
-				rating.myRating = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.RATING_VALUE));
-				rating.appliedAt = JSONConverter.getString(jso, OnPremiseConstant.APPLIEDAT_VALUE);
-				rating.isRated = true;
-			}
-		}
+    private String appliedAt;
 
-		if (j.size() != 0 && j.get(OnPremiseConstant.NODESTATISTICS_VALUE) != null) {
-			js = (Map<String, Object>) j.get(OnPremiseConstant.NODESTATISTICS_VALUE);
-			if (js.size() != 0 && js.get(CustomConstant.STARSRATINGSCHEME_VALUE) != null) {
-				jso = (Map<String, Object>) js.get(CustomConstant.STARSRATINGSCHEME_VALUE);
-				rating.average = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.AVERAGERATING_VALUE));
-				rating.total = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.RATINGSTOTAL_VALUE));
-				rating.count = Integer.parseInt(JSONConverter.getString(jso, OnPremiseConstant.RATINGSCOUNT_VALUE));
-			}
-		}
+    private float myRating = -1;
 
-		return rating;
-	}
+    /**
+     * Parse server json response.
+     * 
+     * @param json
+     * @return StarRating value.
+     */
+    @SuppressWarnings("unchecked")
+    public static StarRating parseJson(Map<String, Object> json)
+    {
+        StarRating rating = new StarRating();
 
-	/**
-	 * @return the average
-	 */
-	public float getAverage() {
-		return average;
-	}
+        Map<String, Object> j, js, jso = null;
 
-	/**
-	 * @return the total
-	 */
-	public float getTotal() {
-		return total;
-	}
+        j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
+        if (j.size() != 0 && j.get(OnPremiseConstant.RATINGS_VALUE) != null)
+        {
 
-	/**
-	 * @return the count
-	 */
-	public int getCount() {
-		return count;
-	}
+            if (j.get(OnPremiseConstant.RATINGS_VALUE) instanceof Map)
+            {
+                js = (Map<String, Object>) j.get(OnPremiseConstant.RATINGS_VALUE);
+                if (js.size() != 0 && js.get(CustomConstant.STARSRATINGSCHEME_VALUE) != null)
+                {
+                    jso = (Map<String, Object>) js.get(CustomConstant.STARSRATINGSCHEME_VALUE);
+                }
+            }
+            else if (j.get(OnPremiseConstant.RATINGS_VALUE) instanceof List)
+            {
+                List<Object> jsa = ((List<Object>) j.get(OnPremiseConstant.RATINGS_VALUE));
+                if (jsa != null && !jsa.isEmpty())
+                {
+                    jso = (Map<String, Object>) jsa.get(0);
+                }
+            }
+            if (jso != null)
+            {
+                rating.myRating = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.RATING_VALUE));
+                rating.appliedAt = JSONConverter.getString(jso, OnPremiseConstant.APPLIEDAT_VALUE);
+                rating.isRated = true;
+            }
+        }
 
-	/**
-	 * @return the isRated
-	 */
-	public boolean isRated() {
-		return isRated;
-	}
+        if (j.size() != 0 && j.get(OnPremiseConstant.NODESTATISTICS_VALUE) != null)
+        {
+            js = (Map<String, Object>) j.get(OnPremiseConstant.NODESTATISTICS_VALUE);
+            if (js.size() != 0 && js.get(CustomConstant.STARSRATINGSCHEME_VALUE) != null)
+            {
+                jso = (Map<String, Object>) js.get(CustomConstant.STARSRATINGSCHEME_VALUE);
+                rating.average = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.AVERAGERATING_VALUE));
+                rating.total = Float.parseFloat(JSONConverter.getString(jso, OnPremiseConstant.RATINGSTOTAL_VALUE));
+                rating.count = Integer.parseInt(JSONConverter.getString(jso, OnPremiseConstant.RATINGSCOUNT_VALUE));
+            }
+        }
 
-	/**
-	 * @return the appliedAt
-	 */
-	public GregorianCalendar getAppliedAt() {
-		if (appliedAt == null || DateUtils.parseJsonDate(appliedAt) == null)
-			return null;
-		GregorianCalendar g = new GregorianCalendar();
-		g.setTime(DateUtils.parseJsonDate(appliedAt));
-		return g;
-	}
+        return rating;
+    }
 
-	public float getMyRating() {
-		return myRating;
-	}
+    /**
+     * @return the average
+     */
+    public float getAverage()
+    {
+        return average;
+    }
+
+    /**
+     * @return the total
+     */
+    public float getTotal()
+    {
+        return total;
+    }
+
+    /**
+     * @return the count
+     */
+    public int getCount()
+    {
+        return count;
+    }
+
+    /**
+     * @return the isRated
+     */
+    public boolean isRated()
+    {
+        return isRated;
+    }
+
+    /**
+     * @return the appliedAt
+     */
+    public GregorianCalendar getAppliedAt()
+    {
+        if (appliedAt == null || DateUtils.parseJsonDate(appliedAt) == null) { return null; }
+        GregorianCalendar g = new GregorianCalendar();
+        g.setTime(DateUtils.parseJsonDate(appliedAt));
+        return g;
+    }
+
+    public float getMyRating()
+    {
+        return myRating;
+    }
 
 }

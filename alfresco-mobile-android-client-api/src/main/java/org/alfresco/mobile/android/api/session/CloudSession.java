@@ -66,7 +66,7 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     public static CloudSession connect(OAuth2DataImpl oauthData, String networkId, Map<String, Serializable> parameters)
     {
         Map<String, Serializable> tmpParameters = parameters;
-        if (tmpParameters == null)
+        if (parameters == null)
         {
             tmpParameters = new HashMap<String, Serializable>();
         }

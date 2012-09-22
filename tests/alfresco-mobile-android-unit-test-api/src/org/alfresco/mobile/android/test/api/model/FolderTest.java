@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
@@ -54,7 +53,7 @@ public class FolderTest extends AlfrescoSDKTestCase
     @Override
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }

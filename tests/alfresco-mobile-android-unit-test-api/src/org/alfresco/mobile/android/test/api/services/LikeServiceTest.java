@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 import android.util.Log;
@@ -54,7 +53,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }

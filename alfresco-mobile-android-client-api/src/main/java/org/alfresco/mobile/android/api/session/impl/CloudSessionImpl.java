@@ -98,7 +98,7 @@ public class CloudSessionImpl extends CloudSession
             authenticate(null);
         }
         // Exception case : No authentication mechanism available
-        else if (oauthData == null) { throw new IllegalArgumentException(String.format(
+        else { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "OAuthData")); }
     }
 

@@ -27,25 +27,20 @@ public interface OAuthData
     /**
      * Returns the API key.
      */
-    public String getApiKey();
+    String getApiKey();
 
     /**
      * Returns the API secret.
      */
-    public String getApiSecret();
+    String getApiSecret();
 
     /**
      * Returns the access token that can be used to make requests.
      */
-    public String getAccessToken();
+    String getAccessToken();
 
     /**
      * Returns the refresh token that can be used to get a new access token.
      */
-    public String getRefreshToken();
-
-    /**
-     * Returns the redirect URL associated with the API key.
-     */
-    //public String getRedirectUrl();
+    String getRefreshToken();
 }

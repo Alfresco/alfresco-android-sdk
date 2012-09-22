@@ -121,9 +121,12 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         String configFileName = System.getProperty(PROP_CONFIG_FILE);
         if (configFileName != null) {
 
-            try {
+            InputStream is = null;
+            try
+            {
                 java.util.Properties properties = new java.util.Properties();
-                properties.load(new FileInputStream(configFileName));
+                is = new FileInputStream(configFileName);
+                properties.load(is);
 
                 for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
                     String key = (String) e.nextElement();

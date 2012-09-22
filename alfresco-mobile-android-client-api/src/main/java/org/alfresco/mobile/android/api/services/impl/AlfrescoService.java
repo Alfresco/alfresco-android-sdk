@@ -240,7 +240,7 @@ public abstract class AlfrescoService
 
     protected boolean isOnPremiseSession()
     {
-        return (session instanceof AlfrescoSession);
+        return (session instanceof RepositorySession);
     }
 
     protected boolean isCloudSession()
@@ -267,7 +267,7 @@ public abstract class AlfrescoService
         }
         catch (AlfrescoException e)
         {
-            throw (AlfrescoException) t;
+            throw (AlfrescoException) e;
         }
         catch (CmisConstraintException e)
         {

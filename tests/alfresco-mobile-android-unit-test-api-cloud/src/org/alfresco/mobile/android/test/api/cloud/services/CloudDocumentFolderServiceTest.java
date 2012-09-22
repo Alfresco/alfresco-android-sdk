@@ -43,9 +43,8 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
-        Document doc;
-        doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
 
         Assert.assertNotNull(doc);
 

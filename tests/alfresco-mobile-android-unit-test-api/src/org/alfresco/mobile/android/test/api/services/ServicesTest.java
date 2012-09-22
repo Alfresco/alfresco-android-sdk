@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.test.api.services;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
@@ -83,7 +82,7 @@ public class ServicesTest extends AlfrescoSDKTestCase
     @Override
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }        

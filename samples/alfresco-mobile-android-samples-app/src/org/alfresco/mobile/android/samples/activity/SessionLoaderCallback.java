@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.samples.activity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
@@ -128,15 +130,20 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                 if (f.exists() && ENABLE_CONFIG_FILE)
                 {
                     Properties prop = new Properties();
+                    InputStream is = null;
                     try
                     {
+                        is = new FileInputStream(f);
                         // load a properties file
-                        prop.load(new FileInputStream(f));
+                        prop.load(is);
                         url = prop.getProperty("url");
                     }
                     catch (IOException ex)
                     {
                         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
+                    } finally
+                    {
+                        IOUtils.closeStream(is);
                     }
                 }
             }
@@ -167,7 +174,8 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         }
         else
         {
-            MessengerManager.showLongToast(context, R.string.error_login + " : " + results.getException().getMessage());
+            String message = (results.getException() != null) ? results.getException().getMessage() : "";
+            MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
         }
     }
 

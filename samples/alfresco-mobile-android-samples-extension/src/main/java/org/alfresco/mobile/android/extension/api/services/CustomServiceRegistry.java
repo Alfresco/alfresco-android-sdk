@@ -30,6 +30,6 @@ public interface CustomServiceRegistry extends ServiceRegistry {
     /**
      * Returns the new customRatingsService.
      */
-    public CustomRatingsService getCustomRatingsService();
+    CustomRatingsService getCustomRatingsService();
 
 }

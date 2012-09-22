@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.utils.IOUtils;
 
 import android.os.Environment;
 import android.util.Log;
@@ -92,23 +94,26 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
 
         return session;
     }
-    
-    public static Map<String, Serializable> getCloudParams(Map<String, Serializable> params){
+
+    public static Map<String, Serializable> getCloudParams(Map<String, Serializable> params)
+    {
         String url = null;
         String user = CLOUD_USER;
         String password = CLOUD_PASSWORD;
-        
+
         Map<String, Serializable> parameters = params;
-        
+
         // Check Properties available inside the device
         File f = new File(CLOUD_CONFIG_PATH);
         if (f.exists() && ENABLE_CONFIG_FILE)
         {
             Properties prop = new Properties();
+            InputStream is = null;
             try
             {
+                is = new FileInputStream(f);
                 // load a properties file
-                prop.load(new FileInputStream(f));
+                prop.load(is);
 
                 url = prop.getProperty("url") != null ? prop.getProperty("url") : user;
                 user = prop.getProperty("user") != null ? prop.getProperty("user") : user;
@@ -118,22 +123,26 @@ public abstract class AlfrescoSDKCloudTestCase extends AlfrescoSDKTestCase
             {
                 Log.e(TAG, ex.getMessage());
             }
+            finally
+            {
+                IOUtils.closeStream(is);
+            }
         }
-        
+
         if (parameters == null)
         {
             parameters = new HashMap<String, Serializable>();
         }
-        
+
         if (url != null)
         {
             parameters.put(BASE_URL, url);
         }
-        
+
         parameters.put(USER, user);
         parameters.put(PASSWORD, password);
         parameters.put(CLOUD_BASIC_AUTH, true);
-        
+
         return parameters;
     }
 

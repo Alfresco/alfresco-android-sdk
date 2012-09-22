@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 
+import android.util.Log;
+
 public class CloudSessionTest extends AlfrescoSDKCloudTestCase
 {
 
@@ -35,7 +37,7 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
     {
         // TODO Auto-generated method stub
     }
-    
+
     /**
      * Simple test to create a session.
      */
@@ -58,15 +60,15 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
         catch (Exception e)
         {
             Assert.fail();
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
-    
+
     public void testCreateWrongCloudSession()
     {
         try
         {
-            CloudSession.connect(null,  null);
+            CloudSession.connect(null, null);
             Assert.fail();
         }
         catch (Exception e)
@@ -74,7 +76,7 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
             Assert.assertTrue(true);
         }
     }
-    
+
     public void testCreateCloudSessionWithNetworkID()
     {
         try
@@ -82,7 +84,7 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
             Map<String, Serializable> settings = AlfrescoSDKCloudTestCase.getCloudParams(null);
             settings.put(CloudSession.CLOUD_NETWORK_ID, "opensourceecm.fr");
 
-            CloudSession session = CloudSession.connect(null,  settings);
+            CloudSession session = CloudSession.connect(null, settings);
 
             Assert.assertNotNull(session);
             Assert.assertNotNull(session.getRepositoryInfo());
@@ -95,16 +97,15 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
         catch (Exception e)
         {
             Assert.fail();
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
-    
-    
-    public void testNetworksList(){
+    public void testNetworksList()
+    {
         CloudSession cloudSession = AlfrescoSDKCloudTestCase.createCloudSession();
         Assert.assertNotNull(cloudSession);
-        
+
         List<CloudNetwork> networks = cloudSession.getNetworks();
         Assert.assertNotNull(networks);
         Assert.assertTrue(networks.size() > 0);

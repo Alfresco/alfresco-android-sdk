@@ -25,11 +25,11 @@ package org.alfresco.mobile.android.api.constants;
 public interface OAuthConstant
 {
     /** Entry Point to get initiate Authentication against Cloud API. */
-    String AUTHORIZE_URL = "https://api.alfresco.com/auth/oauth/versions/2/authorize";
+    String AUTHORIZE_URL = "https://stagapi.alfresco.com/auth/oauth/versions/2/authorize";
 
     /** Entry Point to get OAuth Authentication Token against Cloud API. */
-    String TOKEN_URL = "https://api.alfresco.com/auth/oauth/versions/2/token";
+    String TOKEN_URL = "https://stagapi.alfresco.com/auth/oauth/versions/2/token";
 
     /** Cloud API hostname. */
-    String CLOUD_URL = "https://api.alfresco.com";
+    String CLOUD_URL = "https://stagapi.alfresco.com";
 }

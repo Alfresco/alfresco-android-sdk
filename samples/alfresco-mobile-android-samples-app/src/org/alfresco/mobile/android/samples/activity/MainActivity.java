@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.samples.ui.ListUISamplesFragments;
@@ -66,7 +66,9 @@ public class MainActivity extends CommonActivity
             bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_USE_LOGO);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            {
                 bar.setHomeButtonEnabled(true);
+            }
         }
     }
 
@@ -131,9 +133,15 @@ public class MainActivity extends CommonActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
 
-        if (isVisible(ChildrenFragment.TAG)) ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).getMenu(menu);
+        if (isVisible(ChildrenFragment.TAG))
+        {
+            ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).getMenu(menu);
+        }
 
-        if (isVisible(DetailsFragment.TAG)) ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
+        if (isVisible(DetailsFragment.TAG))
+        {
+            ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
+        }
 
         super.onCreateOptionsMenu(menu);
 
@@ -149,7 +157,7 @@ public class MainActivity extends CommonActivity
                 ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).createFolder();
                 return true;
             case MenuActionItem.UPLOAD:
-                ActionManager.actionPickFile(getFragment(ChildrenFragment.TAG), PublicIntent.REQUESTCODE_FILEPICKER);
+                ActionManager.actionPickFile(getFragment(ChildrenFragment.TAG), RequestCode.REQUESTCODE_FILEPICKER);
                 return true;
             case MenuActionItem.OPEN_IN:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).openin();

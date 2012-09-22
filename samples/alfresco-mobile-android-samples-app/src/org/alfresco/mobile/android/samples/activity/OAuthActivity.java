@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.activity;
 
-import org.alfresco.mobile.android.api.asynchronous.OAuth2AccessTokenLoader;
+import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
@@ -70,7 +70,7 @@ public class OAuthActivity extends Activity
                             @Override
                             public void onCancel(DialogInterface dialog)
                             {
-                                getLoaderManager().destroyLoader(OAuth2AccessTokenLoader.ID);
+                                getLoaderManager().destroyLoader(OAuthAccessTokenLoader.ID);
                             }
                         });
             }

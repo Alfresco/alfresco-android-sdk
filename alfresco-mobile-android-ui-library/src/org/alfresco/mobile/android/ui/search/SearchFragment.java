@@ -110,7 +110,10 @@ public abstract class SearchFragment extends BaseListFragment implements
             searchLoader = new SearchLoader(getActivity(), alfSession, keywords, new KeywordSearchOptions(f,
                     includeDescendants, fullText, isExact));
         }
-        searchLoader.setListingContext(lc);
+        if (searchLoader != null)
+        {
+            searchLoader.setListingContext(lc);
+        }
         return searchLoader;
     }
 

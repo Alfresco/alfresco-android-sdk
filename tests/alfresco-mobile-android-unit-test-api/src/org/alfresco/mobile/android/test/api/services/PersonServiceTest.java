@@ -11,7 +11,6 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
@@ -31,7 +30,7 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }

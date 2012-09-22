@@ -17,15 +17,16 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication;
 
-
 /**
  * Implementation of OAuth2 AuthenticationProvider.
  * 
  * @author Jean Marie Pascal
- */ 
+ */
 public interface OAuthAuthenticationProvider extends AuthenticationProvider
 {
-    public String getAcessToken();
-    public String getRefreshToken();
-    public OAuthData refreshToken();
+    String getAcessToken();
+
+    String getRefreshToken();
+
+    OAuthData refreshToken();
 }

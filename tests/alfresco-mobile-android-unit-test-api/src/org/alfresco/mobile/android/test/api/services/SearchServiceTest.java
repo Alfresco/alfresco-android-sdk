@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 import android.util.Log;
@@ -57,11 +56,11 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }
-        
+
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         searchService = alfsession.getServiceRegistry().getSearchService();
@@ -155,111 +154,102 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(result.size() >= result3.size());
         Assert.assertTrue(result4.size() >= result3.size());
 
-        // Add new keywords
-        keywords += " " + KEYWORD_2;
-        options.setDoesIncludeContent(false);
-        options.setExactMatch(false);
-        List<Node> result5 = searchService.keywordSearch(keywords, options, null).getList();
-        Assert.assertNotNull(result5);
-        Assert.assertTrue(result5.size() >= 0);
-        Assert.assertTrue(result5.size() >= result.size());
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // SearchParameters
-        // ///////////////////////////////////////////////////////////////////////////
-        // Define a max results to 60 with a cmis query defined by Large Query.
-        /*
-         * sp = new KeywordSearchOptions(LARGE_QUERY); sp.setMaxResults(60);
-         * List<Node> result6 = searchService.search(sp);
-         * Assert.assertNotNull(result6); Assert.assertTrue(result6.size() >=
-         * 0); // Define a max results to 2 sp = new
-         * KeywordSearchOptions(LARGE_QUERY); sp.setMaxResults(2); List<Node>
-         * result7 = searchService.search(sp); Assert.assertNotNull(result7);
-         * Assert.assertEquals(2, result7.size());
-         */
+        try
+        {
+            // Add new keywords
+            keywords += " " + KEYWORD_2;
+            options.setDoesIncludeContent(false);
+            options.setExactMatch(false);
+            List<Node> result5 = searchService.keywordSearch(keywords, options, null).getList();
+            Assert.assertNotNull(result5);
+            Assert.assertTrue(result5.size() >= 0);
+            Assert.assertTrue(result5.size() >= result.size());
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
     }
-    
+
     /**
      * Just check if no error raised during creation of query with order by.
      */
-    public void testSortingSearchService(){
+    public void testSortingSearchService()
+    {
         KeywordSearchOptions options = new KeywordSearchOptions();
         options.setExactMatch(false);
         options.setDoesIncludeContent(false);
-        
+
         ListingContext lc = new ListingContext();
         lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
-        
+
         String keywords = "documentTestSearch";
         List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
-        
+
         lc.setSortProperty(SearchService.SORT_PROPERTY_NAME);
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
-        
+
         lc.setSortProperty(SearchService.SORT_PROPERTY_DESCRIPTION);
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
-        
+
         lc.setSortProperty(SearchService.SORT_PROPERTY_MODIFIED_AT);
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
-        
+
         lc.setSortProperty(SearchService.SORT_PROPERTY_CREATED_AT);
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
     }
-
-    
 
     public void testQuickSearchService()
     {
         KeywordSearchOptions options = new KeywordSearchOptions();
         options.setExactMatch(false);
         options.setDoesIncludeContent(false);
-        
+
         String keywords = "documentTestSearch";
         List<Node> result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(1, result.size());
-        
-        
-        //Access to fixed sample data informations
-        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/Search");
+
+        // Access to fixed sample data informations
+        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession)
+                + "/Search");
         Assert.assertNotNull(f);
-        
+
         options.setFolder(f);
         options.setIncludeDescendants(false);
-        
+
         result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(1, result.size());
-        
-        //Test Descendant without success
+
+        // Test Descendant without success
         f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession));
         Assert.assertNotNull(f);
-        
+
         options.setFolder(f);
         options.setIncludeDescendants(false);
         options.setDoesIncludeContent(true);
-        
+
         result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(0, result.size());
-        
-        //Test descendant with success
+
+        // Test descendant with success
         options.setIncludeDescendants(true);
 
         result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(1, result.size());
-        
-        
+
         // ///////////////////////////////////////////////////////////////////////////
         // Query Search
         // ///////////////////////////////////////////////////////////////////////////
         quickSearch("SELECT * from cmis:folder where cmis:name = 'testsearch'", 0);
-        
-        //3.4 D CE : 0
+
+        // 3.4 D CE : 0
         quickSearch("SELECT * from cmis:folder where cmis:name = 'TESTSEARCH'", 1);
-        
+
         quickSearch("SELECT * from cmis:folder where cmis:name LIKE 'testsear'", 0);
         quickSearch("SELECT * from cmis:folder where cmis:name LIKE '%testsear'", 0);
         quickSearch("SELECT * from cmis:folder where cmis:name LIKE 'testsear%'", 0);
@@ -271,24 +261,22 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         quickSearch("SELECT * from cmis:folder where cmis:name LIKE '%TESTSEAR%'", 1);
 
         quickSearch("SELECT * from cmis:folder where cmis:name LIKE 'TestSearch'", 0);
-        
+
         quickSearch("SELECT * from cmis:folder where UPPER(cmis:name) = 'TESTSEARCH' ", 1);
         quickSearch("SELECT * from cmis:folder where LOWER(cmis:name) = 'testsearch' ", 1);
 
-        
         quickSearch("SELECT * from cmis:folder where cmis:name = 'FolderMobileTest'", 1);
         quickSearch("SELECT * from cmis:folder where UPPER(cmis:name) = 'FOLDERMOBILETEST' ", 1);
 
         quickSearch("SELECT * FROM cmis:folder where CONTAINS('testsearch')", 0);
         quickSearch("SELECT * FROM cmis:folder where CONTAINS('TESTSEARCH')", 0);
-        
+
         quickSearch("SELECT * from cmis:document where cmis:name = 'DOCUMENTTESTSEARCH'", 1);
         quickSearch("SELECT * from cmis:document where cmis:name = 'documenttestsearch'", 0);
         quickSearch("SELECT * FROM cmis:document where CONTAINS('cmis:name:\\\'DOCUMENTTESTSEAR\\*\\\'')", 1);
         quickSearch("SELECT * FROM cmis:document where CONTAINS('cmis:name:\\\'documenttestsear\\*\\\'')", 1);
         quickSearch("SELECT * FROM cmis:document where CONTAINS('cmis:name:\\\'documenttestsearch\\*\\\'')", 1);
-        
-        
+
     }
 
     protected void quickSearch(String statement, int nbValue)
@@ -304,21 +292,28 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         // ///////////////////////////////////////////////////////////////////////////
         // Paging Search
         // ///////////////////////////////////////////////////////////////////////////
-        wait(2000);
+        try
+        {
+            wait(2000);
 
-        ListingContext lc = new ListingContext();
-        lc.setSkipCount(0);
-        lc.setMaxItems(5);
-        PagingResult<Node> pagingResult = searchService.search(LARGE_QUERY, SearchLanguage.CMIS, lc);
-        Assert.assertNotNull(pagingResult);
-        Assert.assertEquals(5, pagingResult.getList().size());
+            ListingContext lc = new ListingContext();
+            lc.setSkipCount(0);
+            lc.setMaxItems(5);
+            PagingResult<Node> pagingResult = searchService.search(LARGE_QUERY, SearchLanguage.CMIS, lc);
+            Assert.assertNotNull(pagingResult);
+            Assert.assertEquals(5, pagingResult.getList().size());
 
-        lc.setSkipCount(1);
-        PagingResult<Node> pagingResult2 = searchService.search(LARGE_QUERY, SearchLanguage.CMIS, lc);
-        Assert.assertNotNull(pagingResult2);
-        Assert.assertEquals(5, pagingResult2.getList().size());
-        Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(), pagingResult2.getList().get(0)
-                .getIdentifier());
+            lc.setSkipCount(1);
+            PagingResult<Node> pagingResult2 = searchService.search(LARGE_QUERY, SearchLanguage.CMIS, lc);
+            Assert.assertNotNull(pagingResult2);
+            Assert.assertEquals(5, pagingResult2.getList().size());
+            Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(), pagingResult2.getList().get(0)
+                    .getIdentifier());
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.getMessage());
+        }
 
     }
 }

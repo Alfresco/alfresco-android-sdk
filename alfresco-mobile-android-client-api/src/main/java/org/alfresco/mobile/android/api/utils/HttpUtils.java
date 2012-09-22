@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,12 +120,12 @@ public final class HttpUtils
                     ostream = new DataOutputStream(conn.getOutputStream());
 
                     Set<String> parameters = params.keySet();
-                    Iterator<String> it = parameters.iterator();
                     StringBuffer buf = new StringBuffer();
 
-                    for (int paramCount = 0; it.hasNext();)
+                    int paramCount = 0;
+                    for (String it : parameters)
                     {
-                        String parameterName = (String) it.next();
+                        String parameterName = it;
                         String parameterValue = (String) params.get(parameterName);
 
                         if (parameterValue != null)
@@ -151,6 +150,7 @@ public final class HttpUtils
                         ostream.flush();
                         ostream.close();
                     }
+                    IOUtils.closeStream(conn.getOutputStream());
                 }
             }
 

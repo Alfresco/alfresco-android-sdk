@@ -15,12 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.ui.documentfolder.actions;
+package org.alfresco.mobile.android.samples.ui.documentfolder.actions;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -85,8 +84,7 @@ public class DownloadTaskCallback implements DownloadTaskListener
         if (results != null && results.getFile() != null)
         {
             MessengerManager.showToast(activity, activity.getText(R.string.download_complete) + results.getFileName());
-            ActionManager.openIn(fragment, results.getFile(), doc.getContentStreamMimeType(),
-                    PublicIntent.REQUESTCODE_SAVE_BACK);
+            ActionManager.openIn(fragment, results.getFile(), doc.getContentStreamMimeType());
         }
         else
         {

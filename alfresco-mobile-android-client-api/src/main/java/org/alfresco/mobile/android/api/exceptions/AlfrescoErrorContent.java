@@ -30,16 +30,16 @@ public interface AlfrescoErrorContent
     /**
      * @return HTTP Error code
      */
-    public int getCode();
+    int getCode();
 
     /**
      * @return Human readable message explaining the server side error.
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * @return StackTrace of the server side error.
      */
-    public String getStackTrace();
+    String getStackTrace();
 
 }

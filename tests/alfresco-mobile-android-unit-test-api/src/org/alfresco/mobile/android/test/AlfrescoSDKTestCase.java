@@ -58,6 +58,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.test.InstrumentationTestCase;
+import android.util.Log;
 
 public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 {
@@ -176,10 +177,12 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         if (f.exists() && ENABLE_CONFIG_FILE)
         {
             Properties prop = new Properties();
+            InputStream is = null;
             try
             {
+                is = new FileInputStream(f);
                 // load a properties file
-                prop.load(new FileInputStream(f));
+                prop.load(is);
 
                 url = prop.getProperty("url");
                 binding = prop.getProperty("binding");
@@ -188,7 +191,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             }
             catch (IOException ex)
             {
-                ex.printStackTrace();
+                Log.e(TAG, Log.getStackTraceString(ex));
+            }
+            finally
+            {
+                IOUtils.closeStream(is);
             }
         }
 
@@ -201,11 +208,14 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
             Assert.fail(e.getMessage());
         }
 
-        if (session == null) Assert.fail("Error during creating session. Check if cmis.alfresco.com is available");
+        if (session == null)
+        {
+            Assert.fail("Error during creating session. Check if cmis.alfresco.com is available");
+        }
 
         return session;
     }
@@ -234,10 +244,12 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         if (f.exists() && ENABLE_CONFIG_FILE)
         {
             Properties prop = new Properties();
+            InputStream is = null;
             try
             {
+                is = new FileInputStream(f);
                 // load a properties file
-                prop.load(new FileInputStream(f));
+                prop.load(is);
 
                 url = prop.getProperty("url");
                 user = prop.getProperty("user");
@@ -245,7 +257,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             }
             catch (IOException ex)
             {
-                ex.printStackTrace();
+                Log.e(TAG, Log.getStackTraceString(ex));
+            }
+            finally
+            {
+                IOUtils.closeStream(is);
             }
         }
 
@@ -254,8 +270,14 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         {
             if (parameters != null)
             {
-                if (parameters.containsKey(USER)) user = (String) parameters.remove(USER);
-                if (parameters.containsKey(PASSWORD)) password = (String) parameters.remove(PASSWORD);
+                if (parameters.containsKey(USER))
+                {
+                    user = (String) parameters.remove(USER);
+                }
+                if (parameters.containsKey(PASSWORD))
+                {
+                    password = (String) parameters.remove(PASSWORD);
+                }
             }
             else
             {
@@ -269,12 +291,14 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
             Assert.fail(e.getMessage());
         }
 
         if (session == null)
+        {
             Assert.fail("Error during creating session. Check if " + ALFRESCO_CMIS_BASE_URL + " is available");
+        }
 
         return session;
     }
@@ -334,8 +358,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public Folder createUnitTestFolder(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return createNewFolder(session, session.getRootFolder(), ROOT_TEST_FOLDER_NAME, null);
-        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.createCloudFolder(alfsession);
+        }
+        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.createCloudFolder(alfsession); }
         return null;
     }
 
@@ -371,13 +397,13 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             }
             catch (AlfrescoException e1)
             {
-                e1.printStackTrace();
+                Log.e(TAG, Log.getStackTraceString(e1));
                 Assert.fail(e1.getMessage());
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
             Assert.fail(e.getMessage());
         }
         return folder;
@@ -446,7 +472,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Log.e(TAG, Log.getStackTraceString(e));
             }
             docfolderservice.createDocument(root, SAMPLE_DOC_NAME + "-" + i + ".txt", newFolderProps,
                     new ContentFileImpl(f));
@@ -470,7 +496,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
 
         ContentFile cf = new ContentFileImpl(f);
@@ -529,7 +555,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
             Assert.fail();
         }
 
@@ -543,8 +569,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public static String getUnitTestFolderPath(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return getFolderPath();
-        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.getCloudFolderPath();
+        }
+        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.getCloudFolderPath(); }
         return null;
     }
 
@@ -559,8 +587,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public static String getSampleDataPath(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return getOnPremiseSampleDataPath();
-        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.getCloudSampleDataFolderPath();
+        }
+        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.getCloudSampleDataFolderPath(); }
         return null;
 
     }
@@ -573,24 +603,30 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
     public static String getSiteName(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return SITENAME;
-        else if (session instanceof CloudSession) return AlfrescoSDKCloudTestCase.SITENAME;
+        }
+        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.SITENAME; }
         return null;
     }
 
     public static String getSitePath(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return "Sites/" + SITENAME;
-        else if (session instanceof CloudSession) return "Sites/" + AlfrescoSDKCloudTestCase.SITENAME;
+        }
+        else if (session instanceof CloudSession) { return "Sites/" + AlfrescoSDKCloudTestCase.SITENAME; }
         return null;
     }
 
     public static SiteVisibility getSiteVisibility(AlfrescoSession session)
     {
         if (session instanceof RepositorySession)
+        {
             return SiteVisibility.PUBLIC;
-        else if (session instanceof CloudSession) return SiteVisibility.PRIVATE;
+        }
+        else if (session instanceof CloudSession) { return SiteVisibility.PRIVATE; }
         return null;
     }
 
@@ -634,7 +670,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
         catch (InterruptedException ex)
         {
-            ex.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(ex));
         }
     }
 
@@ -646,7 +682,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
      */
     protected boolean isAlfrescoV4()
     {
-        if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return false;
+        if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession)) { return false; }
         return (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 

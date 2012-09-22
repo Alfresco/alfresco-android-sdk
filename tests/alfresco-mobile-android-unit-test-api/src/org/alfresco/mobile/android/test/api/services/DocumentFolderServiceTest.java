@@ -41,7 +41,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -66,7 +65,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }
@@ -333,7 +332,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(listDocs);
         Assert.assertEquals(DOCS_NUMBER, listDocs.size());
         Log.d(TAG, "listDocs : " + listDocs);
-        listDocs = docfolderservice.getDocuments(unitTestFolder);
 
         // listDocuments + Paging
         lc = new ListingContext();
@@ -556,12 +554,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
-        Document doc;
-        doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
 
         checkRendition(doc, true, true);
-
     }
 
     public void checkRendition(Document doc, boolean validateRendition, boolean validateExtraction)

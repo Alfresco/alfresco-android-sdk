@@ -81,6 +81,22 @@ public class ActionManager
             MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
         }
     }
+    
+    public static void openIn(Fragment fr, File myFile, String mimeType)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri data = Uri.fromFile(myFile);
+        intent.setDataAndType(data, mimeType.toLowerCase());
+
+        try
+        {
+            fr.startActivity(intent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
+        }
+    }
 
     /**
      * Allow to send a link to other application installed in the device.

@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.activity.MainActivity;
 import org.alfresco.mobile.android.samples.ui.documentfolder.actions.AddContentDialogFragment;
@@ -278,7 +278,7 @@ public class ChildrenFragment extends NavigationFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PublicIntent.REQUESTCODE_FILEPICKER && data != null && data.getData() != null)
+        if (requestCode == RequestCode.REQUESTCODE_FILEPICKER && data != null && data.getData() != null)
         {
             createFile(new File(ActionManager.getPath(getActivity(), data.getData())));
         }

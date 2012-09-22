@@ -301,7 +301,7 @@ public interface DocumentFolderService
      * 
      * @see #getRendition(Node, String)
      */
-    static final String RENDITION_THUMBNAIL = "doclib";
+    String RENDITION_THUMBNAIL = "doclib";
 
     /**
      * Retrieve a specific type of Rendition for the specified identifier.

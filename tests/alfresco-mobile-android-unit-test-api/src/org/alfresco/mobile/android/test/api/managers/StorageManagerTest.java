@@ -84,8 +84,8 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
         // Create Document from Asset.
-        Document doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
         // Retrieve Content
         Log.d(TAG, "Download Content");
         cf = docfolderservice.getContent(doc);
@@ -122,8 +122,8 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
         // Create Document from Asset.
-        Document doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
 
         // Retrieve Content
         cf = docfolderservice.getContent(doc);
@@ -143,7 +143,10 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             try
             {
                 cf = docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
-                if (cf != null) break;
+                if (cf != null)
+                {
+                    break;
+                }
                 wait(5000);
             }
             catch (AlfrescoServiceException e)
@@ -180,7 +183,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
 
     private void delete(File f) throws IOException
     {
-        if (!f.exists()) return;
+        if (!f.exists()) { return; }
         if (f.isDirectory())
         {
             for (File c : f.listFiles())
@@ -188,6 +191,6 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
                 delete(c);
             }
         }
-        if (!f.delete()) throw new FileNotFoundException("Failed to delete file: " + f);
+        if (!f.delete()) { throw new FileNotFoundException("Failed to delete file: " + f); }
     }
 }

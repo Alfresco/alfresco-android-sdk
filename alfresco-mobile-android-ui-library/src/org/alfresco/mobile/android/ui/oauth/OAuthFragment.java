@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.ui.oauth;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.asynchronous.OAuth2AccessTokenLoader;
+import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
 import org.alfresco.mobile.android.ui.R;
@@ -108,8 +108,8 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     public void retrieveAccessToken()
     {
         LoaderManager lm = getLoaderManager();
-        lm.restartLoader(OAuth2AccessTokenLoader.ID, null, this);
-        lm.getLoader(OAuth2AccessTokenLoader.ID).forceLoad();
+        lm.restartLoader(OAuthAccessTokenLoader.ID, null, this);
+        lm.getLoader(OAuthAccessTokenLoader.ID).forceLoad();
     }
 
     @Override
@@ -119,7 +119,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         {
             onOAuthAccessTokenListener.beforeRequestAccessToken(oauthManager);
         }
-        return new OAuth2AccessTokenLoader(getActivity(), oauthManager);
+        return new OAuthAccessTokenLoader(getActivity(), oauthManager);
     }
 
     @Override

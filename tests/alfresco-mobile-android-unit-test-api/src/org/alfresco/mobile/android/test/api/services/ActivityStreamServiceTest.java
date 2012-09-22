@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
@@ -65,7 +64,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
     /** {@inheritDoc} */
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }
@@ -96,13 +95,12 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         // Method getActivityStream()
         // ///////////////////////////////////////////////////////////////////////////
         List<ActivityEntry> feed = activityStreamService.getActivityStream();
-        int totalItems = feed.size();
-
         if (feed == null || feed.isEmpty())
         {
             Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
             return;
         }
+        int totalItems = feed.size();
         Assert.assertNotNull(feed);
         Assert.assertFalse(feed.isEmpty());
 
@@ -226,8 +224,6 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         {
             feed = activityStreamService.getActivityStream();
             wait(10000);
-            feed2 = activityStreamService.getActivityStream(alfsession.getPersonIdentifier());
-            wait(10000);
             feed3 = activityStreamService.getSiteActivityStream(getSiteName(alfsession));
             entry = feed.get(0);
             if (entry.getType().equals(type)) break;
@@ -305,7 +301,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         catch (IllegalArgumentException e)
         {
             Assert.assertTrue(true);
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
 
         // Check Error activity
@@ -400,7 +396,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 Log.d(TAG, "Execute script : ok");
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             Assert.fail();
         }

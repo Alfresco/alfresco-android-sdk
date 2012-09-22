@@ -17,54 +17,47 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 
 import android.content.Context;
 
 /**
- * Provides an asynchronous loader to create a CloudSession object.
+ * Provides an asynchronous loader to create a OauthData object.
  * 
  * @author Jean Marie Pascal
  */
-public class OAuthCloudSessionLoader extends AbstractBaseLoader<LoaderResult<AlfrescoSession>>
+public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAuthData>>
 {
+    public static final int ID = OAuthAccessTokenLoader.class.hashCode();
     
-    public static final int ID = OAuthCloudSessionLoader.class.hashCode();
+    private OAuth2Manager manager;
 
-    private Map<String, Serializable> settings;
-
-    private OAuthData oauthData;
-
-    public OAuthCloudSessionLoader(Context context, OAuthData oauthData, Map<String, Serializable> settings)
+    public OAuthAccessTokenLoader(Context context, OAuth2Manager manager)
     {
         super(context);
-        this.settings = settings;
-        this.oauthData = oauthData;
+        if (manager.getCode() == null) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "code")); }
+        this.manager = manager;
     }
 
     @Override
-    public LoaderResult<AlfrescoSession> loadInBackground()
+    public LoaderResult<OAuthData> loadInBackground()
     {
-        LoaderResult<AlfrescoSession> result = new LoaderResult<AlfrescoSession>();
-        AlfrescoSession cloudSession = null;
-
+        LoaderResult<OAuthData> result = new LoaderResult<OAuthData>();
+        OAuthData data = null;
         try
         {
-            cloudSession = CloudSession.connect(oauthData, settings);
+            data = manager.getOAuthData();
         }
         catch (Exception e)
         {
             result.setException(e);
         }
 
-        result.setData(cloudSession);
+        result.setData(data);
 
         return result;
     }
-
 }

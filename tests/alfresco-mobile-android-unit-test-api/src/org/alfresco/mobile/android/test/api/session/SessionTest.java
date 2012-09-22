@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
+import android.util.Log;
+
 public class SessionTest extends AlfrescoSDKTestCase
 {
 
@@ -35,9 +37,9 @@ public class SessionTest extends AlfrescoSDKTestCase
     protected void initSession()
     {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     // Try authenticate multiple time.
     // Try methods and unauthenticate
     // Create cloud session get networks and then recreate a new cloudsession
@@ -104,7 +106,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         catch (Exception e)
         {
             Assert.fail();
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -125,7 +127,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(ErrorCodeRegistry.SESSION_GENERIC, e.getErrorCode());
         }
-        
+
         try
         {
             HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
@@ -138,7 +140,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e.getErrorCode());
         }
-        
+
     }
 
     /**
