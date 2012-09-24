@@ -45,6 +45,11 @@ public final class HttpUtils
     {
         return invoke(url, "POST", contentType, null, writer, null, null, null);
     }
+    
+    public static Response invokePOST(UrlBuilder url, String contentType, Output writer, Map<String, List<String>> headers)
+    {
+        return invoke(url, "POST", contentType, headers, writer, null, null, null);
+    }
 
     public static Response invokePOST(UrlBuilder url, String contentType, Map<String, String> params)
     {

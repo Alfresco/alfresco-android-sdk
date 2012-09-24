@@ -18,15 +18,18 @@
 package org.alfresco.mobile.android.api.services.impl;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
@@ -81,12 +84,15 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         {
             return computeComment(getCommentsUrl(node, listingContext));
         }
-        /*catch (AlfrescoServiceException er)
+        catch (AlfrescoServiceException er)
         {
-            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null && er.getMessage().contains("Access Denied")) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_ACCESS_DENIED, er.getAlfrescoErrorContent()); }
-            throw er;
-        }*/
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
+                    && er.getMessage().contains("Access Denied")) { return new PagingResultImpl<Comment>(
+                    new ArrayList<Comment>(0), false, -1); }
+            else{
+                throw er;
+            }
+        }
         catch (Exception e)
         {
             convertException(e);

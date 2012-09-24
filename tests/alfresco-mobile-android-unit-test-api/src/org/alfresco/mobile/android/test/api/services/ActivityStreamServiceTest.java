@@ -35,11 +35,11 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.HttpUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
@@ -306,15 +306,17 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
 
         // Check Error activity
         Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
-
-        AlfrescoSession session = null;
-        if (isOnPremise(alfsession))
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        if (session != null)
         {
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
             Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
                     .getSiteActivityStream("privatesite").isEmpty());
             Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
                     .getSiteActivityStream("moderatedsite").isEmpty());
+        }
+        else
+        {
+            checkSession(session);
         }
     }
 
@@ -330,32 +332,39 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
      */
     public Document prepareScriptData()
     {
-        Folder f = (Folder) docfolderservice.getChildByPath("Data Dictionary/Scripts");
-        Assert.assertNotNull(f);
-
-        Map<String, Serializable> properties = new HashMap<String, Serializable>();
-        properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
-
-        String s = "activities.postActivity(\"org.alfresco.links.link-created\", \"swsdp\", \"calendarComponent\", '{ \"lastName\":\"\", \"title\":\"What\", \"page\":\"links-view?linkId=link-1340783835487-2803\", \"firstName\":\"Administrator\"}');";
         Document doc = null;
-
         try
         {
-            doc = (Document) docfolderservice.getChildByPath(f, "MobileActivitiesTestScript.js");
+            Folder f = (Folder) docfolderservice.getChildByPath("Data Dictionary/Scripts");
+            Assert.assertNotNull(f);
+
+            Map<String, Serializable> properties = new HashMap<String, Serializable>();
+            properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
+
+            String s = "activities.postActivity(\"org.alfresco.links.link-created\", \"swsdp\", \"calendarComponent\", '{ \"lastName\":\"\", \"title\":\"What\", \"page\":\"links-view?linkId=link-1340783835487-2803\", \"firstName\":\"Administrator\"}');";
+
+            try
+            {
+                doc = (Document) docfolderservice.getChildByPath(f, "MobileActivitiesTestScript.js");
+            }
+            catch (Exception e)
+            {
+                doc = null;
+            }
+
+            if (doc != null)
+            {
+                docfolderservice.deleteNode(doc);
+            }
+            doc = docfolderservice.createDocument(f, "MobileActivitiesTestScript.js", properties, createContentFile(s));
+            Assert.assertNotNull(doc);
+
+            executeScript(doc.getIdentifier());
         }
         catch (Exception e)
         {
-            doc = null;
+            // TODO: handle exception
         }
-
-        if (doc != null)
-        {
-            docfolderservice.deleteNode(doc);
-        }
-        doc = docfolderservice.createDocument(f, "MobileActivitiesTestScript.js", properties, createContentFile(s));
-        Assert.assertNotNull(doc);
-
-        executeScript(doc.getIdentifier());
 
         return doc;
     }
@@ -383,13 +392,15 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            HttpUtils.Response response = HttpUtils.invokePOST(url, formData.getContentType(), new HttpUtils.Output()
-            {
-                public void write(OutputStream out) throws Exception
-                {
-                    formData.write(out);
-                }
-            }, getBindingSessionHttp(alfsession));
+            org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response response = HttpUtils.invokePOST(
+                    url, formData.getContentType(),
+                    new org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Output()
+                    {
+                        public void write(OutputStream out) throws Exception
+                        {
+                            formData.write(out);
+                        }
+                    }, getAuthenticationProvider().getHTTPHeaders());
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {

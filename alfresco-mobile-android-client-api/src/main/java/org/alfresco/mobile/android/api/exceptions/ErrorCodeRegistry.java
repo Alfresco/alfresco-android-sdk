@@ -42,6 +42,9 @@ public interface ErrorCodeRegistry
     
     /** Access Denied / No rights. */
     int GENERAL_ACCESS_DENIED = 4;
+    
+    /** Access Denied / No rights. */
+    int GENERAL_OAUTH_DENIED = 99;
 
     // ///////////////////////////////////
     // SESSION ERRORS

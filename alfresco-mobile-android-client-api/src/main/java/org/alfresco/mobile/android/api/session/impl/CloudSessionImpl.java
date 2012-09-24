@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.SessionListener;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2AuthenticationProviderImpl;
@@ -46,6 +47,7 @@ import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -62,6 +64,8 @@ public class CloudSessionImpl extends CloudSession
 
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
+    
+    private SessionListener sessionListener;
 
     public CloudSessionImpl()
     {
@@ -218,6 +222,12 @@ public class CloudSessionImpl extends CloudSession
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
                 authenticator.getHTTPHeaders());
+        
+        // check response code
+        if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            //convertStatusCode(resp, ErrorCodeRegistry.SESSION_GENERIC);
+        }
 
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
@@ -247,5 +257,15 @@ public class CloudSessionImpl extends CloudSession
     protected void switchNetwork(CloudNetwork network)
     {
         currentNetwork = network;
+    }
+
+    public void addSessionListener(SessionListener listener)
+    {
+        this.sessionListener = listener;
+    }
+
+    public SessionListener getSessionListener()
+    {
+        return sessionListener;
     }
 }

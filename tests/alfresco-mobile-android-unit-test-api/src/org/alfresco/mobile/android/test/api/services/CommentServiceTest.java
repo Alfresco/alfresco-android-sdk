@@ -494,21 +494,16 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        AlfrescoSession session = null;
-        if (isOnPremise())
+        // User does not have access / privileges to the specified node
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+        if (session != null)
         {
-            // User does not have access / priviledges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
-            try
-            {
-                session.getServiceRegistry().getCommentService().getComments(doc);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
-            }
+            session.getServiceRegistry().getCommentService().getComments(doc);
+        }
+        else
+        {
+            checkSession(session);
         }
 
         // ////////////////////////////////////////////////////
@@ -543,7 +538,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             commentService.addComment(deletedDocument, SAMPLE_DATA_COMMENT_FILE);

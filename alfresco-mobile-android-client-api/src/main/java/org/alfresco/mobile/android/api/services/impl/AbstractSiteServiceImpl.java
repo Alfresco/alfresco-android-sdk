@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.services.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -36,8 +37,8 @@ import org.apache.http.HttpStatus;
 import android.util.Log;
 
 /**
- * Abstract class implementation of SiteService. Responsible of sharing
- * common methods between child class (OnPremise and Cloud)
+ * Abstract class implementation of SiteService. Responsible of sharing common
+ * methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -142,7 +143,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     /**
      * Allow to retrieve specific site document container url.
-     * @param site : Site 
+     * 
+     * @param site : Site
      * @return URl to retrieve information about site document container.
      */
     protected abstract String getDocContainerSiteUrl(Site site);
@@ -164,6 +166,12 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
             if (isStringNull(ref)) { return null; }
 
             return (Folder) session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(ref);
+        }
+        catch (AlfrescoServiceException er)
+        {
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
+                    && er.getMessage().contains("The entity with id") && er.getMessage().contains("was not found")) { return null; }
+            throw er;
         }
         catch (Exception e)
         {

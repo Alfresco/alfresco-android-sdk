@@ -56,12 +56,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(siteService);
     }
 
-    public static final String PUBLIC_SITE = "publicsite";
-
-    public static final String MODERATED_SITE = "moderatedsite";
-
-    public static final String PRIVATE_SITE = "privatesite";
-
     public static final String DESCRIPTION = "Description";
 
     public void testAllSiteService()
@@ -296,18 +290,15 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(s.getVisibility());
         Assert.assertEquals(getSiteVisibility(alfsession), s.getVisibility());
         Assert.assertNotNull(s.getShortName());
-        Assert.assertNotNull(s.getDescription());
+        Assert.assertNull(s.getDescription());
         Assert.assertNotNull(s.getTitle());
 
         // Get Site
         Assert.assertNull(siteService.getSite("FAKE"));
         AlfrescoSession session = null;
-        if (isOnPremise(alfsession))
-        {
-            // User does not have access / privileges to the specified site
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            Assert.assertNull(session.getServiceRegistry().getSiteService().getSite(PRIVATE_SITE));
-        }
+        // User does not have access / privileges to the specified site
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        Assert.assertNull(session.getServiceRegistry().getSiteService().getSite(PRIVATE_SITE));
 
         // Get Site by ShortName
         s2 = siteService.getSite(getSiteName(alfsession));
@@ -372,7 +363,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
 
         AlfrescoSession session = null;
-        session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         Site s = siteService.getSite(PRIVATE_SITE);
         Assert.assertNull(session.getServiceRegistry().getSiteService().getDocumentLibrary(s));
 
@@ -392,5 +383,5 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
     {
         return value;
     }
-    
+
 }

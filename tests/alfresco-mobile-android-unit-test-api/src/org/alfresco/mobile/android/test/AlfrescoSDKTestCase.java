@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -28,7 +27,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import junit.framework.Assert;
 
@@ -43,62 +41,27 @@ import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
-import org.alfresco.mobile.android.test.constant.ConfigurationConstant;
-import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
-import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
-import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
-public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
+public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implements ServerConfiguration, TestConstant
 {
     public static final String TAG = "AlfrescoSDKTestCase";
 
     // //////////////////////////////////////////////////////////////////////
-    // CONFIGURATION FILE CONFIG
+    // Internal test extension point
     // //////////////////////////////////////////////////////////////////////
-    /**
-     * Flag to enable config file inside any device or emulator to override this
-     * file constant.
-     */
-    protected static final boolean ENABLE_CONFIG_FILE = true;
-
-    private static final String CMIS_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
-            + "/alfresco-mobile/cmis-config.properties";
-
-    private static final String ONPREMISE_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
-            + "/alfresco-mobile/" + ConfigurationConstant.ONPREMISE_FILENAME;
-
-    // //////////////////////////////////////////////////////////////////////
-    // SERVER TEST CONFIG
-    // //////////////////////////////////////////////////////////////////////
-
-    public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
-
-    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http://repo.opencmis.org/inmemory/";
-
-    public static final String CHEMISTRY_INMEMORY_USER = "admin";
-
-    public static final String CHEMISTRY_INMEMORY_PASSWORD = "admin";
-
-    public static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
-
-    public static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
-
-    public static final String ALFRESCO_CMIS_USER = "admin";
-
-    public static final String ALFRESCO_CMIS_PASSWORD = "admin";
-
     protected static final String BINDING_URL = "org.alfresco.mobile.binding.internal.url";
 
     protected static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
@@ -107,203 +70,64 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
     protected static final String PASSWORD = "org.alfresco.mobile.credential.password";
 
-    // //////////////////////////////////////////////////////////////////////
-    // CONSTANT
-    // //////////////////////////////////////////////////////////////////////
-    public static final String ALFRESCO_CMIS_NAME = "Main Repository";
-
-    protected static final String FAKE_USERNAME = "FAKE_USERNAME";
-
-    protected static final String FAKE_SITENAME = "FAKE_SITENAME";
-
-    public static final String CMIS_VERSION = "1.0";
-
-    public static final String ROOT_TEST_FOLDER_NAME = "android-mobile-test";
-
-    /** Default Site available in Alfresco. */
-    public static final String SITENAME = "swsdp";
-
-    public static final String FOREIGN_CHARACTER = "ß";
-
-    public static final String FOREIGN_CHARACTER_DOUBLE_BYTE = "平";
+    protected static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
     // //////////////////////////////////////////////////////////////////////
     // Members
     // //////////////////////////////////////////////////////////////////////
     protected AlfrescoSession alfsession;
 
-    // //////////////////////////////////////////////////////////////////////
-    // USERS
-    // //////////////////////////////////////////////////////////////////////
-    public static final String USER1 = "user1";
-
-    public static final String USER2 = "user2";
-
-    public static final String USER1_PASSWORD = "user1Alfresco";
-
-    public static final String USER2_PASSWORD = "user2Alfresco";
+    protected ServerConfigFile config;
 
     // //////////////////////////////////////////////////////////////////////
-    // CONSTANT
+    // CREATE CMIS SESSION
     // //////////////////////////////////////////////////////////////////////
-    protected static final String SAMPLE_DATA_COMMENT_FOLDER = "Comment";
-
-    protected static final String SAMPLE_DATA_COMMENT_FILE = "file.txt";
-
-    protected static final String SAMPLE_DATA_PATH_COMMENT_FILE = "/" + SAMPLE_DATA_COMMENT_FOLDER + "/"
-            + SAMPLE_DATA_COMMENT_FILE;
-
-    // //////////////////////////////////////////////////////////////////////
-    // MANAGE SESSION METHODS
-    // //////////////////////////////////////////////////////////////////////
-    /**
-     * Create a default CMIS Session defined by </br> Constant :
-     * CHEMISTRY_INMEMORY_ATOMPUB_URL, CHEMISTRY_INMEMORY_USER,
-     * CHEMISTRY_INMEMORY_PASSWORD </br> or </br> by properties file inside your
-     * device/emulator : /sdcard/alfresco-mobile/cmis-config.properties</br>
-     * 
-     * @return
-     */
-    public static RepositorySession createCMISSession()
+    public RepositorySession createCMISSession()
     {
-
-        String url = CHEMISTRY_INMEMORY_ATOMPUB_URL;
-        String binding = CHEMISTRY_INMEMORY_ATOMPUB_URL;
-        String user = CHEMISTRY_INMEMORY_USER;
-        String password = CHEMISTRY_INMEMORY_PASSWORD;
-
+        config = new ServerConfigFile(CMIS_SERVER_ATOMPUB_URL, CMIS_SERVER_USERNAME, CMIS_SERVER_PASSWORD);
         // Check Properties available inside the device
-        File f = new File(CMIS_CONFIG_PATH);
-        if (f.exists() && ENABLE_CONFIG_FILE)
+        if (ENABLE_CONFIG_FILE)
         {
-            Properties prop = new Properties();
-            InputStream is = null;
-            try
-            {
-                is = new FileInputStream(f);
-                // load a properties file
-                prop.load(is);
-
-                url = prop.getProperty("url");
-                binding = prop.getProperty("binding");
-                user = prop.getProperty("user");
-                password = prop.getProperty("password");
-            }
-            catch (IOException ex)
-            {
-                Log.e(TAG, Log.getStackTraceString(ex));
-            }
-            finally
-            {
-                IOUtils.closeStream(is);
-            }
+            config.parseFile(CMIS_CONFIG_PATH);
         }
 
         RepositorySession session = null;
         try
         {
             HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BINDING_URL, binding);
-            session = RepositorySession.connect(url, user, password, settings);
+            settings.put(BINDING_URL, config.getUrl());
+            session = RepositorySession.connect(config.getUrl(), config.getUser(), config.getPassword(), settings);
         }
         catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
-            Assert.fail(e.getMessage());
-        }
-
-        if (session == null)
-        {
-            Assert.fail("Error during creating session. Check if cmis.alfresco.com is available");
         }
 
         return session;
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // CREATE ON PREMISE SESSION
+    // //////////////////////////////////////////////////////////////////////
     /**
-     * Create a default Alfresco Repository Session defined by : </br> Constant
-     * : MY_ALFRESCO_URL, MY_ALFRESCO_USER, MY_ALFRESCO_PASSWORD </br> or </br>
-     * by properties file inside your device/emulator :
-     * /sdcard/alfresco-mobile/config.properties</br>
+     * Default creation of a repositorySession
      * 
-     * @return Repository session
+     * @return
      */
     public RepositorySession createRepositorySession()
     {
         return createRepositorySession(null);
     }
 
-    public RepositorySession createRepositorySession(Map<String, Serializable> parameters)
-    {
-        String url = ALFRESCO_CMIS_BASE_URL;
-        String user = ALFRESCO_CMIS_USER;
-        String password = ALFRESCO_CMIS_PASSWORD;
-
-        // Check Properties available inside the device
-        File f = new File(ONPREMISE_CONFIG_PATH);
-        if (f.exists() && ENABLE_CONFIG_FILE)
-        {
-            Properties prop = new Properties();
-            InputStream is = null;
-            try
-            {
-                is = new FileInputStream(f);
-                // load a properties file
-                prop.load(is);
-
-                url = prop.getProperty("url");
-                user = prop.getProperty("user");
-                password = prop.getProperty("password");
-            }
-            catch (IOException ex)
-            {
-                Log.e(TAG, Log.getStackTraceString(ex));
-            }
-            finally
-            {
-                IOUtils.closeStream(is);
-            }
-        }
-
-        RepositorySession session = null;
-        try
-        {
-            if (parameters != null)
-            {
-                if (parameters.containsKey(USER))
-                {
-                    user = (String) parameters.remove(USER);
-                }
-                if (parameters.containsKey(PASSWORD))
-                {
-                    password = (String) parameters.remove(PASSWORD);
-                }
-            }
-            else
-            {
-                parameters = new HashMap<String, Serializable>();
-            }
-
-            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
-            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
-
-            session = RepositorySession.connect(url, user, password, parameters);
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, Log.getStackTraceString(e));
-            Assert.fail(e.getMessage());
-        }
-
-        if (session == null)
-        {
-            Assert.fail("Error during creating session. Check if " + ALFRESCO_CMIS_BASE_URL + " is available");
-        }
-
-        return session;
-    }
-
-    protected AlfrescoSession createCustomRepositorySession(String username, String password,
+    /**
+     * Creation with a specific username
+     * 
+     * @param username
+     * @param password
+     * @param parameters
+     * @return
+     */
+    protected AlfrescoSession createRepositorySession(String username, String password,
             Map<String, Serializable> parameters)
     {
         AlfrescoSession session = null;
@@ -321,48 +145,163 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         {
             alfsession = null;
         }
-
         return session;
     }
 
     /**
-     * TODO to remove...
+     * Create a repositorySession with parameters.
      * 
-     * @param alfsession
+     * @param parameters
      * @return
      */
-    protected BindingSession getBindingSessionHttp(AlfrescoSession alfsession)
+    public RepositorySession createRepositorySession(Map<String, Serializable> parameters)
     {
-        BindingSession s = new SessionImpl();
-        s.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
-                ((AbstractAlfrescoSessionImpl) alfsession).getPassthruAuthenticationProvider());
-        return s;
+        config = new ServerConfigFile(ALFRESCO_CMIS_BASE_URL, ALFRESCO_CMIS_USER, ALFRESCO_CMIS_PASSWORD);
+
+        if (ENABLE_CONFIG_FILE)
+        {
+            config.parseFile(ONPREMISE_CONFIG_PATH);
+        }
+
+        RepositorySession session = null;
+        try
+        {
+            if (parameters == null)
+            {
+                parameters = new HashMap<String, Serializable>();
+            }
+
+            String user = (parameters.containsKey(USER)) ? (String) parameters.remove(USER) : config.getUser();
+            String password = (parameters.containsKey(PASSWORD)) ? (String) parameters.remove(PASSWORD) : config
+                    .getPassword();
+            String url = (parameters.containsKey(BASE_URL)) ? (String) parameters.remove(BASE_URL) : config.getUrl();
+
+            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
+            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
+
+            session = RepositorySession.connect(url, user, password, parameters);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+
+        return session;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // CREATE CLOUD SESSION
+    // //////////////////////////////////////////////////////////////////////
+    public AlfrescoSession createSession(String username, String password, Map<String, Serializable> parameters)
+    {
+        String tmpusername = username, tmppassword = password;
+        if (ENABLE_CONFIG_FILE)
+        {
+            if (config.getExtraProperties().containsKey(username))
+            {
+                tmpusername = config.getExtraProperties().getProperty(username);
+            }
+            if (config.getExtraProperties().containsKey(password))
+            {
+                tmppassword = config.getExtraProperties().getProperty(password);
+            }
+        }
+
+        AlfrescoSession session;
+        if (isOnPremise())
+        {
+            session = createRepositorySession(tmpusername, tmppassword, parameters);
+        }
+        else
+        {
+            session = createCloudSession(tmpusername, tmppassword, parameters);
+        }
+        return session;
+    }
+
+    public CloudSession createCloudSession()
+    {
+        return createCloudSession(null);
+    }
+
+    protected AlfrescoSession createCloudSession(String username, String password, Map<String, Serializable> parameters)
+    {
+        AlfrescoSession session = null;
+        try
+        {
+            if (parameters == null)
+            {
+                parameters = new HashMap<String, Serializable>();
+            }
+            parameters.put(USER, username);
+            parameters.put(PASSWORD, password);
+            session = createCloudSession(parameters);
+        }
+        catch (Exception e)
+        {
+            alfsession = null;
+        }
+        return session;
+    }
+
+    public CloudSession createCloudSession(Map<String, Serializable> parameters)
+    {
+        config = new ServerConfigFile(ALFRESCO_CLOUD_URL, ALFRESCO_CLOUD_USER, ALFRESCO_CLOUD_PASSWORD);
+
+        if (ENABLE_CONFIG_FILE)
+        {
+            config.parseFile(CLOUD_CONFIG_PATH);
+        }
+
+        CloudSession session = null;
+        try
+        {
+            if (parameters == null)
+            {
+                parameters = new HashMap<String, Serializable>();
+            }
+
+            String user = (parameters.containsKey(USER)) ? (String) parameters.remove(USER) : config.getUser();
+            String password = (parameters.containsKey(PASSWORD)) ? (String) parameters.remove(PASSWORD) : config
+                    .getPassword();
+            String url = (parameters.containsKey(BASE_URL)) ? (String) parameters.remove(BASE_URL) : config.getUrl();
+
+            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
+            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
+
+            parameters.put(BASE_URL, url);
+            parameters.put(USER, user);
+            parameters.put(PASSWORD, password);
+            parameters.put(CLOUD_BASIC_AUTH, true);
+
+            session = CloudSession.connect(null, parameters);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+
+        return session;
     }
 
     // //////////////////////////////////////////////////////////////////////////
     // UTILS TO CREATE SAMPLES
     // //////////////////////////////////////////////////////////////////////////
-    protected static final String SAMPLE_FOLDER_NAME = "sampleFolder";
-
-    protected static final String SAMPLE_FOLDER_DESCRIPTION = "sampleFolderDescription";
-
-    protected static final String SAMPLE_DOC_NAME = "sampleDocuments";
-
     /**
      * Create Root Folder Sandbox for unit Test.<br>
-     * Name : ROOT_TEST_FOLDER_NAME<br>
-     * Path : /ROOT_TEST_FOLDER_NAME<br>
      * 
      * @return folder object.
      */
     public Folder createUnitTestFolder(AlfrescoSession session)
     {
-        if (session instanceof RepositorySession)
-        {
-            return createNewFolder(session, session.getRootFolder(), ROOT_TEST_FOLDER_NAME, null);
-        }
-        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.createCloudFolder(alfsession); }
-        return null;
+        return createFolderInSite(alfsession, getSiteName(session));
+    }
+
+    private static Folder createFolderInSite(AlfrescoSession session, String sitename)
+    {
+        SiteService siteService = session.getServiceRegistry().getSiteService();
+        Folder container = siteService.getDocumentLibrary(siteService.getSite(sitename));
+        return createNewFolder(session, container, ROOT_TEST_FOLDER_NAME, null);
     }
 
     /**
@@ -542,7 +481,6 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
 
     protected Document createDocumentFromAsset(Folder root, String assetName) throws AlfrescoException
     {
-
         DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
 
         AssetManager assetManager = getContext().getAssets();
@@ -566,68 +504,46 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         return docfolderservice.createDocument(root, assetName, newFolderProps, cf);
     }
 
-    public static String getUnitTestFolderPath(AlfrescoSession session)
-    {
-        if (session instanceof RepositorySession)
-        {
-            return getFolderPath();
-        }
-        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.getCloudFolderPath(); }
-        return null;
-    }
-
-    private static String getFolderPath()
-    {
-        return "/" + ROOT_TEST_FOLDER_NAME;
-    }
-
     // //////////////////////////////////////////////////////////////////////////
     // UTILS TO GET SAMPLE DATA ROOT FOLDER
     // //////////////////////////////////////////////////////////////////////////
-    public static String getSampleDataPath(AlfrescoSession session)
+    public static String getUnitTestFolderPath(AlfrescoSession session)
     {
-        if (session instanceof RepositorySession)
-        {
-            return getOnPremiseSampleDataPath();
-        }
-        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.getCloudSampleDataFolderPath(); }
-        return null;
-
-    }
-
-    private static String getOnPremiseSampleDataPath()
-    {
-        return "/Sample data";
-    }
-
-    public static String getSiteName(AlfrescoSession session)
-    {
-        if (session instanceof RepositorySession)
-        {
-            return SITENAME;
-        }
-        else if (session instanceof CloudSession) { return AlfrescoSDKCloudTestCase.SITENAME; }
-        return null;
+        return getFolderPath(session);
     }
 
     public static String getSitePath(AlfrescoSession session)
     {
+        return "Sites/" + getSiteName(session);
+    }
+
+    public static String getFolderPath(AlfrescoSession session)
+    {
+        return getSitePath(session) + "/documentLibrary/" + ROOT_TEST_FOLDER_NAME;
+    }
+
+    public static String getSampleDataPath(AlfrescoSession session)
+    {
+        return getSitePath(session) + "/documentLibrary/" + ROOT_TEST_SAMPLE_DATA;
+    }
+
+    public static String getSiteName(AlfrescoSession session)
+    {
+        String siteName = null;
         if (session instanceof RepositorySession)
         {
-            return "Sites/" + SITENAME;
+            siteName = ONPREMISE_SITENAME;
         }
-        else if (session instanceof CloudSession) { return "Sites/" + AlfrescoSDKCloudTestCase.SITENAME; }
-        return null;
+        else if (session instanceof CloudSession)
+        {
+            siteName = CLOUD_SITENAME;
+        }
+        return siteName;
     }
 
     public static SiteVisibility getSiteVisibility(AlfrescoSession session)
     {
-        if (session instanceof RepositorySession)
-        {
-            return SiteVisibility.PUBLIC;
-        }
-        else if (session instanceof CloudSession) { return SiteVisibility.PRIVATE; }
-        return null;
+        return SiteVisibility.PRIVATE;
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -674,6 +590,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         }
     }
 
+    public boolean compareDate(Date date1, Date date2)
+    {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2
+                .get(Calendar.DAY_OF_YEAR));
+    }
+
     /**
      * Detect if Alfresco repository server is on version 4 or above.
      * 
@@ -717,6 +643,26 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         return isOnPremise(alfsession);
     }
 
+    protected AuthenticationProvider getAuthenticationProvider()
+    {
+        return getAuthenticationProvider(alfsession);
+    }
+
+    protected AuthenticationProvider getAuthenticationProvider(AlfrescoSession session)
+    {
+        return ((AbstractAlfrescoSessionImpl) session).getAuthenticationProvider();
+    }
+
+    protected void checkSession(AlfrescoSession session)
+    {
+        if (session == null)
+        {
+            Log.w(TAG, "---------------------------------------------");
+            Log.w(TAG, "Unable to test : No extra users available");
+            Log.w(TAG, "---------------------------------------------");
+        }
+    }
+
     // //////////////////////////////////////////////////////////////////////////
     // AFTER / BEFORE TEST CASE
     // //////////////////////////////////////////////////////////////////////////
@@ -739,15 +685,4 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase
         alfsession = null;
         super.tearDown();
     }
-
-    public boolean compareDate(Date date1, Date date2)
-    {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(date1);
-        cal2.setTime(date2);
-        return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2
-                .get(Calendar.DAY_OF_YEAR));
-    }
-
 }

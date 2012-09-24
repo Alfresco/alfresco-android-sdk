@@ -41,7 +41,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -407,21 +406,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // getRootFolder
         f2 = docfolderservice.getRootFolder();
 
-        if (alfsession instanceof RepositorySession)
-        {
-            f3 = docfolderservice.getParentFolder(unitTestFolder);
-        }
-        else
-        {
-            // Sites/<MySite>/<documentlibrary>/unittestfolder
-            f3 = docfolderservice.getParentFolder(unitTestFolder);
-            f3 = docfolderservice.getParentFolder(f3);
-            f3 = docfolderservice.getParentFolder(f3);
-            f3 = docfolderservice.getParentFolder(f3);
-        }
+        // Sites/<MySite>/<documentlibrary>/unittestfolder
+        f3 = docfolderservice.getParentFolder(unitTestFolder);
+        f3 = docfolderservice.getParentFolder(f3);
+        f3 = docfolderservice.getParentFolder(f3);
+        f3 = docfolderservice.getParentFolder(f3);
         Assert.assertNotNull(f2);
         Assert.assertNotNull(f3);
-        Assert.assertEquals(f2.getIdentifier(), f3.getIdentifier());
+        Assert.assertEquals(f2.getName() + " != " + f3.getName(), f2.getIdentifier(), f3.getIdentifier());
 
     }
 
@@ -531,7 +523,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.fail();
         }
-        
+
         try
         {
             docfolderservice.getNodeByIdentifier(doc.getIdentifier());
@@ -622,18 +614,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // CONSTANT
-    // //////////////////////////////////////////////////////////////////////
-    protected static final String SAMPLE_DATA_DOCFOLDER_FOLDER = "DocFolder";
-
-    protected static final String SAMPLE_DATA_DOCFOLDER_FILE = "file.txt";
-
-    protected static final String SAMPLE_DATA_PATH_DOCFOLDER_FOLDER = "/" + SAMPLE_DATA_DOCFOLDER_FOLDER;
-
-    protected static final String SAMPLE_DATA_PATH_DOCFOLDER_FILE = "/" + SAMPLE_DATA_DOCFOLDER_FOLDER + "/"
-            + SAMPLE_DATA_DOCFOLDER_FILE;
-
-    // //////////////////////////////////////////////////////////////////////
     // FAILURE TESTS
     // //////////////////////////////////////////////////////////////////////
     /**
@@ -662,23 +642,43 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         AlfrescoSession session = null;
         Folder folder = null;
         Document doc = null;
-        if (isOnPremise(alfsession))
+        // User does not have access / privileges to the specified node
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+
+        String cloudSampleDataPathFolder = "Sites/" + PRIVATE_SITE + "/documentLibrary/" + ROOT_TEST_SAMPLE_DATA
+                + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER;
+
+        String onPremiseSampleDataPathFolder = getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER;
+
+        String cloudSampleDataPathFile = "Sites/" + PRIVATE_SITE + "/documentLibrary/" + ROOT_TEST_SAMPLE_DATA
+                + SAMPLE_DATA_PATH_DOCFOLDER_FILE;
+
+        String onPremiseSampleDataPathFile = getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_DOCFOLDER_FILE;
+
+        String sampleDataPathFolder = null;
+        String sampleDataPathFile = null;
+
+        if (isOnPremise())
         {
-            // User does not have access / privileges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            folder = (Folder) docfolderservice.getChildByPath(getSampleDataPath(alfsession)
-                    + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER);
-            doc = (Document) docfolderservice.getChildByPath(getSampleDataPath(alfsession)
-                    + SAMPLE_DATA_PATH_DOCFOLDER_FILE);
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getChildren(folder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            sampleDataPathFolder = onPremiseSampleDataPathFolder;
+            sampleDataPathFile = onPremiseSampleDataPathFile;
+        }
+        else
+        {
+            sampleDataPathFolder = cloudSampleDataPathFolder;
+            sampleDataPathFile = cloudSampleDataPathFile;
+        }
+
+        folder = (Folder) docfolderservice.getChildByPath(sampleDataPathFolder);
+        doc = (Document) docfolderservice.getChildByPath(sampleDataPathFile);
+
+        try
+        {
+            session.getServiceRegistry().getDocumentFolderService().getChildren(folder);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -697,20 +697,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNull(docfolderservice.getChildByPath("/ABCDEF"));
 
         // TODO Security ?? Different Exception for the same ??
-        if (isOnPremise(alfsession))
+        // User does not have access / privileges to the specified node
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        try
         {
-            // User does not have access / privileges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService()
-                        .getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().getChildByPath(sampleDataPathFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         try
@@ -735,22 +731,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNull(docfolderservice.getChildByPath(unitTestFolder, "/ABCDEF"));
 
-        if (isOnPremise(alfsession))
-        {
-            // User does not have access / privileges to the specified node
-            try
-            {
-                session.getServiceRegistry()
-                        .getDocumentFolderService()
-                        .getChildByPath(alfsession.getRootFolder(),
-                                getSampleDataPath(alfsession).substring(1) + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
-        }
+        Assert.assertNull(session.getServiceRegistry().getDocumentFolderService()
+                .getChildByPath(alfsession.getRootFolder(), sampleDataPathFolder.substring(1)));
 
         // ////////////////////////////////////////////////////
         // Error on getNodeByIdentifier
@@ -786,18 +768,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getErrorCode());
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            // User does not have access / privileges to the specified node
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(folder.getIdentifier());
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(folder.getIdentifier());
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -813,17 +791,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getDocuments(folder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().getDocuments(folder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -839,17 +814,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getFolders(folder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().getFolders(folder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -865,17 +837,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getParentFolder(folder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().getParentFolder(folder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -891,17 +860,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().deleteNode(folder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().deleteNode(folder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -917,19 +883,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                Folder permFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                        .getNodeByIdentifier(folder.getIdentifier());
-                session.getServiceRegistry().getDocumentFolderService().getPermissions(permFolder);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            Folder permFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(folder.getIdentifier());
+            session.getServiceRegistry().getDocumentFolderService().getPermissions(permFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -946,17 +909,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         // TODO Strange ?
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
-                Assert.fail();
-            }
-            catch (IllegalArgumentException e)
-            {
-                Assert.assertTrue(true);
-            }
+            session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -973,17 +933,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         // TODO Strange ?
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().getContent(doc);
-                Assert.fail();
-            }
-            catch (IllegalArgumentException e)
-            {
-                Assert.assertTrue(true);
-            }
+            session.getServiceRegistry().getDocumentFolderService().getContent(doc);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -999,28 +956,21 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
+        /*
+         * try { docfolderservice.getRendition(doc, "coolrendidition");
+         * Assert.fail(); } catch (AlfrescoServiceException e) {
+         * Assert.assertTrue(true); }
+         */
+
         try
         {
-            docfolderservice.getRendition(doc, "coolrendidition");
+            session.getServiceRegistry().getDocumentFolderService()
+                    .getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
             Assert.fail();
         }
-        catch (IllegalArgumentException e)
+        catch (AlfrescoServiceException e)
         {
             Assert.assertTrue(true);
-        }
-
-        if (isOnPremise(alfsession))
-        {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService()
-                        .getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
-                Assert.fail();
-            }
-            catch (IllegalArgumentException e)
-            {
-                Assert.assertTrue(true);
-            }
         }
 
         // ////////////////////////////////////////////////////
@@ -1046,17 +996,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().updateContent(doc, createContentFile("Test"));
-                Assert.fail();
-            }
-            catch (IllegalArgumentException e)
-            {
-                Assert.assertTrue(true);
-            }
+            session.getServiceRegistry().getDocumentFolderService().updateContent(doc, createContentFile("Test"));
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -1077,24 +1024,21 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             docfolderservice.updateProperties(doc, null);
             Assert.fail();
         }
-        catch (IllegalArgumentException e)
+        catch (AlfrescoServiceException e)
         {
             Assert.assertTrue(true);
         }
 
         HashMap<String, Serializable> props = new HashMap<String, Serializable>(2);
         props.put(ContentModel.PROP_TITLE, "test");
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().updateProperties(doc, props);
-                Assert.fail();
-            }
-            catch (IllegalArgumentException e)
-            {
-                Assert.assertTrue(true);
-            }
+            session.getServiceRegistry().getDocumentFolderService().updateProperties(doc, props);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
         }
 
         // ////////////////////////////////////////////////////
@@ -1145,26 +1089,31 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
+                Log.d(TAG, folder.getName() + " : " + character);
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
+            //Specific error on cloud.
+            //Remove by default special character and replace it by blank
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertTrue(true);
+            }
             catch (IllegalArgumentException e)
             {
+                Log.d(TAG, Log.getStackTraceString(e));
                 Assert.assertTrue(true);
             }
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService().createFolder(folder, SAMPLE_FOLDER_NAME, props);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService().createFolder(folder, SAMPLE_FOLDER_NAME, props);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -1207,24 +1156,25 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 docfolderservice.createDocument(folder, character, props, null);
                 Assert.fail();
             }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertTrue(true);
+            }
             catch (IllegalArgumentException e)
             {
                 Assert.assertTrue(true);
             }
         }
 
-        if (isOnPremise(alfsession))
+        try
         {
-            try
-            {
-                session.getServiceRegistry().getDocumentFolderService()
-                        .createDocument(folder, SAMPLE_FOLDER_NAME, props, null);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getDocumentFolderService()
+                    .createDocument(folder, SAMPLE_FOLDER_NAME, props, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
 
     }

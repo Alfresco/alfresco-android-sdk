@@ -425,7 +425,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!(n instanceof Folder)) { throw new AlfrescoServiceException(
                     ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.19")
-                            + newId); }
+                            + newId +" : " + n.getType() + " " + n.getName() ); }
             return (Folder) n;
         }
         catch (Exception e)
@@ -617,7 +617,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         Permissions perm = getPermissions(document);
         if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION,
-                Messagesl18n.getString("DocumentFolderService.1")); }
+                Messagesl18n.getString("ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION")); }
 
         try
         {
@@ -698,7 +698,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             // In case where a null value is provided (definition type property
             // is not null)
-            if (e.getMessage().contains("cannot be null or empty."))
+            if (e.getMessage() != null && e.getMessage().contains("cannot be null or empty."))
             {
                 throw new IllegalArgumentException(e);
             }

@@ -83,5 +83,8 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
      * Returns the current network for the session.
      */
     public abstract CloudNetwork getNetwork();
+    
+    
+    public abstract void addSessionListener(SessionListener listener);
 
 }

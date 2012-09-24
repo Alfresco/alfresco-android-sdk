@@ -15,37 +15,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.test.api.cloud.services;
+package org.alfresco.mobile.android.api.session.authentication.impl;
 
-import junit.framework.Assert;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.SessionListener;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
-import org.alfresco.mobile.android.test.api.services.TaggingServiceTest;
-
-/**
- * Test class for Tagging Service.
- * 
- * @author Jean Marie Pascal
- */
-public class CloudTaggingServiceTest extends TaggingServiceTest
+public class OAuthHelper
 {
 
-    protected void initSession()
+    public static void tokenHasExpired(AlfrescoSession session)
     {
-        if (alfsession == null)
+        // unsupport OAUth OnPremise
+        if ((session instanceof CloudSession) && ((CloudSessionImpl) session).getSessionListener() != null)
         {
-            alfsession = createCloudSession();
+            SessionListener listener = ((CloudSessionImpl) session).getSessionListener();
+            listener.onSessionExpired();
         }
-        // Check Services
-        Assert.assertNotNull(alfsession.getServiceRegistry());
-        taggingService = alfsession.getServiceRegistry().getTaggingService();
-        Assert.assertNotNull(taggingService);
-        docfolderservice= alfsession.getServiceRegistry().getDocumentFolderService();
-        Assert.assertNotNull(docfolderservice);
-    }
-
-    protected int getTotalItems(int value)
-    {
-        return -1;
     }
 
 }

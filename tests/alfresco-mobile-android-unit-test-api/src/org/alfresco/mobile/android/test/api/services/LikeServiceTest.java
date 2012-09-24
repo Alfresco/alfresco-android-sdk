@@ -48,8 +48,6 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
     protected DocumentFolderService docFolderService;
 
     protected static final String LIKE_FOLDER = "likeServiceTestFolder";
-    
-    protected AlfrescoSession session = null;
 
     protected void initSession()
     {
@@ -108,35 +106,26 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         likeService.like(folder);
         Assert.assertEquals(1, likeService.getLikeCount(folder));
         Assert.assertTrue(likeService.isLiked(folder));
-        
-        
+
         // ////////////////////////////////////////////////////
         // Add Like with other user
         // ////////////////////////////////////////////////////
-        if (isOnPremise(alfsession))
-        {
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            session.getServiceRegistry().getRatingService().like(folder);
-            
-            Assert.assertEquals(2, likeService.getLikeCount(folder));
-            Assert.assertTrue(likeService.isLiked(folder));
-        }
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        session.getServiceRegistry().getRatingService().like(folder);
+
+        Assert.assertEquals(2, likeService.getLikeCount(folder));
+        Assert.assertTrue(likeService.isLiked(folder));
         // ////////////////////////////////////////////////////
         // Remove Like
         // ////////////////////////////////////////////////////
         likeService.unlike(folder);
-        if (isOnPremise(alfsession))
-        {
-            Assert.assertEquals(1, likeService.getLikeCount(folder));
-        } else {
-            Assert.assertEquals(0, likeService.getLikeCount(folder));
-        }
+        Assert.assertEquals(1, likeService.getLikeCount(folder));
         Assert.assertFalse(likeService.isLiked(folder));
 
         checkSecondUnlike(folder);
     }
 
-    //Error if unlike a node already liked.
+    // Error if unlike a node already liked.
     protected void checkSecondUnlike(Folder folder)
     {
         try
@@ -172,21 +161,17 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         }
 
         Node doc = null;
-        if (isOnPremise(alfsession))
+        // User does not have access / privileges to the specified node
+        // FIXME But it works !
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        doc = docFolderService.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+        try
         {
-            // User does not have access / privileges to the specified node
-            //FIXME But it works ! 
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            doc = docFolderService.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
-            try
-            {
-                session.getServiceRegistry().getRatingService().like(doc);
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.fail();
-                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
-            }
+            session.getServiceRegistry().getRatingService().like(doc);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.fail();
         }
 
         // ////////////////////////////////////////////////////
@@ -227,11 +212,11 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         if (isOnPremise(alfsession))
         {
             // User does not have access / privileges to the specified node
-            //FIXME But it works ! 
+            // FIXME But it works !
             try
             {
                 session.getServiceRegistry().getRatingService().getLikeCount(doc);
@@ -239,7 +224,8 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
             catch (AlfrescoServiceException e)
             {
                 Assert.fail();
-                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+                // Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP,
+                // e.getErrorCode());
             }
         }
 
@@ -255,11 +241,11 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         if (isOnPremise(alfsession))
         {
             // User does not have access / privileges to the specified node
-            //FIXME But it works ! 
+            // FIXME But it works !
             try
             {
                 session.getServiceRegistry().getRatingService().isLiked(doc);
@@ -267,7 +253,8 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
             catch (AlfrescoServiceException e)
             {
                 Assert.fail();
-                //Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP, e.getErrorCode());
+                // Assert.assertEquals(ErrorCodeRegistry.GENERAL_HTTP_RESP,
+                // e.getErrorCode());
             }
         }
 

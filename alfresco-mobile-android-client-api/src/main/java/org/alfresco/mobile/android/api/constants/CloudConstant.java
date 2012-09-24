@@ -159,6 +159,8 @@ public interface CloudConstant extends OnPremiseConstant
 
     // ERROR
     String ERROR_VALUE = "error";
+    
+    String ERRORDESCRIPTION_VALUE = "error_description";
 
     String STATUSCODE_VALUE = "statusCode";
 

@@ -21,7 +21,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -106,6 +108,16 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             UrlBuilder url = new UrlBuilder(link);
             return computeSimpleTag(url, listingContext);
         }
+        catch (AlfrescoServiceException e)
+        {
+            if (e.getAlfrescoErrorContent() != null && e.getAlfrescoErrorContent().getMessage() != null
+                    && e.getAlfrescoErrorContent().getMessage().contains("Access Denied"))
+            {
+                List<Tag> result = new ArrayList<Tag>();
+                return new PagingResultImpl<Tag>(result, false, -1);
+            }
+            throw e;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -118,7 +130,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
-        
+
         if (isListNull(tags)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags")); }
         try

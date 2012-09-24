@@ -50,6 +50,9 @@ import android.test.AndroidTestCase;
 public class AlfrescoExtensionTest extends AndroidTestCase
 {
 
+    public static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
+    public static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
+    
     private Session session;
 
     private Folder rootFolder;
@@ -65,7 +68,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         parameters.put(SessionParameter.USER, AlfrescoSDKTestCase.ALFRESCO_CMIS_USER);
         parameters.put(SessionParameter.PASSWORD, AlfrescoSDKTestCase.ALFRESCO_CMIS_PASSWORD);
         // connection settings
-        parameters.put(SessionParameter.ATOMPUB_URL, AlfrescoSDKTestCase.ALFRESCO_CMIS_ATOMPUB_URL);
+        parameters.put(SessionParameter.ATOMPUB_URL, ALFRESCO_CMIS_ATOMPUB_URL);
         parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 
         parameters

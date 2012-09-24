@@ -87,39 +87,47 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
     @SuppressWarnings("unchecked")
     protected PagingResult<ActivityEntry> computeActivities(UrlBuilder url, ListingContext listingContext)
     {
-        // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
-
-        List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
-        int size = json.size();
-        ArrayList<ActivityEntry> result = new ArrayList<ActivityEntry>(size);
-
-        Boolean b = false;
-        if (listingContext != null)
+        try
         {
-            int fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
+            // read and parse
+            HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
 
-            // Case if skipCount > result size
-            if (listingContext.getMaxItems() + fromIndex >= size)
+            List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
+            int size = json.size();
+            ArrayList<ActivityEntry> result = new ArrayList<ActivityEntry>(size);
+
+            Boolean b = false;
+            if (listingContext != null)
             {
-                json = json.subList(fromIndex, size);
-                b = false;
+                int fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
+
+                // Case if skipCount > result size
+                if (listingContext.getMaxItems() + fromIndex >= size)
+                {
+                    json = json.subList(fromIndex, size);
+                    b = false;
+                }
+                else
+                {
+                    json = json.subList(fromIndex, listingContext.getMaxItems() + fromIndex);
+                    b = true;
+                }
             }
-            else
+
+            if (json != null)
             {
-                json = json.subList(fromIndex, listingContext.getMaxItems() + fromIndex);
-                b = true;
+                for (Object obj : json)
+                {
+                    result.add(ActivityEntryImpl.parseJson((Map<String, Object>) obj));
+                }
             }
+
+            return new PagingResultImpl<ActivityEntry>(result, b, size);
         }
-
-        if (json != null)
+        catch (Exception e)
         {
-            for (Object obj : json)
-            {
-                result.add(ActivityEntryImpl.parseJson((Map<String, Object>) obj));
-            }
+            convertException(e);
         }
-
-        return new PagingResultImpl<ActivityEntry>(result, b, size);
+        return null;
     }
 }

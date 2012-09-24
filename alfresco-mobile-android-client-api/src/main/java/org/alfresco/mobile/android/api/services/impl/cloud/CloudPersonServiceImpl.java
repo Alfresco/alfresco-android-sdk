@@ -70,6 +70,9 @@ public class CloudPersonServiceImpl extends AbstractPersonService
         try
         {
             Person person = getPerson(personIdentifier);
+            if (person.getAvatarIdentifier() == null){
+                return null;
+            }
             ContentStream st = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                     .getDocumentFolderService()).downloadContentStream(person.getAvatarIdentifier());
             return st;

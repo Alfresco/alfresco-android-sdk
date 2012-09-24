@@ -26,8 +26,6 @@ import junit.framework.Assert;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.ActivityStreamServiceTest;
 
 import android.util.Log;
@@ -43,9 +41,9 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }
 
         // Check Services

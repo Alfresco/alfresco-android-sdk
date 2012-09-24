@@ -20,8 +20,6 @@ package org.alfresco.mobile.android.test.api.cloud.services;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.LikeServiceTest;
 
 /**
@@ -34,20 +32,21 @@ public class CloudLikeServiceTest extends LikeServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }   
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         likeService = alfsession.getServiceRegistry().getRatingService();
+        docFolderService = alfsession.getServiceRegistry().getDocumentFolderService();
         Assert.assertNotNull(likeService);
     }
     
     
     protected void checkSecondUnlike(Folder folder){
         likeService.unlike(folder);
-        Assert.assertEquals(0, likeService.getLikeCount(folder));
+        Assert.assertEquals(1, likeService.getLikeCount(folder));
         Assert.assertFalse(likeService.isLiked(folder));
     }
     

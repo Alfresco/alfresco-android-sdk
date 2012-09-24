@@ -33,6 +33,12 @@ import android.util.Log;
 public class SessionTest extends AlfrescoSDKTestCase
 {
 
+
+    private static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
+
+    private static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
+    
+    
     @Override
     protected void initSession()
     {
@@ -75,40 +81,6 @@ public class SessionTest extends AlfrescoSDKTestCase
         }
     }
 
-    /**
-     * Simple test to create a session with basic parameters. </br>
-     */
-    public void testCreateSimpleSessionWithParameters()
-    {
-        try
-        {
-            // Add Extra Informations
-            // Because cmis.alfresco.com doesn't respect the pattern of Alfresco
-            // cmis binding url we add as extra parameters
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BINDING_URL, CHEMISTRY_INMEMORY_ATOMPUB_URL);
-
-            // Create the repository Session.
-            // ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
-            // Start the authentication and get all informations from the
-            // repository
-            alfsession = RepositorySession.connect(CHEMISTRY_INMEMORY_ATOMPUB_URL, BINDING_URL,
-                    CHEMISTRY_INMEMORY_ATOMPUB_URL, settings);
-
-            // Check informations has been collected from repository
-            Assert.assertNotNull(alfsession);
-            Assert.assertNotNull(alfsession.getRepositoryInfo());
-
-            // Base Url
-            Assert.assertNotNull(alfsession.getBaseUrl());
-            Assert.assertEquals(CHEMISTRY_INMEMORY_ATOMPUB_URL, alfsession.getBaseUrl());
-        }
-        catch (Exception e)
-        {
-            Assert.fail();
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
-    }
 
     /**
      * Error case where base url is not correct

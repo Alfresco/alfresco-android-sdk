@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -97,7 +98,6 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
         docs = docfolderservice.getDocuments(folder);
         Assert.assertEquals(1, docs.size());
-
 
         // Check Properties
         Assert.assertNotNull(doc.getIdentifier());
@@ -172,8 +172,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
         // Create Empty content Document
         doc = docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, null);
-        
-        //Create a document that already exist
+
+        // Create a document that already exist
         try
         {
             docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, null);
@@ -184,7 +184,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e.getErrorCode());
         }
 
-        //Try to update name with an existing name
+        // Try to update name with an existing name
         props.clear();
         props.put(PropertyIds.NAME, SAMPLE_DOC_NAME + ".txt");
         try
@@ -247,18 +247,17 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(permissions.canComment());
         Assert.assertTrue(permissions.canDelete());
         Assert.assertTrue(permissions.canEdit());
-        
-        
+
         Document tmpDoc = docfolderservice.createDocument(folder, FOREIGN_CHARACTER, null, null);
         Assert.assertNotNull(tmpDoc);
         Assert.assertEquals(FOREIGN_CHARACTER, tmpDoc.getName());
         docfolderservice.deleteNode(tmpDoc);
-        
+
         tmpDoc = docfolderservice.createDocument(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, null, null);
         Assert.assertNotNull(tmpDoc);
         Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, tmpDoc.getName());
         docfolderservice.deleteNode(tmpDoc);
-        
+
         tmpDoc = docfolderservice.createDocument(folder, "007", null, null);
         Assert.assertNotNull(tmpDoc);
         Assert.assertEquals("007", tmpDoc.getName());
@@ -268,5 +267,54 @@ public class DocumentTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(doc);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
+    }
+
+    /**
+     * Check permissions depending on user right.
+     */
+    public void testPermissions()
+    {
+
+        // Manager & owner
+        Document permissionDocument = (Document) docfolderservice.getChildByPath(getSampleDataPath(alfsession) + "/"
+                + SAMPLE_DATA_PERMISSIONS_FOLDER + "/" + SAMPLE_DATA_PERMISSIONS_FILE);
+        Permissions permissions = docfolderservice.getPermissions(permissionDocument);
+        Assert.assertFalse(permissions.canAddChildren());
+        Assert.assertTrue(permissions.canComment());
+        Assert.assertTrue(permissions.canDelete());
+        Assert.assertTrue(permissions.canEdit());
+
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        if (session != null)
+        {
+            // Consumer
+            permissionDocument = (Document) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionDocument.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionDocument);
+            Assert.assertFalse(permissions.canAddChildren());
+            Assert.assertFalse(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertFalse(permissions.canEdit());
+
+            // Contributor
+            session = createSession(CONTRIBUTOR, CONTRIBUTOR_PASSWORD, null);
+            permissionDocument = (Document) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionDocument.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionDocument);
+            Assert.assertFalse(permissions.canAddChildren());
+            Assert.assertFalse(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertFalse(permissions.canEdit());
+
+            // Collaborator
+            session = createSession(COLLABORATOR, COLLABORATOR_PASSWORD, null);
+            permissionDocument = (Document) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionDocument.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionDocument);
+            Assert.assertFalse(permissions.canAddChildren());
+            Assert.assertTrue(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertTrue(permissions.canEdit());
+        }
     }
 }

@@ -40,6 +40,8 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
+import android.util.Log;
+
 /**
  * Test class for Folder Object.
  * 
@@ -65,7 +67,7 @@ public class FolderTest extends AlfrescoSDKTestCase
     /**
      * Test to create a folder. (Check properties, aspects and method)
      */
-    public void testFolderMethod() throws Exception
+    public void testFolderMethod()
     {
         Folder folder = createUnitTestFolder(alfsession);
         Assert.assertNotNull(folder);
@@ -179,40 +181,6 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertTrue(permissions.canDelete());
         Assert.assertTrue(permissions.canEdit());
 
-        AlfrescoSession session = null;
-        if (isOnPremise(alfsession))
-        {
-            // User does not have access / privileges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            Folder permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                    .getNodeByIdentifier(childFolder.getIdentifier());
-            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
-            Assert.assertFalse(permissions.canAddChildren());
-            Assert.assertFalse(permissions.canComment());
-            Assert.assertFalse(permissions.canDelete());
-            Assert.assertFalse(permissions.canEdit());
-
-            // Editor
-            permissionFolder = (Folder) docfolderservice.getChildByPath(getSampleDataPath(alfsession) + "/Permissions");
-            permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                    .getNodeByIdentifier(permissionFolder.getIdentifier());
-            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
-            Assert.assertFalse(permissions.canAddChildren());
-            Assert.assertTrue(permissions.canComment());
-            Assert.assertFalse(permissions.canDelete());
-            Assert.assertTrue(permissions.canEdit());
-
-            // Contributor
-            session = createCustomRepositorySession(USER2, USER2_PASSWORD, null);
-            permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                    .getNodeByIdentifier(permissionFolder.getIdentifier());
-            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
-            Assert.assertTrue(permissions.canAddChildren());
-            Assert.assertFalse(permissions.canComment());
-            Assert.assertFalse(permissions.canDelete());
-            Assert.assertFalse(permissions.canEdit());
-        }
-
         // Create a folder that already exist
         try
         {
@@ -243,15 +211,65 @@ public class FolderTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(childFolder);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
+    }
 
+    /**
+     * Check permissions depending on user right.
+     */
+    public void testPermissions()
+    {
+
+        // Manager & owner
+        Folder permissionFolder = (Folder) docfolderservice.getChildByPath(getSampleDataPath(alfsession) + "/"
+                + SAMPLE_DATA_PERMISSIONS_FOLDER);
+        Permissions permissions = docfolderservice.getPermissions(permissionFolder);
+        Assert.assertTrue(permissions.canAddChildren());
+        Assert.assertTrue(permissions.canComment());
+        Assert.assertTrue(permissions.canDelete());
+        Assert.assertTrue(permissions.canEdit());
+
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        if (session != null)
+        {
+            // Consumer
+            permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionFolder.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
+            Assert.assertFalse(permissions.canAddChildren());
+            Assert.assertFalse(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertFalse(permissions.canEdit());
+
+            // Contributor
+            session = createSession(CONTRIBUTOR, CONTRIBUTOR_PASSWORD, null);
+            permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionFolder.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
+            Assert.assertTrue(permissions.canAddChildren());
+            Assert.assertTrue(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertFalse(permissions.canEdit());
+
+            // Collaborator
+            session = createSession(COLLABORATOR, COLLABORATOR_PASSWORD, null);
+            permissionFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(permissionFolder.getIdentifier());
+            permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(permissionFolder);
+            Assert.assertTrue(permissions.canAddChildren());
+            Assert.assertTrue(permissions.canComment());
+            Assert.assertFalse(permissions.canDelete());
+            Assert.assertTrue(permissions.canEdit());
+        }
+        else
+        {
+            checkSession(session);
+        }
     }
 
     /**
      * Create a Folder with aspects and check if values are correct.
-     * 
-     * @throws Exception
      */
-    public void testCreateNewFolderWithAspect() throws Exception
+    public void testCreateNewFolderWithAspect()
     {
         // Retrieve Unit test root folder.
         Folder rootFolder = createUnitTestFolder(alfsession);

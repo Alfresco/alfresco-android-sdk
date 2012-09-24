@@ -88,10 +88,14 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
+    
+    public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
+    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http://repo.opencmis.org/inmemory/";
+
 
     public static final String DEFAULT_TESTS_ENABLED = "true";
-    public static final String DEFAULT_USERNAME = CHEMISTRY_INMEMORY_USER;
-    public static final String DEFAULT_PASSWORD = CHEMISTRY_INMEMORY_PASSWORD;
+    public static final String DEFAULT_USERNAME = CMIS_SERVER_USERNAME;
+    public static final String DEFAULT_PASSWORD = CMIS_SERVER_PASSWORD;
     public static final String DEFAULT_ATOMPUB_URL = CHEMISTRY_INMEMORY_ATOMPUB_URL;
     public static final String DEFAULT_DOCTYPE = "cmis:document";
     public static final String DEFAULT_FOLDERTYPE = "cmis:folder";

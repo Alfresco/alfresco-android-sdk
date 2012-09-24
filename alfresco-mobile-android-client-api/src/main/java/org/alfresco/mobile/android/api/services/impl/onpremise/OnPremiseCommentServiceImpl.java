@@ -90,31 +90,40 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
-    @SuppressWarnings("unchecked")
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     protected PagingResult<Comment> computeComment(UrlBuilder url)
     {
-        // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
-        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-
-        List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);
-        List<Comment> result = new ArrayList<Comment>(jo.size());
-
-        for (Object obj : jo)
+        try
         {
-            result.add(CommentImpl.parseJson((Map<String, Object>) obj));
+            // read and parse
+            HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+
+            List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);
+            List<Comment> result = new ArrayList<Comment>(jo.size());
+
+            for (Object obj : jo)
+            {
+                result.add(CommentImpl.parseJson((Map<String, Object>) obj));
+            }
+
+            int pageSize = (JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE)) : 0;
+            int startIndex = (JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX)) : 0;
+            int total = (JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE)) : 0;
+
+            boolean hasMoreItem = ((startIndex + pageSize) < total);
+            return new PagingResultImpl<Comment>(result, hasMoreItem, total);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
         }
 
-        int pageSize = (JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE)) : 0;
-        int startIndex = (JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX)) : 0;
-        int total = (JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE)) : 0;
-
-        boolean hasMoreItem = ((startIndex + pageSize) < total);
-        return new PagingResultImpl<Comment>(result, hasMoreItem, total);
+        return null;
     }
 
 }

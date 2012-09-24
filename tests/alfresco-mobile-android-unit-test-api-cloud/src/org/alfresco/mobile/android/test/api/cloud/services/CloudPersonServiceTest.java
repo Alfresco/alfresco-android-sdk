@@ -5,8 +5,6 @@ import junit.framework.Assert;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.PersonServiceTest;
 
 public class CloudPersonServiceTest extends PersonServiceTest
@@ -14,9 +12,9 @@ public class CloudPersonServiceTest extends PersonServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }   
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());

@@ -53,8 +53,6 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
 
     protected static final String TAG_FOLDER = "TaggingServiceTestFolder";
 
-    protected static final String SAMPLE_DATA_PATH_DOCFOLDER_FOLDER = "/Tags";
-
     protected int totalItems = -1;
 
     protected void initSession()
@@ -284,24 +282,12 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        // TODO Remove it in a future when having multiple cloud account
         AlfrescoSession session = null;
         Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
-        Assert.assertNotNull("Comment file is null" , doc);
-        if (isOnPremise(alfsession))
-        {
-            // User does not have access / privileges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            try
-            {
-                session.getServiceRegistry().getTaggingService().getTags(doc);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
-            }
-        }
+        Assert.assertNotNull("Comment file is null", doc);
+        // User does not have access / privileges to the specified node
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        Assert.assertNotNull(session.getServiceRegistry().getTaggingService().getTags(doc));
 
         try
         {
@@ -333,7 +319,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             tags.add("(*, ?)");
@@ -345,33 +331,30 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
         }
 
-        if (isOnPremise(alfsession))
+        // User does not have access / privileges to the specified node
+        try
         {
-            // User does not have access / privileges to the specified node
-            try
-            {
-                tags.clear();
-                tags.add("Alfresco123");
-                session.getServiceRegistry().getTaggingService().addTags(doc, tags);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
-            }
-            
-            //Read Only
-            Folder f = (Folder) session.getServiceRegistry().getDocumentFolderService()
-            .getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_DOCFOLDER_FOLDER);
-            try
-            {
-                session.getServiceRegistry().getTaggingService().addTags(f, tags);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
-            }
+            tags.clear();
+            tags.add("Alfresco123");
+            session.getServiceRegistry().getTaggingService().addTags(doc, tags);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
+        }
+
+        // Read Only
+        Folder f = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                .getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_TAG);
+        try
+        {
+            session.getServiceRegistry().getTaggingService().addTags(f, tags);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.TAGGING_GENERIC, e.getErrorCode());
         }
     }
 

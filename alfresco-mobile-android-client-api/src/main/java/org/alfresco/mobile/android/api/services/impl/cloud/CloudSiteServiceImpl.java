@@ -162,18 +162,24 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     protected String parseContainer(String link)
     {
-        HttpUtils.Response resp = read(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
-        PublicAPIResponse response = new PublicAPIResponse(resp);
-
-        Map<String, Object> data = null;
-        for (Object entry : response.getEntries())
+        try
         {
-            data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
-            if (data.containsKey(CloudConstant.FOLDERID_VALUE)
-                    && CloudConstant.DOCUMENTLIBRARY_VALUE.equals(data.get(CloudConstant.FOLDERID_VALUE))) { return (String) data
-                    .get(CloudConstant.ID_VALUE); }
-        }
+            HttpUtils.Response resp = read(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
+            PublicAPIResponse response = new PublicAPIResponse(resp);
 
+            Map<String, Object> data = null;
+            for (Object entry : response.getEntries())
+            {
+                data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
+                if (data.containsKey(CloudConstant.FOLDERID_VALUE)
+                        && CloudConstant.DOCUMENTLIBRARY_VALUE.equals(data.get(CloudConstant.FOLDERID_VALUE))) { return (String) data
+                        .get(CloudConstant.ID_VALUE); }
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
         return null;
     }
 

@@ -46,10 +46,9 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
         Assert.assertNotNull(docfolderservice);
     }
-    
-    
-    //TODO Sorting
-    
+
+    // TODO Sorting
+
     /**
      * Test to check activities Stream
      * 
@@ -60,7 +59,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
-        //if (RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return;
+        // if (RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return;
 
         // ///////////////////////////////////////////////////////////////////////////
         // Init data
@@ -81,13 +80,12 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(versions);
         Assert.assertEquals(1, versions.size());
-        
+
         Document vDocument = versions.get(0);
         Assert.assertNotNull(vDocument);
         Assert.assertEquals("1.0", vDocument.getVersionLabel());
         Assert.assertTrue(vDocument.isLatestVersion());
         Assert.assertEquals("Initial Version", vDocument.getVersionComment());
-
 
         // Create New version
         increaseVersionNumber(doc, 1);
@@ -98,19 +96,19 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(versions);
         Assert.assertEquals(2, versions.size());
-        
+
         vDocument = versions.get(0);
         Assert.assertNotNull(vDocument);
         Assert.assertEquals("1.1", vDocument.getVersionLabel());
         Assert.assertTrue(vDocument.isLatestVersion());
         Assert.assertEquals("V:1", vDocument.getVersionComment());
-        
+
         vDocument = versions.get(1);
         Assert.assertNotNull(vDocument);
         Assert.assertEquals("1.0", vDocument.getVersionLabel());
         Assert.assertFalse(vDocument.isLatestVersion());
         Assert.assertEquals("Initial Version", vDocument.getVersionComment());
-        
+
         // ///////////////////////////////////////////////////////////////////////////
         // PAging Version Service
         // ///////////////////////////////////////////////////////////////////////////
@@ -122,13 +120,13 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(versions);
         Assert.assertEquals(10, versions.size());
-        
+
         vDocument = versions.get(0);
         Assert.assertNotNull(vDocument);
         Assert.assertEquals("1.9", vDocument.getVersionLabel());
         Assert.assertTrue(vDocument.isLatestVersion());
         Assert.assertEquals("V:8", vDocument.getVersionComment());
-        
+
         vDocument = versions.get(9);
         Assert.assertNotNull(vDocument);
         Assert.assertEquals("1.0", vDocument.getVersionLabel());
@@ -170,8 +168,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(10, pagingVersions.getTotalItems());
         Assert.assertEquals(0, pagingVersions.getList().size());
         Assert.assertFalse(pagingVersions.hasMoreItems());
-        
-        
+
         // ////////////////////////////////////////////////////
         // Incorrect Listing context
         // ////////////////////////////////////////////////////
@@ -246,23 +243,19 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        // TODO Remove it in a future when having multiple cloud account
         AlfrescoSession session = null;
         Node doc = null;
-        if (isOnPremise(alfsession))
+        // User does not have access / privileges to the specified node
+        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
+        try
         {
-            // User does not have access / privileges to the specified node
-            session = createCustomRepositorySession(USER1, USER1_PASSWORD, null);
-            doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
-            try
-            {
-                session.getServiceRegistry().getVersionService().getVersions((Document)doc);
-                Assert.fail();
-            }
-            catch (AlfrescoServiceException e)
-            {
-                Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
-            }
+            session.getServiceRegistry().getVersionService().getVersions((Document) doc);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
         }
     }
 }

@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.test.api.extension;
 
 import java.io.Serializable;
@@ -20,6 +37,10 @@ import android.util.Log;
 
 public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 {
+
+    private static final String TAG = "CustomRatingsServiceTest";
+
+    private static final String STAR_FOLDER = "5StarServiceTestFolder";
 
     private CustomRatingsService customRatingsService;
 
@@ -55,9 +76,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
             Map<String, Serializable> parameters = new HashMap<String, Serializable>();
             parameters.put(AlfrescoSession.ONPREMISE_SERVICES_CLASSNAME,
                     "org.alfresco.mobile.android.extension.api.services.impl.CustomServiceRegistryImpl");
-            parameters.put(USER, "user1");
-            parameters.put(PASSWORD, "user1Alfresco");
-            alfsession = createRepositorySession(parameters);
+            alfsession = createRepositorySession(CONTRIBUTOR, CONTRIBUTOR_PASSWORD, parameters);
         }
         catch (Exception e)
         {
@@ -75,9 +94,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
             Map<String, Serializable> parameters = new HashMap<String, Serializable>();
             parameters.put(AlfrescoSession.ONPREMISE_SERVICES_CLASSNAME,
                     "org.alfresco.mobile.android.extension.api.services.impl.CustomServiceRegistryImpl");
-            parameters.put(USER, "user2");
-            parameters.put(PASSWORD, "user2Alfresco");
-            alfsession = createRepositorySession(parameters);
+            alfsession = createRepositorySession(COLLABORATOR, COLLABORATOR_PASSWORD, parameters);
         }
         catch (Exception e)
         {
@@ -113,8 +130,6 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 
     }
 
-    private static final String STAR_FOLDER = "5StarServiceTestFolder";
-
     public void testRatingService()
     {
 
@@ -127,7 +142,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 
         if (!isAlfresco())
         {
-            Log.d("5STARRatings", "Non Alfresco server. Test aborted.");
+            Log.w(TAG, "Non Alfresco server. Test aborted.");
             return;
         }
         // Create Root Test Folder
@@ -146,7 +161,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
         session2 = createOtherCustomServiceSession();
         if (session2 == null)
         {
-            Log.d("5STARRatings", "Impossible to connect with user1. Please create it. Test aborted.");
+            checkSession(session2);
             return;
         }
 
@@ -156,7 +171,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
         session3 = create2OtherCustomServiceSession();
         if (session3 == null)
         {
-            Log.d("5STARRatings", "Impossible to connect with user2. Please create it. Test aborted.");
+            checkSession(session3);
             return;
         }
 

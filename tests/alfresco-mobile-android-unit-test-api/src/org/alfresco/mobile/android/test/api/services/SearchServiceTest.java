@@ -216,7 +216,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
 
         // Access to fixed sample data informations
         Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession)
-                + "/Search");
+                + "/" + SAMPLE_DATA_SEARCH_FOLDER);
         Assert.assertNotNull(f);
 
         options.setFolder(f);

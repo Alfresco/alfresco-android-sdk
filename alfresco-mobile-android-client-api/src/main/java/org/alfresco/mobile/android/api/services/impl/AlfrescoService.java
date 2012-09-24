@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.CloudErrorContent;
+import org.alfresco.mobile.android.api.exceptions.impl.OAuthErrorContent;
 import org.alfresco.mobile.android.api.exceptions.impl.OnPremiseErrorContent;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -37,6 +38,7 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -259,7 +261,7 @@ public abstract class AlfrescoService
      * @throw AlfrescoServiceException : Reasons why the requested response code
      *        is not valid.
      */
-    protected static void convertException(Exception t)
+    protected void convertException(Exception t)
     {
         try
         {
@@ -267,6 +269,9 @@ public abstract class AlfrescoService
         }
         catch (AlfrescoException e)
         {
+            if (e.getErrorCode() == ErrorCodeRegistry.GENERAL_OAUTH_DENIED){
+                OAuthHelper.tokenHasExpired(session);
+            }
             throw (AlfrescoException) e;
         }
         catch (CmisConstraintException e)
@@ -298,7 +303,7 @@ public abstract class AlfrescoService
             throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
         }
     }
-
+    
     /**
      * Try to convert error response from repository into high level
      * ErrorContent object. This object allow developper to retrieve information
@@ -323,28 +328,40 @@ public abstract class AlfrescoService
         }
         else if (session instanceof CloudSession)
         {
-            try
+            if (resp.getResponseCode() == HttpStatus.SC_UNAUTHORIZED)
             {
-                er = CloudErrorContent.parseJson(resp.getErrorContent());
-                if (er == null){
-                    er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
-                }
+                er = OAuthErrorContent.parseJson(resp.getErrorContent());
             }
-            catch (Exception e)
+            if (er == null)
             {
                 try
                 {
-                    er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+                    er = CloudErrorContent.parseJson(resp.getErrorContent());
+                    if (er == null)
+                    {
+                        er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+                    }
                 }
-                catch (Exception ee)
+                catch (Exception e)
                 {
-                    // No format...
+                    try
+                    {
+                        er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
+                    }
+                    catch (Exception ee)
+                    {
+                        // No format...
+                    }
                 }
             }
         }
         if (er != null)
         {
-            throw new AlfrescoServiceException(serviceErrorCode, er);
+            if (er instanceof OAuthErrorContent){
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_OAUTH_DENIED, er);
+            } else {
+                throw new AlfrescoServiceException(serviceErrorCode, er);
+            }
         }
         else
         {
