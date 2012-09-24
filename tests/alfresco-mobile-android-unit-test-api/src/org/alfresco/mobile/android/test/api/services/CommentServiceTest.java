@@ -501,10 +501,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         {
             session.getServiceRegistry().getCommentService().getComments(doc);
         }
-        else
-        {
-            checkSession(session);
-        }
+        checkSession(session);
 
         // ////////////////////////////////////////////////////
         // Error on create comment

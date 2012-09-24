@@ -131,15 +131,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             Map<String, Serializable> parameters)
     {
         AlfrescoSession session = null;
+        Map<String, Serializable> tmp = parameters;
         try
         {
-            if (parameters == null)
+            if (tmp == null)
             {
-                parameters = new HashMap<String, Serializable>();
+                tmp = new HashMap<String, Serializable>();
             }
-            parameters.put(USER, username);
-            parameters.put(PASSWORD, password);
-            session = createRepositorySession(parameters);
+            tmp.put(USER, username);
+            tmp.put(PASSWORD, password);
+            session = createRepositorySession(tmp);
         }
         catch (Exception e)
         {
@@ -162,22 +163,23 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         {
             config.parseFile(ONPREMISE_CONFIG_PATH);
         }
-
+        
+        Map<String, Serializable> tmp = parameters;
         RepositorySession session = null;
         try
         {
-            if (parameters == null)
+            if (tmp == null)
             {
-                parameters = new HashMap<String, Serializable>();
+                tmp = new HashMap<String, Serializable>();
             }
 
-            String user = (parameters.containsKey(USER)) ? (String) parameters.remove(USER) : config.getUser();
-            String password = (parameters.containsKey(PASSWORD)) ? (String) parameters.remove(PASSWORD) : config
+            String user = (tmp.containsKey(USER)) ? (String) tmp.remove(USER) : config.getUser();
+            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config
                     .getPassword();
-            String url = (parameters.containsKey(BASE_URL)) ? (String) parameters.remove(BASE_URL) : config.getUrl();
+            String url = (tmp.containsKey(BASE_URL)) ? (String) tmp.remove(BASE_URL) : config.getUrl();
 
-            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
-            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
+            tmp.put(SessionParameter.CONNECT_TIMEOUT, "180000");
+            tmp.put(SessionParameter.READ_TIMEOUT, "180000");
 
             session = RepositorySession.connect(url, user, password, parameters);
         }
@@ -227,15 +229,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     protected AlfrescoSession createCloudSession(String username, String password, Map<String, Serializable> parameters)
     {
         AlfrescoSession session = null;
+        Map<String, Serializable> tmp = parameters;
         try
         {
             if (parameters == null)
             {
-                parameters = new HashMap<String, Serializable>();
+                tmp = new HashMap<String, Serializable>();
             }
-            parameters.put(USER, username);
-            parameters.put(PASSWORD, password);
-            session = createCloudSession(parameters);
+            tmp.put(USER, username);
+            tmp.put(PASSWORD, password);
+            session = createCloudSession(tmp);
         }
         catch (Exception e)
         {
@@ -253,28 +256,29 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             config.parseFile(CLOUD_CONFIG_PATH);
         }
 
+        Map<String, Serializable> tmp = parameters;
         CloudSession session = null;
         try
         {
-            if (parameters == null)
+            if (tmp == null)
             {
-                parameters = new HashMap<String, Serializable>();
+                tmp = new HashMap<String, Serializable>();
             }
 
-            String user = (parameters.containsKey(USER)) ? (String) parameters.remove(USER) : config.getUser();
-            String password = (parameters.containsKey(PASSWORD)) ? (String) parameters.remove(PASSWORD) : config
+            String user = (tmp.containsKey(USER)) ? (String) tmp.remove(USER) : config.getUser();
+            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config
                     .getPassword();
-            String url = (parameters.containsKey(BASE_URL)) ? (String) parameters.remove(BASE_URL) : config.getUrl();
+            String url = (tmp.containsKey(BASE_URL)) ? (String) tmp.remove(BASE_URL) : config.getUrl();
 
-            parameters.put(SessionParameter.CONNECT_TIMEOUT, "180000");
-            parameters.put(SessionParameter.READ_TIMEOUT, "180000");
+            tmp.put(SessionParameter.CONNECT_TIMEOUT, "180000");
+            tmp.put(SessionParameter.READ_TIMEOUT, "180000");
 
-            parameters.put(BASE_URL, url);
-            parameters.put(USER, user);
-            parameters.put(PASSWORD, password);
-            parameters.put(CLOUD_BASIC_AUTH, true);
+            tmp.put(BASE_URL, url);
+            tmp.put(USER, user);
+            tmp.put(PASSWORD, password);
+            tmp.put(CLOUD_BASIC_AUTH, true);
 
-            session = CloudSession.connect(null, parameters);
+            session = CloudSession.connect(null, tmp);
         }
         catch (Exception e)
         {
@@ -653,13 +657,18 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         return ((AbstractAlfrescoSessionImpl) session).getAuthenticationProvider();
     }
 
+    protected void checkSession()
+    {
+        Log.w(TAG, "---------------------------------------------");
+        Log.w(TAG, "Unable to test : No extra users available");
+        Log.w(TAG, "---------------------------------------------");
+    }
+
     protected void checkSession(AlfrescoSession session)
     {
         if (session == null)
         {
-            Log.w(TAG, "---------------------------------------------");
-            Log.w(TAG, "Unable to test : No extra users available");
-            Log.w(TAG, "---------------------------------------------");
+            checkSession();
         }
     }
 

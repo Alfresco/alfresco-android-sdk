@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.test.api.cloud.model;
 
 import junit.framework.Assert;
 
-import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.api.model.FolderTest;
 
 /**

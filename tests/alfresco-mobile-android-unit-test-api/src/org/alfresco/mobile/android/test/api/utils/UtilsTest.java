@@ -19,9 +19,10 @@ package org.alfresco.mobile.android.test.api.utils;
 
 import java.util.Locale;
 
+import junit.framework.Assert;
+
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 
-import junit.framework.Assert;
 import android.os.PatternMatcher;
 import android.test.AndroidTestCase;
 

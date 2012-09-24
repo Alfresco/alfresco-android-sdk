@@ -314,10 +314,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
                     .getSiteActivityStream("moderatedsite").isEmpty());
         }
-        else
-        {
-            checkSession(session);
-        }
+        checkSession(session);
     }
 
     // ////////////////////////////////////////////////////

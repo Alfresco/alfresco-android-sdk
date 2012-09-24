@@ -85,15 +85,15 @@ public interface ServerConfiguration
     // //////////////////////////////////////////////////////////////////////
     // OTHER USERS
     // //////////////////////////////////////////////////////////////////////
-    public static final String CONSUMER = "user_consumer";
+    String CONSUMER = "user_consumer";
 
-    public static final String CONSUMER_PASSWORD = "user_consumer_password";
+    String CONSUMER_PASSWORD = "user_consumer_password";
 
-    public static final String CONTRIBUTOR = "user_contributor";
+    String CONTRIBUTOR = "user_contributor";
     
-    public static final String CONTRIBUTOR_PASSWORD = "user_contributor_password";
+    String CONTRIBUTOR_PASSWORD = "user_contributor_password";
     
-    public static final String COLLABORATOR = "user_collaborator";
+    String COLLABORATOR = "user_collaborator";
 
-    public static final String COLLABORATOR_PASSWORD = "user_collaborator_password";
+    String COLLABORATOR_PASSWORD = "user_collaborator_password";
 }

@@ -40,8 +40,6 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.util.Log;
-
 /**
  * Test class for Folder Object.
  * 
@@ -260,10 +258,7 @@ public class FolderTest extends AlfrescoSDKTestCase
             Assert.assertFalse(permissions.canDelete());
             Assert.assertTrue(permissions.canEdit());
         }
-        else
-        {
-            checkSession(session);
-        }
+        checkSession(session);
     }
 
     /**

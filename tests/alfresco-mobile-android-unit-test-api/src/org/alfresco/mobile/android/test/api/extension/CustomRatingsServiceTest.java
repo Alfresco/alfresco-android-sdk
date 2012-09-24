@@ -161,7 +161,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
         session2 = createOtherCustomServiceSession();
         if (session2 == null)
         {
-            checkSession(session2);
+            checkSession();
             return;
         }
 
@@ -171,7 +171,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
         session3 = create2OtherCustomServiceSession();
         if (session3 == null)
         {
-            checkSession(session3);
+            checkSession();
             return;
         }
 

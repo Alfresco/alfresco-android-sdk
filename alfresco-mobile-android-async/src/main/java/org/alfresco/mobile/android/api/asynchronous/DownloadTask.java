@@ -157,7 +157,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
         catch (Exception e)
         {
-            Log.e(TAG, e.getStackTrace().toString());
+            Log.e(TAG, Log.getStackTraceString(e));
             copied = false;
         }
         finally
