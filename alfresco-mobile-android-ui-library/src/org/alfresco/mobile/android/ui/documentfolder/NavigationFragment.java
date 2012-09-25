@@ -69,7 +69,7 @@ public abstract class NavigationFragment extends BaseListFragment implements
     {
         return parentFolder;
     }
-    
+
     public static Bundle createBundleArgs(Folder folder)
     {
         return createBundleArgs(folder, null, null);
@@ -141,7 +141,10 @@ public abstract class NavigationFragment extends BaseListFragment implements
             loader = new NodeChildrenLoader(getActivity(), alfSession, f);
         }
 
-        loader.setListingContext(lc);
+        if (loader != null)
+        {
+            loader.setListingContext(lc);
+        }
 
         return loader;
     }

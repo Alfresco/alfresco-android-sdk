@@ -19,15 +19,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.samples"
     android:versionCode="1"
-    android:versionName="4" >
+    android:versionName="5" >
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="14" />
+        android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".application.AlfrescoApplication"
@@ -45,14 +44,17 @@
             </intent-filter>
         </activity>
 
-        <!-- *************************************************************** -->
-        <!-- ALFRESCO SDK SPECIFIC -->
-        <!-- *************************************************************** -->
         <activity
             android:name=".activity.MainActivity"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
+            android:name=".activity.ChooseServerActivity"
+            android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
             android:name=".activity.LoginScreenActivity"
+            android:uiOptions="splitActionBarWhenNarrow" />
+         <activity
+            android:name=".activity.OAuthActivity"
             android:uiOptions="splitActionBarWhenNarrow" />
     </application>
 

@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.test.api.managers;
 
 import java.io.File;
@@ -84,8 +101,8 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
         // Create Document from Asset.
-        Document doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
         // Retrieve Content
         Log.d(TAG, "Download Content");
         cf = docfolderservice.getContent(doc);
@@ -122,8 +139,8 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
         // Create Document from Asset.
-        Document doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
 
         // Retrieve Content
         cf = docfolderservice.getContent(doc);
@@ -143,7 +160,10 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             try
             {
                 cf = docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
-                if (cf != null) break;
+                if (cf != null)
+                {
+                    break;
+                }
                 wait(5000);
             }
             catch (AlfrescoServiceException e)
@@ -180,7 +200,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
 
     private void delete(File f) throws IOException
     {
-        if (!f.exists()) return;
+        if (!f.exists()) { return; }
         if (f.isDirectory())
         {
             for (File c : f.listFiles())
@@ -188,6 +208,6 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
                 delete(c);
             }
         }
-        if (!f.delete()) throw new FileNotFoundException("Failed to delete file: " + f);
+        if (!f.delete()) { throw new FileNotFoundException("Failed to delete file: " + f); }
     }
 }

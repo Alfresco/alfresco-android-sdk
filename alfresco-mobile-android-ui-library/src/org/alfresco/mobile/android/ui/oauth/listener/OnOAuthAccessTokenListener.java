@@ -15,22 +15,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.intent;
+package org.alfresco.mobile.android.ui.oauth.listener;
 
-public class PublicIntent
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
+
+
+public interface OnOAuthAccessTokenListener
 {
-
-    public static final String ACTION_VIEW = "org.alfresco.mobile.android.intent.ACTION_VIEW";
+    void beforeRequestAccessToken(OAuth2Manager manager);
     
-    public static final String EXTRA_NODE = "org.alfresco.mobile.android.intent.EXTRA_NODE";
-    public static final String EXTRA_CONTENT = "org.alfresco.mobile.android.intent.EXTRA_CONTENT";
-    public static final String EXTRA_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_FOLDER";
+    void failedRequestAccessToken(Exception e);
 
-    public static final String NODE_TYPE = "org.alfresco.mobile.android/object.node";
-
-    //REQUEST CODE
-    public static final int REQUESTCODE_FILEPICKER = 128;
-    public static final int REQUESTCODE_SAVE_BACK = 129;
-
-
+    void afterRequestAccessToken(OAuthData data);
 }

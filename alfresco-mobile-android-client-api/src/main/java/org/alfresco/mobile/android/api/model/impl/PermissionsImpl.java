@@ -66,7 +66,7 @@ public class PermissionsImpl implements Permissions
      */
     public boolean canComment()
     {
-        return canEdit();
+        return canEdit() || canAddChildren();
     }
 
 }

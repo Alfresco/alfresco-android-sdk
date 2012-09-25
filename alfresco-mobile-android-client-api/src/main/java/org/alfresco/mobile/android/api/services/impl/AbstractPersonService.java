@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Person;
@@ -28,7 +26,6 @@ import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * The PersonService can be used to get informations about people.
  * 
  * @author Jean Marie Pascal
  */
@@ -45,17 +42,20 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
         super(repositorySession);
     }
 
+    /**
+     * Internal method to retrieve personDetails url. (depending on repository
+     * type)
+     * 
+     * @param personIdentifier : person who wants to retrieve informations.
+     * @return UrlBuilder to retrieve personDetails url.
+     */
     protected abstract UrlBuilder getPersonDetailssUrl(String personIdentifier);
 
-    /**
-     * @return Returns Person object with the specified userName. Null if not
-     *         present @ : if network or internal problems occur during the
-     *         process.
-     */
+    /** {@inheritDoc} */
     public Person getPerson(String personIdentifier)
     {
-        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
+        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
         try
         {
             return computePerson(getPersonDetailssUrl(personIdentifier));
@@ -70,20 +70,26 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
     /**
      * Retrieves the avatar rendition for the specified username.
      * 
-     * @param username : Username of person
-     * @return Returns the contentFile associated to the avatar picture. @ : if
-     *         network or internal problems occur during the process.
+     * @param personIdentifier : Username of person
+     * @return Returns the ContentStream associated to the avatar picture.
      */
-    public ContentStream getAvatarStream(String username)
+    public ContentStream getAvatarStream(String personIdentifier)
     {
         // Implemented by child
         return null;
     }
 
+    /**
+     * Retrieves the avatar rendition for the specified username.
+     * 
+     * @param personIdentifier : Username of person
+     * @return Returns the contentContentFileFile associated to the avatar
+     *         picture.
+     */
     public ContentFile getAvatar(String personIdentifier)
     {
-        if (personIdentifier == null || personIdentifier.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
+        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
         return saveContentStream(getAvatarStream(personIdentifier), personIdentifier, RENDITION_CACHE);
     }
 
@@ -96,13 +102,20 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
      */
     public ContentFile getAvatar(Person person)
     {
-        if (person == null || person.getIdentifier() == null || person.getIdentifier().length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("PersonService.0")); }
+        if (isObjectNull(person) || isStringNull(person.getIdentifier())) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
         return saveContentStream(getAvatarStream(person.getIdentifier()), person.getIdentifier(), RENDITION_CACHE);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Internal method to compute data from server and transform it as high
+     * level object.
+     * 
+     * @param url : Alfresco REST API activity url
+     * @return Person object
+     */
     protected abstract Person computePerson(UrlBuilder url);
 }

@@ -32,6 +32,9 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
 
     /** Error Code. */
     private int errorCode;
+    
+    private AlfrescoErrorContent alfrescoErrorContent;
+
 
     /**
      * Default constructor.
@@ -68,6 +71,13 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
         this.errorCode = errorCode;
     }
 
+    public AlfrescoException(int errorCode, AlfrescoErrorContent errorContent)
+    {
+        super(errorContent.getMessage());
+        this.errorCode = errorCode;
+        this.alfrescoErrorContent = errorContent;
+    }
+
     /**
      * Returns the content of the error page sent by the server
      * 
@@ -88,11 +98,15 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
     {
         return errorCode;
     }
-    
+
     @Override
     public String getLabelErrorCode(int errorCode)
     {
         return null;
     }
 
+    public AlfrescoErrorContent getAlfrescoErrorContent()
+    {
+        return alfrescoErrorContent;
+    }
 }

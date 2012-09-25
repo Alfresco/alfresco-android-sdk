@@ -19,8 +19,6 @@ package org.alfresco.mobile.android.test.api.cloud.services;
 
 import junit.framework.Assert;
 
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.CommentServiceTest;
 
 /**
@@ -33,15 +31,21 @@ public class CloudCommentServiceTest extends CommentServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }   
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         commentService = alfsession.getServiceRegistry().getCommentService();
         docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
         Assert.assertNotNull(commentService);
+    }
+    
+    @Override
+    public void testCommentsMethodsError()
+    {
+        super.testCommentsMethodsError();
     }
 
 }

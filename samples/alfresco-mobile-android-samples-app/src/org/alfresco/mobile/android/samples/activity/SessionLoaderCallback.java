@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.samples.activity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,8 @@ import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
@@ -47,6 +50,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.Environment;
+
 /**
  * Responsible to create the Alfresco Repository session and affect to the
  * global session object.
@@ -55,18 +59,27 @@ import android.os.Environment;
  */
 public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<AlfrescoSession>>
 {
-    
+
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
-    private static final String BASE_URL = "org.alfresco.mobile.binding.baseurl";
-    private static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cloud-config.properties";
+
+    protected static final String USER = "org.alfresco.mobile.internal.credential.user";
+
+    protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
+
+    private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
+
+    private static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
+            + "/alfresco-mobile/cloud-config.properties";
+
     private static final boolean ENABLE_CONFIG_FILE = true;
 
-    
     private String url;
 
     private String username;
 
     private String password;
+
+    private OAuthData oauth;
 
     private ProgressDialog mProgressDialog;
 
@@ -76,6 +89,12 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         this.url = url;
         this.username = username;
         this.password = password;
+    }
+
+    public SessionLoaderCallback(Activity activity, OAuthData oauth)
+    {
+        this.context = activity;
+        this.oauth = oauth;
     }
 
     @Override
@@ -99,34 +118,45 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobileSampleApp"));
 
-        //Specific for Test Instance server
-        if (url.startsWith(ALFRESCO_CLOUD_URL)){
-            
-            //TODO Remove it when public
-            url = "http://devapis.alfresco.com";
-            
+        // Specific for Test Instance server
+        if (oauth != null || (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
+        {
             // Check Properties available inside the device
-            if (ENABLE_CONFIG_FILE){
+            if (ENABLE_CONFIG_FILE)
+            {
                 File f = new File(CLOUD_CONFIG_PATH);
                 if (f.exists() && ENABLE_CONFIG_FILE)
                 {
                     Properties prop = new Properties();
+                    InputStream is = null;
                     try
                     {
+                        is = new FileInputStream(f);
                         // load a properties file
-                        prop.load(new FileInputStream(f));
+                        prop.load(is);
                         url = prop.getProperty("url");
                     }
                     catch (IOException ex)
                     {
                         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
+                    } finally
+                    {
+                        IOUtils.closeStream(is);
                     }
-                }  
+                }
             }
-            
-            settings.put(BASE_URL, url);
-            return new CloudSessionLoader(context, username, password, settings);
-        } else {
+
+            if (url != null && url.startsWith(ALFRESCO_CLOUD_URL))
+            {
+                settings.put(CLOUD_BASIC_AUTH, true);
+                settings.put(USER, username);
+                settings.put(PASSWORD, password);
+            }
+
+            return new CloudSessionLoader(context, oauth, settings);
+        }
+        else
+        {
             return new SessionLoader(context, url, username, password, settings);
         }
     }
@@ -142,7 +172,8 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         }
         else
         {
-            MessengerManager.showToast(context, R.string.error_login);
+            String message = (results.getException() != null) ? results.getException().getMessage() : "";
+            MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
         }
     }
 
@@ -150,6 +181,6 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
     public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> arg0)
     {
         // TODO Auto-generated method stub
-
+        mProgressDialog.dismiss();
     }
 }

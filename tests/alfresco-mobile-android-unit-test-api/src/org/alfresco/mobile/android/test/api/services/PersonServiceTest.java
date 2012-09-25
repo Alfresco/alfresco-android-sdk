@@ -11,9 +11,13 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
+/**
+ * Test class for PersonService.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class PersonServiceTest extends AlfrescoSDKTestCase
 {
     protected PersonService personService;
@@ -26,11 +30,11 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
         }
-        
+
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         personService = alfsession.getServiceRegistry().getPersonService();
@@ -69,9 +73,9 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
             personService.getPerson(null);
             Assert.fail("null personIdentifier return an object");
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -95,9 +99,9 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
             personService.getAvatar(null);
             Assert.fail("null personIdentifier return an object");
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         try
@@ -105,9 +109,9 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
             personService.getAvatar(new PersonImpl());
             Assert.fail("Fake personIdentifier return an object");
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
     }
 
@@ -121,9 +125,9 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
             ((AbstractPersonService) personService).getAvatarStream(null);
             Assert.fail("null personIdentifier return an object");
         }
-        catch (AlfrescoServiceException e)
+        catch (IllegalArgumentException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.GENERAL_INVALID_ARG, e.getErrorCode());
+            Assert.assertTrue(true);
         }
 
         // Specific behaviour for Alfresco V4 that doesn't require to check the

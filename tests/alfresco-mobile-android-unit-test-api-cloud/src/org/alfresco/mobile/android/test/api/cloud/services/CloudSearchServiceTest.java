@@ -3,8 +3,6 @@ package org.alfresco.mobile.android.test.api.cloud.services;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.api.services.SearchServiceTest;
 
@@ -12,9 +10,9 @@ public class CloudSearchServiceTest extends SearchServiceTest
 {
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }   
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
@@ -70,7 +68,7 @@ public class CloudSearchServiceTest extends SearchServiceTest
                 1);
         
         //Access to fixed sample data informations
-        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/Search");
+        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/" + SAMPLE_DATA_SEARCH_FOLDER);
         Assert.assertNotNull(f);
         
         //quickSearch("SELECT * from cmis:document where IN_FOLDER('"+f.getIdentifier()+"')", 1);

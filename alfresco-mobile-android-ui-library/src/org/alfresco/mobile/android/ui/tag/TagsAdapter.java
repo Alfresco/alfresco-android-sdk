@@ -40,7 +40,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
 
     private List<Tag> selectedItems;
 
-    private ArrayList<Tag> mOriginalValues;
+    private List<Tag> mOriginalValues;
 
     private ArrayFilter mFilter;
 
@@ -57,7 +57,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
-        mOriginalValues = (ArrayList<Tag>) listItems;
+        mOriginalValues = listItems;
     }
 
     @Override
@@ -182,6 +182,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected void publishResults(CharSequence constraint, FilterResults results)
         {
             synchronized (mLock)

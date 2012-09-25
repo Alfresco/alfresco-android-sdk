@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -34,8 +35,8 @@ import org.alfresco.mobile.android.api.utils.AlphaComparator;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -63,26 +64,21 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getAllSitesUrl(ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getAllSitesUrl(session);
         return new UrlBuilder(link);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUserSitesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserSitesUrl(session, session.getPersonIdentifier());
         return new UrlBuilder(link);
     }
 
-    /**
-     * Returns a list of sites that the session user has a explicit membership
-     * to and has marked as a favourite.
-     * 
-     * @return
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Site> getFavoriteSites()
     {
         try
@@ -155,17 +151,20 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return null;
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getSiteUrl(String siteIdentifier)
     {
         String link = OnPremiseUrlRegistry.getSiteUrl(session, siteIdentifier);
         return new UrlBuilder(link);
     }
 
+    /** {@inheritDoc} */
     protected Site parseData(Map<String, Object> json)
     {
         return SiteImpl.parseJson((Map<String, Object>) json);
     }
 
+    /** {@inheritDoc} */
     protected String getDocContainerSiteUrl(Site site)
     {
         return OnPremiseUrlRegistry.getDocContainerSiteUrl(session, site.getShortName());
@@ -174,11 +173,12 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     protected PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
     {
 
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
 
         List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
         int size = json.size();
@@ -209,7 +209,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             result.add(SiteImpl.parseJson((Map<String, Object>) json.get(i)));
         }
-        
+
         if (listingContext != null)
         {
             Collections.sort(result,
@@ -220,13 +220,24 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
     }
 
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     protected String parseContainer(String link)
     {
         String n = null;
 
         UrlBuilder url = new UrlBuilder(link);
-        Response resp = read(url);
+        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+
+        // check response code
+        if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
+        {
+            return null;
+        }
+        else if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            convertStatusCode(resp, ErrorCodeRegistry.SITE_GENERIC);
+        }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
@@ -240,6 +251,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return n;
     }
 
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     private Map<String, Boolean> computeFavoriteSite(String username)
     {
@@ -248,7 +260,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
         UrlBuilder url = new UrlBuilder(link);
 
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
@@ -264,6 +276,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return (Map<String, Boolean>) json.get(OnPremiseUrlRegistry.FAVOURITES);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
     {

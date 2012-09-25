@@ -143,7 +143,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.w(TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -168,7 +168,7 @@ public class RenditionManager
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Log.w(TAG, Log.getStackTraceString(e));
         }
         return null;
     }
@@ -273,7 +273,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.w(TAG, Log.getStackTraceString(e));
         }
         finally
         {
@@ -298,7 +298,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.w(TAG, Log.getStackTraceString(e));
         }
         finally
         {

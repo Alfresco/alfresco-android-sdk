@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -37,15 +38,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * CommentService allows managing comments to any node inside an Alfresco
- * repository. </br> There are various methods relating to the CommentService,
- * including the ability to:
- * <ul>
- * <li>Manage comments against nodes</li>
- * <li>Get existing comments</li>
- * <li>Post new comments</li>
- * <li>Delete comments</li>
- * </ul>
+ * Specific implementation of CommentService for OnPremise REST API.
  * 
  * @author Jean Marie Pascal
  */
@@ -62,61 +55,75 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getCommentsUrl(session, node.getIdentifier());
         UrlBuilder url = new UrlBuilder(link);
+
         if (listingContext != null)
         {
-            if (SORT_PROPERTY_CREATED_AT.equals(listingContext.getSortProperty()))
-            {
-                url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
-            }
-
+            url.addParameter(OnPremiseConstant.PARAM_REVERSE, listingContext.isSortAscending());
             url.addParameter(OnPremiseConstant.PARAM_STARTINDEX, listingContext.getSkipCount());
             url.addParameter(OnPremiseConstant.PARAM_PAGESIZE, listingContext.getMaxItems());
+        }
+        else
+        {
+            url.addParameter(OnPremiseConstant.PARAM_REVERSE, true);
         }
         return url;
     }
 
-    @SuppressWarnings("unchecked")
-    protected Comment parseData(Map<String, Object> json)
-    {
-        return CommentImpl.parseJson((Map<String, Object>) json.get(OnPremiseConstant.ITEM_VALUE));
-    }
-
+    /** {@inheritDoc} */
     protected UrlBuilder getCommentUrl(Node node, Comment comment)
     {
         return new UrlBuilder(OnPremiseUrlRegistry.getCommentUrl(session, comment.getIdentifier()));
     }
 
+    @SuppressWarnings("unchecked")
+    /** {@inheritDoc} */
+    protected Comment parseData(Map<String, Object> json)
+    {
+        return CommentImpl.parseJson((Map<String, Object>) json.get(OnPremiseConstant.ITEM_VALUE));
+    }
+
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     protected PagingResult<Comment> computeComment(UrlBuilder url)
     {
-        // read and parse
-        HttpUtils.Response resp = read(url);
-        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-
-        List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);
-        List<Comment> result = new ArrayList<Comment>(jo.size());
-
-        for (Object obj : jo)
+        try
         {
-            result.add(CommentImpl.parseJson((Map<String, Object>) obj));
+            // read and parse
+            HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+
+            List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);
+            List<Comment> result = new ArrayList<Comment>(jo.size());
+
+            for (Object obj : jo)
+            {
+                result.add(CommentImpl.parseJson((Map<String, Object>) obj));
+            }
+
+            int pageSize = (JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE)) : 0;
+            int startIndex = (JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX)) : 0;
+            int total = (JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE) != null) ? Integer
+                    .parseInt(JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE)) : 0;
+
+            boolean hasMoreItem = ((startIndex + pageSize) < total);
+            return new PagingResultImpl<Comment>(result, hasMoreItem, total);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
         }
 
-        int pageSize = (JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_PAGESIZE)) : 0;
-        int startIndex = (JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.PARAM_STARTINDEX)) : 0;
-        int total = (JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE) != null) ? Integer
-                .parseInt(JSONConverter.getString(json, OnPremiseConstant.TOTAL_VALUE)) : 0;
-
-        boolean hasMoreItem = ((startIndex + pageSize) < total);
-        return new PagingResultImpl<Comment>(result, hasMoreItem, total);
+        return null;
     }
 
 }

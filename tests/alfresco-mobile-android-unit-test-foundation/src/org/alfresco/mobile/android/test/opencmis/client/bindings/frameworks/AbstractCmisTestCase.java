@@ -88,10 +88,14 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
+    
+    public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
+    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http://repo.opencmis.org/inmemory/";
+
 
     public static final String DEFAULT_TESTS_ENABLED = "true";
-    public static final String DEFAULT_USERNAME = CHEMISTRY_INMEMORY_USER;
-    public static final String DEFAULT_PASSWORD = CHEMISTRY_INMEMORY_PASSWORD;
+    public static final String DEFAULT_USERNAME = CMIS_SERVER_USERNAME;
+    public static final String DEFAULT_PASSWORD = CMIS_SERVER_PASSWORD;
     public static final String DEFAULT_ATOMPUB_URL = CHEMISTRY_INMEMORY_ATOMPUB_URL;
     public static final String DEFAULT_DOCTYPE = "cmis:document";
     public static final String DEFAULT_FOLDERTYPE = "cmis:folder";
@@ -121,9 +125,12 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         String configFileName = System.getProperty(PROP_CONFIG_FILE);
         if (configFileName != null) {
 
-            try {
+            InputStream is = null;
+            try
+            {
                 java.util.Properties properties = new java.util.Properties();
-                properties.load(new FileInputStream(configFileName));
+                is = new FileInputStream(configFileName);
+                properties.load(is);
 
                 for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
                     String key = (String) e.nextElement();

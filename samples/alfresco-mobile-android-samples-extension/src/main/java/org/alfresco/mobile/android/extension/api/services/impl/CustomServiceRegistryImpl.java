@@ -24,32 +24,40 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.extension.api.services.CustomRatingsService;
 import org.alfresco.mobile.android.extension.api.services.CustomServiceRegistry;
+
 /**
- * CustomServiceRegistry overrides default SDK ServiceRegistry. It allows the use of a new RatingsService.
+ * CustomServiceRegistry overrides default SDK ServiceRegistry. It allows the
+ * use of a new RatingsService.
  * 
  * @author Jean Marie Pascal
- * 
  */
-public class CustomServiceRegistryImpl extends OnPremiseServiceRegistry implements CustomServiceRegistry {
+public class CustomServiceRegistryImpl extends OnPremiseServiceRegistry implements CustomServiceRegistry
+{
 
-	public CustomServiceRegistryImpl(AlfrescoSession session) {
-		super(session);
-	}
+    public CustomServiceRegistryImpl(AlfrescoSession session)
+    {
+        super(session);
+    }
 
-	/**
-	 * Returns the new customRatingsService.
-	 */
-	public RatingService getRatingService() {
-		if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
-			this.ratingsService = new CustomRatingsServiceImpl((RepositorySession) session);
-		return ratingsService;
-	}
+    /**
+     * Returns the new customRatingsService.
+     */
+    public RatingService getRatingService()
+    {
+        if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            this.ratingsService = new CustomRatingsServiceImpl((RepositorySession) session);
+        }
+        return ratingsService;
+    }
 
     @Override
     public CustomRatingsService getCustomRatingsService()
     {
         if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
             this.ratingsService = new CustomRatingsServiceImpl((RepositorySession) session);
+        }
         return (CustomRatingsService) ratingsService;
     }
 

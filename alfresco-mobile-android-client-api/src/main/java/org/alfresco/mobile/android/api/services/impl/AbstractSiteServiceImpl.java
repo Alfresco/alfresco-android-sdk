@@ -32,16 +32,13 @@ import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
+
+import android.util.Log;
 
 /**
- * Sites are a key concept within Alfresco Share for managing documents, wiki
- * pages, blog posts, discussions, and other collaborative content relating to
- * teams, projects, communities of interest, and other types of collaborative
- * sites. </br> There are various methods relating to the Sites service,
- * including the ability to:
- * <ul>
- * <li>List Sites (Favorites, all sites, user are member of)</li>
- * </ul>
+ * Abstract class implementation of SiteService. Responsible of sharing common
+ * methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -59,11 +56,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         super(repositorySession);
     }
 
-    /**
-     * List the available sites.
-     * 
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Site> getAllSites()
     {
         return getAllSites(null).getList();
@@ -71,21 +64,13 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     protected abstract UrlBuilder getAllSitesUrl(ListingContext listingContext);
 
-    /**
-     * List the available sites. @ : if network or internal problems occur
-     * during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Site> getAllSites(ListingContext listingContext)
     {
         return computeAllSites(getAllSitesUrl(listingContext), listingContext);
     }
 
-    /**
-     * Returns a list of sites that the session user has a explicit membership
-     * to.
-     * 
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Site> getSites()
     {
         return getSites(null).getList();
@@ -93,19 +78,11 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     protected abstract UrlBuilder getUserSitesUrl(String personIdentifier, ListingContext listingContext);
 
-    /**
-     * Returns a list of sites that the session user has a explicit membership
-     * to.
-     * 
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Site> getSites(ListingContext listingContext)
     {
         try
         {
-            if (session.getPersonIdentifier() == null) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SiteService.username.error")); }
-
             return computeSites(getUserSitesUrl(session.getPersonIdentifier(), listingContext), listingContext);
         }
         catch (Exception e)
@@ -115,23 +92,13 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         return null;
     }
 
-    /**
-     * Returns a list of sites that the session user has a explicit membership
-     * to and has marked as a favourite.
-     * 
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Site> getFavoriteSites()
     {
         return getFavoriteSites(null).getList();
     }
 
-    /**
-     * Returns a list of sites that the session user has a explicit membership
-     * to and has marked as a favourite.
-     * 
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Site> getFavoriteSites(ListingContext listingContext)
     {
         return null;
@@ -141,22 +108,28 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     protected abstract Site parseData(Map<String, Object> json);
 
-    /**
-     * Returns a site with the given short name, if the site doesn’t exist null
-     * is returned.
-     * 
-     * @param siteShortName : Unique identifier name of the site.
-     * @return the site object. @ : if network or internal problems occur during
-     *         the process.
-     */
+    /** {@inheritDoc} */
     public Site getSite(String siteIdentifier)
     {
         try
         {
-            if (siteIdentifier == null || siteIdentifier.length() == 0) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("SiteService.0")); }
-            
-            HttpUtils.Response resp = read(getSiteUrl(siteIdentifier));
+            if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+
+            UrlBuilder url = getSiteUrl(siteIdentifier);
+            Log.d("URL", url.toString());
+            HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+
+            // check response code
+            if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
+            {
+                return null;
+            }
+            else if (resp.getResponseCode() != HttpStatus.SC_OK)
+            {
+                convertStatusCode(resp, ErrorCodeRegistry.SITE_GENERIC);
+            }
+
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
             return parseData(json);
@@ -168,22 +141,41 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         return null;
     }
 
+    /**
+     * Allow to retrieve specific site document container url.
+     * 
+     * @param site : Site
+     * @return URl to retrieve information about site document container.
+     */
     protected abstract String getDocContainerSiteUrl(Site site);
 
-    /**
-     * Get the documents container reference for the site with the given name.
-     * 
-     * @param siteName
-     * @return @ : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public Folder getDocumentLibrary(Site site)
     {
         try
         {
-            if (site == null || site.getShortName() == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("SiteService.0")); }
+            if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+
+            if (isStringNull(site.getShortName())) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+
             String ref = parseContainer(getDocContainerSiteUrl(site));
+
+            // If not found return null;
+            if (isStringNull(ref)) { return null; }
+
             return (Folder) session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(ref);
+        }
+        catch (AlfrescoServiceException er)
+        {
+            //Cloud : site not found
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
+                    && er.getMessage().contains("The entity with id") && er.getMessage().contains("was not found")) { return null; }
+            //OnPremise : when containerId is not defined for Moderated site for example
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
+                    && er.getMessage().contains("\"containerId\" is not defined")) { return null; }
+            throw er;
         }
         catch (Exception e)
         {

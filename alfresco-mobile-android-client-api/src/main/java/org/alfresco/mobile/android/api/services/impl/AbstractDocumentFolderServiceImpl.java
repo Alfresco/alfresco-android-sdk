@@ -68,6 +68,8 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.Updatability;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
@@ -78,18 +80,8 @@ import org.apache.http.HttpStatus;
 import android.util.Log;
 
 /**
- * DocumentFolderService manages Folders and Documents in an Alfresco
- * repository. The service provides methods to create and update nodes. The
- * DocumentFolderService supports the following methods:
- * <ul>
- * <li>Create nodes and set property values</li>
- * <li>Read node properties and content, read and navigate node associations
- * (browse folder)</li>
- * <li>Update properties and content of nodes.</li>
- * <li>Delete nodes. If the archive store is enabled, the node is not deleted
- * but moved from its current node to the archive node store; nodes in the
- * archive store can then be restored or purged.</li>
- * </ul>
+ * Abstract class implementation of DocumentFolderService. Responsible of
+ * sharing common methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -114,37 +106,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // NAVIGATION
     // ////////////////////////////////////////////////////
-    /**
-     * Lists all immediate child nodes of the given context folder. </br> By
-     * default, this list contains a maximum of 50 elements. </br> Use
-     * {@link AbstractDocumentFolderServiceImpl#getChildren(Folder, ListingContext)}
-     * to change this behaviour.
-     * 
-     * @param parentFolder : context folder
-     * @return a list of Nodes (could contains Folder and/or Documents objects) @
-     *         : if network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Node> getChildren(Folder parentFolder)
     {
         return getChildren(parentFolder, null).getList();
     }
 
-    /**
-     * Lists immediate child nodes of the given context folder.
-     * 
-     * @param parentFolder : context folder
-     * @param lcontext : Listing context that define the behaviour of paging
-     *            results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
-     * @return PagingResult object that contains a list of Nodes (could contains
-     *         Folder and/or Documents objects) @ : if network or internal
-     *         problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Node> getChildren(Folder parentFolder, ListingContext lcontext)
     {
-        if (parentFolder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+
+        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
         try
         {
@@ -153,7 +126,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             // By default Listing context has default value
-            String orderBy = null;
+            String orderBy = getSorting(SORT_PROPERTY_NAME, true);
             BigInteger maxItems = null;
             BigInteger skipCount = null;
 
@@ -199,6 +172,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return new PagingResultImpl<Node>(page, hasMoreItem, children.getNumItems().intValue());
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            return null;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -206,32 +183,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Gets the node object stored at the specified path.
-     * 
-     * @param path : path from the root folder.
-     * @return a node object available at the specified path. @ : if network or
-     *         internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public Node getChildByPath(String path)
     {
         return getChildByPath(getRootFolder(), path);
     }
 
-    /**
-     * Gets the node object stored at the relative specified path from the
-     * folder object.
-     * 
-     * @param relativePathFromFolder : relative path from the root folder.
-     * @return a node object available at the specified path.
-     */
+    /** {@inheritDoc} */
     public Node getChildByPath(Folder folder, String relativePathFromFolder)
     {
-        if (folder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
-        if (relativePathFromFolder == null || relativePathFromFolder.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("DocumentFolderService.25")); }
+        if (isStringNull(relativePathFromFolder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "relativePathFromFolder")); }
 
         try
         {
@@ -269,6 +234,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return result;
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            return null;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -276,21 +245,26 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Gets the node object with the specified identifier.
-     * 
-     * @param identifier : unique identifier
-     * @return a node object available with the specified identifier. @ : if
-     *         network or internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public Node getNodeByIdentifier(String identifier)
     {
-        if (identifier == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "nodeIdentifier")); }
+
         try
         {
             return getChildById(identifier);
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            //Case Cloud : Node Not found
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getMessage());
+        }
+        catch (CmisInvalidArgumentException e)
+        {
+            //Case OnPremise : Node Not found (Object id is invalid:)
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getMessage());
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -298,42 +272,24 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Get Root Node of the repository.
-     * 
-     * @return the folder root object.
-     */
+    /** {@inheritDoc} */
     public Folder getRootFolder()
     {
         return session.getRootFolder();
     }
 
-    /**
-     * Lists all immediate child folders of the given context node Note: this
-     * could be a long list
-     * 
-     * @param parentFolder : Parent Folder
-     * @return a list of folder object child of the parent folder
-     * @see #getFolders(Folder, ListingContext) @ : if network or internal
-     *      problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Folder> getFolders(Folder parentFolder)
     {
         return getFolders(parentFolder, null).getList();
     }
 
-    /**
-     * Lists all immediate child folders of the given context node </br>Note:
-     * this could be a long list
-     * 
-     * @param parentFolder : Parent Folder
-     * @return folder children as a pagingResult @ : if network or internal
-     *         problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Folder> getFolders(Folder folder, ListingContext listingContext)
     {
-        if (folder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+
         try
         {
             PagingResult<Node> nodes = getChildren(folder, listingContext);
@@ -347,6 +303,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
             return new PagingResultImpl<Folder>(folders, nodes.hasMoreItems(), -1);
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            return null;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -354,32 +314,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Lists all immediate child documents of the given context node </br>Note:
-     * this could be a long list
-     * 
-     * @param parentFolder : Parent Folder
-     * @return a list of document object child of the parent folder
-     * @see #getDocuments(Folder, ListingContext) @ : if network or internal
-     *      problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public List<Document> getDocuments(Folder folder)
     {
         return getDocuments(folder, null).getList();
     }
 
-    /**
-     * Lists all immediate child documents of the given context node Note: this
-     * could be a long list
-     * 
-     * @param parentFolder : Parent Folder
-     * @return document children as a pagingResult @ : if network or internal
-     *         problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Document> getDocuments(Folder folder, ListingContext listingContext)
     {
-        if (folder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
         try
         {
 
@@ -394,6 +339,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
             return new PagingResultImpl<Document>(docs, nodes.hasMoreItems(), -1);
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            return null;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -401,17 +350,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Gets the direct parent folder object.
-     * 
-     * @param node : Node object (Folder or Document).
-     * @return parent folder object. @ : if network or internal problems occur
-     *         during the process.
-     */
+    /** {@inheritDoc} */
     public Folder getParentFolder(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
             if (getRootFolder().equals(node)) { return null; }
@@ -427,6 +370,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return result;
         }
+        catch (CmisObjectNotFoundException e)
+        {
+            return null;
+        }
         catch (Exception e)
         {
             convertException(e);
@@ -437,6 +384,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // CREATION
     // ////////////////////////////////////////////////////
+    /** Internal map for OpenCMIS. */
     private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<Updatability>();
     static
     {
@@ -444,23 +392,14 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         CREATE_UPDATABILITY.add(Updatability.READWRITE);
     }
 
-    /**
-     * Creates a folder object in the specified location with specified
-     * properties.
-     * 
-     * @param parentFolder : Parent Folder
-     * @param folderName : Name of the future folder
-     * @param properties : Map of properties to apply to the new folder
-     * @return Returns the newly created folder @ : if network or internal
-     *         problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties)
     {
-        if (parentFolder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
-        if (folderName == null || folderName.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("DocumentFolderService.3")); }
+        if (isStringNull(folderName)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "folderName")); }
 
         try
         {
@@ -486,7 +425,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!(n instanceof Folder)) { throw new AlfrescoServiceException(
                     ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.19")
-                            + newId); }
+                            + newId +" : " + n.getType() + " " + n.getName() ); }
             return (Folder) n;
         }
         catch (Exception e)
@@ -496,27 +435,15 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /**
-     * Creates a document object in the specified location with specified
-     * properties. </br> It can launch metadata extraction and thumbnail
-     * generation after creation.
-     * 
-     * @param parentFolder : Future parent folder of a new document
-     * @param properties : (Optional) list of property values that must be
-     *            applied
-     * @param contentFile : (Optional) ContentFile that contains data stream or
-     *            file
-     * @return the newly created document object. @ : if network or internal
-     *         problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
             ContentFile contentFile)
     {
-        if (parentFolder == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
-        if (documentName == null || documentName.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("DocumentFolderService.3")); }
+        if (isStringNull(documentName)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "documentName")); }
 
         try
         {
@@ -584,8 +511,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     private void extractMetadata(String identifier)
     {
-        if (identifier == null || identifier.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("DocumentFolderService.2")); }
+
+        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "Nodeidentifier")); }
 
         try
         {
@@ -607,7 +535,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.DOCFOLDER_GENERIC);
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {
@@ -628,8 +556,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     private void generateThumbnail(String identifier)
     {
-        if (identifier == null || identifier.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "Nodeidentifier")); }
+
         try
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailUrl(session, identifier));
@@ -649,7 +578,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.DOCFOLDER_GENERIC);
         }
         catch (Exception e)
         {
@@ -660,16 +589,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // DELETE
     // ////////////////////////////////////////////////////
-    /**
-     * Deletes the specified object.
-     * 
-     * @param node : Node object (Folder or Document). @ : if network or
-     *            internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public void deleteNode(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
 
         try
         {
@@ -688,17 +612,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
     }
 
-    /**
-     * Deletes the specified document.
-     * 
-     * @param document : Document to delete. @ : if network or internal problems
-     *            occur during the process.
-     */
+    /** {@inheritDoc} */
     private void delete(Document document)
     {
         Permissions perm = getPermissions(document);
         if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION,
-                Messagesl18n.getString("DocumentFolderService.1")); }
+                Messagesl18n.getString("ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION")); }
 
         try
         {
@@ -709,16 +628,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisConstraintException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+            throw new IllegalArgumentException(e);
         }
     }
 
-    /**
-     * Deletes the specified folder object and all its children.
-     * 
-     * @param folder : folder to delete. @ : if network or internal problems
-     *            occur during the process.
-     */
+    /** {@inheritDoc} */
     private void delete(Folder folder)
     {
         Permissions perm = getPermissions(folder);
@@ -732,7 +646,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisConstraintException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -740,19 +654,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // UPDATE
     // ////////////////////////////////////////////////////
 
-    /**
-     * Updates properties for the specified object. Can accept Alfresco Content
-     * Model Properties id or cmis properties id.
-     * 
-     * @param node : Node to update
-     * @param properties : Properties to update.
-     * @return : Newly update node. @ : if network or internal problems occur
-     *         during the process.
-     */
+    /** {@inheritDoc} */
     public Node updateProperties(Node node, Map<String, Serializable> properties)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
         try
         {
             convertProps(properties, node.getType());
@@ -789,7 +696,16 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            convertException(e);
+            // In case where a null value is provided (definition type property
+            // is not null)
+            if (e.getMessage() != null && e.getMessage().contains("cannot be null or empty."))
+            {
+                throw new IllegalArgumentException(e);
+            }
+            else
+            {
+                convertException(e);
+            }
         }
         return null;
     }
@@ -797,18 +713,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // CONTENT
     // ////////////////////////////////////////////////////
-    /**
-     * Updates the content on the given document using the provided local file.
-     * 
-     * @param document : Document object
-     * @param file : File that is going to replace document content
-     * @return newly updated Document. @ : if network or internal problems occur
-     *         during the process.
-     */
+    /** {@inheritDoc} */
     public Document updateContent(Document content, ContentFile contentFile)
     {
-        if (content == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(content)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
         Document newContent = null;
         try
         {
@@ -840,19 +750,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return newContent;
     }
 
-    /**
-     * Retrieves the content stream for the given document.
-     * 
-     * @param document : Document object
-     * @return the contentFile representation that contains file informations +
-     *         inputStream of the content. @ : if network or internal problems
-     *         occur during the process.
-     */
+    /** {@inheritDoc} */
     @Override
     public ContentFile getContent(Document document)
     {
-        if (document == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+
         try
         {
             return saveContentStream(getContentStream(document),
@@ -865,19 +769,23 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public org.alfresco.mobile.android.api.model.ContentStream getContentStream(Document document)
     {
-        if (document == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+
         try
         {
+            if (document.getContentStreamLength() <= 0) { return null; }
+
             ObjectService objectService = cmisSession.getBinding().getObjectService();
-            org.alfresco.mobile.android.api.model.ContentStream cf = new ContentStreamImpl(
+            org.alfresco.mobile.android.api.model.ContentStream cf = new ContentStreamImpl(document.getName(),
                     objectService.getContentStream(session.getRepositoryInfo().getIdentifier(),
                             document.getIdentifier(), null, null, null, null));
-            if (cf.getLength() == -1) { return new ContentStreamImpl(cf.getInputStream(), cf.getMimeType(),
-                    document.getContentStreamLength()); }
+            if (cf.getLength() == -1) { return new ContentStreamImpl(document.getName(), cf.getInputStream(),
+                    cf.getMimeType(), document.getContentStreamLength()); }
             return cf;
         }
         catch (Exception e)
@@ -887,6 +795,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
+    /** {@inheritDoc} */
     public org.alfresco.mobile.android.api.model.ContentStream downloadContentStream(String identifier)
     {
         try
@@ -902,15 +811,16 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     }
 
     /**
-     * Retrieves the downloading url for the given document.
+     * Internal : Retrieves the downloading url for the given document.
      * 
      * @param document
      * @return @ : if network or internal problems occur during the process.
      */
     public String getDownloadUrl(Document document)
     {
-        if (document == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+
         try
         {
             AbstractAtomPubService objectService = (AbstractAtomPubService) cmisSession.getBinding().getObjectService();
@@ -927,34 +837,24 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // //////////////////////////////////////////////////////////////////////////////
     // RENDITION
     // ///////////////////////////////////////////////////////////////////////////////
-    /**
-     * Retrieve a specific type of Rendition for the specified identifier.
-     * 
-     * @param identifier : Node (Document in general) Identifier
-     * @param type : Type of rendition available
-     * @return Inputstream wrap inside a contentfile object. @ : if network or
-     *         internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
+
     public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier,
             String type);
 
+    /** {@inheritDoc} */
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)
 
     {
         return getRenditionStream(node.getIdentifier(), type);
     }
 
-    /**
-     * Retrieve a specific type of Rendition for the specified node.
-     * 
-     * @param type : Type of rendition available
-     * @return Inputstream wrap inside a contentfile object. @ : if network or
-     *         internal problems occur during the process.
-     */
+    /** {@inheritDoc} */
     public ContentFile getRendition(Node node, String type)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
         return saveContentStream(getRenditionStream(node.getIdentifier(), type),
                 NodeRefUtils.getNodeIdentifier(node.getIdentifier()), RENDITION_CACHE);
     }
@@ -962,20 +862,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // PERMISSIONS
     // ////////////////////////////////////////////////////
-    /**
-     * Returns all permissions the user have to this node. It includes default
-     * content management permission (create, update, delete) + Alfresco
-     * specficic permission (comment, like...)
-     * 
-     * @param identifier : Node Identifier
-     * @return {@link org.alfresco.mobile.android.api.model.Permissions} object
-     *         that contains permissions. @ : if network or internal problems
-     *         occur during the process.
-     */
+    /** {@inheritDoc} */
     public Permissions getPermissions(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("DocumentFolderService.2")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
         return new PermissionsImpl(node);
     }
 
@@ -997,6 +889,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return result;
     }
 
+    /** Static Map of all sorting possibility for DocumentFolderService. */
     @SuppressWarnings("serial")
     private static Map<String, String> sortingMap = new HashMap<String, String>()
     {
@@ -1009,6 +902,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
     };
 
+    /**
+     * Utility method to create the sorting open cmis extension.
+     * 
+     * @param sortingKey
+     * @param modifier
+     * @return
+     */
     private String getSorting(String sortingKey, boolean modifier)
     {
         String s;
@@ -1018,7 +918,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         else
         {
-            return null;
+            s = sortingMap.get(SORT_PROPERTY_NAME);
         }
 
         if (modifier)

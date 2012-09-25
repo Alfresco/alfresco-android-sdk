@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.api.asynchronous;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -43,7 +42,7 @@ import android.util.Log;
  */
 public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
 {
-    
+
     private static final String TAG = "DownloadTask";
 
     private static final int MAX_BUFFER_SIZE = 1024;
@@ -99,7 +98,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
         catch (Exception e)
         {
-           Log.e(TAG, e.getStackTrace().toString());
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return null;
     }
@@ -144,7 +143,8 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
                 }
 
                 int read = src.read(buffer);
-                if (read == -1){
+                if (read == -1)
+                {
                     break;
                 }
 
@@ -157,7 +157,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
         }
         catch (Exception e)
         {
-            Log.e(TAG, e.getStackTrace().toString());
+            Log.e(TAG, Log.getStackTraceString(e));
             copied = false;
         }
         finally

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -36,10 +37,7 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
- * Alfresco provides support for a news/activity feed in the context of an
- * enterprise generating and acting upon content.</br> Activities track a range
- * of changes, updates, events, and actions, allowing users to be aware of
- * details of the changes.
+ * Specific implementation of ActivityStreamService for Public Cloud API.
  * 
  * @author Jean Marie Pascal
  */
@@ -56,6 +54,7 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
         super(repositorySession);
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUserActivitiesUrl(ListingContext listingContext)
     {
         String link = CloudUrlRegistry.getUserActivitiesUrl((CloudSession) session);
@@ -68,6 +67,7 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
         return url;
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getUserActivitiesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = CloudUrlRegistry.getUserActivitiesUrl((CloudSession) session, personIdentifier);
@@ -80,6 +80,7 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
         return url;
     }
 
+    /** {@inheritDoc} */
     protected UrlBuilder getSiteActivitiesUrl(String siteIdentifier, ListingContext listingContext)
     {
         String link = CloudUrlRegistry.getSiteActivitiesUrl((CloudSession) session, siteIdentifier);
@@ -106,27 +107,18 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
     @SuppressWarnings("unchecked")
     protected PagingResult<ActivityEntry> computeActivities(UrlBuilder url, ListingContext listingContext)
     {
-        try
+        // read and parse
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
+        PublicAPIResponse response = new PublicAPIResponse(resp);
+
+        List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+        Map<String, Object> data = null;
+        for (Object entry : response.getEntries())
         {
-            // read and parse
-            HttpUtils.Response resp = read(url);
-            PublicAPIResponse response = new PublicAPIResponse(resp);
-
-            List<ActivityEntry> result = new ArrayList<ActivityEntry>();
-            Map<String, Object> data = null;
-            for (Object entry : response.getEntries())
-            {
-                data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
-                result.add(ActivityEntryImpl.parsePublicAPIJson(data));
-            }
-
-            return new PagingResultImpl<ActivityEntry>(result, response.getHasMoreItems(), response.getSize());
-
+            data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
+            result.add(ActivityEntryImpl.parsePublicAPIJson(data));
         }
-        catch (Exception e)
-        {
-            convertException(e);
-        }
-        return null;
+
+        return new PagingResultImpl<ActivityEntry>(result, response.getHasMoreItems(), response.getSize());
     }
 }

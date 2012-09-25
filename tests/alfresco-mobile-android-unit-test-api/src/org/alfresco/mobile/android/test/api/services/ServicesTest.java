@@ -20,20 +20,21 @@ package org.alfresco.mobile.android.test.api.services;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
+
+import android.util.Log;
 
 /**
  * Test class for Services.
+ * 
  * @author Jean Marie Pascal
- *
  */
 public class ServicesTest extends AlfrescoSDKTestCase
 {
 
     /**
-     * Test to check creation of alfresco Service after binding with an
-     * alfresco server.
+     * Test to check creation of alfresco Service after binding with an alfresco
+     * server.
      */
     public void testAlfrescoServices()
     {
@@ -49,10 +50,13 @@ public class ServicesTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(alfsession.getServiceRegistry().getCommentService());
         Assert.assertNotNull(alfsession.getServiceRegistry().getPersonService());
         Assert.assertNotNull(alfsession.getServiceRegistry().getTaggingService());
-        
-        if (alfsession.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4){
+
+        if (alfsession.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4)
+        {
             Assert.assertNull(alfsession.getServiceRegistry().getRatingService());
-        } else {
+        }
+        else
+        {
             Assert.assertNotNull(alfsession.getServiceRegistry().getRatingService());
         }
     }
@@ -65,27 +69,34 @@ public class ServicesTest extends AlfrescoSDKTestCase
     {
         alfsession = createCMISSession();
 
-        // Check CMIS Services
-        Assert.assertNotNull(alfsession.getServiceRegistry());
-        Assert.assertNotNull(alfsession.getServiceRegistry().getDocumentFolderService());
-        Assert.assertNotNull(alfsession.getServiceRegistry().getVersionService());
-        Assert.assertNotNull(alfsession.getServiceRegistry().getSearchService());
+        if (alfsession != null)
+        {
+            // Check CMIS Services
+            Assert.assertNotNull(alfsession.getServiceRegistry());
+            Assert.assertNotNull(alfsession.getServiceRegistry().getDocumentFolderService());
+            Assert.assertNotNull(alfsession.getServiceRegistry().getVersionService());
+            Assert.assertNotNull(alfsession.getServiceRegistry().getSearchService());
 
-        // Check Alfresco Services are NOT created
-        Assert.assertNull(alfsession.getServiceRegistry().getSiteService());
-        Assert.assertNull(alfsession.getServiceRegistry().getActivityStreamService());
-        Assert.assertNull(alfsession.getServiceRegistry().getCommentService());
-        Assert.assertNull(alfsession.getServiceRegistry().getPersonService());
-        Assert.assertNull(alfsession.getServiceRegistry().getRatingService());
-        Assert.assertNull(alfsession.getServiceRegistry().getTaggingService());
+            // Check Alfresco Services are NOT created
+            Assert.assertNull(alfsession.getServiceRegistry().getSiteService());
+            Assert.assertNull(alfsession.getServiceRegistry().getActivityStreamService());
+            Assert.assertNull(alfsession.getServiceRegistry().getCommentService());
+            Assert.assertNull(alfsession.getServiceRegistry().getPersonService());
+            Assert.assertNull(alfsession.getServiceRegistry().getRatingService());
+            Assert.assertNull(alfsession.getServiceRegistry().getTaggingService());
+        }
+        else
+        {
+            Log.w(TAG, "Unable to load a CMIS Session based on CMIS server");
+        }
     }
 
     @Override
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof CloudSession)
+        if (alfsession == null)
         {
             alfsession = createRepositorySession();
-        }        
+        }
     }
 }

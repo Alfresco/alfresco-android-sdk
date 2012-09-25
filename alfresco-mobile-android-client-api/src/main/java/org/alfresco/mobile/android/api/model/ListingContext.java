@@ -30,7 +30,7 @@ public class ListingContext implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
-    
+
     public static final int DEFAULT_MAX_ITEMS = 50;
 
     private String sorting = null;
@@ -40,12 +40,12 @@ public class ListingContext implements Serializable
     private int skipCount = 0;
 
     private boolean sortingModifier = true;
-    
+
     public ListingContext()
     {
         super();
     }
-    
+
     public ListingContext(String sorting, int maxItems, int skipCount, boolean sortingModifier)
     {
         super();
@@ -92,10 +92,12 @@ public class ListingContext implements Serializable
     }
 
     /**
-     * Returns the maximum items within the list.
+     * Returns the maximum items within the list. If maxItems <= 0 replace by
+     * default Max Items
      */
     public int getMaxItems()
     {
+        if (maxItems <= 0) { return DEFAULT_MAX_ITEMS; }
         return maxItems;
     }
 
@@ -109,9 +111,11 @@ public class ListingContext implements Serializable
 
     /**
      * Returns current skip count
+     * if skipCount < 0, returns 0;
      */
     public int getSkipCount()
     {
+        if (skipCount < 0) { return 0; }
         return skipCount;
     }
 

@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
 
 /**
  * List of all alfresco specific url used inside the SDK.
@@ -48,31 +47,7 @@ public final class CloudUrlRegistry
 
     public static final String PREFIX_PUBLIC_API = "/public/alfresco/versions/1";
 
-    public static final String BINDING_NETWORK_CMISATOM = "/alfresco/a/{networkId}/public/cmis/versions/1.0/atom/";
-
-    // ///////////////////////////////////////////////////////////////////////////////
-    // CLOUD ACCOUNT
-    // //////////////////////////////////////////////////////////////////////////////
-
-    public static final String CLOUD_SIGNUP = "/alfresco/service/internal/cloud/accounts/signupqueue";
-
-    public static final String VARIABLE_ACCOUNTID = "{accountid}";
-
-    public static final String VARIABLE_ACCOUNTKEY = "{accountkey}";
-
-    public static final String CLOUD_SIGNUP_ACCOUNT = CLOUD_SIGNUP + "/{accountid}?key={accountkey}";
-
-    public static String getCloudSignupUrl(String baseUrl)
-    {
-        return new StringBuilder(baseUrl).append(CLOUD_SIGNUP).toString();
-    }
-
-    public static String getVerifiedAccountUrl(CloudSignupRequest request, String baseUrl)
-    {
-        return new StringBuilder(baseUrl).append(
-                CLOUD_SIGNUP_ACCOUNT.replace(VARIABLE_ACCOUNTID, request.getIdentifier()).replace(VARIABLE_ACCOUNTKEY,
-                        request.getRegistrationKey())).toString();
-    }
+    public static final String BINDING_NETWORK_CMISATOM = "/{networkId}/public/cmis/versions/1.0/atom/";
 
     // ///////////////////////////////////////////////////////////////////////////////
     // SITES
@@ -125,7 +100,7 @@ public final class CloudUrlRegistry
 
     public static String getUserNetworks(String baseUrl)
     {
-        return new StringBuilder(baseUrl).append("/alfresco/a").toString();
+        return new StringBuilder(baseUrl).toString();
     }
 
     public static String getUserNetworks(CloudSession session, String username)
@@ -155,7 +130,7 @@ public final class CloudUrlRegistry
     public static String getTagsUrl(CloudSession session, String nodeRef)
     {
         return createPrefix(session)
-                .append(URL_TAGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeRef))).toString();
+                .append(URL_TAGS.replace(VARIABLE_NODEID,nodeRef)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -208,14 +183,14 @@ public final class CloudUrlRegistry
     public static String getCommentsUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session).append(
-                URL_COMMENTS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier))).toString();
+                URL_COMMENTS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getCommentUrl(CloudSession session, String nodeIdentifier, String commentIdentifier)
     {
         return createPrefix(session).append(
                 URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_COMMENTID,
-                        NodeRefUtils.getCleanIdentifier(commentIdentifier))).toString();
+                        commentIdentifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -226,13 +201,13 @@ public final class CloudUrlRegistry
     public static String getRatingsUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session).append(
-                URL_RATINGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier))).toString();
+                URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getUnlikeUrl(CloudSession session, String nodeIdentifier)
     {
         return createPrefix(session)
-                .append(URL_RATINGS.replace(VARIABLE_NODEID, NodeRefUtils.getCleanIdentifier(nodeIdentifier)))
+                .append(URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier))
                 .append("/").append(CloudConstant.LIKES_VALUE).toString();
     }
 
@@ -276,8 +251,6 @@ public final class CloudUrlRegistry
     private static StringBuilder createPrefix(CloudSession session, String networkIdentifier)
     {
         StringBuilder sb = new StringBuilder(session.getBaseUrl());
-        sb.append("/alfresco");
-        sb.append("/a");
         sb.append("/");
         if (networkIdentifier != null)
         {

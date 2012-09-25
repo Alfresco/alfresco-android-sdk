@@ -157,4 +157,17 @@ public interface CloudConstant extends OnPremiseConstant
     // PEOPLE
     String AVATARID_VALUE = "avatarId";
 
+    // ERROR
+    String ERROR_VALUE = "error";
+    
+    String ERRORDESCRIPTION_VALUE = "error_description";
+
+    String STATUSCODE_VALUE = "statusCode";
+
+    String BRIEFSUMMARY_VALUE = "briefSummary";
+
+    String STACKTRACE_VALUE = "stackTrace";
+
+    String DESCRIPTIONURL_VALUE = "descriptionURL";
+
 }

@@ -277,6 +277,16 @@ public interface DocumentFolderService
      */
     ContentFile getContent(Document document);
 
+    
+    /**
+     * Downloads the content for the given document as InputStream.
+     * 
+     * @param document : Document object
+     * @return the contentFile representation that contains file informations +
+     *         inputStream of the content.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
+     */
     ContentStream getContentStream(Document document);
 
     /**
@@ -291,7 +301,7 @@ public interface DocumentFolderService
      * 
      * @see #getRendition(Node, String)
      */
-    static final String RENDITION_THUMBNAIL = "doclib";
+    String RENDITION_THUMBNAIL = "doclib";
 
     /**
      * Retrieve a specific type of Rendition for the specified identifier.
@@ -305,6 +315,16 @@ public interface DocumentFolderService
      */
     ContentFile getRendition(Node node, String type);
 
+    /**
+     * Retrieve a specific type of Rendition for the specified identifier as InputStream
+     * 
+     * @param node : Node (Document in general)
+     * @param type : : Type of rendition available
+     * @return Returns a ContentFile object representing a rendition of the
+     *         given node.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
+     */
     ContentStream getRenditionStream(Node node, String type);
 
 }

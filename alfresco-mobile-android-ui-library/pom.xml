@@ -43,7 +43,7 @@
 							<finalName>alfresco-android-sdk</finalName>
 							<attach>true</attach>
 							<descriptors>
-								<descriptor>src/main/assembly/pack.xml</descriptor>
+								<descriptor>assembly/pack.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>

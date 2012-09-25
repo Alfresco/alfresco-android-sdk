@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseRatingsServiceImpl;
@@ -81,7 +82,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 				public void write(OutputStream out) throws Exception {
 					formData.write(out);
 				}
-			});
+			}, ErrorCodeRegistry.RATING_GENERIC);
 		} catch (Exception e) {
 			convertException(e);
 		}
@@ -129,7 +130,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 	// / INTERNAL
 	// ////////////////////////////////////////////////////////////////////////////////////
 	private StarRating computeRating(UrlBuilder url) {
-		HttpUtils.Response resp = read(url);
+		HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
 		Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
 		if (json == null) {
@@ -142,7 +143,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
 	@SuppressWarnings("unchecked")
 	private float computeMyRating(UrlBuilder url) {
 		// read and parse
-		HttpUtils.Response resp = read(url);
+		HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
 		Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
 		if (json == null) {

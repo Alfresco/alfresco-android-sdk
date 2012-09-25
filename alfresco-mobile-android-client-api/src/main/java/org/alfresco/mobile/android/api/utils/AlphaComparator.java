@@ -27,7 +27,9 @@ public class AlphaComparator implements Serializable, Comparator<Site>
 {
 
     private static final long serialVersionUID = 1L;
+
     private boolean asc;
+
     private String propertySorting;
 
     public AlphaComparator(boolean asc, String propertySorting)
@@ -40,11 +42,12 @@ public class AlphaComparator implements Serializable, Comparator<Site>
     public int compare(Site siteA, Site siteB)
     {
         int b = 0;
-        if (SiteService.SORT_PROPERTY_SHORTNAME.equals(propertySorting)){
+        if (SiteService.SORT_PROPERTY_SHORTNAME.equals(propertySorting))
+        {
             b = siteA.getShortName().compareToIgnoreCase(siteB.getShortName());
-        } else if (SiteService.SORT_PROPERTY_TITLE.equals(propertySorting)){
-            b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
-        } else {
+        }
+        else
+        {
             b = siteA.getTitle().compareToIgnoreCase(siteB.getTitle());
         }
         if (asc)

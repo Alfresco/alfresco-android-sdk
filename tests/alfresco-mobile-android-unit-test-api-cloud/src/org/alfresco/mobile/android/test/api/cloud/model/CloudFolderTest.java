@@ -15,27 +15,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.session.authentication.impl;
+package org.alfresco.mobile.android.test.api.cloud.model;
 
-import java.util.List;
-import java.util.Map;
+import junit.framework.Assert;
 
-import org.alfresco.mobile.android.api.session.authentication.CloudAuthenticationProvider;
+import org.alfresco.mobile.android.test.api.model.FolderTest;
 
 /**
- * DRAFT
+ * Test class for Folder Object.
  * 
  * @author Jean Marie Pascal
  */
-public class CloudAuthenticationProviderImpl  extends AuthenticationProviderImpl implements CloudAuthenticationProvider
+public class CloudFolderTest extends FolderTest
 {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
-    public Map<String, List<String>> getHTTPHeaders()
+    protected void initSession()
     {
-        return null;
-    }
+        if (alfsession == null)
+        {
+            alfsession = createCloudSession();
+        }   
 
+        // Check Services
+        Assert.assertNotNull(alfsession.getServiceRegistry());
+        docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
+        Assert.assertNotNull(docfolderservice);
+    }
 }

@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.services.impl;
 
 import java.io.OutputStream;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.RatingService;
@@ -31,9 +30,8 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
 /**
- * The RatingsService can be used to manage like (as ratings) on any content
- * node in the repository.<br>
- * Like can be applied or removed.
+ * Abstract class implementation of RatingsService. Responsible of sharing
+ * common methods between child class (OnPremise and Cloud)
  * 
  * @author Jean Marie Pascal
  */
@@ -50,21 +48,27 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         super(repositorySession);
     }
 
+    /**
+     * Internal method to retrieve a specific ratings url to like a node.
+     * (depending on repository type)
+     * 
+     * @param node : a rated node
+     * @return UrlBuilder to retrieve for a specific ratings url.
+     */
     protected abstract UrlBuilder getRatingsUrl(Node node);
 
+    /**
+     * Internal method to retrieve the ratings object from json data
+     * 
+     * @return JsonObject that contains rating object data.
+     */
     protected abstract JSONObject getRatingsObject();
 
-    /**
-     * Increases the like count for the specified node
-     * 
-     * @param node : Node object (Folder or Document).
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public void like(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("RatingService.0")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
             // build URL
@@ -77,7 +81,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.RATING_GENERIC);
         }
         catch (Exception e)
         {
@@ -85,22 +89,23 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         }
     }
 
+    /**
+     * Internal method to retrieve a specific ratings url to unlike a node.
+     * (depending on repository type)
+     * 
+     * @param node : a rated node
+     * @return UrlBuilder to retrieve for a specific ratings url.
+     */
     protected abstract UrlBuilder getUnlikeUrl(Node node);
 
-    /**
-     * Removes a previous “like” of the specified node.
-     * 
-     * @param node : Node object (Folder or Document).
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public void unlike(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("RatingService.0")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
-            delete(getUnlikeUrl(node));
+            delete(getUnlikeUrl(node), ErrorCodeRegistry.RATING_GENERIC);
         }
         catch (Exception e)
         {
@@ -108,17 +113,11 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         }
     }
 
-    /**
-     * Retrieves the number of likes for the specified node
-     * 
-     * @param node : Node object (Folder or Document).
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public int getLikeCount(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("RatingService.0")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
             return computeRatingsCount(getRatingsUrl(node));
@@ -130,17 +129,11 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
         return -1;
     }
 
-    /**
-     * Determine if the user has been liked this node.
-     * 
-     * @param node : Node object (Folder or Document).
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public boolean isLiked(Node node)
     {
-        if (node == null) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                Messagesl18n.getString("RatingService.0")); }
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
             return computeIsRated(getRatingsUrl(node));
@@ -155,8 +148,22 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Internal method to compute data from server and retrieve the number of
+     * "like".
+     * 
+     * @param url : Alfresco REST API activity url
+     * @return the number of ratings 'like' on this node.
+     */
     protected abstract int computeRatingsCount(UrlBuilder url);
 
+    /**
+     * Internal method to compute data from server and retrieve if the user has
+     * rate this node.
+     * 
+     * @param url : Alfresco REST API activity url
+     * @return true if the current logged user has like the node.
+     */
     protected abstract boolean computeIsRated(UrlBuilder url);
 
 }

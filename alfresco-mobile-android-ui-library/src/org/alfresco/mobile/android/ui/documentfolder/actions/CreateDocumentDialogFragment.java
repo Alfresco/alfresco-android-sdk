@@ -72,7 +72,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
 
     private EditText editTags;
 
-    private ArrayList<Tag> selectedTags;
+    private List<Tag> selectedTags;
 
     private OnNodeCreateListener onCreateListener;
 
@@ -246,7 +246,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
             @Override
             public void onValidateTags(List<Tag> tags)
             {
-                selectedTags = (ArrayList<Tag>) tags;
+                selectedTags = tags;
                 String s = "";
                 for (int i = 0; i < tags.size(); i++)
                 {

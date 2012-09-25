@@ -29,9 +29,12 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 public class StorageManager
 {
+
+    private static final String TAG = "StorageManager";
 
     /**
      * Return the cache dir and check if exists
@@ -102,7 +105,7 @@ public class StorageManager
         }
         catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return "";
     }
@@ -177,7 +180,7 @@ public class StorageManager
         }
         catch (MalformedURLException e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return name + "-" + username;
     }

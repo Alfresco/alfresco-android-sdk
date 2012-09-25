@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.asynchronous;
 
 import org.alfresco.mobile.android.api.model.ActivityEntry;
-import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 

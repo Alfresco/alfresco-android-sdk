@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -61,21 +60,13 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
         super(repositorySession);
     }
 
-    /**
-     * @return Returns all tags currently available inside the repository.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Tag> getAllTags() 
     {
         return getAllTags(null).getList();
     }
 
-    /**
-     * @return Returns all tags currently available inside the repository.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
@@ -96,27 +87,19 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
         return null;
     }
 
-    /**
-     * @return Returns all tags associated with the specific node.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Tag> getTags(Node node)
     {
         return getTags(node, null).getList();
     }
 
-    /**
-     * @return Returns all tags associated with the specific node.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Tag> getTags(Node node, ListingContext listingContext)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
-            if (node == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("TaggingService.0")); }
-
             String link = CloudUrlRegistry.getTagsUrl((CloudSession) session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
             if (listingContext != null)
@@ -133,21 +116,16 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
         return null;
     }
 
-    /**
-     * Add a list of tags to the specific node.
-     * 
-     * @param node
-     * @param tags
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public void addTags(Node node, List<String> tags)
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
+        if (isListNull(tags)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags")); }
         try
         {
-            if (node == null || tags == null) {  throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_INVALID_ARG,
-                    Messagesl18n.getString("TaggingService.1")); }
-
             String link = CloudUrlRegistry.getTagsUrl((CloudSession) session, node.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
 
@@ -169,7 +147,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
                 {
                     formData.write(out);
                 }
-            });
+            }, ErrorCodeRegistry.TAGGING_GENERIC);
         }
         catch (Exception e)
         {
@@ -183,7 +161,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
     @SuppressWarnings("unchecked")
     private PagingResult<Tag> computeTag(UrlBuilder url)
     {
-        HttpUtils.Response resp = read(url);
+        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Tag> result = new ArrayList<Tag>();

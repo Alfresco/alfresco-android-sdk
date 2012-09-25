@@ -15,14 +15,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.session.authentication;
+package org.alfresco.mobile.android.api.exceptions;
 
 /**
- * DRAFT
+ * An AlfrescoErrorContent is an utility class that allow developers to retrieve
+ * information after the repository raised an exception. It parses repository
+ * json data and transform it into ErrorContent Object.
  * 
  * @author Jean Marie Pascal
- */ 
-public interface CloudAuthenticationProvider extends AuthenticationProvider
+ */
+public interface AlfrescoErrorContent
 {
+
+    /**
+     * @return HTTP Error code
+     */
+    int getCode();
+
+    /**
+     * @return Human readable message explaining the server side error.
+     */
+    String getMessage();
+
+    /**
+     * @return StackTrace of the server side error.
+     */
+    String getStackTrace();
 
 }

@@ -22,7 +22,11 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Person;
 
 /**
- * The PersonService can be used to get informations about people.
+ * The PersonService can be used to get informations about people.</br> The
+ * PersonService is responsible for all of the following:
+ * <ul>
+ * <li>Obtaining a reference to the Person node for a given user name</li>
+ * </ul>
  * 
  * @author Jean Marie Pascal
  */

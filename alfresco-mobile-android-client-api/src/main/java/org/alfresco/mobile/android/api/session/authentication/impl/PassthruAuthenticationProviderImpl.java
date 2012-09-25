@@ -44,6 +44,16 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
     private static final long serialVersionUID = 1L;
 
     private AuthenticationProvider alfrescoAuthenticationProvider;
+    
+    
+    public PassthruAuthenticationProviderImpl()
+    {
+        // TODO Auto-generated constructor stub
+    }
+    
+    public PassthruAuthenticationProviderImpl(AuthenticationProvider alfrescoAuthenticationProvider){
+        this.alfrescoAuthenticationProvider = alfrescoAuthenticationProvider;
+    }
 
     @Override
     public Map<String, List<String>> getHTTPHeaders(String url)

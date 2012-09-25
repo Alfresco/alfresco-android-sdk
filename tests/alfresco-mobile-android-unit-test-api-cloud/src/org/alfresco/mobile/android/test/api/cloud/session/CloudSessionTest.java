@@ -20,56 +20,30 @@ package org.alfresco.mobile.android.test.api.cloud.session;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
+import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-public class CloudSessionTest extends AlfrescoSDKCloudTestCase
+import android.util.Log;
+
+public class CloudSessionTest extends AlfrescoSDKTestCase
 {
 
     @Override
     protected void initSession()
     {
         // TODO Auto-generated method stub
-        
     }
-    
-    /**
-     * Simple test to create a session.
-     */
-    public void testCreateCloudSession()
-    {
-        try
-        {
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BASE_URL, CLOUD_BASE_URL);
 
-            CloudSession session = CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  settings);
-
-            // Check informations has been collected from repository
-            Assert.assertNotNull(session);
-            Assert.assertNotNull(session.getRepositoryInfo());
-
-            // Base Url
-            Assert.assertNotNull(session.getBaseUrl());
-            Assert.assertEquals(CLOUD_BASE_URL, session.getBaseUrl());
-        }
-        catch (Exception e)
-        {
-            Assert.fail();
-            e.printStackTrace();
-        }
-    }
-    
     public void testCreateWrongCloudSession()
     {
         try
         {
-            CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  null);
+            CloudSession.connect(null, null);
             Assert.fail();
         }
         catch (Exception e)
@@ -77,38 +51,36 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
             Assert.assertTrue(true);
         }
     }
-    
+
     public void testCreateCloudSessionWithNetworkID()
     {
         try
         {
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BASE_URL, CLOUD_BASE_URL);
-            settings.put(CloudSession.CLOUD_NETWORK_ID, "opensourceecm.fr");
+            Map<String, Serializable> settings = new HashMap<String, Serializable>(1);
+            settings.put(CloudSession.CLOUD_NETWORK_ID, "alfresco.com");
 
-            CloudSession session = CloudSession.connect(CLOUD_USER, CLOUD_PASSWORD, API_KEY,  settings);
+            CloudSession session = createCloudSession(settings);
 
             Assert.assertNotNull(session);
             Assert.assertNotNull(session.getRepositoryInfo());
-            Assert.assertEquals("opensourceecm.fr",session.getNetwork().getIdentifier());
+            Assert.assertEquals("alfresco.com", session.getNetwork().getIdentifier());
 
             // Base Url
             Assert.assertNotNull(session.getBaseUrl());
-            Assert.assertEquals(CLOUD_BASE_URL, session.getBaseUrl());
+            Assert.assertEquals(settings.get(BASE_URL), session.getBaseUrl());
         }
         catch (Exception e)
         {
             Assert.fail();
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
-    
-    
-    public void testNetworksList(){
-        CloudSession cloudSession = AlfrescoSDKCloudTestCase.createCloudSession();
+    public void testNetworksList()
+    {
+        CloudSession cloudSession = createCloudSession();
         Assert.assertNotNull(cloudSession);
-        
+
         List<CloudNetwork> networks = cloudSession.getNetworks();
         Assert.assertNotNull(networks);
         Assert.assertTrue(networks.size() > 0);
@@ -119,21 +91,5 @@ public class CloudSessionTest extends AlfrescoSDKCloudTestCase
         Assert.assertNotNull(network.getSubscriptionLevel());
         Assert.assertNotNull(network.isHomeNetwork());
         Assert.assertNotNull(network.isPaidNetwork());
-    }
-    
-    
-    public final static String firstName = "firstName";
-    public final static String lastName = "lastName";
-    public final static String emailAddress = "jeanmarie.pascal@neuf.fr";
-    public final static String password = "password";
-    public final static String apiKey = "apiKey";
-
-    
-    public void testSignUp(){
-        CloudSignupRequest request = CloudSession.signup(firstName, lastName, emailAddress, password, apiKey);
-        Assert.assertNotNull(request);
-        
-        Boolean b = CloudSession.isAccountVerified(request);
-        Assert.assertFalse(b);
     }
 }

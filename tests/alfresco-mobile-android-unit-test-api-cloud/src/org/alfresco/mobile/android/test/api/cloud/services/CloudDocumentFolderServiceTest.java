@@ -8,8 +8,6 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.DocumentFolderServiceTest;
 
 import android.util.Log;
@@ -19,9 +17,9 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }   
         
         // Check Services
@@ -43,9 +41,8 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
 
-        Document doc;
-        doc = createDocumentFromAsset(unitTestFolder, "android.jpg");
-        doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
+        createDocumentFromAsset(unitTestFolder, "android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
 
         Assert.assertNotNull(doc);
 
@@ -57,8 +54,7 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
         // Create Session with extract metadata and create thumbnail true.
         initSessionWithParams();
 
-        Document doc = (Document) docfolderservice.getChildByPath(AlfrescoSDKCloudTestCase
-                .getSampleDataPath(alfsession) + "/android.jpg");
+        Document doc = (Document) docfolderservice.getChildByPath(getSampleDataPath(alfsession) + "/android.jpg");
         Assert.assertNotNull("Missing Sample Data Android.jpg", doc);
 
         checkRendition(doc, true, true);
@@ -121,5 +117,11 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
                 Assert.fail("No Metadata available");
             }
         }
+    }
+    
+    @Override
+    public void testDocumentFolderMethodsError()
+    {
+        super.testDocumentFolderMethodsError();
     }
 }

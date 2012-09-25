@@ -29,10 +29,13 @@ import org.alfresco.mobile.android.samples.ui.tags.TagsBrowserFragment;
 import org.alfresco.mobile.android.samples.ui.tags.TagsListNodeFragment;
 
 import android.app.Fragment;
+import android.util.Log;
 
 public class FragmentFactory
 {
 
+    private static final String TAG = "FragmentFactory";
+    
     public static Fragment createInstance(String tag)
     {
         try
@@ -44,7 +47,7 @@ public class FragmentFactory
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return null;
     }

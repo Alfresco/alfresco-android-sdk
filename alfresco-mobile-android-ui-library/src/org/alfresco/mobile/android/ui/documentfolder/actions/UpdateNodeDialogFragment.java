@@ -73,7 +73,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
 
     protected EditText editTags;
 
-    protected ArrayList<Tag> selectedTags;
+    protected List<Tag> selectedTags;
 
     private Node node;
 
@@ -154,7 +154,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 }
                 if (selectedTags != null && !selectedTags.isEmpty())
                 {
-                    props.put(ContentModel.PROP_TAGS, selectedTags);
+                    props.put(ContentModel.PROP_TAGS, (ArrayList<Tag>)selectedTags);
                 }
                 UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), node, props);
                 up.setOnUpdateListener(onUpdateListener);
@@ -238,13 +238,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
             }
         });
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-        {
-            // t2.setCustomAnimations(R.anim.slide_in_right,
-            // R.anim.slide_out_left);
-        }
-        else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                 && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         {
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -261,7 +255,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
 
     private void displayTags(List<Tag> tags)
     {
-        selectedTags = (ArrayList<Tag>) tags;
+        selectedTags = tags;
         String s = "";
         for (int i = 0; i < tags.size(); i++)
         {

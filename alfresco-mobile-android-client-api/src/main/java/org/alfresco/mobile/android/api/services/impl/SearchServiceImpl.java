@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -49,8 +47,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * The Search service provides methods for querying the repository and returning
- * a filtered collection of nodes based on a user’s permission
+ * Implementation of SearchService.
  * 
  * @author Jean Marie Pascal
  */
@@ -73,38 +70,18 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         this.cmisSession = ((AbstractAlfrescoSessionImpl) repositorySession).getCmisSession();
     }
 
-    /**
-     * Executes a query statement against the contents of the repository using
-     * the given search language.
-     * 
-     * @param statement : statement associated to the specific language
-     * @param language : cmissql by default.
-     * @return a list of Node object that match the query inside
-     *         searchParameters object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Node> search(String statement, SearchLanguage language)
     {
         return search(statement, language, null).getList();
     }
 
-    /**
-     * A space delimited list of keywords to search for. The options object
-     * defines the behaviour of the search i.e. whether to scope to the search
-     * to a folder.
-     * 
-     * @param keywords : keywords to search.
-     * @param options : define the scope of the search.
-     * @return a list of Node object that match the query inside
-     *         searchParameters object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public List<Node> keywordSearch(String keywords, KeywordSearchOptions options)
     {
-        if (keywords == null || keywords.length() == 0) { throw new AlfrescoServiceException(
-                ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.4")); }
+        if (isStringNull(keywords)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "keywords")); }
+
         KeywordSearchOptions tmpOptions = options;
         if (tmpOptions == null)
         {
@@ -113,15 +90,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         return keywordSearch(keywords, tmpOptions, null).getList();
     }
 
-    /**
-     * Paging version of keywordSearch
-     * 
-     * @param keywords
-     * @param options
-     * @param listingContext
-     * @return
-     * @throws AlfrescoServiceException
-     */
+    /** {@inheritDoc} */
     public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
 
     {
@@ -130,26 +99,18 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         return search(statement, SearchLanguage.CMIS, listingContext);
     }
 
-    /**
-     * Executes a query statement against the contents of the repository with
-     * the specified search parameters.
-     * 
-     * @param searchParameters :
-     * @return a list of Node object that match the query inside
-     *         searchParameters object.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     */
+    /** {@inheritDoc} */
     public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
 
     {
         try
         {
-            if (statement == null || statement.length() == 0) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.3")); }
-            if (language == null) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.GENERAL_INVALID_ARG, Messagesl18n.getString("SearchService.2")); }
-            
+            if (isStringNull(statement)) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "statement")); }
+
+            if (isObjectNull(language)) { throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "language")); }
+
             DiscoveryService discoveryService = cmisSession.getBinding().getDiscoveryService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -212,7 +173,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String QUERY_DESCENDANTS = " IN_TREE(d,'" + PARAM_NODEREF + "')";
 
     private static final String PARAM_NAME = " d.cmis:name ";
-    
+
     private static final String PARAM_CREATED_AT = " d.cmis:creationDate ";
 
     private static final String PARAM_MODIFIED_AT = " d.cmis:lastModificationDate ";

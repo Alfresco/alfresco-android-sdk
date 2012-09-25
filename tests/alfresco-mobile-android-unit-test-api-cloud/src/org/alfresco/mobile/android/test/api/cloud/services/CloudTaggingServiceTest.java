@@ -19,8 +19,6 @@ package org.alfresco.mobile.android.test.api.cloud.services;
 
 import junit.framework.Assert;
 
-import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.test.AlfrescoSDKCloudTestCase;
 import org.alfresco.mobile.android.test.api.services.TaggingServiceTest;
 
 /**
@@ -33,14 +31,16 @@ public class CloudTaggingServiceTest extends TaggingServiceTest
 
     protected void initSession()
     {
-        if (alfsession == null || alfsession instanceof RepositorySession)
+        if (alfsession == null)
         {
-            alfsession = AlfrescoSDKCloudTestCase.createCloudSession();
+            alfsession = createCloudSession();
         }
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         taggingService = alfsession.getServiceRegistry().getTaggingService();
         Assert.assertNotNull(taggingService);
+        docfolderservice= alfsession.getServiceRegistry().getDocumentFolderService();
+        Assert.assertNotNull(docfolderservice);
     }
 
     protected int getTotalItems(int value)

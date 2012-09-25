@@ -15,9 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-/**
- * Provides fragments and adapters to display a list of documents/folder stored inside the device filesystem.
- * 
- * @author Jean Marie Pascal
- */
-package org.alfresco.mobile.android.ui.filebrowser;
+package org.alfresco.mobile.android.intent;
+
+public class RequestCode
+{
+    //REQUEST CODE
+    public static final int REQUESTCODE_FILEPICKER = 128;
+    public static final int REQUESTCODE_SAVE_BACK = 129;
+}
