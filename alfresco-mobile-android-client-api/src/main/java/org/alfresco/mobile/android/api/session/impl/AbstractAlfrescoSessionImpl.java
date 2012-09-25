@@ -413,9 +413,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
-    protected static final String USER = "org.alfresco.mobile.credential.user";
+    protected static final String USER = "org.alfresco.mobile.internal.credential.user";
 
-    protected static final String PASSWORD = "org.alfresco.mobile.credential.password";
+    protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     // ////////////////////////
     // SHORTCUTS

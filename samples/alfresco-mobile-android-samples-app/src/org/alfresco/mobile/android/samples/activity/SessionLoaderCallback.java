@@ -62,6 +62,8 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
 
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
 
+    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
+    
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
 
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
@@ -121,6 +123,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         // Specific for Test Instance server
         if (oauth != null || (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
         {
+            String tmpurl = null;
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE)
             {
@@ -134,7 +137,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                         is = new FileInputStream(f);
                         // load a properties file
                         prop.load(is);
-                        url = prop.getProperty("url");
+                        tmpurl = prop.getProperty("url");
                     }
                     catch (IOException ex)
                     {
@@ -146,11 +149,12 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                 }
             }
 
-            if (url != null && url.startsWith(ALFRESCO_CLOUD_URL))
+            if (tmpurl != null && (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
             {
                 settings.put(CLOUD_BASIC_AUTH, true);
                 settings.put(USER, username);
                 settings.put(PASSWORD, password);
+                settings.put(BASE_URL, tmpurl);
             }
 
             return new CloudSessionLoader(context, oauth, settings);
