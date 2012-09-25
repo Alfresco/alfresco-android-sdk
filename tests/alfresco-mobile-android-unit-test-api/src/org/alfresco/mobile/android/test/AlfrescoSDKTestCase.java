@@ -448,8 +448,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Reads the content from a content stream into a byte array.
+     * @throws IOException 
      */
-    protected String readContent(ContentStream contentStream) throws Exception
+    protected String readContent(ContentStream contentStream) throws IOException
     {
         assertNotNull(contentStream);
         assertNotNull(contentStream.getInputStream());
@@ -483,7 +484,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         return doc;
     }
 
-    protected Document createDocumentFromAsset(Folder root, String assetName) throws AlfrescoException
+    protected Document createDocumentFromAsset(Folder root, String assetName)
     {
         DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
 

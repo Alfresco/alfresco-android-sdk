@@ -45,6 +45,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.Ace;
@@ -81,6 +82,8 @@ import org.apache.chemistry.opencmis.commons.spi.CmisBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.util.Log;
+
 /**
  * Base test case for CMIS tests.
  * 
@@ -116,7 +119,7 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     private String fTestRepositoryId;
     private String fTestFolderId;
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractCmisTestCase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractCmisTestCase.class);
 
     /**
      * Read configuration file.
@@ -139,6 +142,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
                 }
             } catch (Exception e) {
                 System.err.println("Could not load test properties: " + e.toString());
+            } finally {
+                IOUtils.closeStream(is);
             }
         }
     }
@@ -148,7 +153,7 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      */
     protected CmisBinding getBinding() {
         if (binding == null) {
-            log.info("Creating binding...");
+            LOG.info("Creating binding...");
             binding = createBinding();
         }
 
@@ -175,12 +180,12 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         fTestRepositoryId = System.getProperty(PROP_REPOSITORY);
         if (fTestRepositoryId != null) {
-            log.info("Test repository: " + fTestRepositoryId);
+            LOG.info("Test repository: " + fTestRepositoryId);
             return fTestRepositoryId;
         }
 
         fTestRepositoryId = getFirstRepositoryId();
-        log.info("Test repository: " + fTestRepositoryId);
+        LOG.info("Test repository: " + fTestRepositoryId);
 
         return fTestRepositoryId;
     }
@@ -195,12 +200,12 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         fTestFolderId = System.getProperty(PROP_TESTFOLDER);
         if (fTestFolderId != null) {
-            log.info("Test root folder: " + fTestFolderId);
+            LOG.info("Test root folder: " + fTestFolderId);
             return fTestFolderId;
         }
 
         fTestFolderId = getRootFolderId();
-        log.info("Test root folder: " + fTestFolderId);
+        LOG.info("Test root folder: " + fTestFolderId);
 
         return fTestFolderId;
     }
@@ -215,7 +220,7 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
             return true;
         }
 
-        log.info("Skipping test '" + name + "'!");
+        LOG.info("Skipping test '" + name + "'!");
 
         return false;
     }
@@ -449,7 +454,7 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Prints a warning.
      */
     protected void warning(String message) {
-        System.out.println("**** " + message);
+        Log.i(TAG, "**** " + message);
     }
 
     /**

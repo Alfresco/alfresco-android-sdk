@@ -157,6 +157,11 @@ public abstract class BaseListFragment extends BaseFragment
             return;
         }
     }
+    
+    public String getTitle()
+    {
+        return title;
+    }
 
     /**
      * Control whether the list is being displayed.
@@ -456,7 +461,11 @@ public abstract class BaseListFragment extends BaseFragment
         {
             return false;
         }
-        else return !(data.getList() != null && !data.getList().contains(arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
+        else
+        {
+            return !(data.getList() != null && !data.getList().contains(
+                    arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
+        }
     }
 
     public void refreshListView()

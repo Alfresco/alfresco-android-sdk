@@ -83,24 +83,24 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     // ///////////////////////
     protected void initSettings(String url, Map<String, Serializable> settings)
     {
-        String user = null, password = null;
+        String tmpuser = null, tmppassword = null, tmpurl = url;
 
         // Basic Authentication Case.
         // Retrieve credentials informations
         if (settings.containsKey(USER))
         {
-            user = (String) settings.get(USER);
+            tmpuser = (String) settings.get(USER);
         }
         if (settings.containsKey(PASSWORD))
         {
-            password = (String) settings.get(PASSWORD);
+            tmppassword = (String) settings.get(PASSWORD);
         }
         if (settings.containsKey(BASE_URL))
         {
-            url = (String) settings.get(BASE_URL);
+            tmpurl = (String) settings.get(BASE_URL);
         }
 
-        initSettings(url, user, password, settings);
+        initSettings(tmpurl, tmpuser, tmppassword, settings);
     }
 
     protected void initSettings(String url, String username, String password, Map<String, Serializable> settings)
@@ -126,7 +126,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
             this.password = password;
         }
 
-        baseUrl = url;
+        this.baseUrl = url;
         tmpSettings.put(BASE_URL, url);
 
         // default cache storage

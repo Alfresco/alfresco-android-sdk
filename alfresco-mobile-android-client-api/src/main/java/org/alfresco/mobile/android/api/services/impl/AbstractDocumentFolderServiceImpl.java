@@ -258,12 +258,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         catch (CmisObjectNotFoundException e)
         {
             //Case Cloud : Node Not found
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getMessage());
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (CmisInvalidArgumentException e)
         {
             //Case OnPremise : Node Not found (Object id is invalid:)
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getMessage());
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (Exception e)
         {

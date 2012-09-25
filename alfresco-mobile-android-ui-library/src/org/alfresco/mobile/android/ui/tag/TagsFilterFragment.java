@@ -47,7 +47,7 @@ public abstract class TagsFilterFragment extends BaseListFragment implements
 
     protected Boolean loadAtCreation = true;
 
-    private List<Tag> selectedTags = new ArrayList<Tag>(5);
+    private List<Tag> selectedTags = new ArrayList<Tag>();
 
     public TagsFilterFragment()
     {

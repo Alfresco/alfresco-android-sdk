@@ -44,7 +44,7 @@ public interface CustomRatingsService extends RatingService
      * @throws AlfrescoServiceException : If comment is not defined or If
      *             network problems occur during the process.
      */
-    void applyStarRating(Node node, float rating) throws AlfrescoServiceException;
+    void applyStarRating(Node node, float rating);
 
     /**
      * Get the star ratings value for the specified node (Document or Folder)
@@ -55,7 +55,7 @@ public interface CustomRatingsService extends RatingService
      * @throws AlfrescoServiceException : If comment is not defined or If
      *             network problems occur during the process.
      */
-    StarRating getStarRating(Node node) throws AlfrescoServiceException;
+    StarRating getStarRating(Node node);
 
     /**
      * Get the user star ratings value for the specified node (Document or
@@ -66,6 +66,6 @@ public interface CustomRatingsService extends RatingService
      * @throws AlfrescoServiceException : If comment is not defined or If
      *             network problems occur during the process.
      */
-    float getUserStarRatingValue(Node node) throws AlfrescoServiceException;
+    float getUserStarRatingValue(Node node);
 
 }

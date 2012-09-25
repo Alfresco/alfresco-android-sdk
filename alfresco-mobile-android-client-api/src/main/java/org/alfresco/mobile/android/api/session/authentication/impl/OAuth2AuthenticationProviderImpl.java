@@ -91,7 +91,7 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
     {
         UrlBuilder builder = new UrlBuilder(TOKEN_URL);
 
-        Map<String, String> params = new HashMap<String, String>(5);
+        Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_CLIENT_ID, token.getApiKey());
         params.put(PARAM_CLIENT_SECRET, token.getApiSecret());
         params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);

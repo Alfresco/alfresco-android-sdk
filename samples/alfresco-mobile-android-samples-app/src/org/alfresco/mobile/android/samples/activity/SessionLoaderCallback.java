@@ -138,7 +138,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                     }
                     catch (IOException ex)
                     {
-                        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
+                        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, ex);
                     } finally
                     {
                         IOUtils.closeStream(is);
@@ -172,7 +172,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         }
         else
         {
-            String message = (results.getException() != null) ? results.getException().getMessage() : "";
+            String message = (results != null && results.getException() != null) ? results.getException().getMessage() : "";
             MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
         }
     }

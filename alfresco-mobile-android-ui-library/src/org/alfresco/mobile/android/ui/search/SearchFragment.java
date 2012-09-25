@@ -89,7 +89,7 @@ public abstract class SearchFragment extends BaseListFragment implements
 
             f = (Folder) b.getSerializable(FOLDER);
 
-            language = (b.containsKey(LANGUAGE)) ? b.getString(LANGUAGE) : language;
+            language = (b.containsKey(LANGUAGE)) ? b.getString(LANGUAGE) : null;
             isExact = (b.containsKey(EXACTMATCH)) ? b.getBoolean(EXACTMATCH) : isExact;
             fullText = (b.containsKey(INCLUDE_CONTENT)) ? b.getBoolean(INCLUDE_CONTENT) : fullText;
             includeDescendants = (b.containsKey(INCLUDE_DESCENDANTS)) ? b.getBoolean(INCLUDE_DESCENDANTS)

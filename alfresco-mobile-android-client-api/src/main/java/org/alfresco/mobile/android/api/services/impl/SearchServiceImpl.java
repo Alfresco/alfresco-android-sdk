@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.SearchService;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -101,16 +100,16 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
     /** {@inheritDoc} */
     public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
-
     {
+        
+        if (isStringNull(statement)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "statement")); }
+
+        if (isObjectNull(language)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "language")); }
+        
         try
         {
-            if (isStringNull(statement)) { throw new IllegalArgumentException(String.format(
-                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "statement")); }
-
-            if (isObjectNull(language)) { throw new IllegalArgumentException(String.format(
-                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "language")); }
-
             DiscoveryService discoveryService = cmisSession.getBinding().getDiscoveryService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();

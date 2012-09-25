@@ -24,24 +24,14 @@ import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
 
 /**
  * 
- * @author Jean Marie PASCAL
+ * @author Jean Marie Pascal
+ *
  */
-public class CloudRepositoryCapabilitiesImpl implements RepositoryCapabilities
+public abstract class AbstractRepositoryCapabilities implements RepositoryCapabilities
 {
 
-    private Map<String, Boolean> capabilities = new HashMap<String, Boolean>(2);
-
-    /**
-     * Constructor that wrapp RepositoryInfo CMIS object .
-     * 
-     * @param repositoryInfo : cmis object.
-     * @param rootNode
-     */
-    public CloudRepositoryCapabilitiesImpl()
-    {
-        capabilities.put(CAPABILITY_LIKE, supportLikingNodes());
-        capabilities.put(CAPABILITY_COMMENTS_COUNT, supportCommentsCount());
-    }
+    /** Map of Alfresco Specific capabilities. */
+    protected Map<String, Boolean> capabilities = new HashMap<String, Boolean>(2);
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // DEVELOPER Flags
@@ -76,30 +66,4 @@ public class CloudRepositoryCapabilitiesImpl implements RepositoryCapabilities
     {
         return capabilities.get(capability);
     }
-
-    /**
-     * Like action and LikeService are only available since Alfresco V4. This
-     * flag indicate if this feature is available with the current repository.
-     * NB : It's a simple test based on repository Informations version and
-     * edition.
-     * 
-     * @return true if version 4 or superior of Alfresco. false in other case.
-     */
-    private boolean supportLikingNodes()
-    {
-        return true;
-    }
-
-    /**
-     * Comment count is only available since Alfresco V4. This flag indicate if
-     * this feature is available with the current repository. NB : It's a simple
-     * test based on repository informations version and edition.
-     * 
-     * @return true if version 4 or superior of Alfresco. false in other case.
-     */
-    private boolean supportCommentsCount()
-    {
-        return true;
-    }
-
 }

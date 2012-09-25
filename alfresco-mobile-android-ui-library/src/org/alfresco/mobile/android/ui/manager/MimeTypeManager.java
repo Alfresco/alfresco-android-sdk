@@ -37,7 +37,7 @@ public class MimeTypeManager
     {
         if (uri == null) { return null; }
 
-        int dot = uri.lastIndexOf(".");
+        int dot = uri.lastIndexOf(".".charAt(0));
         if (dot > 0)
         {
             return uri.substring(dot + 1).toLowerCase();

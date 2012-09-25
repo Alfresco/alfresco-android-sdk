@@ -15,30 +15,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.test.api.cloud.services;
+package org.alfresco.mobile.android.api.model.impl.cloud;
 
-import junit.framework.Assert;
-
-import org.alfresco.mobile.android.test.api.services.CommentServiceTest;
+import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities;
 
 /**
- * Test class for Comment Service.
+ * Cloud implementation of repositoryCapabilities
  * 
- * @author Jean Marie Pascal
+ * @author Jean Marie PASCAL
  */
-public class CloudCommentServiceTest extends CommentServiceTest
+public class CloudRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilities
 {
-
-    protected void initSession()
+    /**
+     * In cloud context, like and comment count are by default enable.
+     */
+    public CloudRepositoryCapabilitiesImpl()
     {
-        if (alfsession == null)
-        {
-            alfsession = createCloudSession();
-        }   
-        // Check Services
-        Assert.assertNotNull(alfsession.getServiceRegistry());
-        commentService = alfsession.getServiceRegistry().getCommentService();
-        docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
-        Assert.assertNotNull(commentService);
+        capabilities.put(CAPABILITY_LIKE, true);
+        capabilities.put(CAPABILITY_COMMENTS_COUNT, true);
     }
 }

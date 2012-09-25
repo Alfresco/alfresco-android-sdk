@@ -32,8 +32,6 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class CloudErrorContent implements AlfrescoErrorContent
 {
-    private String status;
-
     private int code;
 
     private String message;
@@ -64,11 +62,6 @@ public class CloudErrorContent implements AlfrescoErrorContent
         errorContent.callstack = JSONConverter.getString(json, CloudConstant.STACKTRACE_VALUE);
         errorContent.descriptionURL = JSONConverter.getString(json, CloudConstant.DESCRIPTIONURL_VALUE);
         return errorContent;
-    }
-
-    public String getStatus()
-    {
-        return status;
     }
 
     public int getCode()

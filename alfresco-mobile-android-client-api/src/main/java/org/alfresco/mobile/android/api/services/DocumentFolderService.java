@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;

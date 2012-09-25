@@ -81,7 +81,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
      * 
      * @Requirement 7S1, 7S2, 7S4, 7S6, 7S7
      */
-    public void testCRUDCommentService() throws AlfrescoServiceException
+    public void testCRUDCommentService()
     {
         // ////////////////////////////////////////////////////
         // Init Data

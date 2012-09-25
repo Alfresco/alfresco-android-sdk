@@ -286,7 +286,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         // Titled + Localized + Geographic
         // Localized depends on alfresco version (3.4 no, >4 ok)
         int totalAspects = 2;
-        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED)) totalAspects += 1;
+        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED)){ totalAspects += 1;}
         Assert.assertEquals(totalAspects, folder.getAspects().size());
         Assert.assertTrue(folder.hasAspect(ContentModel.ASPECT_TITLED));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getTitle());

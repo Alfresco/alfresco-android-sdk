@@ -117,11 +117,4 @@ public class CloudActivityStreamServiceTest extends ActivityStreamServiceTest
             Log.e(TAG,Log.getStackTraceString(e)); 
         }
     }
-    
-    @Override
-    protected void tearDown() throws Exception
-    {
-        // TODO Auto-generated method stub
-        super.tearDown();
-    }
 }

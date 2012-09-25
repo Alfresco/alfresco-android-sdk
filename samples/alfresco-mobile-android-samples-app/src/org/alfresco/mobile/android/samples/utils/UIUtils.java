@@ -19,9 +19,12 @@ package org.alfresco.mobile.android.samples.utils;
 
 import android.app.Activity;
 
-public class UIUtils
+public final class UIUtils
 {
 
+    private UIUtils(){
+    }
+    
     /**
      * Display the title at the specific location depending an Android version.
      * @param activity : android activity

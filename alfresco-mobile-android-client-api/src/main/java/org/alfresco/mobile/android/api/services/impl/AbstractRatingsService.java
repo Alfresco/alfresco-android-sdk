@@ -69,6 +69,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        
         try
         {
             // build URL
@@ -103,6 +104,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        
         try
         {
             delete(getUnlikeUrl(node), ErrorCodeRegistry.RATING_GENERIC);
@@ -118,6 +120,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        
         try
         {
             return computeRatingsCount(getRatingsUrl(node));
@@ -134,6 +137,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        
         try
         {
             return computeIsRated(getRatingsUrl(node));

@@ -22,10 +22,12 @@ import org.alfresco.mobile.android.samples.application.AlfrescoApplication;
 
 import android.content.Context;
 
-public class SessionUtils
+public final class SessionUtils
 {
-
-
+    
+    private SessionUtils(){
+    }
+    
     public static AlfrescoSession getsession(Context c)
     {
        return ((AlfrescoApplication) c.getApplicationContext()).getRepositorySession();

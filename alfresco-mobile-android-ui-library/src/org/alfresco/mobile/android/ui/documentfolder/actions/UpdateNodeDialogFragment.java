@@ -91,7 +91,9 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     @Override
     public void onStart()
     {
-        getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+        if (node != null){
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+        }
         super.onStart();
     }
 

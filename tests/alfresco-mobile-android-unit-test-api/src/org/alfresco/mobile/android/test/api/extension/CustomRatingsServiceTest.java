@@ -42,16 +42,6 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 
     private static final String STAR_FOLDER = "5StarServiceTestFolder";
 
-    private CustomRatingsService customRatingsService;
-
-    private CustomRatingsService customRatingsService2;
-
-    private RepositorySession session2;
-
-    private RepositorySession session3;
-
-    private CustomRatingsService customRatingsService3;
-
     private RepositorySession createCustomServiceSession()
     {
         try
@@ -132,6 +122,11 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 
     public void testRatingService()
     {
+        CustomRatingsService customRatingsService;
+        CustomRatingsService customRatingsService2;
+        RepositorySession session2;
+        RepositorySession session3;
+        CustomRatingsService customRatingsService3;
 
         // ////////////////////////////////////////////////////
         // Init Data

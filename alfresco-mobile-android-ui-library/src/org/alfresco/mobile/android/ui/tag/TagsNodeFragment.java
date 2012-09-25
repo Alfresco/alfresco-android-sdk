@@ -37,8 +37,6 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
 {
     public static final String TAG = "TagsFragment";
 
-    protected Boolean loadAtCreation = true;
-
     protected Node node;
 
     public static final String ARGUMENT_NODE = "commentedNode";

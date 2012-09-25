@@ -119,7 +119,12 @@ public abstract class NavigationFragment extends BaseListFragment implements
             lc = copyListing(lcorigin);
             loadState = bundle.getInt(LOAD_STATE);
         }
-        f = (f != null) ? f : (Folder) alfSession.getRootFolder();
+        
+        if (f == null){
+            f = (Folder) alfSession.getRootFolder();
+        }
+        
+        //f = (f != null) ? f : (Folder) alfSession.getRootFolder();
         parentFolder = f;
 
         calculateSkipCount(lc);

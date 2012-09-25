@@ -32,6 +32,11 @@ import org.apache.http.HttpStatus;
 
 import android.net.Uri;
 
+/**
+ * Utility class to retrieve OAUTH information.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class OAuth2Manager implements OAuthConstant
 {
 
@@ -84,7 +89,7 @@ public class OAuth2Manager implements OAuthConstant
         code = uri.getQueryParameter("code");
         return code;
     }
-    
+
     public String getCode()
     {
         return code;
@@ -96,7 +101,7 @@ public class OAuth2Manager implements OAuthConstant
         {
             UrlBuilder builder = new UrlBuilder(TOKEN_URL);
 
-            Map<String, String> params = new HashMap<String, String>(5);
+            Map<String, String> params = new HashMap<String, String>();
             params.put(RESPONSE_TYPE_CODE, code);
             params.put(PARAM_CLIENT_ID, oauthData.getApiKey());
             params.put(PARAM_CLIENT_SECRET, oauthData.getApiSecret());

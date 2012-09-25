@@ -24,6 +24,9 @@ import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
 public class OAuthHelper
 {
+    
+    private OAuthHelper(){
+    }
 
     public static void tokenHasExpired(AlfrescoSession session)
     {

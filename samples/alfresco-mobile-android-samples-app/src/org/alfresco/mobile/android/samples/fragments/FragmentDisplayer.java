@@ -27,9 +27,11 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 
 @TargetApi(13)
-public class FragmentDisplayer
+public final class FragmentDisplayer
 {
-
+    private FragmentDisplayer(){
+    }
+    
     public static void loadFragment(Activity a, Integer viewId, String tag)
     {
         if (a.getFragmentManager().findFragmentByTag(tag) == null)
@@ -40,7 +42,9 @@ public class FragmentDisplayer
     {
 
         if (f == null)
+        {
             loadFragment(a, viewId, tag);
+        }
         else
         {
             if (a.getFragmentManager().findFragmentByTag(tag) == null)
@@ -55,7 +59,6 @@ public class FragmentDisplayer
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                             R.anim.slide_out_right);
-                    ;
                 }
                 t2.add(viewId, f, tag);
                 t2.commit();

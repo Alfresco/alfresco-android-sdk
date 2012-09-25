@@ -41,9 +41,6 @@ import android.view.View;
  */
 public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
 {
-
-    protected AlfrescoSession session;
-
     private List<Node> selectedItems;
 
     private Boolean activateThumbnail = Boolean.FALSE;
@@ -54,7 +51,6 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
             List<Node> selectedItems)
     {
         super(context, textViewResourceId, listItems);
-        this.session = session;
         this.selectedItems = selectedItems;
         this.renditionManager = new RenditionManager(context, session);
     }

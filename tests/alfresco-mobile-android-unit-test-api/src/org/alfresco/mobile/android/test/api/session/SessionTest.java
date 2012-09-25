@@ -31,12 +31,10 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 public class SessionTest extends AlfrescoSDKTestCase
 {
 
-
     private static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
 
     private static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
-    
-    
+
     @Override
     protected void initSession()
     {
@@ -75,10 +73,8 @@ public class SessionTest extends AlfrescoSDKTestCase
         catch (Exception e)
         {
             Assert.fail(e.getMessage());
-            e.printStackTrace();
         }
     }
-
 
     /**
      * Error case where base url is not correct
@@ -154,7 +150,9 @@ public class SessionTest extends AlfrescoSDKTestCase
 
         Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getName());
         if (alfsession.getRepositoryInfo().getDescription() != null)
+        {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
+        }
 
         // Edition Informations : Should be other than unknown...
         Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN, alfsession.getRepositoryInfo().getEdition());

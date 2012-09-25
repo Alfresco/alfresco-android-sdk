@@ -25,19 +25,18 @@ import java.util.regex.Pattern;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeRefUtils
+public final class NodeRefUtils
 {
-
     public static final int IDENTIFIER_LENGTH = 36;
     
     public static final String URI_FILLER = "://";
 
-    private static final Pattern nodeRefPattern = Pattern.compile(".+://.+/.+");
+    private static final Pattern NODEREF_PATTERN = Pattern.compile(".+://.+/.+");
 
-    private static final Pattern identifierPattern = Pattern
+    private static final Pattern IDENTIFIER_PATTERN = Pattern
             .compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
 
-    private static final Pattern identifierVersionPattern = Pattern
+    private static final Pattern IDENTIFIER_VERSION_PATTERN = Pattern
             .compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12};.+");
 
     public static final String PROTOCOL_WORKSPACE = "workspace";
@@ -47,6 +46,10 @@ public class NodeRefUtils
     public static final String STORE_REF_WORKSPACE_SPACESSTORE = PROTOCOL_WORKSPACE + URI_FILLER
             + IDENTIFIER_SPACESSTORE;
 
+    private NodeRefUtils(){
+        
+    }
+    
     /**
      * Determine if passed string conforms to the pattern of a node reference
      * 
@@ -55,7 +58,7 @@ public class NodeRefUtils
      */
     public static boolean isNodeRef(String nodeRef)
     {
-        Matcher matcher = nodeRefPattern.matcher(nodeRef);
+        Matcher matcher = NODEREF_PATTERN.matcher(nodeRef);
         return matcher.matches();
     }
 
@@ -125,13 +128,13 @@ public class NodeRefUtils
 
     public static boolean isIdentifier(String id)
     {
-        Matcher matcher = identifierPattern.matcher(id);
+        Matcher matcher = IDENTIFIER_PATTERN.matcher(id);
         return matcher.matches();
     }
 
     public static boolean isVersionIdentifier(String id)
     {
-        Matcher matcher = identifierVersionPattern.matcher(id);
+        Matcher matcher = IDENTIFIER_VERSION_PATTERN.matcher(id);
         return matcher.matches();
     }
 

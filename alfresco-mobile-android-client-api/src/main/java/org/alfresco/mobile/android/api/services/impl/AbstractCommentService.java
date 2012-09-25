@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +123,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             // send and parse
             HttpUtils.Response resp = post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws UnsupportedEncodingException, IOException
                 {
                     formData.write(out);
                 }
@@ -170,7 +172,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             // send
             HttpUtils.Response resp = put(url, formData.getContentType(), null, new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws UnsupportedEncodingException, IOException
                 {
                     formData.write(out);
                 }

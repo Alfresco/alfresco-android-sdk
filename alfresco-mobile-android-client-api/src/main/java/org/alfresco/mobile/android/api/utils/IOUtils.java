@@ -39,9 +39,10 @@ import android.util.Log;
  */
 public final class IOUtils
 {
-    
-    private IOUtils(){
-        
+
+    private IOUtils()
+    {
+
     }
 
     public static final int MAX_BUFFER_SIZE = 1024;
@@ -95,18 +96,20 @@ public final class IOUtils
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static boolean copyFile(InputStream src, File dest) throws FileNotFoundException, IOException
+    public static boolean copyFile(InputStream src, File dest) throws IOException
     {
         ensureOrCreatePathAndFile(dest);
         return copyStream(src, new FileOutputStream(dest));
     }
 
-    public static boolean copyStream(InputStream src, OutputStream os) throws IOException
+    public static boolean copyStream(InputStream src, OutputStream osstream) throws IOException
     {
         boolean copied = true;
+        OutputStream os = null;
         try
         {
-            os = new BufferedOutputStream(os);
+           
+            os = new BufferedOutputStream(osstream);
             BufferedInputStream bis = new BufferedInputStream(src);
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
@@ -136,7 +139,7 @@ public final class IOUtils
 
         try
         {
-            if (contentFile != null) return new BufferedInputStream(new FileInputStream(contentFile.getFile()));
+            if (contentFile != null) { return new BufferedInputStream(new FileInputStream(contentFile.getFile())); }
         }
         catch (FileNotFoundException e)
         {

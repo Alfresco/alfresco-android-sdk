@@ -31,19 +31,27 @@ import org.alfresco.mobile.android.samples.ui.tags.TagsListNodeFragment;
 import android.app.Fragment;
 import android.util.Log;
 
-public class FragmentFactory
+public final class FragmentFactory
 {
 
     private static final String TAG = "FragmentFactory";
-    
+
+    private FragmentFactory()
+    {
+    }
+
     public static Fragment createInstance(String tag)
     {
         try
         {
-            if (FragmentRegistry.containsKey(tag))
-                return (Fragment) FragmentRegistry.get(tag).newInstance();
+            if (FRAGMENT_REGISTRY.containsKey(tag))
+            {
+                return (Fragment) FRAGMENT_REGISTRY.get(tag).newInstance();
+            }
             else
+            {
                 return null;
+            }
         }
         catch (Exception e)
         {
@@ -53,7 +61,7 @@ public class FragmentFactory
     }
 
     @SuppressWarnings({ "rawtypes", "serial" })
-    public static Map<String, Class> FragmentRegistry = new HashMap<String, Class>()
+    public static final Map<String, Class> FRAGMENT_REGISTRY = new HashMap<String, Class>()
     {
         {
             put(ListUISamplesFragments.FRAG_TAG, ListUISamplesFragments.class);
