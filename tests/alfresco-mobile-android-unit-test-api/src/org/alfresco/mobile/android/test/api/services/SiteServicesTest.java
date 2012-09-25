@@ -362,21 +362,12 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        AlfrescoSession session = null;
-        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         Site s = siteService.getSite(PRIVATE_SITE);
         Assert.assertNull(session.getServiceRegistry().getSiteService().getDocumentLibrary(s));
 
         s = siteService.getSite(MODERATED_SITE);
-        try
-        {
-            session.getServiceRegistry().getSiteService().getDocumentLibrary(s);
-            Assert.fail();
-        }
-        catch (AlfrescoServiceException e)
-        {
-            Assert.assertTrue(true);
-        }
+        Assert.assertNull(session.getServiceRegistry().getSiteService().getDocumentLibrary(s));
     }
 
     protected int getTotalItems(int value)

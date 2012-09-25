@@ -107,15 +107,14 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         {
             return computeActivities(getUserActivitiesUrl(personIdentifier, listingContext), listingContext);
         }
-        catch (CmisConnectionException e)
-        {
-            // OnPremise if returns 401 equals = the person or site doesn't
-            // exist
-            List<ActivityEntry> result = new ArrayList<ActivityEntry>();
-            return new PagingResultImpl<ActivityEntry>(result, false, -1);
-        }
         catch (AlfrescoServiceException e)
         {
+            if (e.getCause() instanceof CmisConnectionException){
+                // OnPremise if returns 401 equals = the person or site doesn't exist
+                List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+                return new PagingResultImpl<ActivityEntry>(result, false, -1);
+            }
+            
             // On Cloud username not found
             if (isCloudSession() && e.getAlfrescoErrorContent() != null
                     && e.getAlfrescoErrorContent().getMessage() != null)
@@ -161,11 +160,15 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         {
             return computeActivities(getSiteActivitiesUrl(siteIdentifier, listingContext), listingContext);
         }
-        catch (CmisConnectionException e)
+        catch (AlfrescoServiceException e)
         {
-            // OnPremise if returns 401 equals = the site doesnt exist
-            List<ActivityEntry> result = new ArrayList<ActivityEntry>();
-            return new PagingResultImpl<ActivityEntry>(result, false, -1);
+            if (e.getCause() instanceof CmisConnectionException){
+                // OnPremise if returns 401 equals = the site doesnt exist
+                List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+                return new PagingResultImpl<ActivityEntry>(result, false, -1);
+            } else {
+                throw e;
+            }
         }
         catch (Exception e)
         {

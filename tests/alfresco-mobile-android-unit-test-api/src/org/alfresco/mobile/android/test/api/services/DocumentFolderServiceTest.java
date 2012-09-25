@@ -558,7 +558,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Rendition
         ContentFile rendition = null;
         int i = 0;
-        while (i < 2)
+        while (i < 4)
         {
             try
             {
@@ -568,11 +568,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                     break;
                 }
                 i++;
-                wait(5000);
+                wait(10000);
             }
             catch (AlfrescoServiceException e)
             {
-                wait(5000);
+                wait(10000);
             }
         }
         if (validateRendition)

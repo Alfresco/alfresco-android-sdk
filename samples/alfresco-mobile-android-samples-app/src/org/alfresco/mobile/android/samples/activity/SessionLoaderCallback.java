@@ -62,8 +62,6 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
 
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
 
-    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
-
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
 
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";

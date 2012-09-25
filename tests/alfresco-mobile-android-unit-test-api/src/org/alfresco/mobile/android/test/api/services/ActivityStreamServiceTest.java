@@ -227,6 +227,10 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             feed3 = activityStreamService.getSiteActivityStream(getSiteName(alfsession));
             entry = feed.get(0);
             if (entry.getType().equals(type)) break;
+            entry = feed.get(1);
+            if (entry.getType().equals(type)) break;
+            entry = feed.get(2);
+            if (entry.getType().equals(type)) break;
             i++;
         }
 

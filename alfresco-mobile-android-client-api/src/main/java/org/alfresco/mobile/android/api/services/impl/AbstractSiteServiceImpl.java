@@ -169,8 +169,12 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
         catch (AlfrescoServiceException er)
         {
+            //Cloud : site not found
             if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
                     && er.getMessage().contains("The entity with id") && er.getMessage().contains("was not found")) { return null; }
+            //OnPremise : when containerId is not defined for Moderated site for example
+            if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
+                    && er.getMessage().contains("\"containerId\" is not defined")) { return null; }
             throw er;
         }
         catch (Exception e)
