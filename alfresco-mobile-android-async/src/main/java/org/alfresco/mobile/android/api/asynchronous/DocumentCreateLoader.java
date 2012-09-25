@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
+import java.util.Observable;
+
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -51,7 +54,7 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
 
     /** Binary Content of the future document. */
     private ContentFile contentFile;
-
+    
     /**
      * Create an empty (with no content) document object.
      * 
