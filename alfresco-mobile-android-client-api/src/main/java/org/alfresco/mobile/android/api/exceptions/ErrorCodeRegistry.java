@@ -59,8 +59,6 @@ public interface ErrorCodeRegistry
     /** No network found for the specific user. */
     int SESSION_NO_NETWORK_FOUND = 103;
 
-    int SESSION_SIGNUP_ERROR = 104;
-
     /** An error happens during the creation of custom authenticator. */
     int SESSION_CUSTOM_AUTHENTICATOR = 105;
 
