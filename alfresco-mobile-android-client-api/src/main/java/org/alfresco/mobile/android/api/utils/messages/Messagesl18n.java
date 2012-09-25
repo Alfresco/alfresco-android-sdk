@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
  * @author Jean Marie Pascal
  *
  */
-public class Messagesl18n
+public final class Messagesl18n
 {
     private Messagesl18n(){
     }

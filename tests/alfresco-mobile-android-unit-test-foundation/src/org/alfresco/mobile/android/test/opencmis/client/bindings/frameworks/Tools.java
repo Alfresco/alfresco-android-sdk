@@ -48,7 +48,7 @@ import android.util.Log;
 /**
  * @author <a href="mailto:fmueller@opentext.com">Florian M&uuml;ller</a>
  */
-public class Tools
+public final class Tools
 {
 
     private static final String TAG = "Tools";
@@ -89,7 +89,7 @@ public class Tools
         {
             for (int i = 0; i < level; i++)
             {
-                System.out.print("  ");
+                Log.i(TAG, "  ");
             }
 
             container.getTypeDefinition().getId();
@@ -116,7 +116,7 @@ public class Tools
         {
             for (int i = 0; i < level; i++)
             {
-                System.out.print("  ");
+                Log.i(TAG, "  ");
             }
 
             Properties properties = container.getObject().getObject().getProperties();

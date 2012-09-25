@@ -55,10 +55,10 @@ public class NodeImpl implements Node
     private Map<String, Property> properties;
 
     /** List of Aspects available for this Node. */
-    private ArrayList<String> aspects;
+    private List<String> aspects;
 
     /** List of allowable actions. */
-    private ArrayList<String> allowableActions;
+    private List<String> allowableActions;
 
     /** CMIS Object associated to a Node. */
     private transient CmisObject object;
@@ -269,7 +269,7 @@ public class NodeImpl implements Node
      * 
      * @return
      */
-    public ArrayList<String> getAspects()
+    public List<String> getAspects()
     {
         AlfrescoAspects alf = (AlfrescoAspects) object;
         Collection<ObjectType> c = alf.getAspects();

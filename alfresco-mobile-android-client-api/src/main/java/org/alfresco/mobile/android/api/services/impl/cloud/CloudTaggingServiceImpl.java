@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.cloud;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +143,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
             // send
             post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }

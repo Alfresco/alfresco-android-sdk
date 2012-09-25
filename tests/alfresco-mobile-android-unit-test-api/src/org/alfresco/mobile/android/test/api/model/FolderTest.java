@@ -277,7 +277,6 @@ public class FolderTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_LATITUDE, 51.522543);
         properties.put(ContentModel.PROP_LONGITUDE, -0.716689);
 
-        DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
         Folder folder = docfolderservice.createFolder(rootFolder, ROOT_TEST_FOLDER_NAME, properties);
 
         // Check Aspects

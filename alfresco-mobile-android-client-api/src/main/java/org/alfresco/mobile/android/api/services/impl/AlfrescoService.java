@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -294,10 +293,6 @@ public abstract class AlfrescoService
         {
             throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, cmisException);
         }
-        catch (IllegalArgumentException e)
-        {
-            throw e;
-        }
         catch (Exception e)
         {
             throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
@@ -324,6 +319,7 @@ public abstract class AlfrescoService
             catch (Exception ee)
             {
                 // No format...
+                er = null;
             }
         }
         else if (session instanceof CloudSession)
@@ -351,6 +347,7 @@ public abstract class AlfrescoService
                     catch (Exception ee)
                     {
                         // No format...
+                        er = null;
                     }
                 }
             }

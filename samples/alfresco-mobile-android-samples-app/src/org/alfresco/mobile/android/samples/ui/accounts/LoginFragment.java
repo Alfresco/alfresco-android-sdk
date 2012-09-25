@@ -37,7 +37,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountDetailsFragment extends BaseFragment
+public class LoginFragment extends BaseFragment
 {
 
     public static final String TAG = "AccountDetailsFragment";
@@ -48,7 +48,7 @@ public class AccountDetailsFragment extends BaseFragment
 
     private View vRoot;
 
-    public AccountDetailsFragment()
+    public LoginFragment()
     {
     }
 
@@ -110,7 +110,7 @@ public class AccountDetailsFragment extends BaseFragment
         formValue.setEnabled(isEditable);
     }
 
-    private void retrieveFormValues(View v)
+    private void retrieveFormValues(View view)
     {
         // Check values
         EditText formValue = (EditText) vRoot.findViewById(R.id.repository_hostname);

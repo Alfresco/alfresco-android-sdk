@@ -8,7 +8,6 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.cmis.client.AlfrescoDocument;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;

@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.json.JSONArray;
@@ -54,7 +53,7 @@ public class JsonDataWriter
         return CONTENT_TYPE_URLENCODED;
     }
 
-    public void write(OutputStream out) throws UnsupportedEncodingException, IOException 
+    public void write(OutputStream out) throws IOException 
     {
         if (json != null)
         {
@@ -66,7 +65,7 @@ public class JsonDataWriter
         }
     }
 
-    private void writeLine(OutputStream out, String s) throws UnsupportedEncodingException, IOException 
+    private void writeLine(OutputStream out, String s) throws IOException 
     {
         String tmpString = (s == null ? CRLF : s + CRLF);
         out.write(tmpString.getBytes("UTF-8"));

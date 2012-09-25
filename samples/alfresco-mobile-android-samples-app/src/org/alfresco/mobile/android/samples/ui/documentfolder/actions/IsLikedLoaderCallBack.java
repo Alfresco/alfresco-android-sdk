@@ -72,11 +72,11 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         {
             MessengerManager.showToast(context, R.string.error_retrieve_likes);
         }
-        else if (isLiked.getData())
+        else if (likeMenuItem != null && isLiked.getData())
         {
             likeMenuItem.setIcon(R.drawable.ic_like);
         }
-        else
+        else if (likeMenuItem != null)
         {
             likeMenuItem.setIcon(R.drawable.ic_unlike);
         }
@@ -102,7 +102,10 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         Bundle b = new Bundle();
         b.putBoolean(IS_CREATE, isCreate);
 
-        if (getLoaderManager().getLoader(id) == null) getLoaderManager().initLoader(id, b, this);
+        if (getLoaderManager().getLoader(id) == null)
+        {
+            getLoaderManager().initLoader(id, b, this);
+        }
         getLoaderManager().restartLoader(id, b, this);
         getLoaderManager().getLoader(id).forceLoad();
     }

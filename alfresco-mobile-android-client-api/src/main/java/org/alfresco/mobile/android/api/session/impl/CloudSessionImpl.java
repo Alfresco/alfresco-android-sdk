@@ -176,10 +176,6 @@ public class CloudSessionImpl extends CloudSession
                     .getAlfrescoAuthenticationProvider();
 
         }
-        catch (AlfrescoConnectionException e)
-        {
-            throw e;
-        }
         catch (Exception e)
         {
             throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);

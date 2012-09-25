@@ -70,10 +70,11 @@ public final class IOUtils
 
         int index = 1;
 
+        File tmpFile = file;
         while (index < 500)
         {
-            file = new File(file.getParentFile(), file.getName() + "-" + index);
-            if (!file.exists()) { return file; }
+            tmpFile = new File(tmpFile.getParentFile(), tmpFile.getName() + "-" + index);
+            if (!tmpFile.exists()) { return tmpFile; }
             index++;
         }
         return null;

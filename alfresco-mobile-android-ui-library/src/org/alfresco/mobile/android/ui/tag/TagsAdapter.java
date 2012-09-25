@@ -147,7 +147,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
                 for (int i = 0; i < count; i++)
                 {
                     final Tag value = values.get(i);
-                    final String valueText = value.getValue().toString().toLowerCase();
+                    final String valueText = value.getValue().toLowerCase();
 
                     // First match against the whole, non-splitted value
                     if (valueText.startsWith(prefixString))

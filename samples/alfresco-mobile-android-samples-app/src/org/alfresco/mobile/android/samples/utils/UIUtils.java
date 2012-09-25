@@ -22,21 +22,24 @@ import android.app.Activity;
 public final class UIUtils
 {
 
-    private UIUtils(){
+    private UIUtils()
+    {
     }
-    
+
     /**
      * Display the title at the specific location depending an Android version.
+     * 
      * @param activity : android activity
      * @param titleId : unique resouce identifier for title
      */
     public static void setFragmentTitle(Activity activity, int titleId)
     {
-       setFragmentTitle(activity, activity.getResources().getText(titleId).toString());
+        setFragmentTitle(activity, activity.getResources().getText(titleId).toString());
     }
-    
+
     /**
      * Display the title at the specific location depending an Android version.
+     * 
      * @param activity : android activity
      * @param text : Title text
      */
@@ -48,7 +51,9 @@ public final class UIUtils
             activity.invalidateOptionsMenu();
         }
         else
+        {
             activity.setTitle(text);
+        }
     }
-    
+
 }

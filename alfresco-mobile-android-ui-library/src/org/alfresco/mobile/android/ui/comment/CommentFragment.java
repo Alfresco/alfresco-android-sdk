@@ -47,8 +47,6 @@ public abstract class CommentFragment extends BaseListFragment implements
 
     protected Node node;
 
-    protected String comment;
-
     public CommentFragment()
     {
         loaderId = CommentsLoader.ID;

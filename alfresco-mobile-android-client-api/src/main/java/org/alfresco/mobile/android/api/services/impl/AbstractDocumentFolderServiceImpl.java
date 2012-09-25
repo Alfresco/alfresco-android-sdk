@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -531,7 +532,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             // send and parse
             Response response = post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }
@@ -574,7 +575,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             // send and parse
             post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }

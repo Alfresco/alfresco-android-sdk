@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +147,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             // send
             post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }

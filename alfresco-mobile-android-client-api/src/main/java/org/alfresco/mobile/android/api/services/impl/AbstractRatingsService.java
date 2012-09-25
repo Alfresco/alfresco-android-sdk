@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -78,7 +79,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
             // send and parse
             post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }

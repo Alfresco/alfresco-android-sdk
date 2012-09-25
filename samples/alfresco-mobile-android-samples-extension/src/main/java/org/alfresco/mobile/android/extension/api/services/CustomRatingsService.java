@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.extension.api.services;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.extension.api.model.StarRating;
