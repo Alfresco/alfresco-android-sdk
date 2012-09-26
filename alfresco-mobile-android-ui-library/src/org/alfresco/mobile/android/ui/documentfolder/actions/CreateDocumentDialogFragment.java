@@ -62,7 +62,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class CreateDocumentDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Document>>, Observer
+public class CreateDocumentDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "CreateContentDialogFragment";
 
@@ -176,7 +176,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
                     progressBundle.putInt ("dataSize", (int) f.getFile().length());
                     progressBundle.putInt ("dataIncrement", (int) (f.getFile().length() / 10));
                     
-                    ProgressNotification.createProgressNotification (getActivity(), progressBundle);
+                    ProgressNotification.createProgressNotification (getActivity(), progressBundle, getActivity().getClass() );
                 }
                 
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
@@ -300,12 +300,5 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
     public void setOnCreateListener(OnNodeCreateListener onCreateListener)
     {
         this.onCreateListener = onCreateListener;
-    }
-
-    @Override
-    public void update (Observable observable, Object data)
-    {
-        // TODO Auto-generated method stub
-        
     }
 }

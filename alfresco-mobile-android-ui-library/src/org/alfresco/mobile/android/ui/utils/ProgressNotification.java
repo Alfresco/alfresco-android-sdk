@@ -11,6 +11,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
@@ -70,7 +71,7 @@ public class ProgressNotification extends Activity
         
         try
         {
-            createProgressNotification (this, getIntent().getExtras());
+            createProgressNotification (this, getIntent().getExtras(), ProgressNotification.class);
         }
         catch (Exception e)
         {
@@ -84,7 +85,7 @@ public class ProgressNotification extends Activity
     }
     
     
-    public static void createProgressNotification (Context c, Bundle params)
+    public static void createProgressNotification (Context c, Bundle params, Class clickActivity)
     {
         ctxt = c;
     
@@ -95,8 +96,8 @@ public class ProgressNotification extends Activity
         progressItem newItem = new progressItem (notificationID, notification, params);
         inProgressObjects.put (params.getString("name"), newItem);
               
-        //Intent intent = new Intent (this, ProgressNotification.class);
-        final PendingIntent pendingIntent = null; //PendingIntent.getActivity (getApplicationContext(), 0, intent, 0);
+        Intent intent = new Intent (c, clickActivity);
+        final PendingIntent pendingIntent = PendingIntent.getActivity (c, 0, intent, 0);
         
         notification.flags = notification.flags | Notification.FLAG_ONGOING_EVENT;
         notification.contentView = new RemoteViews (c.getPackageName(), R.layout.download_progress);

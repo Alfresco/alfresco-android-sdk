@@ -67,6 +67,8 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public ContentFileProgressImpl(File f, String filename, String mimetype)
     {
         super(f, filename, mimetype);
+        
+        segment = (int) (f.length() / 10);
     }
     
     

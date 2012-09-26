@@ -152,11 +152,14 @@ public final class IOUtils
 
     public static boolean copyStream(InputStream src, OutputStream os) throws IOException
     {
+        BufferedOutputStream bos = null;
+        MonitoredBufferedInputStream bis = null;
         boolean copied = true;
+        
         try
         {
-            os = new BufferedOutputStream(os);
-            MonitoredBufferedInputStream bis = new MonitoredBufferedInputStream(src);
+            bos = new BufferedOutputStream(os);
+            bis = new MonitoredBufferedInputStream(src);
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
@@ -174,8 +177,13 @@ public final class IOUtils
         }
         finally
         {
-            closeStream(os);
             closeStream(src);
+            
+            if (bos != null)
+                closeStream(bos);
+            
+            if (bis != null)
+                closeStream(bis);
         }
         return copied;
     }
