@@ -15,28 +15,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.impl;
+package org.alfresco.mobile.android.ui.utils;
 
 import java.io.File;
 
-import org.alfresco.mobile.android.api.model.ContentFile;
-import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
+import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
+
+
 
 /**
  * ContentFile represents an abstract way to share file between the client
  * remote api and server.
  * 
- * @author Jean Marie Pascal
+ * @author Luke Jagger
  */
-public class ContentFileImpl extends ContentImpl implements ContentFile
+public class ContentFileProgressImpl extends ContentFileImpl
 {
-
     private static final long serialVersionUID = 1L;
-
-    protected File file;
-
-    public ContentFileImpl()
+   
+    private int amountCopied = 0;
+    private int segment = 0;
+    private int currentSegment = 0;
+    private String newFilename = null;
+    
+    
+    public ContentFileProgressImpl()
     {
+        super();
     }
 
     /**
@@ -44,12 +49,11 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
      * 
      * @param f : file inside a device filesystem.
      */
-    public ContentFileImpl(File f)
+    public ContentFileProgressImpl(File f)
     {
-        this.length = f.length();
-        this.fileName = f.getName();
-        this.file = f;
-        this.mimeType = MimeTypes.getMIMEType(fileName);
+        super(f);
+        
+        segment = (int) (f.length() / 10);
     }
 
     /**
@@ -60,29 +64,43 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
      * @param filename : New name of the file
      * @param mimetype : mimetype associated to the file.
      */
-    public ContentFileImpl(File f, String filename, String mimetype)
+    public ContentFileProgressImpl(File f, String filename, String mimetype)
     {
-        this.length = f.length();
-        this.fileName = filename;
-        this.file = f;
-        this.mimeType = mimetype;
+        super(f, filename, mimetype);
+        
+        segment = (int) (f.length() / 10);
     }
-
-    /**
-     * @return Returns the File object representing the content.
-     */
-    public File getFile()
-    {
-        return file;
-    }
-
+    
+    
     @Override
     public void fileReadCallback(int nBytes)
     {
+        amountCopied += nBytes;
+        
+        if (amountCopied / segment > currentSegment)
+        {
+            ++currentSegment;
+            ProgressNotification.updateProgress (getFileName());
+        }
     }
 
     @Override
     public void fileWriteCallback(int nBytes)
     {
+        ProgressNotification.updateProgress (getFileName());
+    }
+    
+    public void setFilename (String name)
+    {
+        newFilename = name;
+    }
+    
+    @Override
+    public String getFileName()
+    {
+        if (newFilename != null)
+            return newFilename;
+        else
+            return super.getFileName();
     }
 }

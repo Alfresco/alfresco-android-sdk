@@ -27,6 +27,9 @@ import java.io.File;
  */
 public interface ContentFile extends Content
 {
+    void fileReadCallback (int nBytes);
+    
+    void fileWriteCallback (int nBytes);
 
     /**
      * @return Returns the File object representing the content.

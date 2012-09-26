@@ -25,9 +25,6 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
-import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 /**
  * DRAFT
@@ -38,16 +35,6 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
         OAuthAuthenticationProvider, OAuthConstant
 {
     private static final long serialVersionUID = 1L;
-
-    private static final String PARAM_CLIENT_ID = "client_id";
-
-    private static final String PARAM_CLIENT_SECRET = "client_secret";
-
-    private static final String PARAM_GRANT_TYPE = "grant_type";
-
-    private static final String GRANT_TYPE_AUTH_CODE = "refresh_token";
-
-    private static final String FORMAT = "application/x-www-form-urlencoded";
 
     private static final String TOKEN_TYPE_BEARER = "Bearer";
 
@@ -89,17 +76,13 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
 
     public OAuthData refreshToken()
     {
-        UrlBuilder builder = new UrlBuilder(TOKEN_URL);
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(PARAM_CLIENT_ID, token.getApiKey());
-        params.put(PARAM_CLIENT_SECRET, token.getApiSecret());
-        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
-
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
-        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-        ((OAuth2DataImpl) token).parseTokenResponse(json);
-        return token;
+       return OAuthHelper.refreshToken(token);
     }
 
+    @Override
+    public void refreshOAuthData(OAuthData data)
+    {
+        this.token = data;
+        retrieveAccessToken();
+    }
 }

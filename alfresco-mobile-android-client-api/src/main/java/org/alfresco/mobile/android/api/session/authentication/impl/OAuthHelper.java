@@ -17,15 +17,46 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.SessionListener;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
+import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
+import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
 
-public class OAuthHelper
+import android.net.Uri;
+
+public final class OAuthHelper implements OAuthConstant
 {
-    
-    private OAuthHelper(){
+    private static final String PARAM_CLIENT_ID = "client_id";
+
+    private static final String PARAM_CLIENT_SECRET = "client_secret";
+
+    private static final String PARAM_REDIRECT_ID = "redirect_uri";
+
+    private static final String PARAM_RESPONSE_TYPE = "response_type";
+
+    private static final String PARAM_SCOPE = "scope";
+
+    private static final String PARAM_GRANT_TYPE = "grant_type";
+
+    private static final String RESPONSE_TYPE_CODE = "code";
+
+    private static final String GRANT_TYPE_AUTH_CODE = "authorization_code";
+
+    private static final String FORMAT = "application/x-www-form-urlencoded";
+
+    private OAuthHelper()
+    {
     }
 
     public static void tokenHasExpired(AlfrescoSession session)
@@ -36,6 +67,87 @@ public class OAuthHelper
             SessionListener listener = ((CloudSessionImpl) session).getSessionListener();
             listener.onSessionExpired();
         }
+    }
+
+    /**
+     * Returns default url.
+     * 
+     * @param apiKey
+     * @param callback
+     * @param scope
+     * @return
+     */
+    public static String getAuthorizationUrl(String apiKey, String callback, String scope)
+    {
+        UrlBuilder builder = new UrlBuilder(AUTHORIZE_URL);
+        builder.addParameter(PARAM_CLIENT_ID, apiKey);
+        builder.addParameter(PARAM_REDIRECT_ID, callback);
+        builder.addParameter(PARAM_SCOPE, scope);
+        builder.addParameter(PARAM_RESPONSE_TYPE, RESPONSE_TYPE_CODE);
+        return builder.toString();
+    }
+
+    /**
+     * Retrieve the code from the url callback
+     * 
+     * @param url
+     * @return
+     */
+    public static String retrieveCode(String url)
+    {
+        Uri uri = Uri.parse(url);
+        return uri.getQueryParameter("code");
+    }
+
+    /**
+     * Retrieve the access token.
+     * @param apiKey
+     * @param apiSecret
+     * @param callback
+     * @param code
+     * @return
+     */
+    public static OAuthData getAccessToken(String apiKey, String apiSecret, String callback, String code)
+    {
+        UrlBuilder builder = new UrlBuilder(TOKEN_URL);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(RESPONSE_TYPE_CODE, code);
+        params.put(PARAM_CLIENT_ID, apiKey);
+        params.put(PARAM_CLIENT_SECRET, apiSecret);
+        params.put(PARAM_REDIRECT_ID, callback);
+        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
+
+        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+
+        if (resp.getResponseCode() != HttpStatus.SC_OK) { throw new AlfrescoConnectionException(
+                ErrorCodeRegistry.SESSION_GENERIC, resp.getErrorContent()); }
+
+        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+        OAuth2DataImpl data = new OAuth2DataImpl(apiKey, apiSecret);
+        data.parseTokenResponse(json);
+        return data;
+    }
+    
+    /**
+     * Request a new accestoken & refreshtoken
+     * @param data
+     * @return
+     */
+    public static OAuthData refreshToken(OAuthData data)
+    {
+        UrlBuilder builder = new UrlBuilder(TOKEN_URL);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PARAM_CLIENT_ID, data.getApiKey());
+        params.put(PARAM_CLIENT_SECRET, data.getApiSecret());
+        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
+
+        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+        OAuth2DataImpl token = new OAuth2DataImpl(data.getApiKey(), data.getApiSecret());
+        token.parseTokenResponse(json);
+        return token;
     }
 
 }

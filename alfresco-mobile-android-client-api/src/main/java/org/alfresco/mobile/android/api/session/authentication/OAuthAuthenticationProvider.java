@@ -29,4 +29,6 @@ public interface OAuthAuthenticationProvider extends AuthenticationProvider
     String getRefreshToken();
 
     OAuthData refreshToken();
+    
+    void refreshOAuthData(OAuthData data);
 }

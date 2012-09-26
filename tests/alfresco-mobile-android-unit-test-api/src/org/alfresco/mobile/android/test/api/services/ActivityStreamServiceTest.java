@@ -240,6 +240,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         // ///////////////////////////////////////////////////////////////////////////
         // Paging User Activity Entry
         // ///////////////////////////////////////////////////////////////////////////
+        wait(10000);
         // Check 1 activity
         lc.setMaxItems(1);
         lc.setSkipCount(0);

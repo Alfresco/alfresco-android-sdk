@@ -155,7 +155,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         // Get Rendition
         // Rendition
         int i = 0;
-        while (i < 2)
+        while (i < 5)
         {
             try
             {

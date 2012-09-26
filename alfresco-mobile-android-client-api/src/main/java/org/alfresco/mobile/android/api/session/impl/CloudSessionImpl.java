@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.SessionListener;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
+import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2AuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
@@ -64,7 +65,7 @@ public class CloudSessionImpl extends CloudSession
 
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
-    
+
     private SessionListener sessionListener;
 
     public CloudSessionImpl()
@@ -86,7 +87,7 @@ public class CloudSessionImpl extends CloudSession
         {
             parameters.put(USER, USER_ME);
         }
-        
+
         initSettings(CLOUD_URL, parameters);
 
         // Normal case : With OAuth data.
@@ -102,8 +103,11 @@ public class CloudSessionImpl extends CloudSession
             authenticate(null);
         }
         // Exception case : No authentication mechanism available
-        else { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "OAuthData")); }
+        else
+        {
+            throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "OAuthData"));
+        }
     }
 
     /** Start the authentication proces. */
@@ -218,12 +222,6 @@ public class CloudSessionImpl extends CloudSession
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
                 authenticator.getHTTPHeaders());
-        
-        // check response code
-        if (resp.getResponseCode() != HttpStatus.SC_OK)
-        {
-            //convertStatusCode(resp, ErrorCodeRegistry.SESSION_GENERIC);
-        }
 
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
@@ -263,5 +261,14 @@ public class CloudSessionImpl extends CloudSession
     public SessionListener getSessionListener()
     {
         return sessionListener;
+    }
+
+    @Override
+    public void refreshToken(Object data)
+    {
+        if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider && data instanceof OAuthData)
+        {
+            ((OAuthAuthenticationProvider) authenticator).refreshOAuthData((OAuthData) data);
+        }
     }
 }

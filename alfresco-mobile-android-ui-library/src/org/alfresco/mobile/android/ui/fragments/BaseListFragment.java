@@ -157,7 +157,7 @@ public abstract class BaseListFragment extends BaseFragment
             return;
         }
     }
-    
+
     public String getTitle()
     {
         return title;
@@ -394,18 +394,26 @@ public abstract class BaseListFragment extends BaseFragment
         getLoaderManager().getLoader(loaderId).forceLoad();
     }
 
-    // TODO Extension point for sending errorMessage ?
     protected boolean checkException(LoaderResult<?> result)
     {
         if (result.getException() != null)
         {
-            MessengerManager.showToast(getActivity(), result.getException().getMessage());
             return true;
         }
         else
         {
             return false;
         }
+    }
+
+    /**
+     * Override this method to handle an exception coming back from the server.
+     * 
+     * @param e : exception raised by the client API.
+     */
+    public void onLoaderException(Exception e)
+    {
+        MessengerManager.showToast(getActivity(), e.getMessage());
     }
 
     @SuppressWarnings("unchecked")

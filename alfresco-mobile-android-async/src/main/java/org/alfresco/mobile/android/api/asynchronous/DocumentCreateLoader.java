@@ -51,7 +51,7 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
 
     /** Binary Content of the future document. */
     private ContentFile contentFile;
-
+    
     /**
      * Create an empty (with no content) document object.
      * 
