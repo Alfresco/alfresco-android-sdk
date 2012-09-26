@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.documentfolder.actions;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
@@ -35,13 +38,16 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListen
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment;
 import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment.onTagPickerListener;
+import org.alfresco.mobile.android.ui.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.alfresco.mobile.android.ui.utils.ProgressNotification;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
@@ -75,7 +81,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
     private List<Tag> selectedTags;
 
     private OnNodeCreateListener onCreateListener;
-
+    
     public CreateDocumentDialogFragment()
     {
     }
@@ -87,7 +93,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
 
     public static Bundle createBundle(Folder folder, ContentFile f)
     {
-        Bundle args = new Bundle();
+       Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_FOLDER, folder);
         args.putSerializable(ARGUMENT_CONTENT_FILE, f);
         return args;
@@ -151,6 +157,28 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
                     }
                     b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
                 }
+                
+                if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
+                {
+                    //Initiate progress notification
+                
+                    Bundle progressBundle = new Bundle();
+                    ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+                    
+                    if (f.getClass() == ContentFileProgressImpl.class)
+                    {
+                        ((ContentFileProgressImpl)f).setFilename (tv.getText().toString());
+                        progressBundle.putString ("name", tv.getText().toString());
+                    }
+                    else
+                        progressBundle.putString ("name", f.getFile().getName());
+                    
+                    progressBundle.putInt ("dataSize", (int) f.getFile().length());
+                    progressBundle.putInt ("dataIncrement", (int) (f.getFile().length() / 10));
+                    
+                    ProgressNotification.createProgressNotification (getActivity(), progressBundle, getActivity().getClass() );
+                }
+                
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
                 getLoaderManager().initLoader(DocumentCreateLoader.ID, b, CreateDocumentDialogFragment.this);
                 getLoaderManager().getLoader(DocumentCreateLoader.ID).forceLoad();
@@ -209,6 +237,7 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
         {
             onCreateListener.beforeContentCreation(args.getString(ARGUMENT_CONTENT_NAME));
         }
+        
         return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
                 args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
     }
@@ -272,5 +301,4 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
     {
         this.onCreateListener = onCreateListener;
     }
-
 }

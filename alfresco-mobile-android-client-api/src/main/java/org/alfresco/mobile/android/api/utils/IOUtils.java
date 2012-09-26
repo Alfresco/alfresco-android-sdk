@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Observable;
 
 import org.alfresco.mobile.android.api.model.ContentFile;
 
@@ -39,9 +40,57 @@ import android.util.Log;
  */
 public final class IOUtils
 {
-    
-    private IOUtils(){
+    // Monitored input stream for UI feedback purposes.
+    static class MonitoredBufferedInputStream extends BufferedInputStream
+    {  
+        ContentFile contentFile = null;
         
+        public MonitoredBufferedInputStream(InputStream in)
+        {
+            super(in);
+        }
+        
+        void setContentFile (ContentFile cf)
+        {
+            contentFile = cf;
+        }
+
+        @Override
+        public synchronized int read() throws IOException
+        {
+            if (contentFile != null)
+                contentFile.fileReadCallback(1);
+            
+            return super.read();
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException
+        {
+            int nBytes = super.read(b);
+            
+            if (contentFile != null)
+                contentFile.fileReadCallback (nBytes);
+            
+            return nBytes;
+        }
+
+        @Override
+        public synchronized int read(byte[] b, int off, int len) throws IOException
+        {
+            int nBytes = super.read(b, off, len);
+            
+            if (contentFile != null)
+                contentFile.fileReadCallback (nBytes);
+            
+            return nBytes;
+        }
+    }
+
+
+    private IOUtils()
+    {
+
     }
 
     public static final int MAX_BUFFER_SIZE = 1024;
@@ -103,11 +152,14 @@ public final class IOUtils
 
     public static boolean copyStream(InputStream src, OutputStream os) throws IOException
     {
+        BufferedOutputStream bos = null;
+        MonitoredBufferedInputStream bis = null;
         boolean copied = true;
+        
         try
         {
-            os = new BufferedOutputStream(os);
-            BufferedInputStream bis = new BufferedInputStream(src);
+            bos = new BufferedOutputStream(os);
+            bis = new MonitoredBufferedInputStream(src);
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
@@ -125,18 +177,27 @@ public final class IOUtils
         }
         finally
         {
-            closeStream(os);
             closeStream(src);
+            
+            if (bos != null)
+                closeStream(bos);
+            
+            if (bis != null)
+                closeStream(bis);
         }
         return copied;
     }
 
     public static InputStream getContentFileInputStream(ContentFile contentFile)
     {
-
         try
         {
-            if (contentFile != null) return new BufferedInputStream(new FileInputStream(contentFile.getFile()));
+            if (contentFile != null)
+            {
+                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(contentFile.getFile()));
+                mb.setContentFile (contentFile);
+                return mb;
+            }
         }
         catch (FileNotFoundException e)
         {
