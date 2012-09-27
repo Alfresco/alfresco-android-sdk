@@ -40,7 +40,11 @@ import android.util.Log;
  */
 public final class IOUtils
 {
-    // Monitored input stream for UI feedback purposes.
+    /*
+     * Monitored input stream for progress feedback on a ContentFile object.
+     * 
+     *  @author Luke Jagger
+     */
     static class MonitoredBufferedInputStream extends BufferedInputStream
     {  
         ContentFile contentFile = null;
@@ -50,11 +54,20 @@ public final class IOUtils
             super(in);
         }
         
+        /**
+         * Set the ContentFile object associated with this operation
+         * 
+         * @param cf : ContentFile object to notify
+         */
         void setContentFile (ContentFile cf)
         {
             contentFile = cf;
         }
 
+        /**
+         * Overriden InputStream file read.
+         * 
+         */
         @Override
         public synchronized int read() throws IOException
         {
@@ -64,6 +77,10 @@ public final class IOUtils
             return super.read();
         }
 
+        /**
+         * Overriden InputStream file read.
+         * 
+         */
         @Override
         public int read(byte[] b) throws IOException
         {
@@ -75,6 +92,10 @@ public final class IOUtils
             return nBytes;
         }
 
+        /**
+         * Overriden InputStream file read.
+         * 
+         */
         @Override
         public synchronized int read(byte[] b, int off, int len) throws IOException
         {

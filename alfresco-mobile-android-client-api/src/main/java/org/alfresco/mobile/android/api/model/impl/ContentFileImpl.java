@@ -76,11 +76,21 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
         return file;
     }
 
+    /**
+     * Callback for receiving progress feedback during transfer of the ContentFile
+     * 
+     * @param nBytes : Number of bytes read.
+     */
     @Override
     public void fileReadCallback(int nBytes)
     {
     }
 
+    /**
+     * Callback for receiving progress feedback during transfer of the ContentFile
+     * 
+     * @param nBytes : Number of bytes written.
+     */
     @Override
     public void fileWriteCallback(int nBytes)
     {
