@@ -2,6 +2,7 @@
 bin
 gen
 lint.xml
+project.properties
 
 #Eclipse
 .project
@@ -21,3 +22,4 @@ gen-external-apklibs
 target
 release.properties
 pom.xml.*
+*.properties
