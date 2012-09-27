@@ -23,11 +23,8 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.SessionListener;
+import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
@@ -57,16 +54,6 @@ public final class OAuthHelper implements OAuthConstant
 
     private OAuthHelper()
     {
-    }
-
-    public static void tokenHasExpired(AlfrescoSession session)
-    {
-        // unsupport OAUth OnPremise
-        if ((session instanceof CloudSession) && ((CloudSessionImpl) session).getSessionListener() != null)
-        {
-            SessionListener listener = ((CloudSessionImpl) session).getSessionListener();
-            listener.onSessionExpired();
-        }
     }
 
     /**
@@ -101,6 +88,7 @@ public final class OAuthHelper implements OAuthConstant
 
     /**
      * Retrieve the access token.
+     * 
      * @param apiKey
      * @param apiSecret
      * @param callback
@@ -109,28 +97,39 @@ public final class OAuthHelper implements OAuthConstant
      */
     public static OAuthData getAccessToken(String apiKey, String apiSecret, String callback, String code)
     {
-        UrlBuilder builder = new UrlBuilder(TOKEN_URL);
+        OAuth2DataImpl data = null;
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(RESPONSE_TYPE_CODE, code);
-        params.put(PARAM_CLIENT_ID, apiKey);
-        params.put(PARAM_CLIENT_SECRET, apiSecret);
-        params.put(PARAM_REDIRECT_ID, callback);
-        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
+        try
+        {
+            UrlBuilder builder = new UrlBuilder(TOKEN_URL);
 
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put(RESPONSE_TYPE_CODE, code);
+            params.put(PARAM_CLIENT_ID, apiKey);
+            params.put(PARAM_CLIENT_SECRET, apiSecret);
+            params.put(PARAM_REDIRECT_ID, callback);
+            params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
 
-        if (resp.getResponseCode() != HttpStatus.SC_OK) { throw new AlfrescoConnectionException(
-                ErrorCodeRegistry.SESSION_GENERIC, resp.getErrorContent()); }
+            Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
 
-        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-        OAuth2DataImpl data = new OAuth2DataImpl(apiKey, apiSecret);
-        data.parseTokenResponse(json);
+            if (resp.getResponseCode() != HttpStatus.SC_OK)
+            {
+                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+            }
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            data = new OAuth2DataImpl(apiKey, apiSecret);
+            data.parseTokenResponse(json);
+        }
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
         return data;
     }
-    
+
     /**
      * Request a new accestoken & refreshtoken
+     * 
      * @param data
      * @return
      */
@@ -144,6 +143,11 @@ public final class OAuthHelper implements OAuthConstant
         params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+        if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+        }
+
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
         OAuth2DataImpl token = new OAuth2DataImpl(data.getApiKey(), data.getApiSecret());
         token.parseTokenResponse(json);

@@ -21,23 +21,19 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoErrorContent;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.exceptions.impl.CloudErrorContent;
-import org.alfresco.mobile.android.api.exceptions.impl.OAuthErrorContent;
-import org.alfresco.mobile.android.api.exceptions.impl.OnPremiseErrorContent;
+import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -46,11 +42,6 @@ import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
@@ -260,43 +251,9 @@ public abstract class AlfrescoService
      * @throw AlfrescoServiceException : Reasons why the requested response code
      *        is not valid.
      */
-    protected void convertException(Exception t)
+    protected static void convertException(Exception t)
     {
-        try
-        {
-            throw t;
-        }
-        catch (AlfrescoException e)
-        {
-            if (e.getErrorCode() == ErrorCodeRegistry.GENERAL_OAUTH_DENIED){
-                OAuthHelper.tokenHasExpired(session);
-            }
-            throw (AlfrescoException) e;
-        }
-        catch (CmisConstraintException e)
-        {
-            throw new IllegalArgumentException(e);
-        }
-        catch (CmisContentAlreadyExistsException e)
-        {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e);
-        }
-        catch (CmisPermissionDeniedException e)
-        {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e);
-        }
-        catch (CmisInvalidArgumentException e)
-        {
-            throw new IllegalArgumentException(e);
-        }
-        catch (CmisBaseException cmisException)
-        {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, cmisException);
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
-        }
+        ExceptionHelper.convertException(t);
     }
     
     /**
@@ -309,61 +266,7 @@ public abstract class AlfrescoService
      */
     public void convertStatusCode(HttpUtils.Response resp, int serviceErrorCode)
     {
-        AlfrescoErrorContent er = null;
-        if (session instanceof RepositorySession)
-        {
-            try
-            {
-                er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
-            }
-            catch (Exception ee)
-            {
-                // No format...
-                er = null;
-            }
-        }
-        else if (session instanceof CloudSession)
-        {
-            if (resp.getResponseCode() == HttpStatus.SC_UNAUTHORIZED)
-            {
-                er = OAuthErrorContent.parseJson(resp.getErrorContent());
-            }
-            if (er == null)
-            {
-                try
-                {
-                    er = CloudErrorContent.parseJson(resp.getErrorContent());
-                    if (er == null)
-                    {
-                        er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
-                    }
-                }
-                catch (Exception e)
-                {
-                    try
-                    {
-                        er = OnPremiseErrorContent.parseJson(resp.getErrorContent());
-                    }
-                    catch (Exception ee)
-                    {
-                        // No format...
-                        er = null;
-                    }
-                }
-            }
-        }
-        if (er != null)
-        {
-            if (er instanceof OAuthErrorContent){
-                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_OAUTH_DENIED, er);
-            } else {
-                throw new AlfrescoServiceException(serviceErrorCode, er);
-            }
-        }
-        else
-        {
-            throw new AlfrescoServiceException(serviceErrorCode, resp.getErrorContent());
-        }
+        ExceptionHelper.convertStatusCode(session, resp, serviceErrorCode);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////

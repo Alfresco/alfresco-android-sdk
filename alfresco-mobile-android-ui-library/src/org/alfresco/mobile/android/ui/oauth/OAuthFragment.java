@@ -58,10 +58,6 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     
     public OAuthFragment()
     {
-        this.apiKey = getText(R.string.oauth_api_key).toString();
-        this.apiSecret = getText(R.string.oauth_api_secret).toString();
-        this.callback = getText(R.string.oauth_callback).toString();
-        this.scope = getText(R.string.oauth_scope).toString();
     }
 
     @Override
@@ -70,6 +66,11 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         if (container == null) { return null; }
         View v = inflater.inflate(R.layout.sdk_oauth, container, false);
 
+        this.apiKey = getText(R.string.oauth_api_key).toString();
+        this.apiSecret = getText(R.string.oauth_api_secret).toString();
+        this.callback = getText(R.string.oauth_callback).toString();
+        this.scope = getText(R.string.oauth_scope).toString();
+        
         //oauthManager = new OAuth2Manager(getText(R.string.oauth_api_key).toString(), getText(R.string.oauth_api_secret)
         //        .toString(), getText(R.string.oauth_callback).toString(), getText(R.string.oauth_scope).toString());
 
@@ -129,6 +130,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         b.putString(OAuthAccessTokenLoader.PARAM_APIKEY, apiKey);
         b.putString(OAuthAccessTokenLoader.PARAM_APISECRET, apiSecret);
         b.putString(OAuthAccessTokenLoader.PARAM_CALLBACK_URL, callback);
+        b.putInt(OAuthAccessTokenLoader.PARAM_OPERATION, OAuthAccessTokenLoader.OPERATION_ACCESS_TOKEN);
         lm.restartLoader(OAuthAccessTokenLoader.ID, b, this);
         lm.getLoader(OAuthAccessTokenLoader.ID).forceLoad();
     }

@@ -28,6 +28,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
@@ -222,6 +223,12 @@ public class CloudSessionImpl extends CloudSession
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
                 authenticator.getHTTPHeaders());
+        
+        // check response code
+        if (resp.getResponseCode() != HttpStatus.SC_OK)
+        {
+            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_GENERIC);
+        }
 
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
