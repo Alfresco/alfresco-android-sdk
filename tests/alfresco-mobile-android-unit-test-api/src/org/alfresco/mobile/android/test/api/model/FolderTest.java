@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
@@ -281,6 +282,13 @@ public class FolderTest extends AlfrescoSDKTestCase
 
         // Check Aspects
         Assert.assertNotNull(folder.getAspects());
+        
+        //Check getAspects results don't start with a P:
+        List<String> aspects = folder.getAspects();
+        for (String aspect : aspects)
+        {
+            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+        }
 
         // Titled + Localized + Geographic
         // Localized depends on alfresco version (3.4 no, >4 ok)

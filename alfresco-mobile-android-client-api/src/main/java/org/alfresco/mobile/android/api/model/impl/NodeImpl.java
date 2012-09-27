@@ -276,7 +276,10 @@ public class NodeImpl implements Node
         ArrayList<String> list = new ArrayList<String>(c.size());
         for (ObjectType objectType : c)
         {
-            list.add(objectType.getId());
+            if (objectType.getId() != null && !objectType.getId().isEmpty())
+            {
+                list.add(objectType.getId().replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS, ""));
+            }
         }
         return list;
     }
