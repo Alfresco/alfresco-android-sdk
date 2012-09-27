@@ -42,15 +42,15 @@ public final class IOUtils
 
     // Monitored input stream for UI feedback purposes.
     static class MonitoredBufferedInputStream extends BufferedInputStream
-    {  
+    {
         ContentFile contentFile = null;
-        
+
         public MonitoredBufferedInputStream(InputStream in)
         {
             super(in);
         }
-        
-        void setContentFile (ContentFile cf)
+
+        void setContentFile(ContentFile cf)
         {
             contentFile = cf;
         }
@@ -58,9 +58,11 @@ public final class IOUtils
         @Override
         public synchronized int read() throws IOException
         {
-            if (contentFile != null){
-                contentFile.fileReadCallback(1);}
-            
+            if (contentFile != null)
+            {
+                contentFile.fileReadCallback(1);
+            }
+
             return super.read();
         }
 
@@ -68,10 +70,12 @@ public final class IOUtils
         public int read(byte[] b) throws IOException
         {
             int nBytes = super.read(b);
-            
-            if (contentFile != null){
-                contentFile.fileReadCallback (nBytes);}
-            
+
+            if (contentFile != null)
+            {
+                contentFile.fileReadCallback(nBytes);
+            }
+
             return nBytes;
         }
 
@@ -79,10 +83,12 @@ public final class IOUtils
         public synchronized int read(byte[] b, int off, int len) throws IOException
         {
             int nBytes = super.read(b, off, len);
-            
-            if (contentFile != null){
-                contentFile.fileReadCallback (nBytes);}
-            
+
+            if (contentFile != null)
+            {
+                contentFile.fileReadCallback(nBytes);
+            }
+
             return nBytes;
         }
     }
@@ -150,10 +156,10 @@ public final class IOUtils
         BufferedOutputStream bos = null;
         MonitoredBufferedInputStream bis = null;
         boolean copied = true;
-        
+
         try
         {
-           
+
             bos = new BufferedOutputStream(osstream);
             bis = new MonitoredBufferedInputStream(src);
 
@@ -187,8 +193,9 @@ public final class IOUtils
         {
             if (contentFile != null)
             {
-                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(contentFile.getFile()));
-                mb.setContentFile (contentFile);
+                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(
+                        contentFile.getFile()));
+                mb.setContentFile(contentFile);
                 return mb;
             }
         }

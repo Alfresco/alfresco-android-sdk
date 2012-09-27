@@ -178,7 +178,7 @@ public abstract class NavigationFragment extends BaseListFragment implements
                     selectedItems);
         }
         
-        if (checkException(results))
+        if (results.hasException())
         {
             onLoaderException(results.getException());
         }
