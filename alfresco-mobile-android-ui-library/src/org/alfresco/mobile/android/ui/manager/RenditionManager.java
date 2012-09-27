@@ -453,7 +453,7 @@ public class RenditionManager
         if (bitmapWorkerTask != null)
         {
             final String bitmapData = bitmapWorkerTask.username;
-            if (!bitmapData.equals(data))
+            if (bitmapData != null && !bitmapData.equals(data))
             {
                 bitmapWorkerTask.cancel(true);
             }
