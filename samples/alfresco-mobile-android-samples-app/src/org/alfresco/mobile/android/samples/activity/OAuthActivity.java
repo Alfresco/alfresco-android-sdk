@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.samples.activity;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -62,7 +61,7 @@ public class OAuthActivity extends Activity
             }
             
             @Override
-            public void beforeRequestAccessToken(OAuth2Manager arg0)
+            public void beforeRequestAccessToken(Bundle b)
             {
                 mProgressDialog = ProgressDialog.show(OAuthActivity.this, getText(R.string.dialog_wait),
                         getText(R.string.validation_creadentials), true, true, new OnCancelListener()

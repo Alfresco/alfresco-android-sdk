@@ -48,7 +48,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
 
     protected DocumentFolderService docfolderservice;
 
-    protected final int ANDROID_ASSET_SIZE = 855398;
+    protected static final int ANDROID_ASSET_SIZE = 855398;
 
     protected void initSession()
     {
@@ -155,7 +155,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         // Get Rendition
         // Rendition
         int i = 0;
-        while (i < 2)
+        while (i < 5)
         {
             try
             {

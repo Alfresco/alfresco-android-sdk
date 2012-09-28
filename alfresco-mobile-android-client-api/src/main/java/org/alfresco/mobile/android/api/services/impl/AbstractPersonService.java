@@ -56,6 +56,7 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
     {
         if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+        
         try
         {
             return computePerson(getPersonDetailssUrl(personIdentifier));
@@ -90,6 +91,7 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
     {
         if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+        
         return saveContentStream(getAvatarStream(personIdentifier), personIdentifier, RENDITION_CACHE);
     }
 
@@ -104,6 +106,7 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
     {
         if (isObjectNull(person) || isStringNull(person.getIdentifier())) { throw new IllegalArgumentException(
                 String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+        
         return saveContentStream(getAvatarStream(person.getIdentifier()), person.getIdentifier(), RENDITION_CACHE);
     }
 

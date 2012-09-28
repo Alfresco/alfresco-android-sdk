@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.api.session;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 

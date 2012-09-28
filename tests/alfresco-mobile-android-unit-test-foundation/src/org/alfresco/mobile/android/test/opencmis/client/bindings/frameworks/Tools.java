@@ -43,77 +43,84 @@ import org.apache.chemistry.opencmis.commons.data.Properties;
 import org.apache.chemistry.opencmis.commons.data.RepositoryInfo;
 import org.apache.chemistry.opencmis.commons.definitions.TypeDefinitionContainer;
 
+import android.util.Log;
+
 /**
  * @author <a href="mailto:fmueller@opentext.com">Florian M&uuml;ller</a>
- * 
  */
-public class Tools {
-    
-    private Tools() {
+public final class Tools
+{
+
+    private static final String TAG = "Tools";
+
+    private Tools()
+    {
     }
 
-    public static void print(RepositoryInfo repositoryInfo) {
-        if (repositoryInfo == null) {
-            return;
-        }
-
-        System.out.println("-------------");
-        System.out.println("Id:               " + repositoryInfo.getId());
-        System.out.println("Name:             " + repositoryInfo.getName());
-        System.out.println("CMIS Version:     " + repositoryInfo.getCmisVersionSupported());
-        System.out.println("Product:          " + repositoryInfo.getVendorName() + " / "
-                + repositoryInfo.getProductName() + " " + repositoryInfo.getProductVersion());
-        System.out.println("Root Folder:      " + repositoryInfo.getRootFolderId());
-        System.out.println("Capabilities:     " + repositoryInfo.getCapabilities());
-        System.out.println("ACL Capabilities: " + repositoryInfo.getAclCapabilities());
-        System.out.println("-------------");
+    public static void print(RepositoryInfo repositoryInfo)
+    {
+        if (repositoryInfo == null) { return; }
+        Log.i(TAG, "-------------");
+        Log.i(TAG, "Id:               " + repositoryInfo.getId());
+        Log.i(TAG, "Name:             " + repositoryInfo.getName());
+        Log.i(TAG, "CMIS Version:     " + repositoryInfo.getCmisVersionSupported());
+        Log.i(TAG, "Product:          " + repositoryInfo.getVendorName() + " / " + repositoryInfo.getProductName()
+                + " " + repositoryInfo.getProductVersion());
+        Log.i(TAG, "Root Folder:      " + repositoryInfo.getRootFolderId());
+        Log.i(TAG, "Capabilities:     " + repositoryInfo.getCapabilities());
+        Log.i(TAG, "ACL Capabilities: " + repositoryInfo.getAclCapabilities());
+        Log.i(TAG, "-------------");
     }
 
-    public static void printTypes(String title, List<TypeDefinitionContainer> typeContainerList) {
-        System.out.println("-------------");
-        System.out.println(title);
-        System.out.println("-------------");
+    public static void printTypes(String title, List<TypeDefinitionContainer> typeContainerList)
+    {
+        Log.i(TAG, "-------------");
+        Log.i(TAG, title);
+        Log.i(TAG, "-------------");
 
         printTypes(typeContainerList, 0);
     }
 
-    private static void printTypes(List<TypeDefinitionContainer> typeContainerList, int level) {
-        if (typeContainerList == null) {
-            return;
-        }
+    private static void printTypes(List<TypeDefinitionContainer> typeContainerList, int level)
+    {
+        if (typeContainerList == null) { return; }
 
-        for (TypeDefinitionContainer container : typeContainerList) {
-            for (int i = 0; i < level; i++) {
-                System.out.print("  ");
+        for (TypeDefinitionContainer container : typeContainerList)
+        {
+            for (int i = 0; i < level; i++)
+            {
+                Log.i(TAG, "  ");
             }
 
             container.getTypeDefinition().getId();
-            System.out.println(container.getTypeDefinition().getId());
+            Log.i(TAG, container.getTypeDefinition().getId());
 
             printTypes(container.getChildren(), level + 1);
         }
     }
 
-    public static void print(String title, List<ObjectInFolderContainer> containerList) {
-        System.out.println("-------------");
-        System.out.println(title);
-        System.out.println("-------------");
+    public static void print(String title, List<ObjectInFolderContainer> containerList)
+    {
+        Log.i(TAG, "-------------");
+        Log.i(TAG, title);
+        Log.i(TAG, "-------------");
 
         print(containerList, 0);
     }
 
-    private static void print(List<ObjectInFolderContainer> containerList, int level) {
-        if (containerList == null) {
-            return;
-        }
+    private static void print(List<ObjectInFolderContainer> containerList, int level)
+    {
+        if (containerList == null) { return; }
 
-        for (ObjectInFolderContainer container : containerList) {
-            for (int i = 0; i < level; i++) {
-                System.out.print("  ");
+        for (ObjectInFolderContainer container : containerList)
+        {
+            for (int i = 0; i < level; i++)
+            {
+                Log.i(TAG, "  ");
             }
 
             Properties properties = container.getObject().getObject().getProperties();
-            System.out.println(properties.getProperties().get(PropertyIds.NAME).getFirstValue() + " ("
+            Log.i(TAG, properties.getProperties().get(PropertyIds.NAME).getFirstValue() + " ("
                     + properties.getProperties().get(PropertyIds.OBJECT_TYPE_ID).getFirstValue() + ")");
 
             print(container.getChildren(), level + 1);

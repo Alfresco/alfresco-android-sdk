@@ -21,10 +21,9 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
-import org.alfresco.mobile.android.api.model.impl.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseServiceRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
@@ -66,7 +65,6 @@ public class RepositorySessionImpl extends RepositorySession
     }
 
     public RepositorySessionImpl(String url, String username, String password, Map<String, Serializable> settings)
-            throws AlfrescoConnectionException
     {
         initSettings(url, username, password, settings);
         authenticate();

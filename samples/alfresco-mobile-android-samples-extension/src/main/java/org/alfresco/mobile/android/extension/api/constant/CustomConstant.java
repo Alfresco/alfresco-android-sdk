@@ -22,9 +22,8 @@ package org.alfresco.mobile.android.extension.api.constant;
  * @author Jean Marie Pascal
  *
  */
-public class CustomConstant {
+public interface CustomConstant {
 	
-    public static final String STARSRATINGSCHEME_VALUE = "fiveStarRatingScheme";
-    
+   String STARSRATINGSCHEME_VALUE = "fiveStarRatingScheme";
 }
 

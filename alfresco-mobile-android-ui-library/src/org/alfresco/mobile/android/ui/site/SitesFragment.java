@@ -96,7 +96,11 @@ public abstract class SitesFragment extends BaseListFragment implements
         {
             adapter = new SiteAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Site>(0));
         }
-        if (!checkException(results))
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

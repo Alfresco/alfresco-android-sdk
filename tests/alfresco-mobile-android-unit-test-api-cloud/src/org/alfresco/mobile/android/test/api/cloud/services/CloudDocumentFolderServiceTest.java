@@ -118,10 +118,4 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
             }
         }
     }
-    
-    @Override
-    public void testDocumentFolderMethodsError()
-    {
-        super.testDocumentFolderMethodsError();
-    }
 }

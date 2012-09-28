@@ -37,7 +37,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountDetailsFragment extends BaseFragment
+public class LoginFragment extends BaseFragment
 {
 
     public static final String TAG = "AccountDetailsFragment";
@@ -48,7 +48,7 @@ public class AccountDetailsFragment extends BaseFragment
 
     private View vRoot;
 
-    public AccountDetailsFragment()
+    public LoginFragment()
     {
     }
 
@@ -97,26 +97,26 @@ public class AccountDetailsFragment extends BaseFragment
         });
 
         // Init values
-        EditText form_value = (EditText) v.findViewById(R.id.repository_hostname);
-        form_value.setText(host);
-        form_value.setEnabled(isEditable);
+        EditText formValue = (EditText) v.findViewById(R.id.repository_hostname);
+        formValue.setText(host);
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_username);
-        form_value.setText(username);
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_username);
+        formValue.setText(username);
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_password);
-        form_value.setText(password);
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_password);
+        formValue.setText(password);
+        formValue.setEnabled(isEditable);
     }
 
-    private void retrieveFormValues(View v)
+    private void retrieveFormValues(View view)
     {
         // Check values
-        EditText form_value = (EditText) vRoot.findViewById(R.id.repository_hostname);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        EditText formValue = (EditText) vRoot.findViewById(R.id.repository_hostname);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            host = form_value.getText().toString();
+            host = formValue.getText().toString();
         }
         else
         {
@@ -124,11 +124,11 @@ public class AccountDetailsFragment extends BaseFragment
             return;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_username);
-        username = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_username);
+        username = formValue.getText().toString();
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_password);
-        password = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_password);
+        password = formValue.getText().toString();
 
         URL u = null;
         try

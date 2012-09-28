@@ -53,8 +53,6 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
 
     protected static final String TAG_FOLDER = "TaggingServiceTestFolder";
 
-    protected int totalItems = -1;
-
     protected void initSession()
     {
         if (alfsession == null)
@@ -75,7 +73,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
      * 
      * @throws AlfrescoServiceException
      */
-    public void testTaggingService() throws AlfrescoServiceException
+    public void testTaggingService()
     {
 
         // ////////////////////////////////////////////////////

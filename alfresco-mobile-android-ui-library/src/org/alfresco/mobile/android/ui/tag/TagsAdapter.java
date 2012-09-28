@@ -46,8 +46,6 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
 
     private final Object mLock = new Object();
 
-    private List<Tag> mObjects;
-
     public TagsAdapter(Activity context, int textViewResourceId, List<Tag> listItems)
     {
         this(context, textViewResourceId, listItems, new ArrayList<Tag>(0));
@@ -119,7 +117,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
             {
                 synchronized (mLock)
                 {
-                    mOriginalValues = new ArrayList<Tag>(mObjects);
+                    mOriginalValues = new ArrayList<Tag>();
                 }
             }
 
@@ -149,7 +147,7 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
                 for (int i = 0; i < count; i++)
                 {
                     final Tag value = values.get(i);
-                    final String valueText = value.getValue().toString().toLowerCase();
+                    final String valueText = value.getValue().toLowerCase();
 
                     // First match against the whole, non-splitted value
                     if (valueText.startsWith(prefixString))

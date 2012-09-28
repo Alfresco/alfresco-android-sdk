@@ -52,4 +52,9 @@ public class AlfrescoConnectionException extends AlfrescoException
     {
         super(errorCode, message);
     }
+    
+    public AlfrescoConnectionException(int errorCode, AlfrescoErrorContent content)
+    {
+        super(errorCode, content);
+    }
 }

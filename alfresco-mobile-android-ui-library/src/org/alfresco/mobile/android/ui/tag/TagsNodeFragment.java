@@ -37,8 +37,6 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
 {
     public static final String TAG = "TagsFragment";
 
-    protected Boolean loadAtCreation = true;
-
     protected Node node;
 
     public static final String ARGUMENT_NODE = "commentedNode";
@@ -83,7 +81,12 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
         {
             adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Tag>(0));
         }
-        if (!checkException(results))
+        
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

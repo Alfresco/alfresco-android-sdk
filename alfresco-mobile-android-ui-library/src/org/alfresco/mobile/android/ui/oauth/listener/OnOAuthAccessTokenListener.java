@@ -18,12 +18,13 @@
 package org.alfresco.mobile.android.ui.oauth.listener;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
+
+import android.os.Bundle;
 
 
 public interface OnOAuthAccessTokenListener
 {
-    void beforeRequestAccessToken(OAuth2Manager manager);
+    void beforeRequestAccessToken(Bundle oauthBundle);
     
     void failedRequestAccessToken(Exception e);
 

@@ -31,8 +31,7 @@ public class TagsBrowserFragment extends TagsFilterFragment
 
     public static TagsBrowserFragment newInstance()
     {
-        TagsBrowserFragment bf = new TagsBrowserFragment();
-        return bf;
+        return new TagsBrowserFragment();
     }
 
     @Override
@@ -42,12 +41,4 @@ public class TagsBrowserFragment extends TagsFilterFragment
         alfSession = SessionUtils.getsession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
-   
 }

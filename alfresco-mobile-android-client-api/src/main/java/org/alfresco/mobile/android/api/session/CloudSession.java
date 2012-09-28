@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
@@ -63,7 +62,7 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
      * @param parameters
      * @return
      */
-    public static CloudSession connect(OAuth2DataImpl oauthData, String networkId, Map<String, Serializable> parameters)
+    public static CloudSession connect(OAuthData oauthData, String networkId, Map<String, Serializable> parameters)
     {
         Map<String, Serializable> tmpParameters = parameters;
         if (tmpParameters == null)
@@ -85,6 +84,6 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     public abstract CloudNetwork getNetwork();
     
     
-    public abstract void addSessionListener(SessionListener listener);
+    public abstract void refreshToken(Object OAuthData);
 
 }

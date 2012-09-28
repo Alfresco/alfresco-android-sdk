@@ -99,7 +99,9 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         String s = item.getType();
 
         if (s.startsWith(PREFIX_FILE))
+        {
             drawable = MimeTypeManager.getIcon(item.getData(OnPremiseConstant.TITLE_VALUE));
+        }
         else
         {
             for (Entry<String, Integer> icon : eventIcon.entrySet())
@@ -165,42 +167,38 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private String getActivityTypeMessage(ActivityEntry item)
     {
         String s = item.getType();
-        try
+        if (map.get(s) != null)
         {
-            if (map.get(s) != null)
+            s = getContext().getResources().getString(map.get(item.getType()));
+
+            if (s.contains(PARAM_CUSTOM))
             {
-                s = getContext().getResources().getString(map.get(item.getType()));
-
-                if (s.contains(PARAM_CUSTOM))
-                {
-                    s = s.replace(PARAM_CUSTOM, item.getData(OnPremiseConstant.ROLE_VALUE));
-                    s = s.replace(PARAM_USER_PROFILE, "<b>" + item.getData(OnPremiseConstant.MEMEBERFIRSTNAME_VALUE)
-                            + " " + item.getData(OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
-                }
-                else
-                {
-                    s = s.replace(PARAM_USER_PROFILE, "<b>" + item.getData(OnPremiseConstant.FIRSTNAME_VALUE) + " "
-                            + item.getData(OnPremiseConstant.LASTNAME_VALUE) + "</b>");
-                }
-
-                if (s.contains(PARAM_TITLE))
-                {
-                    s = s.replace(PARAM_TITLE, "<b>" + item.getData(OnPremiseConstant.TITLE_VALUE) + "</b>");
-                }
-
-                if (s.contains(PARAM_SITE_LINK))
-                {
-                    s = s.replace(PARAM_SITE_LINK, item.getSiteShortName());
-                }
-
-                if (s.contains(PARAM_STATUS))
-                {
-                    s = s.replace(PARAM_STATUS, item.getData(OnPremiseConstant.STATUS_VALUE));
-                }
+                s = s.replace(PARAM_CUSTOM, item.getData(OnPremiseConstant.ROLE_VALUE));
+                s = s.replace(PARAM_USER_PROFILE, "<b>" + item.getData(OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
+                        + item.getData(OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
             }
-        }
-        catch (Exception e)
-        {
+            else
+            {
+                s = s.replace(
+                        PARAM_USER_PROFILE,
+                        "<b>" + item.getData(OnPremiseConstant.FIRSTNAME_VALUE) + " "
+                                + item.getData(OnPremiseConstant.LASTNAME_VALUE) + "</b>");
+            }
+
+            if (s.contains(PARAM_TITLE))
+            {
+                s = s.replace(PARAM_TITLE, "<b>" + item.getData(OnPremiseConstant.TITLE_VALUE) + "</b>");
+            }
+
+            if (s.contains(PARAM_SITE_LINK))
+            {
+                s = s.replace(PARAM_SITE_LINK, item.getSiteShortName());
+            }
+
+            if (s.contains(PARAM_STATUS))
+            {
+                s = s.replace(PARAM_STATUS, item.getData(OnPremiseConstant.STATUS_VALUE));
+            }
         }
 
         return s;

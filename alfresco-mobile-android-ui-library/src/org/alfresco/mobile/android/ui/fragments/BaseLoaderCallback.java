@@ -24,12 +24,13 @@ import android.app.LoaderManager;
 
 public abstract class BaseLoaderCallback
 {
-    
+
     protected AlfrescoSession session;
 
     protected Activity context;
-    
-    public LoaderManager getLoaderManager(){
+
+    public LoaderManager getLoaderManager()
+    {
         return context.getLoaderManager();
     }
 }

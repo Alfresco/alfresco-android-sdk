@@ -25,9 +25,11 @@ import android.widget.Toast;
  * @author jpascal
  *
  */
-public class MessengerManager
+public final class MessengerManager
 {
 
+    private MessengerManager(){
+    }
 
     public static void showToast(Context context, String text)
     {

@@ -180,9 +180,9 @@ public class ActionManager
             String[] projection = { MediaStore.Files.FileColumns.DATA };
             Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
             activity.startManagingCursor(cursor);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
             cursor.moveToFirst();
-            s = cursor.getString(column_index);
+            s = cursor.getString(columnIndex);
         }
         else if (scheme.equals("file"))
         {

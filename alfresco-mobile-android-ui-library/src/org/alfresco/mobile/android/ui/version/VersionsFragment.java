@@ -87,7 +87,11 @@ public abstract class VersionsFragment extends BaseListFragment implements
         {
             adapter = new VersionsAdapter(getActivity(), R.layout.sdk_list_version, new ArrayList<Document>(0));
         }
-        if (!checkException(results))
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

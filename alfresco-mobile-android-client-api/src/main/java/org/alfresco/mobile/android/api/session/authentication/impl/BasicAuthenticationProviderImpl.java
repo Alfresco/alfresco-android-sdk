@@ -73,11 +73,7 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
 
     private String getParameter(String key)
     {
-        if (session != null && session.getParameter(key) != null && session.getParameter(key) instanceof String)
-        {
-            return (String) session.getParameter(key);
-        }
-        else if (cmisSession != null && cmisSession.get(key) != null && cmisSession.get(key) instanceof String)
+        if (cmisSession != null && cmisSession.get(key) != null && cmisSession.get(key) instanceof String)
         {
             return (String) cmisSession.get(key);
         }

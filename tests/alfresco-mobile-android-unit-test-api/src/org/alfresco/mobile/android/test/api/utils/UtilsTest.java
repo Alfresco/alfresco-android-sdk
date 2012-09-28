@@ -65,7 +65,6 @@ public class UtilsTest extends AndroidTestCase
 
     public void testPatternMAtcher()
     {
-        String url = "https://ts.alfresco.com/share/page/site/MobileEngineeringTeam/folder-details?nodeRef=workspace://SpacesStore/24e858f4-d2de-439f-88a7-608ea5bbb4ef";
         String path = "/share/page/site/MobileEngineeringTeam/folder-details?nodeRef=workspace://SpacesStore/24e858f4-d2de-439f-88a7-608ea5bbb4ef";
 
         PatternMatcher pm = new PatternMatcher("/share/page/site", PatternMatcher.PATTERN_PREFIX);

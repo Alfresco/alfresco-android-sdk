@@ -17,6 +17,7 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Output;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
 
 import android.util.Log;
 
@@ -45,8 +46,9 @@ public final class HttpUtils
     {
         return invoke(url, "POST", contentType, null, writer, null, null, null);
     }
-    
-    public static Response invokePOST(UrlBuilder url, String contentType, Output writer, Map<String, List<String>> headers)
+
+    public static Response invokePOST(UrlBuilder url, String contentType, Output writer,
+            Map<String, List<String>> headers)
     {
         return invoke(url, "POST", contentType, headers, writer, null, null, null);
     }
@@ -94,21 +96,22 @@ public final class HttpUtils
             }
 
             // range
-            if ((offset != null) || (length != null))
+            BigInteger tmpOffset = offset;
+            if ((tmpOffset != null) || (length != null))
             {
                 StringBuilder sb = new StringBuilder("bytes=");
 
-                if ((offset == null) || (offset.signum() == -1))
+                if ((tmpOffset == null) || (tmpOffset.signum() == -1))
                 {
-                    offset = BigInteger.ZERO;
+                    tmpOffset = BigInteger.ZERO;
                 }
 
-                sb.append(offset.toString());
+                sb.append(tmpOffset.toString());
                 sb.append("-");
 
                 if ((length != null) && (length.signum() == 1))
                 {
-                    sb.append(offset.add(length.subtract(BigInteger.ONE)).toString());
+                    sb.append(tmpOffset.add(length.subtract(BigInteger.ONE)).toString());
                 }
 
                 conn.setRequestProperty("Range", sb.toString());
@@ -120,9 +123,11 @@ public final class HttpUtils
             if (params != null)
             {
                 DataOutputStream ostream = null;
+                OutputStream os = null;
                 try
                 {
-                    ostream = new DataOutputStream(conn.getOutputStream());
+                    os = conn.getOutputStream();
+                    ostream = new DataOutputStream(os);
 
                     Set<String> parameters = params.keySet();
                     StringBuffer buf = new StringBuffer();
@@ -155,7 +160,7 @@ public final class HttpUtils
                         ostream.flush();
                         ostream.close();
                     }
-                    IOUtils.closeStream(conn.getOutputStream());
+                    IOUtils.closeStream(os);
                 }
             }
 
@@ -177,7 +182,9 @@ public final class HttpUtils
             // get stream, if present
             int respCode = conn.getResponseCode();
             InputStream inputStream = null;
-            if ((respCode == 200) || (respCode == 201) || (respCode == 203) || (respCode == 206))
+            if ((respCode == HttpStatus.SC_OK) || (respCode == HttpStatus.SC_CREATED)
+                    || (respCode == HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
+                    || (respCode == HttpStatus.SC_PARTIAL_CONTENT))
             {
                 inputStream = conn.getInputStream();
             }

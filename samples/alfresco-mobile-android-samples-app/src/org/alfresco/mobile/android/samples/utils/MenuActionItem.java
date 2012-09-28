@@ -22,21 +22,21 @@ package org.alfresco.mobile.android.samples.utils;
  * 
  * @author Jean Marie Pascal
  */
-public class MenuActionItem
+public interface MenuActionItem
 {
     // ///////////////////////////////////////////
     // BROWSE
     // ///////////////////////////////////////////
 
-    public static final int CREATE_FOLDER = 20;
+    int CREATE_FOLDER = 20;
 
-    public static final int UPLOAD = 30;
+    int UPLOAD = 30;
 
     // ///////////////////////////////////////////
     // DETAILS
     // ///////////////////////////////////////////
 
-    public static final int OPEN_IN = 200;
+    int OPEN_IN = 200;
 
-    public static final int LIKE = 210;
+    int LIKE = 210;
 }

@@ -91,7 +91,10 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     @Override
     public void onStart()
     {
-        getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+        if (node != null)
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+        }
         super.onStart();
     }
 
@@ -154,7 +157,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 }
                 if (selectedTags != null && !selectedTags.isEmpty())
                 {
-                    props.put(ContentModel.PROP_TAGS, (ArrayList<Tag>)selectedTags);
+                    props.put(ContentModel.PROP_TAGS, (ArrayList<Tag>) selectedTags);
                 }
                 UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), node, props);
                 up.setOnUpdateListener(onUpdateListener);
@@ -172,13 +175,11 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 tsize.setVisibility(View.VISIBLE);
             }
 
-            if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
+            if (RepositoryVersionHelper.isAlfrescoProduct(alfSession)
+                    && node.getProperty(ContentModel.PROP_DESCRIPTION) != null
+                    && node.getProperty(ContentModel.PROP_DESCRIPTION).getValue() != null)
             {
-                if (node.getProperty(ContentModel.PROP_DESCRIPTION) != null
-                        && node.getProperty(ContentModel.PROP_DESCRIPTION).getValue() != null)
-                {
-                    desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
-                }
+                desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
             }
 
             bcreate.setEnabled(true);
@@ -247,7 +248,6 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         {
             ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                     R.anim.slide_out_right);
-            ;
         }
 
         newFragment.show(ft, TagPickerDialogFragment.TAG);

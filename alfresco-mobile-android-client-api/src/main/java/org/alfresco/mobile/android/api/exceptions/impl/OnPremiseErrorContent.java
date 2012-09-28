@@ -32,8 +32,6 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class OnPremiseErrorContent implements AlfrescoErrorContent
 {
-    private String status;
-
     private int code;
 
     private String name;
@@ -74,11 +72,6 @@ public class OnPremiseErrorContent implements AlfrescoErrorContent
             errorContent.callstack = s.toString();
         }
         return errorContent;
-    }
-
-    public String getStatus()
-    {
-        return status;
     }
 
     public int getCode()

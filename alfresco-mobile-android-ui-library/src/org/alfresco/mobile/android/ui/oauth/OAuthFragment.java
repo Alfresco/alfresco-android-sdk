@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.ui.oauth;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2Manager;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
@@ -43,10 +43,22 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
 {
 
     public static final String TAG = "OAuthFragment";
+    
+    private String apiKey;
 
-    private OAuth2Manager oauthManager;
+    private String apiSecret;
+    
+    private String callback;
+
+    private String scope;
+
+    private String code;
 
     private OnOAuthAccessTokenListener onOAuthAccessTokenListener;
+    
+    public OAuthFragment()
+    {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -54,8 +66,13 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         if (container == null) { return null; }
         View v = inflater.inflate(R.layout.sdk_oauth, container, false);
 
-        oauthManager = new OAuth2Manager(getText(R.string.oauth_api_key).toString(), getText(R.string.oauth_api_secret)
-                .toString(), getText(R.string.oauth_callback).toString(), getText(R.string.oauth_scope).toString());
+        this.apiKey = getText(R.string.oauth_api_key).toString();
+        this.apiSecret = getText(R.string.oauth_api_secret).toString();
+        this.callback = getText(R.string.oauth_callback).toString();
+        this.scope = getText(R.string.oauth_scope).toString();
+        
+        //oauthManager = new OAuth2Manager(getText(R.string.oauth_api_key).toString(), getText(R.string.oauth_api_secret)
+        //        .toString(), getText(R.string.oauth_callback).toString(), getText(R.string.oauth_scope).toString());
 
         final WebView webview = (WebView) v.findViewById(R.id.webview);
 
@@ -83,17 +100,17 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                     // authorization complete hide webview for now & retrieve
                     // the acces token
                     webview.setVisibility(View.GONE);
-                    oauthManager.retrieveCode(url);
-                    retrieveAccessToken();
+                    code = OAuthHelper.retrieveCode(url);
+                    retrieveAccessToken(code);
                     return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
         });
 
-        Log.d("OAUTH URL", oauthManager.getAuthorizationUrl());
+        Log.d("OAUTH URL", OAuthHelper.getAuthorizationUrl(apiKey, callback, scope));
         // send user to authorization page
-        webview.loadUrl(oauthManager.getAuthorizationUrl());
+        webview.loadUrl(OAuthHelper.getAuthorizationUrl(apiKey, callback, scope));
 
         return v;
     }
@@ -105,21 +122,27 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         setRetainInstance(true);
     }
 
-    public void retrieveAccessToken()
+    public void retrieveAccessToken(String code)
     {
         LoaderManager lm = getLoaderManager();
-        lm.restartLoader(OAuthAccessTokenLoader.ID, null, this);
+        Bundle b = new Bundle();
+        b.putString(OAuthAccessTokenLoader.PARAM_CODE, code);
+        b.putString(OAuthAccessTokenLoader.PARAM_APIKEY, apiKey);
+        b.putString(OAuthAccessTokenLoader.PARAM_APISECRET, apiSecret);
+        b.putString(OAuthAccessTokenLoader.PARAM_CALLBACK_URL, callback);
+        b.putInt(OAuthAccessTokenLoader.PARAM_OPERATION, OAuthAccessTokenLoader.OPERATION_ACCESS_TOKEN);
+        lm.restartLoader(OAuthAccessTokenLoader.ID, b, this);
         lm.getLoader(OAuthAccessTokenLoader.ID).forceLoad();
     }
 
     @Override
-    public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle args)
+    public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle bundle)
     {
         if (onOAuthAccessTokenListener != null)
         {
-            onOAuthAccessTokenListener.beforeRequestAccessToken(oauthManager);
+            onOAuthAccessTokenListener.beforeRequestAccessToken(bundle);
         }
-        return new OAuthAccessTokenLoader(getActivity(), oauthManager);
+        return new OAuthAccessTokenLoader(getActivity(), bundle);
     }
 
     @Override

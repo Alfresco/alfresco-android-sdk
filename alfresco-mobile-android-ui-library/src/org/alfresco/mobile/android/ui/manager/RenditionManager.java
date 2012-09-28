@@ -123,7 +123,7 @@ public class RenditionManager
         if (getBitmapFromMemCache(hashKey) == null)
         {
             mMemoryCache.put(hashKey, bitmap);
-            Log.d("RenditionManager", "Add MemoryCache : " + key);
+            Log.d(TAG, "Add MemoryCache : " + key);
         }
     }
 
@@ -139,7 +139,7 @@ public class RenditionManager
                 IOUtils.copyStream(cf.getInputStream(), editor.newOutputStream(0));
                 editor.commit();
             }
-            Log.d("RenditionManager", "Add DiskCache : " + key);
+            Log.d(TAG, "Add DiskCache : " + key);
         }
         catch (Exception e)
         {
@@ -162,7 +162,7 @@ public class RenditionManager
             snapshot = mDiskCache.get(hashKey);
             if (snapshot != null)
             {
-                Log.d("RenditionManager", "GET DiskCache : " + key);
+                Log.d(TAG, "GET DiskCache : " + key);
                 return decodeStream(snapshot.getInputStream(0), dpiClassification);
             }
         }
@@ -202,7 +202,7 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
-            Log.d("RenditionManager", "Cache : " + identifier);
+            Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
         {
@@ -284,7 +284,7 @@ public class RenditionManager
 
     public static Bitmap decodeStream(InputStream is, int dpiClassification)
     {
-        if (is == null) return null;
+        if (is == null) { return null; }
         try
         {
             BufferedInputStream bis = new BufferedInputStream(is);
@@ -453,7 +453,7 @@ public class RenditionManager
         if (bitmapWorkerTask != null)
         {
             final String bitmapData = bitmapWorkerTask.username;
-            if (bitmapData != data)
+            if (bitmapData != null && !bitmapData.equals(data))
             {
                 bitmapWorkerTask.cancel(true);
             }
