@@ -21,7 +21,6 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class AddFolderDialogFragment extends CreateFolderDialogFragment
@@ -43,11 +42,5 @@ public class AddFolderDialogFragment extends CreateFolderDialogFragment
     {
         alfSession = SessionUtils.getsession(getActivity());
         super.onActivityCreated(savedInstanceState);
-    }
-    
-    @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
     }
 }

@@ -165,7 +165,7 @@ public class ChildrenFragment extends NavigationFragment
         }
     }
 
-    private class CustomNodeAdapter extends NodeAdapter
+    private static class CustomNodeAdapter extends NodeAdapter
     {
         public CustomNodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId,
                 List<Node> listItems, List<Node> selectedItems)
@@ -177,9 +177,13 @@ public class ChildrenFragment extends NavigationFragment
         protected void updateBottomText(GenericViewHolder vh, Node item)
         {
             if (item.getDescription() != null)
+            {
                 vh.bottomText.setText(item.getDescription());
+            }
             else
+            {
                 vh.bottomText.setVisibility(View.GONE);
+            }
         }
     }
 

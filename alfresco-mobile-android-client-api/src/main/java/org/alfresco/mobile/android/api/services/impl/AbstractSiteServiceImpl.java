@@ -111,11 +111,11 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public Site getSite(String siteIdentifier)
     {
+        if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+        
         try
         {
-            if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String.format(
-                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
-
             UrlBuilder url = getSiteUrl(siteIdentifier);
             Log.d("URL", url.toString());
             HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
@@ -152,14 +152,14 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public Folder getDocumentLibrary(Site site)
     {
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+
+        if (isStringNull(site.getShortName())) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+        
         try
         {
-            if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
-
-            if (isStringNull(site.getShortName())) { throw new IllegalArgumentException(String.format(
-                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
-
             String ref = parseContainer(getDocContainerSiteUrl(site));
 
             // If not found return null;

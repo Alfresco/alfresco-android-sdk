@@ -109,21 +109,21 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         }
         catch (AlfrescoServiceException e)
         {
-            if (e.getCause() instanceof CmisConnectionException){
-                // OnPremise if returns 401 equals = the person or site doesn't exist
+            if (e.getCause() instanceof CmisConnectionException)
+            {
+                // OnPremise if returns 401 equals = the person or site doesn't
+                // exist
                 List<ActivityEntry> result = new ArrayList<ActivityEntry>();
                 return new PagingResultImpl<ActivityEntry>(result, false, -1);
             }
-            
+
             // On Cloud username not found
             if (isCloudSession() && e.getAlfrescoErrorContent() != null
-                    && e.getAlfrescoErrorContent().getMessage() != null)
+                    && e.getAlfrescoErrorContent().getMessage() != null
+                    && e.getAlfrescoErrorContent().getMessage().contains("not found"))
             {
-                if (e.getAlfrescoErrorContent().getMessage().contains("not found"))
-                {
-                    List<ActivityEntry> result = new ArrayList<ActivityEntry>();
-                    return new PagingResultImpl<ActivityEntry>(result, false, -1);
-                }
+                List<ActivityEntry> result = new ArrayList<ActivityEntry>();
+                return new PagingResultImpl<ActivityEntry>(result, false, -1);
             }
             throw e;
         }
@@ -162,11 +162,14 @@ public abstract class AbstractActivityStreamService extends AlfrescoService impl
         }
         catch (AlfrescoServiceException e)
         {
-            if (e.getCause() instanceof CmisConnectionException){
+            if (e.getCause() instanceof CmisConnectionException)
+            {
                 // OnPremise if returns 401 equals = the site doesnt exist
                 List<ActivityEntry> result = new ArrayList<ActivityEntry>();
                 return new PagingResultImpl<ActivityEntry>(result, false, -1);
-            } else {
+            }
+            else
+            {
                 throw e;
             }
         }

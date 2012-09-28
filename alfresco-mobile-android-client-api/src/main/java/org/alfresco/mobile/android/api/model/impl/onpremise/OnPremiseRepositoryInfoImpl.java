@@ -15,21 +15,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.impl;
+package org.alfresco.mobile.android.api.model.impl.onpremise;
 
-import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
-import org.alfresco.mobile.android.api.model.RepositoryInfo;
+import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryInfo;
+import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 
 /**
+ * The RepositoryInfo class provides information on the repository the session
+ * is connected to, for example, repository version number, edition,
+ * capabilities etc.
+ * 
  * @author Jean Marie PASCAL
  */
-public class CloudRepositoryInfoImpl implements RepositoryInfo
+public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 {
-
-    private final org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo;
-
-    private RepositoryCapabilities capabilities;
 
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
@@ -37,33 +38,9 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      * @param repositoryInfo : cmis object.
      * @param rootNode
      */
-    public CloudRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
+    public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
-        this.repositoryInfo = repositoryInfo;
-    }
-
-    /**
-     * Returns the unique identifier of the repository.
-     */
-    public String getIdentifier()
-    {
-        return repositoryInfo.getId();
-    }
-
-    /**
-     * Returns the public name of the repository.
-     */
-    public String getName()
-    {
-        return repositoryInfo.getName();
-    }
-
-    /**
-     * Returns the description of the repository.
-     */
-    public String getDescription()
-    {
-        return repositoryInfo.getDescription();
+        super(repositoryInfo);
     }
 
     /**
@@ -71,7 +48,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public String getVersion()
     {
-        return null;
+        return repositoryInfo.getProductVersion();
     }
 
     /**
@@ -81,7 +58,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public Integer getMajorVersion()
     {
-        return -1;
+        return RepositoryVersionHelper.getVersion(getVersion(), 0);
     }
 
     /**
@@ -91,7 +68,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public Integer getMinorVersion()
     {
-        return -1;
+        return RepositoryVersionHelper.getVersion(getVersion(), 1);
     }
 
     /**
@@ -101,7 +78,8 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public Integer getMaintenanceVersion()
     {
-        return -1;
+        int separator = RepositoryVersionHelper.getVersionString(getVersion(), 2).indexOf(' ');
+        return Integer.parseInt(RepositoryVersionHelper.getVersionString(getVersion(), 2).substring(0, separator));
     }
 
     /**
@@ -111,7 +89,8 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public String getBuildNumber()
     {
-        return null;
+        int separator = RepositoryVersionHelper.getVersionString(getVersion(), 2).indexOf(' ');
+        return RepositoryVersionHelper.getVersionString(getVersion(), 2).substring(separator);
     }
 
     /**
@@ -122,7 +101,25 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public String getEdition()
     {
-        return CloudConstant.ALFRESCO_EDITION_CLOUD;
+        if (repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR))
+        {
+            if (repositoryInfo.getProductName().endsWith(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE + ""))
+            {
+                return OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE;
+            }
+            else if (repositoryInfo.getProductName().endsWith(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY + ""))
+            {
+                return OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY;
+            }
+            else
+            {
+                return OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN;
+            }
+        }
+        else
+        {
+            return repositoryInfo.getProductName();
+        }
     }
 
     /**
@@ -132,7 +129,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
      */
     public boolean isAlfrescoProduct()
     {
-        return true;
+        return repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
     }
 
     @Override
@@ -140,7 +137,7 @@ public class CloudRepositoryInfoImpl implements RepositoryInfo
     {
         if (capabilities == null)
         {
-            capabilities = new CloudRepositoryCapabilitiesImpl();
+            capabilities = new OnPremiseRepositoryCapabilitiesImpl(this);
         }
         return capabilities;
     }

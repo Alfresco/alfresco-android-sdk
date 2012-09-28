@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.constant;
 
-public class ConfigurationConstant
+public interface ConfigurationConstant
 {
-    public static final String ONPREMISE_FILENAME = "onpremise-config.properties";
+    String ONPREMISE_FILENAME = "onpremise-config.properties";
 }

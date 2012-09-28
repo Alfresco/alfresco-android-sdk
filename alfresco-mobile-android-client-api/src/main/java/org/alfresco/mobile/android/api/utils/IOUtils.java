@@ -27,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Observable;
 
 import org.alfresco.mobile.android.api.model.ContentFile;
 
@@ -40,15 +39,17 @@ import android.util.Log;
  */
 public final class IOUtils
 {
+
     /*
      * Monitored input stream for progress feedback on a ContentFile object.
      * 
      *  @author Luke Jagger
      */
+
     static class MonitoredBufferedInputStream extends BufferedInputStream
-    {  
+    {
         ContentFile contentFile = null;
-        
+
         public MonitoredBufferedInputStream(InputStream in)
         {
             super(in);
@@ -59,7 +60,8 @@ public final class IOUtils
          * 
          * @param cf : ContentFile object to notify
          */
-        void setContentFile (ContentFile cf)
+
+        void setContentFile(ContentFile cf)
         {
             contentFile = cf;
         }
@@ -72,8 +74,10 @@ public final class IOUtils
         public synchronized int read() throws IOException
         {
             if (contentFile != null)
+            {
                 contentFile.fileReadCallback(1);
-            
+            }
+
             return super.read();
         }
 
@@ -85,10 +89,12 @@ public final class IOUtils
         public int read(byte[] b) throws IOException
         {
             int nBytes = super.read(b);
-            
+
             if (contentFile != null)
-                contentFile.fileReadCallback (nBytes);
-            
+            {
+                contentFile.fileReadCallback(nBytes);
+            }
+
             return nBytes;
         }
 
@@ -100,18 +106,14 @@ public final class IOUtils
         public synchronized int read(byte[] b, int off, int len) throws IOException
         {
             int nBytes = super.read(b, off, len);
-            
+
             if (contentFile != null)
-                contentFile.fileReadCallback (nBytes);
-            
+            {
+                contentFile.fileReadCallback(nBytes);
+            }
+
             return nBytes;
         }
-    }
-
-
-    private IOUtils()
-    {
-
     }
 
     public static final int MAX_BUFFER_SIZE = 1024;
@@ -139,10 +141,11 @@ public final class IOUtils
 
         int index = 1;
 
+        File tmpFile = file;
         while (index < 500)
         {
-            file = new File(file.getParentFile(), file.getName() + "-" + index);
-            if (!file.exists()) { return file; }
+            tmpFile = new File(tmpFile.getParentFile(), tmpFile.getName() + "-" + index);
+            if (!tmpFile.exists()) { return tmpFile; }
             index++;
         }
         return null;
@@ -165,21 +168,22 @@ public final class IOUtils
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static boolean copyFile(InputStream src, File dest) throws FileNotFoundException, IOException
+    public static boolean copyFile(InputStream src, File dest) throws IOException
     {
         ensureOrCreatePathAndFile(dest);
         return copyStream(src, new FileOutputStream(dest));
     }
 
-    public static boolean copyStream(InputStream src, OutputStream os) throws IOException
+    public static boolean copyStream(InputStream src, OutputStream osstream) throws IOException
     {
         BufferedOutputStream bos = null;
         MonitoredBufferedInputStream bis = null;
         boolean copied = true;
-        
+
         try
         {
-            bos = new BufferedOutputStream(os);
+
+            bos = new BufferedOutputStream(osstream);
             bis = new MonitoredBufferedInputStream(src);
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
@@ -187,9 +191,9 @@ public final class IOUtils
             int count;
             while ((count = bis.read(buffer)) != -1)
             {
-                os.write(buffer, 0, count);
+                bos.write(buffer, 0, count);
             }
-            os.flush();
+            bos.flush();
         }
         catch (IOException e)
         {
@@ -198,25 +202,23 @@ public final class IOUtils
         }
         finally
         {
+            closeStream(osstream);
             closeStream(src);
-            
-            if (bos != null)
-                closeStream(bos);
-            
-            if (bis != null)
-                closeStream(bis);
+            closeStream(bis);
         }
         return copied;
     }
 
     public static InputStream getContentFileInputStream(ContentFile contentFile)
     {
+
         try
         {
             if (contentFile != null)
             {
-                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(contentFile.getFile()));
-                mb.setContentFile (contentFile);
+                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(
+                        contentFile.getFile()));
+                mb.setContentFile(contentFile);
                 return mb;
             }
         }

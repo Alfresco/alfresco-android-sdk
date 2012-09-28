@@ -41,11 +41,4 @@ public class CloudCommentServiceTest extends CommentServiceTest
         docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
         Assert.assertNotNull(commentService);
     }
-    
-    @Override
-    public void testCommentsMethodsError()
-    {
-        super.testCommentsMethodsError();
-    }
-
 }

@@ -28,16 +28,18 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.impl.CloudRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.model.impl.cloud.CloudRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.SessionListener;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
+import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2AuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
@@ -64,7 +66,7 @@ public class CloudSessionImpl extends CloudSession
 
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
-    
+
     private SessionListener sessionListener;
 
     public CloudSessionImpl()
@@ -86,7 +88,7 @@ public class CloudSessionImpl extends CloudSession
         {
             parameters.put(USER, USER_ME);
         }
-        
+
         initSettings(CLOUD_URL, parameters);
 
         // Normal case : With OAuth data.
@@ -102,8 +104,11 @@ public class CloudSessionImpl extends CloudSession
             authenticate(null);
         }
         // Exception case : No authentication mechanism available
-        else { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "OAuthData")); }
+        else
+        {
+            throw new IllegalArgumentException(String.format(
+                    Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "OAuthData"));
+        }
     }
 
     /** Start the authentication proces. */
@@ -176,10 +181,6 @@ public class CloudSessionImpl extends CloudSession
                     .getAlfrescoAuthenticationProvider();
 
         }
-        catch (AlfrescoConnectionException e)
-        {
-            throw e;
-        }
         catch (Exception e)
         {
             throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
@@ -226,7 +227,7 @@ public class CloudSessionImpl extends CloudSession
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            //convertStatusCode(resp, ErrorCodeRegistry.SESSION_GENERIC);
+            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_GENERIC);
         }
 
         PublicAPIResponse response = new PublicAPIResponse(resp);
@@ -267,5 +268,14 @@ public class CloudSessionImpl extends CloudSession
     public SessionListener getSessionListener()
     {
         return sessionListener;
+    }
+
+    @Override
+    public void refreshToken(Object data)
+    {
+        if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider && data instanceof OAuthData)
+        {
+            ((OAuthAuthenticationProvider) authenticator).refreshOAuthData((OAuthData) data);
+        }
     }
 }

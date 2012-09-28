@@ -26,7 +26,7 @@ import android.view.View;
  */
 public class ViewHolder
 {
-    public ViewHolder(View v)
+    public ViewHolder(View view)
     {
         // TODO Auto-generated constructor stub
     }

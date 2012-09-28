@@ -40,8 +40,6 @@ import android.widget.TextView;
  */
 public class VersionsAdapter extends BaseListAdapter<Document, GenericVersionViewHolder>
 {
-    protected Document item;
-
     private Resources res;
 
     public VersionsAdapter(Activity context, int textViewResourceId, List<Document> listItems)

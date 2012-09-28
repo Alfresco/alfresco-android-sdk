@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -147,7 +147,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             // send
             post(url, formData.getContentType(), new HttpUtils.Output()
             {
-                public void write(OutputStream out) throws Exception
+                public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }

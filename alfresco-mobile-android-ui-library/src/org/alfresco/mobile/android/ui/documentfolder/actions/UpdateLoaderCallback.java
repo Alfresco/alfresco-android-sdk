@@ -67,7 +67,10 @@ public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCa
     @Override
     public Loader<LoaderResult<Node>> onCreateLoader(int id, Bundle args)
     {
-        if (mListener != null) mListener.beforeUpdate(node);
+        if (mListener != null)
+        {
+            mListener.beforeUpdate(node);
+        }
         if (properties != null)
         {
             return new NodeUpdateLoader(context, session, node, properties);

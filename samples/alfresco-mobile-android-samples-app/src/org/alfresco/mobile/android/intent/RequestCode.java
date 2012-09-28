@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.intent;
 
-public class RequestCode
+public interface RequestCode
 {
     //REQUEST CODE
-    public static final int REQUESTCODE_FILEPICKER = 128;
-    public static final int REQUESTCODE_SAVE_BACK = 129;
+    int REQUESTCODE_FILEPICKER = 128;
+    int REQUESTCODE_SAVE_BACK = 129;
 }

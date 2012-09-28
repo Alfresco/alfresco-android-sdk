@@ -75,7 +75,7 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
         return loader;
     }
 
-    @SuppressWarnings("rawtypes" )
+    @SuppressWarnings("rawtypes")
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<ActivityEntry>>> arg0,
             LoaderResult<PagingResult<ActivityEntry>> results)
@@ -86,7 +86,12 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
                     new ArrayList<ActivityEntry>(0));
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }
-        if (!checkException(results))
+        
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

@@ -66,9 +66,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     protected static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
-    protected static final String USER = "org.alfresco.mobile.credential.user";
+    protected static final String USER = "org.alfresco.mobile.internal.credential.user";
 
-    protected static final String PASSWORD = "org.alfresco.mobile.credential.password";
+    protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     protected static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
@@ -448,8 +448,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Reads the content from a content stream into a byte array.
+     * @throws IOException 
      */
-    protected String readContent(ContentStream contentStream) throws Exception
+    protected String readContent(ContentStream contentStream) throws IOException
     {
         assertNotNull(contentStream);
         assertNotNull(contentStream.getInputStream());
@@ -483,7 +484,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         return doc;
     }
 
-    protected Document createDocumentFromAsset(Folder root, String assetName) throws AlfrescoException
+    protected Document createDocumentFromAsset(Folder root, String assetName)
     {
         DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
 

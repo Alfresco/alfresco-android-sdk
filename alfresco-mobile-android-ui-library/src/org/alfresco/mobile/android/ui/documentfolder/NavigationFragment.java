@@ -119,7 +119,12 @@ public abstract class NavigationFragment extends BaseListFragment implements
             lc = copyListing(lcorigin);
             loadState = bundle.getInt(LOAD_STATE);
         }
-        f = (f != null) ? f : (Folder) alfSession.getRootFolder();
+        
+        if (f == null){
+            f = (Folder) alfSession.getRootFolder();
+        }
+        
+        //f = (f != null) ? f : (Folder) alfSession.getRootFolder();
         parentFolder = f;
 
         calculateSkipCount(lc);
@@ -172,7 +177,12 @@ public abstract class NavigationFragment extends BaseListFragment implements
             adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_item, new ArrayList<Node>(0),
                     selectedItems);
         }
-        if (!checkException(results))
+        
+        if (results.hasException())
+        {
+            onLoaderException(results.getException());
+        }
+        else
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

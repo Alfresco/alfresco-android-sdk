@@ -70,8 +70,6 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
 
     protected String vhClassName;
 
-    protected Map<String, Serializable> fragmentSettings;
-
     protected int dateFormatType = DISPLAY_DATE_RELATIVE;
 
     protected int iconItemType = DISPLAY_ICON_DEFAULT;

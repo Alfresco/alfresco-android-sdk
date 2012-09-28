@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
@@ -277,16 +278,22 @@ public class FolderTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_LATITUDE, 51.522543);
         properties.put(ContentModel.PROP_LONGITUDE, -0.716689);
 
-        DocumentFolderService docfolderservice = alfsession.getServiceRegistry().getDocumentFolderService();
         Folder folder = docfolderservice.createFolder(rootFolder, ROOT_TEST_FOLDER_NAME, properties);
 
         // Check Aspects
         Assert.assertNotNull(folder.getAspects());
+        
+        //Check getAspects results don't start with a P:
+        List<String> aspects = folder.getAspects();
+        for (String aspect : aspects)
+        {
+            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+        }
 
         // Titled + Localized + Geographic
         // Localized depends on alfresco version (3.4 no, >4 ok)
         int totalAspects = 2;
-        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED)) totalAspects += 1;
+        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED)){ totalAspects += 1;}
         Assert.assertEquals(totalAspects, folder.getAspects().size());
         Assert.assertTrue(folder.hasAspect(ContentModel.ASPECT_TITLED));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getTitle());

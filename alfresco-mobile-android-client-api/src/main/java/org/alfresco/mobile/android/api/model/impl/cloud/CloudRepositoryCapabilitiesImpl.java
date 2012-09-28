@@ -15,20 +15,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.session.authentication;
+package org.alfresco.mobile.android.api.model.impl.cloud;
+
+import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities;
 
 /**
- * Implementation of OAuth2 AuthenticationProvider.
+ * Cloud implementation of repositoryCapabilities
  * 
- * @author Jean Marie Pascal
+ * @author Jean Marie PASCAL
  */
-public interface OAuthAuthenticationProvider extends AuthenticationProvider
+public class CloudRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilities
 {
-    String getAcessToken();
-
-    String getRefreshToken();
-
-    OAuthData refreshToken();
-    
-    void refreshOAuthData(OAuthData data);
+    /**
+     * In cloud context, like and comment count are by default enable.
+     */
+    public CloudRepositoryCapabilitiesImpl()
+    {
+        capabilities.put(CAPABILITY_LIKE, true);
+        capabilities.put(CAPABILITY_COMMENTS_COUNT, true);
+    }
 }

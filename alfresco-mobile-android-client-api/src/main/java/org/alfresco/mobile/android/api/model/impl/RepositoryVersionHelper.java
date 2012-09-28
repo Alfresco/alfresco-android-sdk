@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.model.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 

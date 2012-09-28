@@ -114,9 +114,13 @@ public class DetailsFragment extends BaseFragment
             tv.setVisibility(View.VISIBLE);
             // Hardcoded... doesnt work with CMIS only
             if ("v0.0".equals(((Document) node).getVersionLabel()))
+            {
                 tv.setText("v1.0");
+            }
             else
+            {
                 tv.setText("v" + ((Document) node).getVersionLabel());
+            }
         }
         else
         {
@@ -127,14 +131,17 @@ public class DetailsFragment extends BaseFragment
         ImageView iv = (ImageView) v.findViewById(R.id.icon);
         iv.setImageResource(MimeTypeManager.getIcon(node.getName()));
         if (alfSession != null && node.isDocument() && ((Document) node).getContentStreamLength() > 0)
+        {
             renditionManager.display(iv, node, MimeTypeManager.getIcon(node.getName()));
+        }
 
         // PROPERTIES
         ViewGroup grouprootview = (ViewGroup) v.findViewById(R.id.properties);
         addRow(inflater, grouprootview, R.string.metadata_prop_title, node.getTitle());
         addRow(inflater, grouprootview, R.string.metadata_prop_description, node.getDescription());
         addRow(inflater, grouprootview, R.string.metadata_prop_creator, node.getCreatedBy());
-        addRow(inflater, grouprootview, R.string.metadata_prop_creationdate, node.getCreatedAt().getTime().toLocaleString());
+        addRow(inflater, grouprootview, R.string.metadata_prop_creationdate, node.getCreatedAt().getTime()
+                .toLocaleString());
         addRow(inflater, grouprootview, R.string.metadata_prop_modifier, node.getModifiedBy());
         addRow(inflater, grouprootview, R.string.metadata_prop_modificationdate, node.getModifiedAt().getTime()
                 .toLocaleString());
@@ -157,7 +164,7 @@ public class DetailsFragment extends BaseFragment
         }
 
         b = (Button) v.findViewById(R.id.display_all_versions);
-        //TODO Permission
+        // TODO Permission
         if (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_ALL_VERSIONS.value()))
         {
             b.setOnClickListener(new OnClickListener()

@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.samples.activity;
 
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.samples.ui.accounts.AccountDetailsFragment;
+import org.alfresco.mobile.android.samples.ui.accounts.LoginFragment;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -47,9 +47,9 @@ public class LoginScreenActivity extends CommonActivity
      */
     public void loadLoginFragmentForm()
     {
-        BaseFragment frag = new AccountDetailsFragment();
+        BaseFragment frag = new LoginFragment();
         frag.setSession(SessionUtils.getsession(this));
-        FragmentDisplayer.replaceFragment(this, frag, R.id.body, AccountDetailsFragment.TAG, false);
+        FragmentDisplayer.replaceFragment(this, frag, R.id.body, LoginFragment.TAG, false);
     }
 
 }

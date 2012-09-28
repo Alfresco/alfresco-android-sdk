@@ -47,8 +47,7 @@ public class TagLoaderCallback extends BaseLoaderCallback implements LoaderCallb
     @Override
     public Loader<LoaderResult<PagingResult<Tag>>> onCreateLoader(int id, Bundle args)
     {
-        TagsLoader tg = new TagsLoader(context, session, node);
-        return  tg;
+        return new TagsLoader(context, session, node);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class TagLoaderCallback extends BaseLoaderCallback implements LoaderCallb
 
     public interface OnLoaderListener
     {
-        public void afterLoading(PagingResult<Tag> tags);
+        void afterLoading(PagingResult<Tag> tags);
     }
     
     public void start(){

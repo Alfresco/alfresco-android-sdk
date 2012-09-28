@@ -62,6 +62,8 @@ import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.enums.IncludeRelationships;
 import org.apache.chemistry.opencmis.commons.enums.RelationshipDirection;
 
+import android.util.Log;
+
 /**
  * Simple read-only tests.
  * 
@@ -419,7 +421,7 @@ public abstract class AbstractSimpleReadOnlyTests extends AbstractCmisTestCase {
      * Tests some of the read-only methods of the Object Service.
      */
     private void checkObject(String objectId) {
-        System.out.println("Checking object " + objectId + "...");
+        Log.i(TAG, "Checking object " + objectId + "...");
 
         ObjectData object = getObject(objectId);
 
@@ -513,7 +515,7 @@ public abstract class AbstractSimpleReadOnlyTests extends AbstractCmisTestCase {
      * Tests some of the read-only methods of the Versioning Service.
      */
     private void checkObjectVersions(String objectId) {
-        System.out.println("Checking versions of object " + objectId + "...");
+        Log.i(TAG, "Checking versions of object " + objectId + "...");
 
         String versionSeriesId = getVersionSeriesId(objectId);
         //assertNotNull(versionSeriesId);
