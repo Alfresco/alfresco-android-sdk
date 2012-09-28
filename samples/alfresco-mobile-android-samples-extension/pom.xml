@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
 		<artifactId>afresco-mobile-android-sdk-samples</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android-samples-extension</artifactId>
