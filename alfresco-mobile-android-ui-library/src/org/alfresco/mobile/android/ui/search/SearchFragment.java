@@ -122,7 +122,7 @@ public abstract class SearchFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_item, new ArrayList<Node>(0), null);
+            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0), null);
         }
         ((NodeAdapter) adapter).setActivateThumbnail(activateThumbnail);
 

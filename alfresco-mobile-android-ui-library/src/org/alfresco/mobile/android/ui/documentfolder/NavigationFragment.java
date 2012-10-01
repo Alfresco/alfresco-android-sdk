@@ -174,7 +174,7 @@ public abstract class NavigationFragment extends BaseListFragment implements
 
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_item, new ArrayList<Node>(0),
+            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems);
         }
         

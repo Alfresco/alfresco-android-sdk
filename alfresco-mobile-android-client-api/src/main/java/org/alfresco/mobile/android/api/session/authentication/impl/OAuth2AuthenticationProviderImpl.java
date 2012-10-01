@@ -80,9 +80,15 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
     }
 
     @Override
-    public void refreshOAuthData(OAuthData data)
+    public void setOAuthData(OAuthData data)
     {
         this.token = data;
         retrieveAccessToken();
+    }
+
+    @Override
+    public OAuthData getOAuthData()
+    {
+        return token;
     }
 }

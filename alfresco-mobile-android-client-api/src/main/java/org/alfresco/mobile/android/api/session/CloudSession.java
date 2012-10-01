@@ -39,6 +39,8 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     // ///////////////////////////////////////////////
     /** Define a different cloud network. */
     public static final String CLOUD_NETWORK_ID = "org.alfresco.mobile.bindings.api.cloud.network.id";
+    
+    public static final String USER_ME = "-me-";
 
     /**
      * Connects to the Alfresco in the Cloud server in the context of the users
@@ -84,6 +86,16 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     public abstract CloudNetwork getNetwork();
     
     
-    public abstract void refreshToken(Object OAuthData);
+    /**
+     * Returns the OAuthData the session is currently using.
+     * @return
+     */
+    public abstract OAuthData getOAuthData();
+
+    /**
+    Sets the OAuthData object associated with the session, typically used after an access token has been refreshed.
+     * @param oauthData
+     */
+    public abstract void setOAuthData(OAuthData oauthData);
 
 }

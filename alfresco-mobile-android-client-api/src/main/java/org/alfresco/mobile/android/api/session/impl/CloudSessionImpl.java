@@ -62,8 +62,6 @@ public class CloudSessionImpl extends CloudSession
     /** Internal : Activate Basic Authentication. */
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
-    private static final String USER_ME = "-me-";
-
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
 
@@ -271,11 +269,22 @@ public class CloudSessionImpl extends CloudSession
     }
 
     @Override
-    public void refreshToken(Object data)
+    public void setOAuthData(OAuthData data)
     {
         if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider && data instanceof OAuthData)
         {
-            ((OAuthAuthenticationProvider) authenticator).refreshOAuthData((OAuthData) data);
+            ((OAuthAuthenticationProvider) authenticator).setOAuthData((OAuthData) data);
+        }
+    }
+    
+    @Override
+    public OAuthData getOAuthData()
+    {
+        if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider)
+        {
+            return ((OAuthAuthenticationProvider) authenticator).getOAuthData();
+        } else {
+            return null;
         }
     }
 }

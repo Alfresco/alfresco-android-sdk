@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.ui.oauth;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.ui.R;
@@ -43,6 +44,8 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
 {
 
     public static final String TAG = "OAuthFragment";
+
+    public static final String LAYOUT_ID = "OAuthLayoutId";
     
     private String apiKey;
 
@@ -53,18 +56,33 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     private String scope;
 
     private String code;
+    
+    private int layout_id = R.layout.sdk_oauth;
 
     private OnOAuthAccessTokenListener onOAuthAccessTokenListener;
+
     
     public OAuthFragment()
     {
     }
-
+    
+    public static Bundle createBundleArgs(int layoutId)
+    {
+        Bundle args = new Bundle();
+        args.putInt(LAYOUT_ID, layoutId);
+        return args;
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (container == null) { return null; }
-        View v = inflater.inflate(R.layout.sdk_oauth, container, false);
+        
+        if (getArguments() != null && getArguments().containsKey(LAYOUT_ID)){
+            layout_id = getArguments().getInt(LAYOUT_ID);
+        }
+        
+        View v = inflater.inflate(layout_id, container, false);
 
         this.apiKey = getText(R.string.oauth_api_key).toString();
         this.apiSecret = getText(R.string.oauth_api_secret).toString();

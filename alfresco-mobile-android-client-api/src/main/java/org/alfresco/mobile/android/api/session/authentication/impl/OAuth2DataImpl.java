@@ -57,6 +57,14 @@ public final class OAuth2DataImpl implements OAuthData, Parcelable
         this.apiKey = apikey;
         this.apiSecret = apiSecret;
     }
+    
+    public OAuth2DataImpl(String apikey, String apiSecret, String accessToken, String refreshToken)
+    {
+        this.apiKey = apikey;
+        this.apiSecret = apiSecret;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 
     public void parseTokenResponse(Map<String, Object> json)
     {

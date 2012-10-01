@@ -34,7 +34,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_block_border"
-            android:drawableLeft="@drawable/ic_alfresco"
+            android:drawableLeft="@drawable/ic_onpremise"
             android:onClick="onPremiseServer"
             android:text="@string/server_onpremise" />
 
@@ -42,7 +42,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_block_border"
-            android:drawableLeft="@drawable/ic_alfresco"
+            android:drawableLeft="@drawable/ic_cloud"
             android:onClick="onCloudServer"
             android:text="@string/server_cloud" />
     </LinearLayout>
