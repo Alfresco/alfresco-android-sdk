@@ -27,8 +27,18 @@ import java.io.File;
  */
 public interface ContentFile extends Content
 {
+    /**
+     * Callback for receiving progress feedback during transfer of the ContentFile
+     * 
+     * @param nBytes : Number of bytes read.
+     */
     void fileReadCallback (int nBytes);
-    
+
+    /**
+     * Callback for receiving progress feedback during transfer of the ContentFile
+     * 
+     * @param nBytes : Number of bytes written.
+     */
     void fileWriteCallback (int nBytes);
 
     /**
