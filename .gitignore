@@ -2,6 +2,7 @@
 bin
 gen
 lint.xml
+project.properties
 
 #Eclipse
 .project
@@ -21,3 +22,8 @@ gen-external-apklibs
 target
 release.properties
 pom.xml.*
+*.properties
+
+samples/alfresco-mobile-android-samples-app/project.properties
+
+tests/alfresco-mobile-android-unit-test-api/project.properties
