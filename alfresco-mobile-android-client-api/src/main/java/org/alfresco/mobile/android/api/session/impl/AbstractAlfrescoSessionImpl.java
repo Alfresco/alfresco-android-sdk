@@ -523,7 +523,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_CUSTOM_SERVICEREGISTRY, e);
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_SERVICEREGISTRY, e);
         }
         return s;
     }

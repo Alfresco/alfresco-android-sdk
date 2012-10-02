@@ -43,7 +43,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
     {
         try
         {
-            CloudSession.connect(null, null);
+            CloudSession.connect(null, (Map<String, Serializable>) null);
             Assert.fail();
         }
         catch (Exception e)

@@ -108,7 +108,7 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_CUSTOM_AUTHENTICATOR, e);
+            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
         }
         return s;
     }

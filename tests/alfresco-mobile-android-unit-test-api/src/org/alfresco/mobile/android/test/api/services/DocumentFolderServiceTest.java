@@ -678,7 +678,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -706,7 +706,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         try
@@ -775,7 +775,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -798,7 +798,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -821,7 +821,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -844,7 +844,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -867,7 +867,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -892,7 +892,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -1113,7 +1113,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
         // ////////////////////////////////////////////////////
@@ -1174,7 +1174,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
 
     }

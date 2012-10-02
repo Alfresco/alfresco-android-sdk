@@ -188,7 +188,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e.getErrorCode());
         }
 
         Folder tmpfolder = docfolderservice.createFolder(folder, FOREIGN_CHARACTER, null);

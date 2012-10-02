@@ -18,11 +18,15 @@
 package org.alfresco.mobile.android.test.api.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
@@ -137,12 +141,13 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // Check Aspects
         Assert.assertNotNull(doc.getAspects());
         Assert.assertTrue(doc.hasAspect(ContentModel.ASPECT_TITLED));
-        
-        //Check getAspects results don't start with a P:
+
+        // Check getAspects results don't start with a P:
         List<String> aspects = doc.getAspects();
         for (String aspect : aspects)
         {
-            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+            Assert.assertFalse("P: present in aspect " + aspect,
+                    aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
         }
 
         // UpdateDocument
@@ -189,7 +194,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e.getErrorCode());
         }
 
         // Try to update name with an existing name
@@ -202,7 +207,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e.getErrorCode());
+            Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e.getErrorCode());
         }
 
         // try to update with a wrong value
@@ -324,5 +329,129 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertFalse(permissions.canDelete());
             Assert.assertTrue(permissions.canEdit());
         }
+    }
+
+    /**
+     * Check permissions depending on user right.
+     */
+    @SuppressWarnings("unchecked")
+    public void testCustomModel()
+    {
+        Folder folder = createUnitTestFolder(alfsession);
+        Assert.assertNotNull(folder);
+
+        // Add one document
+        HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
+        properties.put(ContentModel.PROP_TITLE, SAMPLE_DOC_NAME);
+        properties.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION);
+
+        // CUSTOM TYPE
+        properties.put(PropertyIds.OBJECT_TYPE_ID, "D:fdk:everything");
+
+        // TEXT
+        properties.put("fdk:text", "This is text.");
+        List<String> list = new ArrayList<String>();
+        list.add("This is text 1.");
+        list.add("This is text 2.");
+        properties.put("fdk:textMultiple", (Serializable) list);
+        properties.put("fdk:mltext", "Ceci est un message.");
+
+        // DATE
+        // NOT WORKING !!
+        // Except Date format server side but it's serialize String !!
+        // properties.put("fdk:date", new Date());
+        // properties.put("fdk:dateTime", new Date());
+
+        // NUMBER
+        properties.put("fdk:int", 1);
+        properties.put("fdk:long", 2L);
+        properties.put("fdk:double", new Double(152.56));
+        properties.put("fdk:float", 0.345456f);
+
+        // BOOLEAN
+        properties.put("fdk:boolean", true);
+        
+        //ANY ==> NOT SUPPORTED
+        //properties.put("fdk:any", true);
+        
+        //QNAME ==> NOT SUPPORTED
+        //properties.put("fdk:qname", new QName("cm:folder"));
+        
+        // Unable to test NODEREF ==> NOT SUPPORTED
+        //properties.put("fdk:noderef", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+
+        // Unable to test CATEGORY ==> NOT SUPPORTED
+        //properties.put("fdk:category", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        
+        // Unable to test ASSOCREF ==> NOT SUPPORTED
+        //properties.put("fdk:childassocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        
+        // Unable to test ASSOCREF ==> NOT SUPPORTED
+        //properties.put("fdk:childassocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        //properties.put("fdk:assocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+
+        //Unable to test PATH ==> NOT SUPPORTED
+        //properties.put("fdk:path", "/1/2/3");
+        
+        //Unable to test PATH ==> NOT SUPPORTED
+        //properties.put("fdk:locale", new Locale("FR"));
+        
+        //Unable to test PERIOD ==> NOT SUPPORTED
+        //properties.put("fdk:period", new Date());
+        
+        //Specific Name
+        properties.put("fdk:duplicate", "duplicate");
+        properties.put("fdk:with_underscore", "with_underscore");
+        properties.put("fdk:with-dash", "with-dash");
+        properties.put("fdk:with.dot", "with.dot");
+        properties.put("fdk:mandatory", "mandatory"); //Not really mandatory...
+        
+        properties.put("fdk:listConstraint", "with.dot");
+
+        
+        //REGEX
+        properties.put("fdk:regexConstraint", "custom@alfresco.com");
+
+        //CREATE DOCUMENT
+        Document customDoc = docfolderservice.createDocument(folder, "fdkCompany", properties,
+                createContentFile(SAMPLE_DOC_NAME));
+
+        Assert.assertNotNull(customDoc);
+
+        // CUSTOM TYPE
+        Assert.assertFalse("D: present in type", customDoc.getType().startsWith("D:"));
+
+        // TEXT
+        Assert.assertEquals("This is text.", customDoc.getProperty("fdk:text").getValue());
+        Assert.assertTrue(customDoc.getProperty("fdk:textMultiple").isMultiValued());
+        Assert.assertEquals(2, ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).size());
+        Assert.assertEquals("This is text 1.",
+                ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).get(0));
+        Assert.assertEquals("This is text 2.",
+                ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).get(1));
+        Assert.assertEquals("Ceci est un message.",  customDoc.getProperty("fdk:mltext").getValue());
+
+
+        // NUMBER
+        Assert.assertEquals(new BigInteger("1"), customDoc.getProperty("fdk:int").getValue());
+        Assert.assertEquals(new BigInteger("2"), customDoc.getProperty("fdk:long").getValue());
+        Assert.assertEquals(0,
+                new BigDecimal("152.56").compareTo((BigDecimal) customDoc.getProperty("fdk:double").getValue()));
+        Assert.assertEquals(1,
+                new BigDecimal(0.345456f).compareTo((BigDecimal) customDoc.getProperty("fdk:float").getValue()));
+
+        // BOOLEAN
+        Assert.assertEquals(true, customDoc.getProperty("fdk:boolean").getValue());
+        
+        Assert.assertEquals("duplicate", customDoc.getProperty("fdk:duplicate").getValue());
+        Assert.assertEquals("with_underscore", customDoc.getProperty("fdk:with_underscore").getValue());
+        Assert.assertEquals("with-dash", customDoc.getProperty("fdk:with-dash").getValue());
+        Assert.assertEquals("with.dot", customDoc.getProperty("fdk:with.dot").getValue());
+        Assert.assertEquals("mandatory", customDoc.getProperty("fdk:mandatory").getValue());
+
+
+        //REGEX
+        Assert.assertEquals(customDoc.getProperty("fdk:regexConstraint").getValue(), "custom@alfresco.com");
+
     }
 }

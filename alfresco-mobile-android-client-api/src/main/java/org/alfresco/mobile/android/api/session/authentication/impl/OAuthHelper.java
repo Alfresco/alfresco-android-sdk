@@ -118,7 +118,7 @@ public final class OAuthHelper implements OAuthConstant
 
             if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
-                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED);
             }
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             data = new OAuth2DataImpl(apiKey, apiSecret);
@@ -150,7 +150,7 @@ public final class OAuthHelper implements OAuthConstant
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED);
         }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());

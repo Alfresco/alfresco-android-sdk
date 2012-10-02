@@ -56,11 +56,11 @@ public final class ExceptionHelper
         }
         catch (CmisContentAlreadyExistsException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_CONTENT_ALREADY_EXIST, e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e);
         }
         catch (CmisPermissionDeniedException e)
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION, e);
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e);
         }
         catch (CmisInvalidArgumentException e)
         {
@@ -125,7 +125,7 @@ public final class ExceptionHelper
         {
             if (er instanceof OAuthErrorContent)
             {
-                throw new AlfrescoConnectionException(ErrorCodeRegistry.GENERAL_OAUTH_DENIED, er);
+                throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED, er);
             }
             else
             {
