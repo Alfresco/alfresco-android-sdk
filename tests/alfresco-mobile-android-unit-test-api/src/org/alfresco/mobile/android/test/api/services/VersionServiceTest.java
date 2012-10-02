@@ -46,19 +46,15 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(docfolderservice);
     }
 
-    // TODO Sorting
-
     /**
-     * Test to check activities Stream
+     * Test to check VersionService
      * 
-     * @throws AlfrescoException
+     * @Requirement 57S1, 57S2, 57S3, 58F5, 58F6, 58F7, 58F8
      */
     public void testVersionService()
     {
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
-
-        // if (RepositoryVersionHelper.isAlfrescoProduct(alfsession)) return;
 
         // ///////////////////////////////////////////////////////////////////////////
         // Init data
@@ -107,7 +103,23 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("1.0", vDocument.getVersionLabel());
         Assert.assertFalse(vDocument.isLatestVersion());
         Assert.assertEquals("Initial Version", vDocument.getVersionComment());
+        
+        
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        List<Document> sDocs = session.getServiceRegistry().getVersionService().getVersions(doc);;
+        Assert.assertEquals(2, sDocs.size());
 
+        vDocument = sDocs.get(0);
+        Assert.assertNotNull(vDocument);
+        Assert.assertEquals("1.1", vDocument.getVersionLabel());
+        Assert.assertTrue(vDocument.isLatestVersion());
+        Assert.assertEquals("V:1", vDocument.getVersionComment());
+
+        vDocument = sDocs.get(1);
+        Assert.assertNotNull(vDocument);
+        Assert.assertEquals("1.0", vDocument.getVersionLabel());
+        Assert.assertFalse(vDocument.isLatestVersion());
+        Assert.assertEquals("Initial Version", vDocument.getVersionComment());
         // ///////////////////////////////////////////////////////////////////////////
         // PAging Version Service
         // ///////////////////////////////////////////////////////////////////////////
@@ -172,6 +184,23 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         // Incorrect Listing context
         // ////////////////////////////////////////////////////
         int totalItems = 10;
+
+        lc.setSortProperty("toto");
+        lc.setSkipCount(0);
+        lc.setMaxItems(10);
+        pagingVersions = versionService.getVersions(doc, lc);
+        Assert.assertNotNull(pagingVersions);
+        Assert.assertEquals(totalItems, pagingVersions.getTotalItems());
+        Assert.assertEquals(totalItems, pagingVersions.getList().size());
+        Assert.assertFalse(pagingVersions.hasMoreItems());
+        List<Document> documents = pagingVersions.getList();
+        Document previousDocument = documents.get(0);
+        for (Document pDoc : documents)
+        {
+            Assert.assertTrue(previousDocument.getVersionLabel().compareTo(pDoc.getVersionLabel()) >= 0);
+            previousDocument = pDoc;
+        }
+        
         // Incorrect settings in listingContext: Such as inappropriate
         // maxItems
         // (-1)
@@ -228,16 +257,37 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check VersionService methods error case.
+     * 
+     * @Requirement 57F1, 57F2, 58F1, 58F2, 58F3
      */
     public void testVersionServiceError()
     {
-        // Check Error List sites
+        
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
+        Folder deletedFolder = createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
+
+        
+        // ////////////////////////////////////////////////////
+        // getVersions()
+        // ////////////////////////////////////////////////////
         try
         {
-            Assert.assertNotNull(versionService.getVersions(null));
+            versionService.getVersions(null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        try
+        {
+            versionService.getVersions(deletedDocument);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
         {
             Assert.assertTrue(true);
         }
@@ -250,6 +300,33 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         try
         {
             session.getServiceRegistry().getVersionService().getVersions((Document) doc);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
+        }
+        
+        
+        // ////////////////////////////////////////////////////
+        // getVersions(lc)
+        // ////////////////////////////////////////////////////
+        ListingContext lc = new ListingContext();
+        lc.setSkipCount(0);
+        lc.setMaxItems(5);
+        try
+        {
+            versionService.getVersions(deletedDocument, lc);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        try
+        {
+            session.getServiceRegistry().getVersionService().getVersions((Document) doc, lc);
             Assert.fail();
         }
         catch (AlfrescoServiceException e)

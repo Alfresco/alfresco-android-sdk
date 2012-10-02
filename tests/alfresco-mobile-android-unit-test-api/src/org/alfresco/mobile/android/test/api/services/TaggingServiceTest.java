@@ -28,10 +28,12 @@ import junit.framework.Assert;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.NodeImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
@@ -71,10 +73,16 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
     /**
      * Simple test to check Alfresco Like Service.
      * 
-     * @throws AlfrescoServiceException
+     * @Requirement 52S2, 52S3, 52S4, 53S2, 53S3, 53S4, 53S5, 53S8, 53S11, 54S1,
+     *              54S2, 54S3, 56F6, 56F7, 56S1, 56S2, 56S3, 56S4, 56S6
      */
     public void testTaggingService()
     {
+
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        List<Tag> tags = session.getServiceRegistry().getTaggingService().getAllTags();
+        Assert.assertNotNull(tags);
+        Assert.assertTrue(tags.size() > 0);
 
         // ////////////////////////////////////////////////////
         // Init Data
@@ -90,7 +98,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // All Tags
         // ////////////////////////////////////////////////////
-        List<Tag> tags = taggingService.getAllTags();
+        tags = taggingService.getAllTags();
         Assert.assertNotNull(tags);
         Assert.assertTrue(tags.size() > 0);
 
@@ -115,9 +123,40 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(0, pagingTags.getList().size());
         Assert.assertFalse(pagingTags.hasMoreItems());
 
+        // To activate if sorting on tag
+        /*
+         * lc.setSkipCount(0); lc.setMaxItems(10); lc.setIsSortAscending(false);
+         * pagingTags = taggingService.getAllTags(lc);
+         * Assert.assertNotNull(pagingTags);
+         * Assert.assertEquals(getTotalItems(tags.size()),
+         * pagingTags.getTotalItems()); Assert.assertEquals(tags.size(),
+         * pagingTags.getList().size());
+         * Assert.assertFalse(pagingTags.hasMoreItems()); List<Tag> tagging =
+         * pagingTags.getList(); Tag previousTag = tagging.get(0); for (Tag tagg
+         * : tagging) {
+         * Assert.assertTrue(previousTag.getValue().compareTo(previousTag
+         * .getValue()) >= 0); previousTag = tagg; }
+         */
+
         // ////////////////////////////////////////////////////
         // Incorrect Listing context
         // ////////////////////////////////////////////////////
+        lc.setSortProperty("toto");
+        lc.setSkipCount(0);
+        lc.setMaxItems(10);
+        pagingTags = taggingService.getAllTags(lc);
+        Assert.assertNotNull(pagingTags);
+        Assert.assertEquals(getTotalItems(tags.size()), pagingTags.getTotalItems());
+        Assert.assertEquals(tags.size(), pagingTags.getList().size());
+        Assert.assertFalse(pagingTags.hasMoreItems());
+        List<Tag> tagging = pagingTags.getList();
+        Tag previousTag = tagging.get(0);
+        for (Tag tagg : tagging)
+        {
+            Assert.assertTrue(previousTag.getValue().compareTo(tagg.getValue()) <= 0);
+            previousTag = tagg;
+        }
+
         // Incorrect settings in listingContext: Such as inappropriate
         // maxItems
         // (-1)
@@ -158,8 +197,26 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(tags);
         Assert.assertEquals(0, tags.size());
 
-        // Add 3 tags
+        tagging = session.getServiceRegistry().getTaggingService().getTags(folder);
+        Assert.assertNotNull(tagging);
+        Assert.assertEquals(0, tagging.size());
+
+        // Add 1 tag
         List<String> addTags = new ArrayList<String>(3);
+        addTags.add("mobile");
+        taggingService.addTags(folder, addTags);
+
+        tags = taggingService.getTags(folder);
+        Assert.assertNotNull(tags);
+        Assert.assertEquals(1, tags.size());
+        
+        tagging = session.getServiceRegistry().getTaggingService().getTags(folder);
+        Assert.assertNotNull(tagging);
+        Assert.assertEquals(1, tagging.size());
+
+
+        // Add 2 tags
+        addTags = new ArrayList<String>(3);
         addTags(folder);
 
         tags = taggingService.getTags(folder);
@@ -247,19 +304,75 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(pagingTags.hasMoreItems());
 
         // ////////////////////////////////////////////////////
-        // Remove Tags
+        // ADD special character Tags
         // ////////////////////////////////////////////////////
+        addTags.clear();
+        addTags.add(FOREIGN_CHARACTER);
+        taggingService.addTags(folder, addTags);
+        
+        tags = taggingService.getTags(folder);
+        Assert.assertNotNull(tags);
+        Assert.assertEquals(5, tags.size());
+        //Assert.assertTrue(findTag(tags, FOREIGN_CHARACTER));
+        
+        addTags.clear();
+        addTags.add(FOREIGN_CHARACTER_DOUBLE_BYTE);
+        taggingService.addTags(folder, addTags);
+        
+        tags = taggingService.getTags(folder);
+        Assert.assertNotNull(tags);
+        Assert.assertEquals(6, tags.size());
+        //Assert.assertTrue(findTag(tags, FOREIGN_CHARACTER_DOUBLE_BYTE));
+        
+        addTags.clear();
+        addTags.add("123546");
+        addTags.add("$$^^##");
+        taggingService.addTags(folder, addTags);
+        
+        tags = taggingService.getTags(folder);
+        Assert.assertNotNull(tags);
+        Assert.assertEquals(8, tags.size());
+        Assert.assertTrue(findTag(tags, "123546"));
+        Assert.assertTrue(findTag(tags, "$$^^##"));
+
     }
 
     /**
      * Test to check siteService methods error case.
+     * 
+     * @Requirement 54F1, 54F2, 56F1, 56F2, 56F3, 56F4, 56F5
      */
     public void testTaggingServiceMethodsError()
     {
 
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
+        Folder deletedFolder = createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
+
         // ////////////////////////////////////////////////////
-        // Error on getSite()
+        // Error on getTags()
         // ////////////////////////////////////////////////////
+        try
+        {
+            taggingService.getTags(deletedDocument);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            taggingService.getTags(deletedFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
         try
         {
             taggingService.getTags(null);
@@ -287,6 +400,9 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         Assert.assertNotNull(session.getServiceRegistry().getTaggingService().getTags(doc));
 
+        // ////////////////////////////////////////////////////
+        // Error on addTags()
+        // ////////////////////////////////////////////////////
         try
         {
             taggingService.addTags(null, null);
@@ -361,7 +477,6 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         // Add 3 tags
         List<String> addTags = new ArrayList<String>(3);
         addTags.add("alfresco");
-        addTags.add("mobile");
         addTags.add("sdk");
 
         taggingService.addTags(folder, addTags);

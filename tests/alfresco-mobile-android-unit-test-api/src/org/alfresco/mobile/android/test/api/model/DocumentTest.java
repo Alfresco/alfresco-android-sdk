@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import junit.framework.Assert;
 
@@ -71,6 +70,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
     /**
      * Test to create a document. (Check properties, aspects and method)
+     * 
+     * @Requirement 25S1, 26S1, 26S2, 26S3, 26S4, 27S1, 27S2, 27S3, 27S4, 30S1,
+     *              30S2, 30S3, 30S4, 31F3, 31F4, 31F5, 33S1, 33S2, 33S3, 33S4,
+     *              33S5, 33S6, 33S7, 33S8, 33S9,
      */
     public void testDocumentMethod() throws Exception
     {
@@ -275,6 +278,11 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(tmpDoc);
         Assert.assertEquals("007", tmpDoc.getName());
         docfolderservice.deleteNode(tmpDoc);
+        
+        tmpDoc = docfolderservice.createDocument(folder, "007^^", null, null);
+        Assert.assertNotNull(tmpDoc);
+        Assert.assertEquals("007^^", tmpDoc.getName());
+        docfolderservice.deleteNode(tmpDoc);
 
         // Delete Document
         docfolderservice.deleteNode(doc);
@@ -284,6 +292,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
     /**
      * Check permissions depending on user right.
+     * 
+     * @Requirement 25S1, 25S2, 25S3, 25S4
      */
     public void testPermissions()
     {
@@ -332,7 +342,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
     }
 
     /**
-     * Check permissions depending on user right.
+     * Check custom properties.
      */
     @SuppressWarnings("unchecked")
     public void testCustomModel()
@@ -359,8 +369,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // DATE
         // NOT WORKING !!
         // Except Date format server side but it's serialize String !!
-        // properties.put("fdk:date", new Date());
-        // properties.put("fdk:dateTime", new Date());
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date());
+        properties.put("fdk:date", cal);
+        properties.put("fdk:dateTime", new Date());
 
         // NUMBER
         properties.put("fdk:int", 1);
@@ -370,49 +382,56 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
         // BOOLEAN
         properties.put("fdk:boolean", true);
-        
-        //ANY ==> NOT SUPPORTED
-        //properties.put("fdk:any", true);
-        
-        //QNAME ==> NOT SUPPORTED
-        //properties.put("fdk:qname", new QName("cm:folder"));
-        
+
+        // ANY ==> NOT SUPPORTED
+        // properties.put("fdk:any", true);
+
+        // QNAME ==> NOT SUPPORTED
+        // properties.put("fdk:qname", new QName("cm:folder"));
+
         // Unable to test NODEREF ==> NOT SUPPORTED
-        //properties.put("fdk:noderef", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        // properties.put("fdk:noderef",
+        // "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
 
         // Unable to test CATEGORY ==> NOT SUPPORTED
-        //properties.put("fdk:category", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
-        
-        // Unable to test ASSOCREF ==> NOT SUPPORTED
-        //properties.put("fdk:childassocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
-        
-        // Unable to test ASSOCREF ==> NOT SUPPORTED
-        //properties.put("fdk:childassocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
-        //properties.put("fdk:assocref", "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        // properties.put("fdk:category",
+        // "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
 
-        //Unable to test PATH ==> NOT SUPPORTED
-        //properties.put("fdk:path", "/1/2/3");
-        
-        //Unable to test PATH ==> NOT SUPPORTED
-        //properties.put("fdk:locale", new Locale("FR"));
-        
-        //Unable to test PERIOD ==> NOT SUPPORTED
-        //properties.put("fdk:period", new Date());
-        
-        //Specific Name
+        // Unable to test ASSOCREF ==> NOT SUPPORTED
+        // properties.put("fdk:childassocref",
+        // "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+
+        // Unable to test ASSOCREF ==> NOT SUPPORTED
+        // properties.put("fdk:childassocref",
+        // "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+        // properties.put("fdk:assocref",
+        // "workspace://SpacesStore/38b34c90-5a15-4c38-8b00-bc2886e7fd6b");
+
+        // Unable to test PATH ==> NOT SUPPORTED
+        // properties.put("fdk:path", "/1/2/3");
+
+        // Unable to test PATH ==> NOT SUPPORTED
+        // properties.put("fdk:locale", new Locale("FR"));
+
+        // Unable to test PERIOD ==> NOT SUPPORTED
+        // properties.put("fdk:period", new Date());
+
+        // Specific Name
         properties.put("fdk:duplicate", "duplicate");
         properties.put("fdk:with_underscore", "with_underscore");
         properties.put("fdk:with-dash", "with-dash");
         properties.put("fdk:with.dot", "with.dot");
-        properties.put("fdk:mandatory", "mandatory"); //Not really mandatory...
-        
-        properties.put("fdk:listConstraint", "with.dot");
+        properties.put("fdk:mandatory", "mandatory"); // Not really mandatory...
 
-        
-        //REGEX
+        // Specific Name
+        properties.put("fdk:listConstraint", "Phone");
+        properties.put("fdk:lengthConstraint", "12345");
+        properties.put("fdk:minmaxConstraint", "50"); // Int in model but string
+                                                      // to pass ?
         properties.put("fdk:regexConstraint", "custom@alfresco.com");
+        properties.put("fdk:capitalCity", "Paris, France");
 
-        //CREATE DOCUMENT
+        // CREATE DOCUMENT
         Document customDoc = docfolderservice.createDocument(folder, "fdkCompany", properties,
                 createContentFile(SAMPLE_DOC_NAME));
 
@@ -429,8 +448,12 @@ public class DocumentTest extends AlfrescoSDKTestCase
                 ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).get(0));
         Assert.assertEquals("This is text 2.",
                 ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).get(1));
-        Assert.assertEquals("Ceci est un message.",  customDoc.getProperty("fdk:mltext").getValue());
+        Assert.assertEquals("Ceci est un message.", customDoc.getProperty("fdk:mltext").getValue());
 
+        Assert.assertEquals(cal.getTimeInMillis(),
+                ((GregorianCalendar) customDoc.getProperty("fdk:date").getValue()).getTimeInMillis());
+        Assert.assertEquals(cal.getTimeInMillis(), ((GregorianCalendar) customDoc.getProperty("fdk:dateTime")
+                .getValue()).getTimeInMillis());
 
         // NUMBER
         Assert.assertEquals(new BigInteger("1"), customDoc.getProperty("fdk:int").getValue());
@@ -442,16 +465,20 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
         // BOOLEAN
         Assert.assertEquals(true, customDoc.getProperty("fdk:boolean").getValue());
-        
+
+        // Specific Name
         Assert.assertEquals("duplicate", customDoc.getProperty("fdk:duplicate").getValue());
         Assert.assertEquals("with_underscore", customDoc.getProperty("fdk:with_underscore").getValue());
         Assert.assertEquals("with-dash", customDoc.getProperty("fdk:with-dash").getValue());
         Assert.assertEquals("with.dot", customDoc.getProperty("fdk:with.dot").getValue());
         Assert.assertEquals("mandatory", customDoc.getProperty("fdk:mandatory").getValue());
 
-
-        //REGEX
-        Assert.assertEquals(customDoc.getProperty("fdk:regexConstraint").getValue(), "custom@alfresco.com");
+        // Constraints
+        Assert.assertEquals("Phone", customDoc.getProperty("fdk:listConstraint").getValue());
+        Assert.assertEquals("12345", customDoc.getProperty("fdk:lengthConstraint").getValue());
+        Assert.assertEquals("50", customDoc.getProperty("fdk:minmaxConstraint").getValue());
+        Assert.assertEquals("custom@alfresco.com", customDoc.getProperty("fdk:regexConstraint").getValue());
+        Assert.assertEquals("Paris, France", customDoc.getProperty("fdk:capitalCity").getValue());
 
     }
 }

@@ -52,7 +52,14 @@ public final class ExceptionHelper
         }
         catch (CmisConstraintException e)
         {
-            throw new IllegalArgumentException(e);
+            if (e.getMessage().contains("Conflict"))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e);
+            }
+            else
+            {
+                throw new IllegalArgumentException(e);
+            }
         }
         catch (CmisContentAlreadyExistsException e)
         {

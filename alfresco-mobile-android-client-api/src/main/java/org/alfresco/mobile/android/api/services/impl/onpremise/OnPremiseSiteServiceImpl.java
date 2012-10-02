@@ -117,6 +117,12 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         try
         {
             List<Site> result = getFavoriteSites();
+            
+            if (listingContext != null)
+            {
+                Collections.sort(result,
+                        new AlphaComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
+            }
 
             Boolean hasMoreItems = false;
             if (listingContext != null)

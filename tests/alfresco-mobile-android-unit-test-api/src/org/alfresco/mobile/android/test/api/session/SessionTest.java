@@ -112,6 +112,8 @@ public class SessionTest extends AlfrescoSDKTestCase
     /**
      * Simple test to create a session with basic parameters. </br> Check
      * repository informations, edition, version number.
+     * 
+     * @Requirement 22S1
      */
     public void testCreateSessionAndRepositoryInformation()
     {

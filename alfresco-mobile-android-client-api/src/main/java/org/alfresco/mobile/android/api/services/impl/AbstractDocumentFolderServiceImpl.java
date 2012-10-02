@@ -175,7 +175,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisObjectNotFoundException e)
         {
-            return null;
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (Exception e)
         {
@@ -373,7 +373,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisObjectNotFoundException e)
         {
-            return null;
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (Exception e)
         {

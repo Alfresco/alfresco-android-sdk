@@ -163,7 +163,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         {
             config.parseFile(ONPREMISE_CONFIG_PATH);
         }
-        
+
         Map<String, Serializable> tmp = parameters;
         RepositorySession session = null;
         try
@@ -174,8 +174,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             }
 
             String user = (tmp.containsKey(USER)) ? (String) tmp.remove(USER) : config.getUser();
-            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config
-                    .getPassword();
+            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config.getPassword();
             String url = (tmp.containsKey(BASE_URL)) ? (String) tmp.remove(BASE_URL) : config.getUrl();
 
             tmp.put(SessionParameter.CONNECT_TIMEOUT, "180000");
@@ -266,8 +265,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             }
 
             String user = (tmp.containsKey(USER)) ? (String) tmp.remove(USER) : config.getUser();
-            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config
-                    .getPassword();
+            String password = (tmp.containsKey(PASSWORD)) ? (String) tmp.remove(PASSWORD) : config.getPassword();
             String url = (tmp.containsKey(BASE_URL)) ? (String) tmp.remove(BASE_URL) : config.getUrl();
 
             tmp.put(SessionParameter.CONNECT_TIMEOUT, "180000");
@@ -446,9 +444,16 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         return cf;
     }
 
+    protected Document createDocument(Folder folder, String docName)
+    {
+        return alfsession.getServiceRegistry().getDocumentFolderService()
+                .createDocument(folder, docName, null, null);
+    }
+
     /**
      * Reads the content from a content stream into a byte array.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     protected String readContent(ContentStream contentStream) throws IOException
     {
@@ -482,6 +487,13 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         Document doc = createEmptyDocument(root, docName);
         alfsession.getServiceRegistry().getDocumentFolderService().deleteNode(doc);
         return doc;
+    }
+
+    protected Folder createDeletedFolder(Folder root, String folderName)
+    {
+        Folder folder = alfsession.getServiceRegistry().getDocumentFolderService().createFolder(root, folderName, null);
+        alfsession.getServiceRegistry().getDocumentFolderService().deleteNode(folder);
+        return folder;
     }
 
     protected Document createDocumentFromAsset(Folder root, String assetName)

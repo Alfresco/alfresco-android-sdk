@@ -65,6 +65,8 @@ public class FolderTest extends AlfrescoSDKTestCase
 
     /**
      * Test to create a folder. (Check properties, aspects and method)
+     * 
+     * @Requirement  32F4, 32S1, 32S2, 32S3, 32S4, 32S5, 32S6, 32S9
      */
     public void testFolderMethod()
     {
@@ -204,6 +206,11 @@ public class FolderTest extends AlfrescoSDKTestCase
         tmpfolder = docfolderservice.createFolder(folder, "007", null);
         Assert.assertNotNull(tmpfolder);
         Assert.assertEquals("007", tmpfolder.getName());
+        docfolderservice.deleteNode(tmpfolder);
+        
+        tmpfolder = docfolderservice.createFolder(folder, "007^", null);
+        Assert.assertNotNull(tmpfolder);
+        Assert.assertEquals("007^", tmpfolder.getName());
         docfolderservice.deleteNode(tmpfolder);
 
         // Delete folder
