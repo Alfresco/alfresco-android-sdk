@@ -174,10 +174,10 @@ public interface ErrorCodeRegistry
     // ///////////////////////////////////
     // SEARCH ERRORS
     // ///////////////////////////////////
-    /** Generic error code for all PersonService. */
+    /** Generic error code for SearchService. */
     int SEARCH_GENERIC = 900;
 
-    /** Generic error code for all PersonService. */
+    /** Unsupported search language. */
     int SEARCH_LANGUAGE_NOT_SUPPORTED = 901;
 
     // ///////////////////////////////////
