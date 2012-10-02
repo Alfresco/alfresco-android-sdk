@@ -986,6 +986,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** Alfresco OpenCMIS extension prefix for all aspects. */
     public static final String CMISPREFIX_ASPECTS = "P:";
+    public static final String CMISPREFIX_DOCUMENT = "D:";
+    public static final String CMISPREFIX_FOLDER = "F:";
+
 
     /** All CMIS properties identifier in one list. */
     private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();
