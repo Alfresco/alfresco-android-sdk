@@ -79,7 +79,7 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Tag>(0));
+            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Tag>(0));
         }
         
         if (checkException(results))

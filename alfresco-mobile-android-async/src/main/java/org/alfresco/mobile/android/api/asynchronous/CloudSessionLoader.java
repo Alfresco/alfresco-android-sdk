@@ -20,9 +20,12 @@ package org.alfresco.mobile.android.api.asynchronous;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
 import android.content.Context;
 
@@ -35,15 +38,28 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
 {
     public static final int ID = CloudSessionLoader.class.hashCode();
 
+    public static final String USER = "org.alfresco.mobile.internal.credential.user";
+
     private Map<String, Serializable> settings;
 
     private OAuthData oauthData;
 
+    private boolean requestNewRefreshToken = false;
+
+    private Person userPerson;
+
     public CloudSessionLoader(Context context, OAuthData oauthData, Map<String, Serializable> settings)
+    {
+        this(context, oauthData, settings, false);
+    }
+
+    public CloudSessionLoader(Context context, OAuthData oauthData, Map<String, Serializable> settings,
+            boolean requestNewRefreshToken)
     {
         super(context);
         this.settings = settings;
         this.oauthData = oauthData;
+        this.requestNewRefreshToken = requestNewRefreshToken;
     }
 
     @Override
@@ -54,7 +70,17 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
 
         try
         {
+            if (requestNewRefreshToken)
+            {
+                oauthData = OAuthHelper.refreshToken(oauthData);
+            }
+            
             cloudSession = CloudSession.connect(oauthData, settings);
+            
+            if (settings.containsKey(USER) && settings.get(USER) == CloudSession.USER_ME)
+            {
+                userPerson = cloudSession.getServiceRegistry().getPersonService().getPerson(CloudSession.USER_ME);
+            }
         }
         catch (Exception e)
         {
@@ -64,5 +90,15 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
         result.setData(cloudSession);
 
         return result;
+    }
+
+    public OAuthData getOAuthData()
+    {
+        return oauthData;
+    }
+
+    public Person getUser()
+    {
+        return userPerson;
     }
 }

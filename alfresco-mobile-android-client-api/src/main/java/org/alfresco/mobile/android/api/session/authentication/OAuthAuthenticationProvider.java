@@ -30,5 +30,7 @@ public interface OAuthAuthenticationProvider extends AuthenticationProvider
 
     OAuthData refreshToken();
     
-    void refreshOAuthData(OAuthData data);
+    void setOAuthData(OAuthData data);
+
+    OAuthData getOAuthData();
 }

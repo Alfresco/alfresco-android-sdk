@@ -17,11 +17,17 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.documentfolder.listener;
 
+import java.io.Serializable;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.model.ContentFile;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 
 public interface OnNodeCreateListener
 {
-    void beforeContentCreation(String name);
+    void beforeContentCreation(Folder parentFolder, String name, Map<String, Serializable> props,
+            ContentFile contentFile);
 
     void afterContentCreation(Node node);
 }

@@ -74,6 +74,8 @@ public abstract class SitesFragment extends BaseListFragment implements
             if (bundle.containsKey(ARGUMENT_USER_FAV_SITES))
             {
                 favorite = bundle.getBoolean(ARGUMENT_USER_FAV_SITES);
+            } else {
+                favorite = null;
             }
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
@@ -94,7 +96,7 @@ public abstract class SitesFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new SiteAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Site>(0));
+            adapter = new SiteAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Site>(0));
         }
         if (checkException(results))
         {

@@ -42,7 +42,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class CreateFolderDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Folder>>
+public abstract class CreateFolderDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Folder>>
 {
 
     public static final String TAG = "CreateFolderDialogFragment";
@@ -136,7 +136,8 @@ public class CreateFolderDialogFragment extends BaseFragment implements LoaderCa
         props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
         if (onCreateListener != null)
         {
-            onCreateListener.beforeContentCreation(args.getString(ARGUMENT_FOLDER_NAME));
+            onCreateListener.beforeContentCreation((Folder) getArguments().get(ARGUMENT_FOLDER),
+                    args.getString(ARGUMENT_FOLDER_NAME), props, null);
         }
         return new FolderCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
                 args.getString(ARGUMENT_FOLDER_NAME), props);

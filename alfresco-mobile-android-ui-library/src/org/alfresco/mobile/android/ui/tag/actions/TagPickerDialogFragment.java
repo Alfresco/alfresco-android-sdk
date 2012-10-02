@@ -171,7 +171,7 @@ public class TagPickerDialogFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_checkeditem, new ArrayList<Tag>(0), selectedTags);
+            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_checked_row, new ArrayList<Tag>(0), selectedTags);
         }
         displayPagingData(results.getData(), loaderId, callback);
     }

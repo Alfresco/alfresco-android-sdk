@@ -41,6 +41,8 @@ public final class OAuthHelper implements OAuthConstant
     private static final String PARAM_REDIRECT_ID = "redirect_uri";
 
     private static final String PARAM_RESPONSE_TYPE = "response_type";
+    
+    private static final String PARAM_REFRESH_TOKEN = "refresh_token";
 
     private static final String PARAM_SCOPE = "scope";
 
@@ -49,6 +51,8 @@ public final class OAuthHelper implements OAuthConstant
     private static final String RESPONSE_TYPE_CODE = "code";
 
     private static final String GRANT_TYPE_AUTH_CODE = "authorization_code";
+    
+    private static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
     private static final String FORMAT = "application/x-www-form-urlencoded";
 
@@ -114,7 +118,7 @@ public final class OAuthHelper implements OAuthConstant
 
             if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
-                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED);
             }
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             data = new OAuth2DataImpl(apiKey, apiSecret);
@@ -138,14 +142,15 @@ public final class OAuthHelper implements OAuthConstant
         UrlBuilder builder = new UrlBuilder(TOKEN_URL);
 
         Map<String, String> params = new HashMap<String, String>();
+        params.put(PARAM_REFRESH_TOKEN, data.getRefreshToken());
         params.put(PARAM_CLIENT_ID, data.getApiKey());
         params.put(PARAM_CLIENT_SECRET, data.getApiSecret());
-        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
+        params.put(PARAM_GRANT_TYPE, GRANT_TYPE_REFRESH_TOKEN);
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.GENERAL_OAUTH_DENIED);
+            ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED);
         }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());

@@ -17,17 +17,6 @@
    limitations under the License.
 -->
 <resources>
-
-    <!-- =============================================================== -->
-    <!-- COLOR -->
-    <!-- =============================================================== -->
-    <color name="back_toolbar">#111111</color>
-    <color name="center_toolbar">#404040</color>
-    <color name="top_toolbar">#6A6A6A</color>
-    <color name="title_separator">#40ffffff</color>
-    <color name="emphasis">#31b6e7</color>
-    <color name="bg_gray">#cecbce</color>
-
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
@@ -67,16 +56,6 @@
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
-    </style>
-    
-     <style name="sectionHeader" parent="android:Widget.Holo.Light.TextView">
-        <item name="android:drawableBottom">@drawable/section_header</item>
-        <item name="android:drawablePadding">4dp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/emphasis</item>
-        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

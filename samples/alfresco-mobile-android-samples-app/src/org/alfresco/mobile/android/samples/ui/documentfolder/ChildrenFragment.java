@@ -18,12 +18,15 @@
 package org.alfresco.mobile.android.samples.ui.documentfolder;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
+import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -155,7 +158,7 @@ public class ChildrenFragment extends NavigationFragment
 
         if (adapter == null)
         {
-            adapter = new CustomNodeAdapter(getActivity(), alfSession, R.layout.sdk_list_item, new ArrayList<Node>(0),
+            adapter = new CustomNodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems);
         }
 
@@ -255,7 +258,14 @@ public class ChildrenFragment extends NavigationFragment
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
             @Override
-            public void beforeContentCreation(String name)
+            public void afterContentCreation(Node node)
+            {
+                mProgressDialog.dismiss();
+                refresh();
+            }
+
+            @Override
+            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
                 mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
                         true, new OnCancelListener()
@@ -266,13 +276,7 @@ public class ChildrenFragment extends NavigationFragment
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
                             }
                         });
-            }
 
-            @Override
-            public void afterContentCreation(Node node)
-            {
-                mProgressDialog.dismiss();
-                refresh();
             }
         });
 
@@ -304,7 +308,14 @@ public class ChildrenFragment extends NavigationFragment
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
             @Override
-            public void beforeContentCreation(String name)
+            public void afterContentCreation(Node node)
+            {
+                mProgressDialog.dismiss();
+                refresh();
+            }
+
+            @Override
+            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
                 mProgressDialog = ProgressDialog.show(getActivity(), getActivity().getText(R.string.dialog_wait),
                         getActivity().getText(R.string.contact_server_progress), true, true, new OnCancelListener()
@@ -315,13 +326,6 @@ public class ChildrenFragment extends NavigationFragment
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
                             }
                         });
-            }
-
-            @Override
-            public void afterContentCreation(Node node)
-            {
-                mProgressDialog.dismiss();
-                refresh();
             }
         });
 

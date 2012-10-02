@@ -82,7 +82,7 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new ActivityEventAdapter(getActivity(), alfSession, R.layout.sdk_list_item,
+            adapter = new ActivityEventAdapter(getActivity(), alfSession, R.layout.sdk_list_row,
                     new ArrayList<ActivityEntry>(0));
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }

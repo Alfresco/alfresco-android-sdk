@@ -93,7 +93,7 @@ public abstract class CommentFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new CommentAdapter(getActivity(), alfSession, R.layout.sdk_list_comment,
+            adapter = new CommentAdapter(getActivity(), alfSession, R.layout.sdk_list_comment_row,
                     new ArrayList<Comment>(0));
         }
         if (checkException(results))

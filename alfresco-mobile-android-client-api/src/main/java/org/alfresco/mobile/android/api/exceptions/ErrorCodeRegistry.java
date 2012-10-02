@@ -35,16 +35,13 @@ public interface ErrorCodeRegistry
     int GENERAL_HTTP_RESP = 1;
 
     /** Something happens wrong with the filesystem. */
-    int GENERAL_IO = 2;
-    
+    int GENERAL_IO = 4;
+
     /** Node not found. */
-    int GENERAL_NODE_NOT_FOUND = 3;
-    
+    int GENERAL_NODE_NOT_FOUND = 2;
+
     /** Access Denied / No rights. */
-    int GENERAL_ACCESS_DENIED = 4;
-    
-    /** Access Denied / No rights. */
-    int GENERAL_OAUTH_DENIED = 99;
+    int GENERAL_ACCESS_DENIED = 3;
 
     // ///////////////////////////////////
     // SESSION ERRORS
@@ -52,18 +49,32 @@ public interface ErrorCodeRegistry
     /** Generic error for all session error. */
     int SESSION_GENERIC = 100;
 
-    int SESSION_NO_REPOSITORY = 101;
+    /** The user credentials provided are not authorized to access the server */
+    int SESSION_UNAUTHORIZED = 101;
 
-    int SESSION_UNAUTHORIZED = 102;
+    /** API key or secret were not recognised. */
+    int SESSION_API_KEYS_INVALID = 102;
+
+    /** Authorization code is invalid or expired. */
+    int SESSION_AUTH_CODE_INVALID = 102;
+
+    /** Access token has expired. */
+    int SESSION_ACCESS_TOKEN_EXPIRED = 104;
+
+    /** The Refresh token has expired */
+    int SESSION_REFRESH_TOKEN_EXPIRED = 105;
+
+    /** The server connected to does not contain any repositories. */
+    int SESSION_NO_REPOSITORY = 106;
 
     /** No network found for the specific user. */
-    int SESSION_NO_NETWORK_FOUND = 103;
+    int SESSION_NO_NETWORK_FOUND = 107;
 
-    /** An error happens during the creation of custom authenticator. */
-    int SESSION_CUSTOM_AUTHENTICATOR = 105;
+    /** An error happens during the creation of authenticator. */
+    int SESSION_AUTHENTICATOR = 108;
 
-    /** An error happens during the creation of custom service registry. */
-    int SESSION_CUSTOM_SERVICEREGISTRY = 106;
+    /** An error happens during the creation of service registry. */
+    int SESSION_SERVICEREGISTRY = 109;
 
     // ///////////////////////////////////
     // PARSING ERRORS
@@ -71,8 +82,14 @@ public interface ErrorCodeRegistry
     /** Generic Parsing Error. */
     int PARSING_GENERIC = 200;
 
-    /** JsonData Empty. */
+    /** The response does not contain JSON data. */
     int PARSING_JSONDATA_EMPTY = 201;
+
+    /** The “entry” object is missing from the JSON response. */
+    int PARSING_ENTRY_TAG_MISSED = 203;
+
+    /** The “entries” object is missing from the JSON response. */
+    int PARSING_ENTRIES_TAG_MISSED = 204;
 
     // ///////////////////////////////////
     // COMMENTS ERRORS
@@ -80,11 +97,20 @@ public interface ErrorCodeRegistry
     /** Generic error code for all commentService. */
     int COMMENT_GENERIC = 300;
 
+    /** Failed to retrieve comment. */
+    int COMMENT_NO_COMMENT = 301;
+
     // ///////////////////////////////////
     // SITE ERRORS
     // ///////////////////////////////////
     /** Generic error code for all siteService. */
     int SITE_GENERIC = 400;
+
+    /** The document library for the site could not be found. */
+    int SITE_DOCLIB_NOTFOUND = 401;
+
+    /** The site could not be found. */
+    int SITE_NOTFOUND = 402;
 
     // ///////////////////////////////////
     // ACTIVITI STREAM ERRORS
@@ -92,47 +118,46 @@ public interface ErrorCodeRegistry
     /** Generic error code for all ActivitstreamService. */
     int ACTIVITISTREAM_GENERIC = 500;
 
+    int ACTIVITISTREAM_NOT_FOUND = 501;
+
     // ///////////////////////////////////
     // DOCUMENT FOLDER ERRORS
     // ///////////////////////////////////
     /** Generic error code for all Document Folder Service. */
     int DOCFOLDER_GENERIC = 600;
 
-    /** Failed to retrieve permissions for node. */
-    // int DOCFOLDER_PERMISSIONS = 601;
+    /** Node Already Exist. */
+    int DOCFOLDER_NODE_ALREADY_EXIST = 601;
 
-    /** Failed to convert folder. */
-    // int DOCFOLDER_FOLDER_NULL = 602;
-
-    /** No parent node found. */
-    // int DOCFOLDER_NO_PARENT = 603;
-
-    /** You don't have the permission to execute this action. */
-    int DOCFOLDER_NO_PERMISSION = 604;
-
-    /** Failed to convert node. */
-    // int DOCFOLDER_DOCUMENT_NULL = 605;
-
-    /** Node not found */
-    // int DOCFOLDER_NODE_NOT_FOUND = 606;
-    
     /**
      * Wrong node type. A folder/Document has been returned instead of
      * document/folder.
      */
-    int DOCFOLDER_WRONG_NODE_TYPE = 607;
+    int DOCFOLDER_WRONG_NODE_TYPE = 602;
+
+    /** Failed to retrieve permissions for node. */
+    int DOCFOLDER_PERMISSIONS = 603;
+
+    /** Failed to convert folder. */
+    int DOCFOLDER_FOLDER_NULL = 604;
+
+    /** No parent node found. */
+    int DOCFOLDER_PARENT_NOT_FOUND = 605;
+
+    /** Failed to convert node. */
+    int DOCFOLDER_CONVERT_NODE_FAILED = 606;
 
     /** Rendition not found / Not authorized. */
-    // int DOCFOLDER_NO_RENDITION = 608;
-
-    /** Content Already Exist. */
-    int DOCFOLDER_CONTENT_ALREADY_EXIST = 609;
+    int DOCFOLDER_NO_RENDITION = 607;
 
     // ///////////////////////////////////
     // TAGGING ERRORS
     // ///////////////////////////////////
     /** Generic error code for all TaggingService. */
     int TAGGING_GENERIC = 700;
+
+    /** Failed to retrieve tags. */
+    int TAGGING_TAG_NOT_FOUND = 701;
 
     // ///////////////////////////////////
     // PERSON ERRORS
@@ -141,13 +166,19 @@ public interface ErrorCodeRegistry
     int PERSON_GENERIC = 800;
 
     /** Person not found */
-    int PERSON_NOT_FOUND = 802;
+    int PERSON_NOT_FOUND = 801;
+
+    /** Person not found */
+    int PERSON_AVATAR_NOT_FOUND = 802;
 
     // ///////////////////////////////////
     // SEARCH ERRORS
     // ///////////////////////////////////
-    /** Generic error code for all PersonService. */
+    /** Generic error code for SearchService. */
     int SEARCH_GENERIC = 900;
+
+    /** Unsupported search language. */
+    int SEARCH_LANGUAGE_NOT_SUPPORTED = 901;
 
     // ///////////////////////////////////
     // RATINGS ERRORS

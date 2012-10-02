@@ -36,9 +36,7 @@ import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment;
 import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment.onTagPickerListener;
-import org.alfresco.mobile.android.ui.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.ProgressNotification;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
@@ -60,7 +58,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class CreateDocumentDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Document>>
+public abstract class CreateDocumentDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "CreateContentDialogFragment";
 
@@ -155,31 +153,6 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
                     }
                     b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
                 }
-
-                if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
-                {
-                    // Initiate progress notification
-
-                    Bundle progressBundle = new Bundle();
-                    ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-
-                    if (f.getClass() == ContentFileProgressImpl.class)
-                    {
-                        ((ContentFileProgressImpl) f).setFilename(tv.getText().toString());
-                        progressBundle.putString("name", tv.getText().toString());
-                    }
-                    else
-                    {
-                        progressBundle.putString("name", f.getFile().getName());
-                    }
-
-                    progressBundle.putInt("dataSize", (int) f.getFile().length());
-                    progressBundle.putInt("dataIncrement", (int) (f.getFile().length() / 10));
-
-                    ProgressNotification.createProgressNotification(getActivity(), progressBundle, getActivity()
-                            .getClass());
-                }
-
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
                 getLoaderManager().initLoader(DocumentCreateLoader.ID, b, CreateDocumentDialogFragment.this);
                 getLoaderManager().getLoader(DocumentCreateLoader.ID).forceLoad();
@@ -236,7 +209,8 @@ public class CreateDocumentDialogFragment extends BaseFragment implements Loader
         props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
         if (onCreateListener != null)
         {
-            onCreateListener.beforeContentCreation(args.getString(ARGUMENT_CONTENT_NAME));
+            onCreateListener.beforeContentCreation((Folder) getArguments().get(ARGUMENT_FOLDER),
+                    args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
         }
 
         return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),

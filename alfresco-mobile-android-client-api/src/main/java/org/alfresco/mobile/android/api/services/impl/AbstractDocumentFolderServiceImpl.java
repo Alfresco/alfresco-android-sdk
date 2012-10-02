@@ -617,7 +617,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     private void delete(Document document)
     {
         Permissions perm = getPermissions(document);
-        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION,
+        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
                 Messagesl18n.getString("ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION")); }
 
         try
@@ -637,7 +637,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     private void delete(Folder folder)
     {
         Permissions perm = getPermissions(folder);
-        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION,
+        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
                 Messagesl18n.getString("DocumentFolderService.24")); }
         try
         {
@@ -986,6 +986,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** Alfresco OpenCMIS extension prefix for all aspects. */
     public static final String CMISPREFIX_ASPECTS = "P:";
+    public static final String CMISPREFIX_DOCUMENT = "D:";
+    public static final String CMISPREFIX_FOLDER = "F:";
+
 
     /** All CMIS properties identifier in one list. */
     private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();

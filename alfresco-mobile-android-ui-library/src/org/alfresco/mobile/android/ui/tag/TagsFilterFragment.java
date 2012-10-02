@@ -137,7 +137,7 @@ public abstract class TagsFilterFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_checkeditem, new ArrayList<Tag>(0),
+            adapter = new TagsAdapter(getActivity(), R.layout.sdk_list_checked_row, new ArrayList<Tag>(0),
                     selectedTags);
         }
         if (checkException(results))

@@ -120,6 +120,15 @@ public class NodeImpl implements Node
      */
     public String getType()
     {
+        if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
+        {
+            return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
+                    AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+        }
+        else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER)) { return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                .replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, ""); }
         return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
     }
 
