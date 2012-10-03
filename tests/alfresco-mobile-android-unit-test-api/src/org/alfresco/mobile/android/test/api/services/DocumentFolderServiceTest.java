@@ -257,8 +257,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getTitle() + " " + pagingResult.getList().get(9).getTitle(),
-                pagingResult.getList().get(0).getTitle().compareTo(pagingResult.getList().get(9).getTitle()) < 0);
+        if (isAlfrescoV4())
+        { // Error on 3.4
+            Assert.assertTrue(
+                    pagingResult.getList().get(0).getTitle() + " " + pagingResult.getList().get(9).getTitle(),
+                    pagingResult.getList().get(0).getTitle().compareTo(pagingResult.getList().get(9).getTitle()) < 0);
+        }
 
         lc.setIsSortAscending(false);
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
@@ -701,12 +705,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 Assert.assertEquals("2.6", doc.getPropertyValue(ContentModel.PROP_FNUMBER).toString());
                 Assert.assertEquals("3.43", doc.getPropertyValue(ContentModel.PROP_FOCAL_LENGTH).toString());
                 Assert.assertEquals("google", doc.getPropertyValue(ContentModel.PROP_MANUFACTURER).toString());
-                Assert.assertEquals("72.0", doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString());
-                Assert.assertEquals("72.0", doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString());
+                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString())
+                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString()));
+                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString())
+                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString()));
                 Assert.assertEquals("6", doc.getPropertyValue(ContentModel.PROP_ORIENTATION).toString());
 
-                Assert.assertEquals("48.0", doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString());
-                Assert.assertEquals("2.0", doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString());
+                Assert.assertTrue("48.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
+                        || "48".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
+                Assert.assertTrue("2.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
+                        || "2".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
             }
             else
             {
@@ -1143,7 +1151,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             docfolderservice.getRendition(unitTestFolder, DocumentFolderService.RENDITION_THUMBNAIL);
-            Assert.fail();
+            if (isOnPremise())
+            {
+                Assert.fail();
+            }
         }
         catch (AlfrescoServiceException e)
         {

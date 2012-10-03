@@ -26,14 +26,11 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.ServerConfigFile;
-import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.util.Log;
 
