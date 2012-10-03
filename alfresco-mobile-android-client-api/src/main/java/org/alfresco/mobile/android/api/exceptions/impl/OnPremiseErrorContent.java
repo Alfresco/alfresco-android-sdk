@@ -26,24 +26,33 @@ import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * OnPremise Implementation of AlfrescoErrorContent.
+ * OnPremiseErrorContent is the OnPremise implementation of
+ * {@link AlfrescoErrorContent}. It transforms JSON error content from an
+ * Alfresco Server 3.4 or less into an object.
  * 
  * @author Jean Marie Pascal
  */
 public class OnPremiseErrorContent implements AlfrescoErrorContent
 {
+
+    /** The HTTP error code. */
     private int code;
 
-    private String name;
-
-    private String description;
-
+    /** The message. */
     private String message;
 
+    /** The exception raised by the server. */
     private String exception;
 
+    /** The callstack. */
     private String callstack;
 
+    /**
+     * Parses the json.
+     * 
+     * @param errorContentValue the error content value
+     * @return the on premise error content
+     */
     @SuppressWarnings("unchecked")
     public static OnPremiseErrorContent parseJson(String errorContentValue)
     {
@@ -61,8 +70,6 @@ public class OnPremiseErrorContent implements AlfrescoErrorContent
 
         Map<String, Object> jo = (Map<String, Object>) json.get(OnPremiseConstant.STATUS_VALUE);
         errorContent.code = JSONConverter.getInteger(jo, OnPremiseConstant.CODE_VALUE).intValue();
-        errorContent.name = JSONConverter.getString(jo, OnPremiseConstant.DELETE_VALUE);
-        errorContent.description = JSONConverter.getString(jo, OnPremiseConstant.DELETE_VALUE);
 
         errorContent.message = JSONConverter.getString(json, OnPremiseConstant.MESSAGE_VALUE);
         errorContent.exception = JSONConverter.getString(json, OnPremiseConstant.EXCEPTION_VALUE);
@@ -74,31 +81,29 @@ public class OnPremiseErrorContent implements AlfrescoErrorContent
         return errorContent;
     }
 
+    /** {@inheritDoc} */
     public int getCode()
     {
         return code;
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
+    /** {@inheritDoc} */
     public String getMessage()
     {
         return message;
     }
 
+    /**
+     * Gets the exception.
+     * 
+     * @return the exception
+     */
     public String getException()
     {
         return exception;
     }
 
+    /** {@inheritDoc} */
     public String getStackTrace()
     {
         return callstack;

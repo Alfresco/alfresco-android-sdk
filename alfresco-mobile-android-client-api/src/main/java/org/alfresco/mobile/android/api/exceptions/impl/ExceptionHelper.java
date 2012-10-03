@@ -35,18 +35,33 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedExce
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.http.HttpStatus;
 
+/**
+ * The Class ExceptionHelper helps to transform and wrap exceptions from
+ * OpenCMIS or general exception into an {@link AlfrescoServiceException}.
+ * 
+ * @author Jean Marie Pascal
+ */
 public final class ExceptionHelper
 {
 
+    /**
+     * Instantiates a new exception helper.
+     */
     private ExceptionHelper()
     {
     }
 
-    public static void convertException(Exception t)
+    /**
+     * Convert exception into AlfrescoServiceException.
+     * 
+     * @param exception the underlying exception from OpenCMIS or generic
+     *            exception.
+     */
+    public static void convertException(Exception exception)
     {
         try
         {
-            throw t;
+            throw exception;
         }
         catch (AlfrescoException e)
         {
@@ -104,6 +119,14 @@ public final class ExceptionHelper
         }
     }
 
+    /**
+     * Convert an HTTP error response (404 instead of 200 for example) into a
+     * generic exception.
+     * 
+     * @param session the Alfresco session associated to the exception.
+     * @param resp the HTTP response from the server.
+     * @param serviceErrorCode the service error code associated.
+     */
     public static void convertStatusCode(AlfrescoSession session, HttpUtils.Response resp, int serviceErrorCode)
     {
         AlfrescoErrorContent er = null;
