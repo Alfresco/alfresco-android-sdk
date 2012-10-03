@@ -25,6 +25,7 @@ package org.alfresco.mobile.android.api.exceptions;
 public abstract class AlfrescoException extends RuntimeException implements ErrorCodeRegistry
 {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** Content the of the error page returned by server. */
@@ -33,11 +34,14 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
     /** Error Code. */
     private int errorCode;
     
+    /** The alfresco error content object associated to the exception. */
     private AlfrescoErrorContent alfrescoErrorContent;
 
 
     /**
      * Default constructor.
+     *
+     * @param detailsMessage the details message from the exception
      */
     protected AlfrescoException(String detailsMessage)
     {
@@ -46,6 +50,9 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
 
     /**
      * Default constructor.
+     *
+     * @param errorCode Mobile SDK error code
+     * @param throwable Associated exception
      */
     protected AlfrescoException(int errorCode, Throwable throwable)
     {
@@ -65,12 +72,24 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
         this.errorContent = errorContent;
     }
 
+    /**
+     * Instantiates a new alfresco exception.
+     *
+     * @param errorCode Mobile SDK error code
+     * @param message Specific message associated to this error.
+     */
     public AlfrescoException(int errorCode, String message)
     {
         super(message);
         this.errorCode = errorCode;
     }
 
+    /**
+     * Instantiates a new alfresco exception.
+     *
+     * @param errorCode Mobile SDK  code
+     * @param errorContent Information from server side.
+     */
     public AlfrescoException(int errorCode, AlfrescoErrorContent errorContent)
     {
         super(errorContent.getMessage());
@@ -79,10 +98,10 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
     }
 
     /**
-     * Returns the content of the error page sent by the server
-     * 
+     * Returns the content of the error page sent by the server.
+     *
      * @return the content of the error page or <code>null</code> if the server
-     *         didn't send text content.
+     * didn't send text content.
      */
     public String getErrorContent()
     {
@@ -99,12 +118,11 @@ public abstract class AlfrescoException extends RuntimeException implements Erro
         return errorCode;
     }
 
-    @Override
-    public String getLabelErrorCode(int errorCode)
-    {
-        return null;
-    }
-
+    /**
+     * Gets the alfresco error content associated to the exception.
+     *
+     * @return the Alfresco error content
+     */
     public AlfrescoErrorContent getAlfrescoErrorContent()
     {
         return alfrescoErrorContent;

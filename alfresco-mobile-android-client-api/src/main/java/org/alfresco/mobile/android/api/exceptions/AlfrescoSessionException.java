@@ -26,33 +26,42 @@ package org.alfresco.mobile.android.api.exceptions;
  */
 public class AlfrescoSessionException extends AlfrescoException
 {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The Constant EXCEPTION_NAME. */
     public static final String EXCEPTION_NAME = "AlfrescoConnectionException";
 
     /**
      * Default constructor.
+     *
+     * @param errorCode the error code
+     * @param e the e
      */
-   /* public AlfrescoConnectionException(String detailsMessage)
-    {
-        super(detailsMessage);
-    }*/
 
     public AlfrescoSessionException(int errorCode, Throwable e)
     {
         super(errorCode, e);
     }
 
-   /* public AlfrescoConnectionException(String message, String errorContent)
-    {
-        super(message, errorContent);
-    }*/
-    
+    /**
+     * Instantiates a new alfresco session exception.
+     *
+     * @param errorCode Mobile SDK error code
+     * @param message the message associated to this exception.
+     */
     public AlfrescoSessionException(int errorCode, String message)
     {
         super(errorCode, message);
     }
     
+    /**
+     * Instantiates a new alfresco session exception.
+     *
+     * @param errorCode Mobile SDK error code
+     * @param content AlfrescoErrorContent object associated to this exception
+     */
     public AlfrescoSessionException(int errorCode, AlfrescoErrorContent content)
     {
         super(errorCode, content);
