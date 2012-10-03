@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -53,7 +53,8 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedExce
 public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 {
 
-    public static final String CACHE_FOLDER_PATH = "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache";
+    /** Default Value of cache folder for the session. */
+    public static final String DEFAULT_CACHE_FOLDER_PATH = "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache";
 
     protected String baseUrl;
 
@@ -76,6 +77,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
     /** Authentication Provider. */
     protected AuthenticationProvider authenticator;
 
+    /** Default CMIS wrapper to use Alfresco Authenticator. */
     protected org.apache.chemistry.opencmis.commons.spi.AuthenticationProvider passThruAuthenticator;
 
     // ////////////////////////
@@ -132,7 +134,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         // default cache storage
         if (!tmpSettings.containsKey(CACHE_FOLDER))
         {
-            tmpSettings.put(CACHE_FOLDER, CACHE_FOLDER_PATH);
+            tmpSettings.put(CACHE_FOLDER, DEFAULT_CACHE_FOLDER_PATH);
         }
 
         if (!tmpSettings.containsKey(SessionParameter.AUTHENTICATION_PROVIDER_CLASS))
@@ -158,45 +160,74 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
 
     private ListingContext lc;
 
-    /**
-     * Allow to add some extra parameters as settings to modify behaviour of the
-     * session. Settings provide session configuration parameters e.g. cache
-     * settings, default paging values, custom Authentication Providers,
-     * ordering etc. <br>
-     * 
-     * @param key : All Public parameters are available at
-     *            {@link org.alfresco.mobile.android.api.session.SessionSettings
-     *            SessionSettings}
-     * @param value : Value associated to the specific setting value.
-     */
+    /** {@inheritDoc} */
     public void addParameter(String key, Serializable value)
     {
-        userParameters.put(key, value);
+        if (key == null || key.isEmpty()) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "key")); }
+
+        checkParameter(key, value);
     }
 
+    /** {@inheritDoc} */
     public void addParameters(Map<String, Serializable> parameters)
     {
-        userParameters.putAll(parameters);
+        if (parameters == null) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "key")); }
+
+        for (Map.Entry<String, Serializable> map : parameters.entrySet())
+        {
+            addParameter(map.getKey(), map.getValue());
+        }
     }
 
+    /** {@inheritDoc} */
     public boolean hasParameter(String key)
     {
+        if (userParameters == null) { return false; }
         return userParameters.containsKey(key);
     }
 
+    /** {@inheritDoc} */
     public Serializable getParameter(String key)
     {
+        if (userParameters == null) { return null; }
         return userParameters.get(key);
     }
 
+    /** {@inheritDoc} */
     public void removeParameter(String key)
     {
-        userParameters.remove(key);
+        checkRemoveParameter(key);
     }
 
+    /** {@inheritDoc} */
     public List<String> getParameterKeys()
     {
+        if (userParameters == null) { return null; }
         return new ArrayList<String>(userParameters.keySet());
+    }
+
+    /**
+     * 
+     */
+    private void checkParameter(String key, Serializable value)
+    {
+        if (LISTING_MAX_ITEMS.equals(key) && value instanceof Integer && ((Integer) value) > 0)
+        {
+            userParameters.put(key, value);
+            lc = createListingContext();
+        }
+        userParameters.put(key, value);
+    }
+    
+    private void checkRemoveParameter(String key){
+        if (LISTING_MAX_ITEMS.equals(key))
+        {
+            userParameters.remove(key);
+            lc = createListingContext();
+        }
+        userParameters.remove(key);
     }
 
     /**
@@ -212,7 +243,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         return sessionParameters;
     }
 
-    public void init()
+    private void init()
     {
         int type = BINDING_TYPE_ALFRESCO_CMIS;
         if (hasParameter(BINDING_TYPE))
@@ -346,11 +377,11 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         catch (CmisPermissionDeniedException e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
     }
 
@@ -369,11 +400,11 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         catch (CmisPermissionDeniedException e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e);
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
     }
 
@@ -385,6 +416,11 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         this.repositoryInfo = null;
         this.rootNode = null;
         this.services = null;
+        this.userIdentifier = null;
+        this.password = null;
+        this.sessionParameters = null;
+        this.userParameters = null;
+        this.baseUrl = null;
     }
 
     // ///////////////////////////////////////////////
@@ -477,20 +513,13 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         return passThruAuthenticator;
     }
 
-    /**
-     * @return Returns the current default listing parameters for filtering,
-     *         paging and caching.
-     */
+    /** {@inheritDoc} */
     public ListingContext getDefaultListingContext()
     {
         return lc;
     }
 
-    /**
-     * Return all services available with this repository.
-     * 
-     * @return Service Provider associated to the session.
-     */
+    /** {@inheritDoc} */
     public ServiceRegistry getServiceRegistry()
     {
         return services;
@@ -523,7 +552,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_SERVICEREGISTRY, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_SERVICEREGISTRY, e);
         }
         return s;
     }

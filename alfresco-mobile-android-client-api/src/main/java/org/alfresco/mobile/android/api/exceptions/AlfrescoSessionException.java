@@ -24,7 +24,7 @@ package org.alfresco.mobile.android.api.exceptions;
  * 
  * @author Jean Marie Pascal
  */
-public class AlfrescoConnectionException extends AlfrescoException
+public class AlfrescoSessionException extends AlfrescoException
 {
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public class AlfrescoConnectionException extends AlfrescoException
         super(detailsMessage);
     }*/
 
-    public AlfrescoConnectionException(int errorCode, Throwable e)
+    public AlfrescoSessionException(int errorCode, Throwable e)
     {
         super(errorCode, e);
     }
@@ -48,12 +48,12 @@ public class AlfrescoConnectionException extends AlfrescoException
         super(message, errorContent);
     }*/
     
-    public AlfrescoConnectionException(int errorCode, String message)
+    public AlfrescoSessionException(int errorCode, String message)
     {
         super(errorCode, message);
     }
     
-    public AlfrescoConnectionException(int errorCode, AlfrescoErrorContent content)
+    public AlfrescoSessionException(int errorCode, AlfrescoErrorContent content)
     {
         super(errorCode, content);
     }

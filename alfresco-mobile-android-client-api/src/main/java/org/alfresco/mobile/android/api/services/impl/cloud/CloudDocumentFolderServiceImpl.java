@@ -30,6 +30,7 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Rendition;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
@@ -55,6 +56,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String type)
     {
+        org.alfresco.mobile.android.api.model.ContentStream cf = null;
         try
         {
             String internalRenditionType = RENDITION_CMIS_THUMBNAIL;
@@ -67,7 +69,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             String renditionIdentifier = getRendition(identifier, internalRenditionType);
             if (renditionIdentifier == null) { return null; }
 
-            org.alfresco.mobile.android.api.model.ContentStream cf;
+            
             // Second getData
             UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
                     renditionIdentifier));
@@ -86,13 +88,16 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
                 cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader() + ";" + resp.getCharset(),
                         (resp.getContentLength() != null) ? resp.getContentLength().longValue() : -1);
             }
-            return cf;
+        }
+        catch (CmisObjectNotFoundException e)
+        {
+            cf = null;
         }
         catch (Exception e)
         {
             convertException(e);
         }
-        return null;
+        return cf;
     }
 
     /** Constant to retrieve cmis:thumbnail data inside the atompub response. */

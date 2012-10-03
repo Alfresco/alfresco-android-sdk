@@ -132,68 +132,74 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             }
 
             // ////////////////////////////////////////////////////
-            // Sort Order
+            // Sort Order : Only available onPremise
             // ////////////////////////////////////////////////////
-            lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
-            lc.setIsSortAscending(true);
-            lc.setMaxItems(10);
-            pagingSites = siteService.getAllSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            Site previousSite = sites.get(0);
-            for (Site site : sites)
+            Site previousSite = null;
+            if (isOnPremise())
             {
-                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
-                previousSite = site;
-            }
+                lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
+                lc.setIsSortAscending(true);
+                lc.setMaxItems(10);
+                pagingSites = siteService.getAllSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
+                    previousSite = site;
+                }
 
-            lc.setIsSortAscending(false);
-            pagingSites = siteService.getAllSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
-            {
-                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
-                previousSite = site;
-            }
+                lc.setIsSortAscending(false);
+                pagingSites = siteService.getAllSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
+                    previousSite = site;
+                }
 
-            lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
-            lc.setIsSortAscending(false);
-            pagingSites = siteService.getAllSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
-            {
-                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
-                previousSite = site;
-            }
+                lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
+                lc.setIsSortAscending(false);
+                pagingSites = siteService.getAllSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
+                    previousSite = site;
+                }
 
-            // ////////////////////////////////////////////////////
-            // Incorrect Listing context
-            // ////////////////////////////////////////////////////
-            lc.setSortProperty("toto");
-            lc.setIsSortAscending(true);
-            lc.setMaxItems(10);
-            pagingSites = siteService.getAllSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
-            {
-                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
-                previousSite = site;
+                // ////////////////////////////////////////////////////
+                // Incorrect Listing context
+                // ////////////////////////////////////////////////////
+                lc.setSortProperty("toto");
+                lc.setIsSortAscending(true);
+                lc.setMaxItems(10);
+                pagingSites = siteService.getAllSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                if (isOnPremise())
+                {
+                    previousSite = sites.get(0);
+                    for (Site site : sites)
+                    {
+                        Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
+                        previousSite = site;
+                    }
+                }
             }
-
             // Incorrect settings in listingContext: Such as inappropriate
             // maxItems
             // (-1)
@@ -306,72 +312,82 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
             sites = session.getServiceRegistry().getSiteService().getSites();
             Assert.assertNotNull(sites);
-            Assert.assertEquals(1, sites.size());
-            validateSite(sites.get(0), ONPREMISE_SITENAME, null, SiteVisibility.PRIVATE);
-
-            // ////////////////////////////////////////////////////
-            // Sort Order
-            // ////////////////////////////////////////////////////
-            lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
-            lc.setIsSortAscending(true);
-            lc.setMaxItems(10);
-            pagingSites = siteService.getSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            Site previousSite = sites.get(0);
+            int nb = (isOnPremise()) ? 1 : 2;
+            Assert.assertEquals(nb, sites.size());
             for (Site site : sites)
             {
-                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
-                previousSite = site;
-            }
-
-            lc.setIsSortAscending(false);
-            pagingSites = siteService.getSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
-            {
-                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
-                previousSite = site;
-            }
-
-            lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
-            lc.setIsSortAscending(false);
-            pagingSites = siteService.getSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
-            {
-                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
-                previousSite = site;
+                if (ONPREMISE_SITENAME.equalsIgnoreCase(site.getShortName()))
+                {
+                    validateSite(site, ONPREMISE_SITENAME, null, SiteVisibility.PRIVATE);
+                }
             }
 
             // ////////////////////////////////////////////////////
-            // Incorrect Listing context
+            // Sort Order : Only Onpremise
             // ////////////////////////////////////////////////////
-            lc.setSortProperty("toto");
-            lc.setIsSortAscending(true);
-            lc.setMaxItems(10);
-            pagingSites = siteService.getSites(lc);
-            Assert.assertNotNull(pagingSites);
-            Assert.assertEquals(totalItems, pagingSites.getTotalItems());
-            Assert.assertFalse(pagingSites.hasMoreItems());
-            sites = pagingSites.getList();
-            previousSite = sites.get(0);
-            for (Site site : sites)
+            Site previousSite = null;
+            if (isOnPremise())
             {
-                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
-                previousSite = site;
-            }
+                lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
+                lc.setIsSortAscending(true);
+                lc.setMaxItems(10);
+                pagingSites = siteService.getSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
+                    previousSite = site;
+                }
 
+                lc.setIsSortAscending(false);
+                pagingSites = siteService.getSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
+                    previousSite = site;
+                }
+
+                lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
+                lc.setIsSortAscending(false);
+                pagingSites = siteService.getSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
+                    previousSite = site;
+                }
+
+                // ////////////////////////////////////////////////////
+                // Incorrect Listing context
+                // ////////////////////////////////////////////////////
+                lc.setSortProperty("toto");
+                lc.setIsSortAscending(true);
+                lc.setMaxItems(10);
+                pagingSites = siteService.getSites(lc);
+                Assert.assertNotNull(pagingSites);
+                Assert.assertEquals(totalItems, pagingSites.getTotalItems());
+                Assert.assertFalse(pagingSites.hasMoreItems());
+                sites = pagingSites.getList();
+                previousSite = sites.get(0);
+                for (Site site : sites)
+                {
+                    Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
+                    previousSite = site;
+                }
+            }
             // ////////////////////////////////////////////////////
             // Incorrect Listing context
             // ////////////////////////////////////////////////////
@@ -432,64 +448,67 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Sort Order
         // ////////////////////////////////////////////////////
-        lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
-        lc.setIsSortAscending(true);
-        lc.setMaxItems(10);
-        pagingSites = siteService.getFavoriteSites(lc);
-        Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(4, pagingSites.getTotalItems());
-        Assert.assertFalse(pagingSites.hasMoreItems());
-        sites = pagingSites.getList();
-        Site previousSite = sites.get(0);
-        for (Site site : sites)
+        if (isOnPremise())
         {
-            Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
-            previousSite = site;
-        }
+            lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
+            lc.setIsSortAscending(true);
+            lc.setMaxItems(10);
+            pagingSites = siteService.getFavoriteSites(lc);
+            Assert.assertNotNull(pagingSites);
+            Assert.assertEquals(4, pagingSites.getTotalItems());
+            Assert.assertFalse(pagingSites.hasMoreItems());
+            sites = pagingSites.getList();
+            Site previousSite = sites.get(0);
+            for (Site site : sites)
+            {
+                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
+                previousSite = site;
+            }
 
-        lc.setIsSortAscending(false);
-        pagingSites = siteService.getFavoriteSites(lc);
-        Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(4, pagingSites.getTotalItems());
-        Assert.assertFalse(pagingSites.hasMoreItems());
-        sites = pagingSites.getList();
-        previousSite = sites.get(0);
-        for (Site site : sites)
-        {
-            Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
-            previousSite = site;
-        }
+            lc.setIsSortAscending(false);
+            pagingSites = siteService.getFavoriteSites(lc);
+            Assert.assertNotNull(pagingSites);
+            Assert.assertEquals(4, pagingSites.getTotalItems());
+            Assert.assertFalse(pagingSites.hasMoreItems());
+            sites = pagingSites.getList();
+            previousSite = sites.get(0);
+            for (Site site : sites)
+            {
+                Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
+                previousSite = site;
+            }
 
-        lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
-        lc.setIsSortAscending(false);
-        pagingSites = siteService.getFavoriteSites(lc);
-        Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(4, pagingSites.getTotalItems());
-        Assert.assertFalse(pagingSites.hasMoreItems());
-        sites = pagingSites.getList();
-        previousSite = sites.get(0);
-        for (Site site : sites)
-        {
-            Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
-            previousSite = site;
-        }
+            lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
+            lc.setIsSortAscending(false);
+            pagingSites = siteService.getFavoriteSites(lc);
+            Assert.assertNotNull(pagingSites);
+            Assert.assertEquals(4, pagingSites.getTotalItems());
+            Assert.assertFalse(pagingSites.hasMoreItems());
+            sites = pagingSites.getList();
+            previousSite = sites.get(0);
+            for (Site site : sites)
+            {
+                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
+                previousSite = site;
+            }
 
-        // ////////////////////////////////////////////////////
-        // Incorrect Listing context
-        // ////////////////////////////////////////////////////
-        lc.setSortProperty("toto");
-        lc.setIsSortAscending(true);
-        lc.setMaxItems(10);
-        pagingSites = siteService.getFavoriteSites(lc);
-        Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(4, pagingSites.getTotalItems());
-        Assert.assertFalse(pagingSites.hasMoreItems());
-        sites = pagingSites.getList();
-        previousSite = sites.get(0);
-        for (Site site : sites)
-        {
-            Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
-            previousSite = site;
+            // ////////////////////////////////////////////////////
+            // Incorrect Listing context
+            // ////////////////////////////////////////////////////
+            lc.setSortProperty("toto");
+            lc.setIsSortAscending(true);
+            lc.setMaxItems(10);
+            pagingSites = siteService.getFavoriteSites(lc);
+            Assert.assertNotNull(pagingSites);
+            Assert.assertEquals(4, pagingSites.getTotalItems());
+            Assert.assertFalse(pagingSites.hasMoreItems());
+            sites = pagingSites.getList();
+            previousSite = sites.get(0);
+            for (Site site : sites)
+            {
+                Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
+                previousSite = site;
+            }
         }
 
         // ////////////////////////////////////////////////////
@@ -502,7 +521,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         lc.setMaxItems(-1);
         pagingSites = siteService.getFavoriteSites(lc);
         Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(getTotalItems(4), pagingSites.getTotalItems());
+        Assert.assertEquals(4, pagingSites.getTotalItems());
         Assert.assertEquals(4, pagingSites.getList().size());
         Assert.assertFalse(pagingSites.hasMoreItems());
 
@@ -513,7 +532,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         lc.setMaxItems(0);
         pagingSites = siteService.getFavoriteSites(lc);
         Assert.assertNotNull(pagingSites);
-        Assert.assertEquals(getTotalItems(4), pagingSites.getTotalItems());
+        Assert.assertEquals(4, pagingSites.getTotalItems());
         Assert.assertEquals(4, pagingSites.getList().size());
         Assert.assertFalse(pagingSites.hasMoreItems());
 

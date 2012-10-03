@@ -725,9 +725,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
      *              17F2, 18F1, 18F3, 20F1, 20F2, 23F1, 23F2, 23S1, 24F1, 24F2,
      *              24F3, 25F1, 25F2, 26F1, 26F2, 27F1, 27F2, 28F1, 28F2, 28F3,
      *              28F4, 29F1, 29F2, 29F3, 29F4, 30F1, 30F3, 31F1, 31F2, 31F6,
-     *              32F1, 32F2, 32F3, 32F5, 32F6, 32F7, 32F8, 32F9, 32F10, 32F11,
-     *              32F12, 32F13, 32F15, 33F1, 33F2, 33F3, 33F4, 33F5, 33F6, 33F7,
-     *              33F8, 33F9, 33F10, 33F11, 33F12, 33F13,
+     *              32F1, 32F2, 32F3, 32F5, 32F6, 32F7, 32F8, 32F9, 32F10,
+     *              32F11, 32F12, 32F13, 32F15, 33F1, 33F2, 33F3, 33F4, 33F5,
+     *              33F6, 33F7, 33F8, 33F9, 33F10, 33F11, 33F12, 33F13,
      */
     public void testDocumentFolderMethodsError()
     {
@@ -972,7 +972,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             docfolderservice.getParentFolder(deletedFolder);
-            Assert.fail();
+            if (isAlfrescoV4() || !isOnPremise())
+            {
+                Assert.fail();
+            }
         }
         catch (AlfrescoServiceException e)
         {
@@ -1118,8 +1121,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Error on getRendition
         // ////////////////////////////////////////////////////
-
-        Assert.assertNull(docfolderservice.getRendition(deletedDocument, DocumentFolderService.RENDITION_THUMBNAIL));
+        try
+        {
+            Assert.assertNull(docfolderservice.getRendition(deletedDocument, DocumentFolderService.RENDITION_THUMBNAIL));
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
 
         try
         {
@@ -1166,7 +1175,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getErrorCode());
+        }
+
         try
         {
             docfolderservice.updateContent(null, null);
@@ -1245,7 +1258,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        
         try
         {
             docfolderservice.createFolder(null, null, null);
@@ -1265,7 +1277,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             docfolderservice.createFolder(folder, "", null);
@@ -1340,7 +1352,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             docfolderservice.createDocument(null, null, null, null);
@@ -1370,7 +1382,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             docfolderservice.createDocument(folder, "", props, null);

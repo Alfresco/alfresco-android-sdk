@@ -37,9 +37,20 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     // ///////////////////////////////////////////////
     // CLOUD SPECIFIC
     // ///////////////////////////////////////////////
-    /** Define a different cloud network. */
+    /**
+     * Define a different cloud network. <br/>
+     * Value must be a String value that represents a valid network identifier.<br/>
+     * Default : the home network of the logged user.<br/>
+     * <b>This parameter can't be changed after the session creation</b>.
+     */
     public static final String CLOUD_NETWORK_ID = "org.alfresco.mobile.bindings.api.cloud.network.id";
 
+    /**
+     * Username identifier for all cloud service API request. <br/> Indeed
+     * CloudSession doesn't know username of the logged user. Due to OAuth it's
+     * not aware of this information. To replace the username information,
+     * CloudSession use -me- instead.
+     */
     public static final String USER_ME = "-me-";
 
     /**

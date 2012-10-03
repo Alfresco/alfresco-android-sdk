@@ -377,18 +377,5 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
-        try
-        {
-            searchService.keywordSearch("test", null);
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-        }
-        
-        
-        
     }
 }

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.exceptions.impl;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoErrorContent;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -30,7 +30,9 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.http.HttpStatus;
 
 public final class ExceptionHelper
@@ -50,6 +52,21 @@ public final class ExceptionHelper
         {
             throw (AlfrescoException) e;
         }
+        catch (CmisRuntimeException e)
+        {
+            if (e.getErrorContent() != null && e.getErrorContent().contains("cannot be null or empty."))
+            {
+                throw new IllegalArgumentException(e);
+            }
+            else if (e.getErrorContent() != null && e.getErrorContent().contains("Access is denied."))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e);
+            }
+            else
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
+            }
+        }
         catch (CmisConstraintException e)
         {
             if (e.getMessage().contains("Conflict"))
@@ -60,6 +77,10 @@ public final class ExceptionHelper
             {
                 throw new IllegalArgumentException(e);
             }
+        }
+        catch (CmisObjectNotFoundException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (CmisContentAlreadyExistsException e)
         {
@@ -132,7 +153,7 @@ public final class ExceptionHelper
         {
             if (er instanceof OAuthErrorContent)
             {
-                throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED, er);
+                throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED, er);
             }
             else
             {

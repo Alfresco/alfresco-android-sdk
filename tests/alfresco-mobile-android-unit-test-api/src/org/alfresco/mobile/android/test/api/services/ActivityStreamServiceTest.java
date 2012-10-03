@@ -241,15 +241,20 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         // Paging User Activity Entry
         // ///////////////////////////////////////////////////////////////////////////
         wait(10000);
-        // Check 1 activity
-        lc.setMaxItems(1);
-        lc.setSkipCount(0);
-        pagingFeed = activityStreamService.getActivityStream(alfsession.getPersonIdentifier(), lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(1, pagingFeed.getList().size());
-        // Assert.assertTrue(feed2.size() == pagingFeed.getTotalItems() ||
-        // feed2.size() - 1 == pagingFeed.getTotalItems());
-        Assert.assertTrue(pagingFeed.hasMoreItems());
+
+        //Check consistency between Cloud and OnPremise
+        if (!isOnPremise())
+        {
+            // Check 1 activity
+            lc.setMaxItems(1);
+            lc.setSkipCount(0);
+            pagingFeed = activityStreamService.getActivityStream(alfsession.getPersonIdentifier(), lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(1, pagingFeed.getList().size());
+            // Assert.assertTrue(feed2.size() == pagingFeed.getTotalItems() ||
+            // feed2.size() - 1 == pagingFeed.getTotalItems());
+            Assert.assertTrue(pagingFeed.hasMoreItems());
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // Paging Site Activity Entry

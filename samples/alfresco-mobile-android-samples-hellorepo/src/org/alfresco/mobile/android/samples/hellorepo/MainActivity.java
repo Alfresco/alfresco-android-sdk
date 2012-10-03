@@ -2,7 +2,7 @@ package org.alfresco.mobile.android.samples.hellorepo;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
 
                 }
 
-            } catch (AlfrescoConnectionException e) {
+            } catch (AlfrescoSessionException e) {
                 Log.e(TAG, "Failed to connect: " + e.toString());
             }
 

@@ -166,6 +166,15 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
      */
     public void testLikeServiceMethodsError()
     {
+        
+        // Check Support Like
+        if (!alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
+            Assert.assertNull(likeService);
+            Log.d(TAG, alfsession.getRepositoryInfo().getVersion());
+            Log.d(TAG, "No support for Like operation. Test aborted");
+            return;
+        }
 
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);

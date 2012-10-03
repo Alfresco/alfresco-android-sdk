@@ -147,8 +147,8 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         pagingTags = taggingService.getAllTags(lc);
         Assert.assertNotNull(pagingTags);
         Assert.assertEquals(getTotalItems(tags.size()), pagingTags.getTotalItems());
-        Assert.assertEquals(tags.size(), pagingTags.getList().size());
-        Assert.assertFalse(pagingTags.hasMoreItems());
+        Assert.assertEquals(10, pagingTags.getList().size());
+        Assert.assertTrue(pagingTags.hasMoreItems());
         List<Tag> tagging = pagingTags.getList();
         Tag previousTag = tagging.get(0);
         for (Tag tagg : tagging)

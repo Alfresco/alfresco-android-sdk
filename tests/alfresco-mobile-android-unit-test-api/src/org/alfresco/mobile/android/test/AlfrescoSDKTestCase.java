@@ -504,7 +504,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         ContentFile cf = null;
         try
         {
-            File f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH, assetName);
+            File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH, assetName);
             IOUtils.copyFile(assetManager.open(assetName), f);
             cf = new ContentFileImpl(f);
         }
