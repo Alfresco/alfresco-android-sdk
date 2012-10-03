@@ -713,8 +713,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
                 Assert.assertTrue("48.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
                         || "48".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
-                Assert.assertTrue("2.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
-                        || "2".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
+                Assert.assertTrue("2.0".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString())
+                        || "2".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString()));
             }
             else
             {
