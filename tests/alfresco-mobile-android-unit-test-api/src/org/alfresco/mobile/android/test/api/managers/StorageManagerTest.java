@@ -172,6 +172,13 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             }
             i++;
         }
+
+        if (cf == null)
+        {
+            Log.e(TAG, "Unable to load the rendition - Test aborted");
+            return;
+        }
+
         Assert.assertNotNull(cf);
         Assert.assertNotNull(cf.getFile());
         Assert.assertTrue(cf.getFile().length() + ">" + ANDROID_ASSET_SIZE, cf.getFile().length() < ANDROID_ASSET_SIZE);

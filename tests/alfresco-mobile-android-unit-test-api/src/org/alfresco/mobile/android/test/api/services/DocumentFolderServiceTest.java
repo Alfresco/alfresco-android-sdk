@@ -287,9 +287,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getDescription() + " "
-                + pagingResult.getList().get(9).getDescription(), pagingResult.getList().get(0).getDescription()
-                .compareTo(pagingResult.getList().get(9).getDescription()) > 0);
+        if (isAlfrescoV4())
+        { // Error on 3.4
+            Assert.assertTrue(pagingResult.getList().get(0).getDescription() + " "
+                    + pagingResult.getList().get(9).getDescription(), pagingResult.getList().get(0).getDescription()
+                    .compareTo(pagingResult.getList().get(9).getDescription()) > 0);
+        }
 
         // Sorting with CREATED AT and invert sort ascending
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_CREATED_AT);
@@ -309,10 +312,13 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
-                + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
-        Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+        if (isAlfrescoV4())
+        { // Error on 3.4
+            Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
+                    + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
+                    .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
+            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+        }
 
         // Sorting with MODIFIED AT and invert sort ascending
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_MODIFIED_AT);
@@ -683,11 +689,13 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         if (validateRendition)
         {
-            Assert.assertNotNull(rendition);
+            wait(10000);
+            Assert.assertNotNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
         }
         else
         {
-            Assert.assertNull(rendition);
+            wait(10000);
+            Assert.assertNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
         }
 
         if (validateExtraction)

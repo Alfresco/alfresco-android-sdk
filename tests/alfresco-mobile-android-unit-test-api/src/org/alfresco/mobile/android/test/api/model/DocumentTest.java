@@ -156,7 +156,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // UpdateDocument
         wait(2000);
         Document docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
-        Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
+        if (isAlfrescoV4())
+        {
+            Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
+        }
         Assert.assertTrue(doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
@@ -247,8 +250,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertFalse(doc.isFolder());
         // Empty content
         Assert.assertEquals(0, doc.getContentStreamLength());
-        //Text plain in case of Alfresco 3.4
-        Assert.assertTrue((doc.getContentStreamMimeType() == null) || (doc.getContentStreamMimeType().equals("text/plain")));
+        // Text plain in case of Alfresco 3.4
+        Assert.assertTrue((doc.getContentStreamMimeType() == null)
+                || (doc.getContentStreamMimeType().equals("text/plain")));
 
         // ContentStream
         stream = docfolderservice.getContentStream(doc);
@@ -348,7 +352,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
     @SuppressWarnings("unchecked")
     public void testCustomModel()
     {
-        //No Custom model on Cloud Instance.
+        // No Custom model on Cloud Instance.
         if (isOnPremise())
         {
 

@@ -90,10 +90,8 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
      */
     public void testActivityStreamService()
     {
-
         try
         {
-
             prepareScriptData();
 
             // ///////////////////////////////////////////////////////////////////////////
@@ -279,45 +277,53 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
      */
     public void testActivityServiceMethodsError()
     {
-        // ///////////////////////////////////////////////////////////////////////////
-        // Method getActivityStream()
-        // ///////////////////////////////////////////////////////////////////////////
         try
         {
-            Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-        }
-        Assert.assertTrue(activityStreamService.getSiteActivityStream("adm1n").isEmpty());
+            // ///////////////////////////////////////////////////////////////////////////
+            // Method getActivityStream()
+            // ///////////////////////////////////////////////////////////////////////////
+            try
+            {
+                Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
+                Assert.fail();
+            }
+            catch (IllegalArgumentException e)
+            {
+                Assert.assertTrue(true);
+            }
+            Assert.assertTrue(activityStreamService.getSiteActivityStream("adm1n").isEmpty());
 
-        // ///////////////////////////////////////////////////////////////////////////
-        // Method getSiteActivityStream()
-        // ///////////////////////////////////////////////////////////////////////////
-        try
-        {
-            Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
+            // ///////////////////////////////////////////////////////////////////////////
+            // Method getSiteActivityStream()
+            // ///////////////////////////////////////////////////////////////////////////
+            try
+            {
+                Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
+                Assert.fail();
+            }
+            catch (IllegalArgumentException e)
+            {
+                Assert.assertTrue(true);
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
 
-        // Check Error activity
-        Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
-        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        if (session != null)
-        {
-            Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                    .getSiteActivityStream("privatesite").isEmpty());
-            Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                    .getSiteActivityStream("moderatedsite").isEmpty());
+            // Check Error activity
+            Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
+            AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+            if (session != null)
+            {
+                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("privatesite").isEmpty());
+                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("moderatedsite").isEmpty());
+            }
+            checkSession(session);
         }
-        checkSession(session);
+        catch (Exception e)
+        {
+            Log.e(TAG, "Error during Activity Tests");
+            Log.e("TAG", Log.getStackTraceString(e));
+        }
     }
 
     // ////////////////////////////////////////////////////

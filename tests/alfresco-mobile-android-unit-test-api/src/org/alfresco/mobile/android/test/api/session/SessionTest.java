@@ -26,7 +26,6 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
@@ -47,10 +46,6 @@ public class SessionTest extends AlfrescoSDKTestCase
         // TODO Auto-generated method stub
 
     }
-
-    // Try authenticate multiple time.
-    // Try methods and unauthenticate
-    // Create cloud session get networks and then recreate a new cloudsession
 
     /**
      * Simple test to create a session.
@@ -80,39 +75,6 @@ public class SessionTest extends AlfrescoSDKTestCase
         {
             Assert.fail(e.getMessage());
         }
-    }
-
-    /**
-     * Error case where base url is not correct
-     */
-    public void testCreateSimpleSessionError()
-    {
-        try
-        {
-            // Create the repository Session.
-            // Start the authentication and catch an error.
-            // Can't bind with fake baseurl http://
-            RepositorySession.connect("http://", null, null);
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-        }
-
-        try
-        {
-            HashMap<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(BINDING_URL, ALFRESCO_CMIS_ATOMPUB_URL);
-            alfsession = RepositorySession.connect(ALFRESCO_CMIS_ATOMPUB_URL, FAKE_USERNAME, ALFRESCO_CMIS_PASSWORD,
-                    settings);
-            Assert.fail();
-        }
-        catch (AlfrescoSessionException e)
-        {
-            Assert.assertEquals(ErrorCodeRegistry.SESSION_UNAUTHORIZED, e.getErrorCode());
-        }
-
     }
 
     /**
