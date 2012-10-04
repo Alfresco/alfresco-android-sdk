@@ -30,7 +30,7 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<testPackages>
-						<testPackage>org.alfresco.mobile.android.test</testPackage>
+						<testPackage>org.alfresco.mobile.android.test.api.model</testPackage>
 					</testPackages>
 				</configuration>
 				<extensions>true</extensions>
