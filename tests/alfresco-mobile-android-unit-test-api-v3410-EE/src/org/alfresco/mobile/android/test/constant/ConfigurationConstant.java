@@ -15,21 +15,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.constants;
+package org.alfresco.mobile.android.test.constant;
 
-/**
- * Provides all constant for creating an OAuth context.
- * 
- * @author Jean Marie Pascal
- */
-public interface OAuthConstant
+
+public interface ConfigurationConstant
 {
-    /** Entry Point to initiate Authentication against Public API. */
-    String AUTHORIZE_URL = "https://api.alfresco.com/auth/oauth/versions/2/authorize";
-
-    /** Entry Point to get OAuth Authentication Token against Public API. */
-    String TOKEN_URL = "https://api.alfresco.com/auth/oauth/versions/2/token";
-
-    /** Public API URL. */
-    String CLOUD_URL = "https://api.alfresco.com";
+   String ONPREMISE_FILENAME = "3410EE-onpremise-config.properties";
 }

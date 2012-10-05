@@ -22,8 +22,23 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 {
     protected PersonService personService;
 
+    private static final String USER_MANAGER_ID = "user_manage@rediff.com";
+
+    private static final String USER_MANAGER_FIRST = "User";
+
+    private static final String USER_MANAGER_LAST = "Manager";
+
+    private static final String USER_MANAGER_FULL = "User Manager";
+
+    private static final String USER_COLLABORATOR_ID = "user_collaborator@rediff.com";
+
+    private static final String USER_COLLABORATOR_FIRST = "User";
+
+    private static final String USER_COLLABORATOR_LAST = "Collaborator";
+
+    private static final String USER_COLLABORATOR_FULL = "User Collaborator";
+
     // TODO
-    // Need to create a user without Avatar
     // Need to create a user with foreign character
     // Need to create a user with avatar based on gif image
     // Need to create a user outside the network
@@ -43,16 +58,18 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Success Test for getPerson / getAvatar & Person methods
+     * 
+     * @Requirement 34S1, 34S6, 35S1, 35S2, 36S1, 36S2
      */
     public void testGetPerson()
     {
-        Person p = personService.getPerson(alfsession.getPersonIdentifier());
+        Person p = personService.getPerson(USER_MANAGER_ID);
 
         Assert.assertNotNull(p);
-        Assert.assertEquals(alfsession.getPersonIdentifier(), p.getIdentifier());
-        Assert.assertNotNull(p.getFirstName());
-        Assert.assertNotNull(p.getLastName());
-        Assert.assertNotNull(p.getFullName());
+        Assert.assertEquals(USER_MANAGER_ID, p.getIdentifier());
+        Assert.assertEquals(USER_MANAGER_FIRST, p.getFirstName());
+        Assert.assertEquals(USER_MANAGER_LAST, p.getLastName());
+        Assert.assertEquals(USER_MANAGER_FULL, p.getFullName());
 
         if (p.getAvatarIdentifier() != null)
         {
@@ -61,10 +78,22 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
         ContentFile avatar = personService.getAvatar(p);
         Assert.assertNotNull(avatar.getFile());
+
+        p = personService.getPerson(USER_COLLABORATOR_ID);
+
+        Assert.assertNotNull(p);
+        Assert.assertEquals(USER_COLLABORATOR_ID, p.getIdentifier());
+        Assert.assertEquals(USER_COLLABORATOR_FIRST, p.getFirstName());
+        Assert.assertEquals(USER_COLLABORATOR_LAST, p.getLastName());
+        Assert.assertEquals(USER_COLLABORATOR_FULL, p.getFullName());
+
+        Assert.assertNull(p.getAvatarIdentifier());
     }
 
     /**
      * Failure Tests for getPerson Method.
+     * 
+     * @Requirement 34F1,
      */
     public void testGetPersonFailure()
     {
@@ -91,6 +120,8 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Failure Tests for getAvatar Method.
+     * 
+     * @Requirement 35F1,
      */
     public void testGetAvatarFailure()
     {
@@ -117,6 +148,8 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Failure Tests for getAvatarStream Method.
+     * 
+     * @Requirement 36F1
      */
     public void testGetAvatarStreamFailure()
     {

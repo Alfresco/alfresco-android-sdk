@@ -103,11 +103,11 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
     {
         if (repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR))
         {
-            if (repositoryInfo.getProductName().endsWith(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE + ""))
+            if (repositoryInfo.getProductName().contains(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
             {
                 return OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE;
             }
-            else if (repositoryInfo.getProductName().endsWith(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY + ""))
+            else if (repositoryInfo.getProductName().contains(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY))
             {
                 return OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY;
             }

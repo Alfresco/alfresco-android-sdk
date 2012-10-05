@@ -79,7 +79,8 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     /**
      * All Tests for CommentService public methods which don't create an error.
      * 
-     * @Requirement 7S1, 7S2, 7S4, 7S6, 7S7
+     * @Requirement 7S1, 7S2, 7S4, 7S6, 7S7, 9S1, 9S3, 9S4, 9S5, 9S6, 10F3,
+     *              10S1, 10S2, 10S3, 10S4, 11S1, 11S2
      */
     public void testCRUDCommentService()
     {
@@ -242,13 +243,27 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(comment.getContent(), updatedComment.getContent());
         Assert.assertTrue(updatedComment.canEdit());
         Assert.assertTrue(updatedComment.canDelete());
+
+        // ////////////////////////////////////////////////////
+        // Update Comment without content
+        // ////////////////////////////////////////////////////
+        try
+        {
+            commentService.updateComment(folder, comment, "");
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
     }
 
     /**
      * All Tests for CommentService public listing methods which don't create an
      * error.
      * 
-     * @Requirement 8F3
+     * @Requirement 8F3, 8F4, 8F5, 8F6, 8S1, 8S2, 8S4, 8S10, 8S11, 8S12
      */
     public void testPagingCommentService()
     {
@@ -272,17 +287,34 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Paging Comments
         // ////////////////////////////////////////////////////
-        for (int i = 0; i < 20; i++)
-        {
-            commentService.addComment(folder, COMMENT_CONTENT + " " + i + " ");
-        }
-
         ListingContext lc = new ListingContext();
         lc.setMaxItems(5);
         lc.setSkipCount(0);
 
-        // Check 5 comments in a page
+        // Check 0 comments
         PagingResult<Comment> pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(0, pagingComments.getTotalItems());
+        Assert.assertEquals(0, pagingComments.getList().size());
+        Assert.assertFalse(pagingComments.hasMoreItems());
+
+        // Add 1 Comment
+        commentService.addComment(folder, COMMENT_CONTENT + " 0 ");
+
+        // Check One comment
+        pagingComments = commentService.getComments(folder, lc);
+        Assert.assertNotNull(pagingComments);
+        Assert.assertEquals(1, pagingComments.getTotalItems());
+        Assert.assertEquals(1, pagingComments.getList().size());
+        Assert.assertFalse(pagingComments.hasMoreItems());
+
+        for (int i = 1; i < 20; i++)
+        {
+            commentService.addComment(folder, COMMENT_CONTENT + " " + i + " ");
+        }
+
+        // Check 5 comments in a page
+        pagingComments = commentService.getComments(folder, lc);
         Assert.assertNotNull(pagingComments);
         Assert.assertEquals(20, pagingComments.getTotalItems());
         Assert.assertEquals(5, pagingComments.getList().size());
@@ -350,6 +382,9 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(pagingComments.hasMoreItems());
     }
 
+    /**
+     * @Requirement 9S2, 11S1, 11S2
+     */
     public void testCRUDCommentOnDocument()
     {
         // ////////////////////////////////////////////////////
@@ -407,7 +442,6 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         commentService.addComment(doc, COMMENT_CONTENT + " 3 ");
 
         // Check comment available
-        // TODO REverse en params via order sur le temps !
         comments = commentService.getComments(doc);
         Assert.assertNotNull(comments);
         Assert.assertFalse(comments.isEmpty());
@@ -460,7 +494,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     /**
      * All Tests for CommentsService public methods which create an error.
      * 
-     * @Requirement 7F2, 8F1, 8F2
+     * @Requirement 7F1, 7F2, 8F1, 8F2, 9F1, 9F4, 10F1, 11F1
      */
     public void testCommentsMethodsError()
     {
@@ -506,6 +540,15 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Error on create comment
         // ////////////////////////////////////////////////////
+        try
+        {
+            commentService.addComment(deletedDocument, COMMENT_CONTENT);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
+        }
+
         try
         {
             commentService.addComment(null, COMMENT_CONTENT);

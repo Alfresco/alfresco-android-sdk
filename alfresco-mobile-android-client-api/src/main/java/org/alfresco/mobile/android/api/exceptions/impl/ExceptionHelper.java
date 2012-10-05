@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.exceptions.impl;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoErrorContent;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -30,29 +30,72 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.http.HttpStatus;
 
+/**
+ * The Class ExceptionHelper helps to transform and wrap exceptions from
+ * OpenCMIS or general exception into an {@link AlfrescoServiceException}.
+ * 
+ * @author Jean Marie Pascal
+ */
 public final class ExceptionHelper
 {
 
+    /**
+     * Instantiates a new exception helper.
+     */
     private ExceptionHelper()
     {
     }
 
-    public static void convertException(Exception t)
+    /**
+     * Convert exception into AlfrescoServiceException.
+     * 
+     * @param exception the underlying exception from OpenCMIS or generic
+     *            exception.
+     */
+    public static void convertException(Exception exception)
     {
         try
         {
-            throw t;
+            throw exception;
         }
         catch (AlfrescoException e)
         {
             throw (AlfrescoException) e;
         }
+        catch (CmisRuntimeException e)
+        {
+            if (e.getErrorContent() != null && e.getErrorContent().contains("cannot be null or empty."))
+            {
+                throw new IllegalArgumentException(e);
+            }
+            else if (e.getErrorContent() != null && e.getErrorContent().contains("Access is denied."))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e);
+            }
+            else
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_GENERIC, e);
+            }
+        }
         catch (CmisConstraintException e)
         {
-            throw new IllegalArgumentException(e);
+            if (e.getMessage().contains("Conflict"))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e);
+            }
+            else
+            {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        catch (CmisObjectNotFoundException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (CmisContentAlreadyExistsException e)
         {
@@ -76,6 +119,14 @@ public final class ExceptionHelper
         }
     }
 
+    /**
+     * Convert an HTTP error response (404 instead of 200 for example) into a
+     * generic exception.
+     * 
+     * @param session the Alfresco session associated to the exception.
+     * @param resp the HTTP response from the server.
+     * @param serviceErrorCode the service error code associated.
+     */
     public static void convertStatusCode(AlfrescoSession session, HttpUtils.Response resp, int serviceErrorCode)
     {
         AlfrescoErrorContent er = null;
@@ -125,7 +176,7 @@ public final class ExceptionHelper
         {
             if (er instanceof OAuthErrorContent)
             {
-                throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED, er);
+                throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED, er);
             }
             else
             {

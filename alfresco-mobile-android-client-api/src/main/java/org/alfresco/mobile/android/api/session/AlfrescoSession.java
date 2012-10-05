@@ -38,35 +38,62 @@ public interface AlfrescoSession
     // EXTENSION
     // ///////////////////////////////////////////////
     /**
-     * Define the specific implementation of all services. Must be a full
-     * qualified classname.
+     * <b>OnPremise ONLY</b> : Define the specific implementation of all
+     * services for the session. Must be a full qualified classname. This class
+     * must extend
+     * {@link org.alfresco.mobile.android.api.services.ServiceRegistry} <br/>
+     * <b>This parameter can't be changed after the session creation</b>.
      */
     String ONPREMISE_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.onpremise";
 
+    /**
+     * <b>Cloud ONLY</b> Define the specific implementation of all services for
+     * the session. Must be a full qualified classname. This class must extend
+     * {@link org.alfresco.mobile.android.api.services.ServiceRegistry} <b>This
+     * parameter can't be changed after the session creation</b>.
+     */
     String CLOUD_SERVICES_CLASSNAME = "org.alfresco.mobile.api.services.cloud";
 
+    /**
+     * Define the specific implementation of authenticator for the session. Must
+     * be a full qualified classname. This class must extend
+     * {@link org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider}
+     * <br/>
+     * <b>This parameter can't be changed after the session creation</b>.
+     */
     String AUTHENTICATOR_CLASSNAME = "org.alfresco.mobile.api.authenticator.classname";
 
     /**
-     * Allow metadata extraction during file import. Value must be a boolean.
-     * Default : false
+     * <b>OnPremise ONLY</b> : Allow metadata extraction during file import.
+     * Value must be a boolean. Default : false
      */
     String EXTRACT_METADATA = "org.alfresco.mobile.features.extractmetadata";
 
     /**
-     * Allow thumbnail generation during file import. Value must be a boolean.
-     * Default : false
+     * <b>OnPremise ONLY</b> : Allow thumbnail generation during file import.
+     * Value must be a boolean. Default : false
      */
     String CREATE_THUMBNAIL = "org.alfresco.mobile.features.generatethumbnails";
 
     // ///////////////////////////////////////////////
     // LISTING
     // ///////////////////////////////////////////////
+    /**
+     * Define the maximum number of items a list can contains by default in all
+     * SDK services.<br/>
+     * Value must be an Integer > 0. <br/>
+     * Default : 50
+     */
     String LISTING_MAX_ITEMS = "org.alfresco.mobile.api.listing.maxitems";
 
     // ///////////////////////////////////////////////
     // CACHE
     // ///////////////////////////////////////////////
+    /**
+     * Define the path to the cache folder. The cache folder is used to store temporary file.<br/>
+     * Value must be String value that represents a valid path inside the device.<br/>
+     * Default : "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache"
+     */
     String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
 
     // ///////////////////////////////////////////////
@@ -91,12 +118,14 @@ public interface AlfrescoSession
     String getPersonIdentifier();
 
     /**
-     * Returns the current default listing parameters for paging and caching.
+     * Returns the current default listing parameters for paging and sorting.
      */
     ListingContext getDefaultListingContext();
 
     /**
      * Return all services available with this repository.
+     * 
+     * @return Service Provider associated to the session.
      */
     ServiceRegistry getServiceRegistry();
 
@@ -120,6 +149,13 @@ public interface AlfrescoSession
      */
     void addParameter(String key, Serializable value);
 
+    /**
+     * Allow to add some extra parameters as settings to modify behaviour of the
+     * session. Settings provide session configuration parameters e.g. cache
+     * settings, default paging values, ordering etc.
+     * 
+     * @param parameters
+     */
     void addParameters(Map<String, Serializable> parameters);
 
     /**

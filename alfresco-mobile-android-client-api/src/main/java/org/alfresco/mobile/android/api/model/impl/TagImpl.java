@@ -44,7 +44,11 @@ public class TagImpl implements Tag
     public TagImpl (String value)
     {
         this.identifier = null;
-        this.value = value;
+        if (value.startsWith("\"") && value.endsWith("\"")){
+            this.value = value.replaceAll("\"", "");
+        } else {
+            this.value = value;
+        }
     }
 
     public static Tag parsePublicAPIJson(Map<String, Object> jo)

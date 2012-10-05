@@ -17,9 +17,16 @@
    limitations under the License.
 -->
 <resources>
+    <!-- OAuth Keys -->
     <string name="oauth_api_key">${oauth_api_key}</string>
     <string name="oauth_api_secret">${oauth_api_secret}</string>
     <string name="oauth_callback">${oauth_callback}</string>
     <string name="oauth_scope">${oauth_scope}</string>
+    
+    <!-- Hockey App Key -->
     <string name="hockeyapp_key">${hockeyapp_key}</string>
+    
+    <!-- SignUp Key -->
+    <string name="signup_key">${signup_key}</string>
+    
 </resources>

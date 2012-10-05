@@ -37,13 +37,26 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     // ///////////////////////////////////////////////
     // CLOUD SPECIFIC
     // ///////////////////////////////////////////////
-    /** Define a different cloud network. */
+    /**
+     * Define a different cloud network. <br/>
+     * Value must be a String value that represents a valid network identifier.<br/>
+     * Default : the home network of the logged user.<br/>
+     * <b>This parameter can't be changed after the session creation</b>.
+     */
     public static final String CLOUD_NETWORK_ID = "org.alfresco.mobile.bindings.api.cloud.network.id";
-    
+
+    /**
+     * Username identifier for all cloud service API request. <br/> Indeed
+     * CloudSession doesn't know username of the logged user. Due to OAuth it's
+     * not aware of this information. To replace the username information,
+     * CloudSession use -me- instead.
+     */
     public static final String USER_ME = "-me-";
 
     /**
-     * Connects to the Alfresco in the Cloud server in the context of the users home network.
+     * Connects to the Alfresco in the Cloud server in the context of the users
+     * home network.
+     * 
      * @param oauthData
      * @return
      */
@@ -51,7 +64,7 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     {
         return new CloudSessionImpl(oauthData, null);
     }
-    
+
     /**
      * Connects to the Alfresco in the Cloud server in the context of the users
      * home network.
@@ -66,15 +79,18 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
     }
 
     /**
-     * Connects the given user to the Alfresco in the cloud server in the context of the given network.
+     * Connects the given user to the Alfresco in the cloud server in the
+     * context of the given network.
+     * 
      * @param oauthData
      * @param networkId
      * @return
      */
-    public static CloudSession connect(OAuthData oauthData, String networkId){
+    public static CloudSession connect(OAuthData oauthData, String networkId)
+    {
         return connect(oauthData, networkId, null);
     }
-    
+
     /**
      * Connects the given user to the Alfresco in the cloud server in the
      * context of the given network.
@@ -104,16 +120,18 @@ public abstract class CloudSession extends AbstractAlfrescoSessionImpl
      * Returns the current network for the session.
      */
     public abstract CloudNetwork getNetwork();
-    
-    
+
     /**
      * Returns the OAuthData the session is currently using.
+     * 
      * @return
      */
     public abstract OAuthData getOAuthData();
 
     /**
-    Sets the OAuthData object associated with the session, typically used after an access token has been refreshed.
+     * Sets the OAuthData object associated with the session, typically used
+     * after an access token has been refreshed.
+     * 
      * @param oauthData
      */
     public abstract void setOAuthData(OAuthData oauthData);

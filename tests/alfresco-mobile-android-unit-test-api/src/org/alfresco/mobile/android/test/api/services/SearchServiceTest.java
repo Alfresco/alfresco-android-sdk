@@ -25,6 +25,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -71,7 +72,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
     /**
      * Test to check simple CMIS query.
      * 
-     * @throws InterruptedException
+     * @Requirement 40S1, 40S2, 40S3
      */
     public void testSearchService()
     {
@@ -215,8 +216,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(1, result.size());
 
         // Access to fixed sample data informations
-        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession)
-                + "/" + SAMPLE_DATA_SEARCH_FOLDER);
+        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/"
+                + SAMPLE_DATA_SEARCH_FOLDER);
         Assert.assertNotNull(f);
 
         options.setFolder(f);
@@ -315,5 +316,66 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
             Log.e(TAG, e.getMessage());
         }
 
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // FAILURE TESTS
+    // //////////////////////////////////////////////////////////////////////
+    /**
+     * Failure Tests for SearchService public Method.
+     * 
+     * @Requirement 40F1, 40F2, 40F3, 42F1, 42F2
+     */
+    public void testSearchServiceMethodsError()
+    {
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
+
+        // ////////////////////////////////////////////////////
+        // Error on search()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            searchService.search(null, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            searchService.search("Select", null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            searchService.search(null, SearchLanguage.CMIS);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        // ////////////////////////////////////////////////////
+        // Error on keywordsearch()
+        // ////////////////////////////////////////////////////
+        try
+        {
+            searchService.keywordSearch(null, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -128,7 +128,7 @@ public class CloudSessionImpl extends CloudSession
 
             // Retrieve & select the Home Network or session parameters network.
             PagingResult<CloudNetwork> networks = getPagingNetworks();
-            if (networks == null || networks.getTotalItems() == 0) { throw new AlfrescoConnectionException(
+            if (networks == null || networks.getTotalItems() == 0) { throw new AlfrescoSessionException(
                     ErrorCodeRegistry.SESSION_NO_NETWORK_FOUND, Messagesl18n.getString("SESSION_NO_NETWORK_FOUND")); }
 
             String networkIdentifier = null;
@@ -181,7 +181,7 @@ public class CloudSessionImpl extends CloudSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
     }
 
@@ -206,7 +206,7 @@ public class CloudSessionImpl extends CloudSession
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
         }
         return s;
     }

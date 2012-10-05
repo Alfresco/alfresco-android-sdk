@@ -25,12 +25,26 @@ import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.http.HttpStatus;
 
+/**
+ * The Class OAuthErrorContent is the OAuth implementation of
+ * {@link AlfrescoErrorContent}. It transforms HTTP OAuth error response
+ * associated into an object.
+ */
 public class OAuthErrorContent implements AlfrescoErrorContent
 {
+
+    /** The message associated to the error. */
     private String message;
 
+    /** The description associated to the error. */
     private String description;
 
+    /**
+     * Parses the json exception response and try to retrieve essential values.
+     * 
+     * @param errorContentValue the raw data from the HTTP request.
+     * @return the OAuth error content
+     */
     public static OAuthErrorContent parseJson(String errorContentValue)
     {
         Map<String, Object> json = null;
@@ -53,24 +67,32 @@ public class OAuthErrorContent implements AlfrescoErrorContent
         return errorContent;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getCode()
     {
         return HttpStatus.SC_UNAUTHORIZED;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getMessage()
     {
         return message;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getStackTrace()
     {
         return null;
     }
 
+    /**
+     * Gets the description.
+     * 
+     * @return the description associated to the OAuth Exception.
+     */
     public String getDescription()
     {
         return description;

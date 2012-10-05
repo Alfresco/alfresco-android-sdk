@@ -24,7 +24,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 /**
- * Abstract base class for all Internal Alfresco AuthenticationProvider.
+ * Interface for all Internal Alfresco AuthenticationProvider.
  * 
  * @author Jean Marie Pascal
  */

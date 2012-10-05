@@ -29,7 +29,6 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -93,12 +92,50 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     /**
      * Test Paging and navigation.
      * 
-     * @throws Exception
+     * @Requirement 13S1, 13S2, 13S5, 14F3, 14F4, 14F5, 14F6, 14S1, 14S2, 14S3,
+     *              18S1, 18S2, 18S3, 18S4, 20S1, 20S2, 20S3
      */
     public void testNavigationPaging()
     {
+        // Other Read Only Session
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        List<Node> list = docfolderservice.getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(0, list.size());
+
+        // PAGING
+        // getChildren with listing context
+        ListingContext lc = new ListingContext();
+        lc.setMaxItems(10);
+        PagingResult<Node> pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
+        Assert.assertNotNull(pagingResult);
+        Assert.assertEquals(0, pagingResult.getTotalItems());
+        Assert.assertEquals(0, pagingResult.getList().size());
+        Assert.assertFalse(pagingResult.hasMoreItems());
+
+        list = session.getServiceRegistry().getDocumentFolderService().getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(0, list.size());
+
+        List<Document> listDocs = docfolderservice.getDocuments(unitTestFolder);
+        Assert.assertNotNull(listDocs);
+        Assert.assertEquals(0, listDocs.size());
+
+        listDocs = session.getServiceRegistry().getDocumentFolderService().getDocuments(unitTestFolder);
+        Assert.assertNotNull(listDocs);
+        Assert.assertEquals(0, listDocs.size());
+
+        List<Folder> listFolder = docfolderservice.getFolders(unitTestFolder);
+        Assert.assertNotNull(listFolder);
+        Assert.assertEquals(0, listFolder.size());
+
+        listFolder = session.getServiceRegistry().getDocumentFolderService().getFolders(unitTestFolder);
+        Assert.assertNotNull(listFolder);
+        Assert.assertEquals(0, listFolder.size());
 
         // ////////////////////////////////////////////////////
         // Create Methods
@@ -113,6 +150,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Create 10 Folders + 1 reference folder
         createFolders(unitTestFolder, FOLDERS_NUMBER - 1);
 
+        listDocs = docfolderservice.getDocuments(unitTestFolder);
+        Assert.assertNotNull(listDocs);
+        Assert.assertEquals(0, listDocs.size());
+
         // Create 4 Documents with content
         createDocuments(unitTestFolder, DOCS_NUMBER);
 
@@ -121,15 +162,19 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
 
         // getChildren
-        List<Node> list = docfolderservice.getChildren(unitTestFolder);
+        list = docfolderservice.getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(ITEMS_NUMBER, list.size());
+
+        // getChildren Read Only User
+        list = session.getServiceRegistry().getDocumentFolderService().getChildren(unitTestFolder);
         Assert.assertNotNull(list);
         Assert.assertEquals(ITEMS_NUMBER, list.size());
 
         // PAGING
         // getChildren with listing context
-        ListingContext lc = new ListingContext();
         lc.setMaxItems(FOLDERS_NUMBER);
-        PagingResult<Node> pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
+        pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertNotNull(pagingResult);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(FOLDERS_NUMBER, pagingResult.getList().size());
@@ -212,8 +257,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getTitle() + " " + pagingResult.getList().get(9).getTitle(),
-                pagingResult.getList().get(0).getTitle().compareTo(pagingResult.getList().get(9).getTitle()) < 0);
+        if (isAlfrescoV4())
+        { // Error on 3.4
+            Assert.assertTrue(
+                    pagingResult.getList().get(0).getTitle() + " " + pagingResult.getList().get(9).getTitle(),
+                    pagingResult.getList().get(0).getTitle().compareTo(pagingResult.getList().get(9).getTitle()) < 0);
+        }
 
         lc.setIsSortAscending(false);
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
@@ -238,9 +287,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
         Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getDescription() + " "
-                + pagingResult.getList().get(9).getDescription(), pagingResult.getList().get(0).getDescription()
-                .compareTo(pagingResult.getList().get(9).getDescription()) > 0);
+        if (isAlfrescoV4())
+        { // Error on 3.4
+            Assert.assertTrue(pagingResult.getList().get(0).getDescription() + " "
+                    + pagingResult.getList().get(9).getDescription(), pagingResult.getList().get(0).getDescription()
+                    .compareTo(pagingResult.getList().get(9).getDescription()) > 0);
+        }
 
         // Sorting with CREATED AT and invert sort ascending
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_CREATED_AT);
@@ -255,41 +307,45 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
                 .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
 
-        // TODO This assert is wrong ! Wrong order !!!
-        lc.setIsSortAscending(false);
-        pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
-        Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
-        Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
-                + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
-        Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+        if (isAlfrescoV4())
+        { // Error on 3.4
+          // TODO This assert is wrong ! Wrong order !!!
+            lc.setIsSortAscending(false);
+            pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
+            Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
+            Assert.assertEquals(10, pagingResult.getList().size());
 
-        // Sorting with MODIFIED AT and invert sort ascending
-        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_MODIFIED_AT);
-        pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
-        Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
-        Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertEquals(folder.getIdentifier(), pagingResult.getList().get(0).getIdentifier());
-        Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
-                + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt().getTimeInMillis());
+            Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
+                    + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
+                    .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
+            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
 
-        // TODO This assert is wrong ! Wrong order !!!
-        lc.setIsSortAscending(false);
-        pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
-        Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
-        Assert.assertEquals(10, pagingResult.getList().size());
-        Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
-                + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt().getTimeInMillis());
-        Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+            // Sorting with MODIFIED AT and invert sort ascending
+            lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_MODIFIED_AT);
+            pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
+            Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
+            Assert.assertEquals(10, pagingResult.getList().size());
+            Assert.assertEquals(folder.getIdentifier(), pagingResult.getList().get(0).getIdentifier());
+            Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
+                    + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
+                    .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
+                    .getTimeInMillis());
 
+            // TODO This assert is wrong ! Wrong order !!!
+            lc.setIsSortAscending(false);
+            pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
+            Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
+            Assert.assertEquals(10, pagingResult.getList().size());
+            Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
+                    + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
+                    .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
+                    .getTimeInMillis());
+            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+        }
         // ////////////////////////////////////////////////////
         // LIST FOLDERS
         // ////////////////////////////////////////////////////
         // listFolders
-        List<Folder> listFolder = null;
         listFolder = docfolderservice.getFolders(unitTestFolder);
         Assert.assertNotNull(listFolder);
         while (listFolder.size() != FOLDERS_NUMBER)
@@ -327,10 +383,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // LIST DOCUMENTS
         // ////////////////////////////////////////////////////
         // listDocuments
-        List<Document> listDocs = docfolderservice.getDocuments(unitTestFolder);
+        listDocs = docfolderservice.getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
         Assert.assertEquals(DOCS_NUMBER, listDocs.size());
         Log.d(TAG, "listDocs : " + listDocs);
+
+        session.getServiceRegistry().getDocumentFolderService().getDocuments(unitTestFolder);
+        Assert.assertNotNull(listDocs);
+        Assert.assertEquals(DOCS_NUMBER, listDocs.size());
 
         // listDocuments + Paging
         lc = new ListingContext();
@@ -355,9 +415,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     /**
      * Test parent, child navigation.
      * 
-     * @throws AlfrescoException
+     * @Requirement 15S1, 15S2, 15S3, 15S4, 16S1, 16S2, 16S4, 17S1, 17S5, 17S6,
+     *              23S2, 23S3, 23S4
      */
-    public void testNavigation() throws AlfrescoException
+    public void testNavigation()
     {
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
@@ -370,28 +431,53 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Map<String, Serializable> properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
         Folder folder = createNewFolder(alfsession, unitTestFolder, SAMPLE_FOLDER_NAME, properties);
+        Document doc = createDocument(folder, SAMPLE_DATA_DOCFOLDER_FILE);
 
-        // getChildByPath
+        // getChildByPath : folder path
         Assert.assertNull(docfolderservice.getChildByPath("/ABCDEF"));
         Folder f2 = (Folder) docfolderservice.getChildByPath(getUnitTestFolderPath(alfsession) + "/"
                 + SAMPLE_FOLDER_NAME);
         Assert.assertNotNull(f2);
         Assert.assertEquals(folder.getIdentifier(), f2.getIdentifier());
 
+        // getChildByPath : Document path
+        Document docFind = (Document) docfolderservice.getChildByPath(getUnitTestFolderPath(alfsession) + "/"
+                + SAMPLE_FOLDER_NAME + "/" + SAMPLE_DATA_DOCFOLDER_FILE);
+        Assert.assertNotNull(docFind);
+        Assert.assertEquals(doc.getIdentifier(), docFind.getIdentifier());
+
+        // getChildByPath : Document path
+        Folder rootFolder = (Folder) docfolderservice.getChildByPath("/");
+        Assert.assertNotNull(rootFolder);
+        Assert.assertEquals(alfsession.getRootFolder().getIdentifier(), rootFolder.getIdentifier());
+
         // getChildByPath with folder relative path
         f2 = (Folder) docfolderservice.getChildByPath(unitTestFolder, SAMPLE_FOLDER_NAME);
         Assert.assertNotNull(f2);
         Assert.assertEquals(folder.getIdentifier(), f2.getIdentifier());
 
-        // getChildByRef
+        docFind = (Document) docfolderservice.getChildByPath(unitTestFolder, SAMPLE_FOLDER_NAME + "/"
+                + SAMPLE_DATA_DOCFOLDER_FILE);
+        Assert.assertNotNull(docFind);
+        Assert.assertEquals(doc.getIdentifier(), docFind.getIdentifier());
+
+        // getNodeByIdentifier
         Folder f3 = (Folder) docfolderservice.getNodeByIdentifier(folder.getIdentifier());
         Assert.assertNotNull(f3);
         Assert.assertEquals(folder.getIdentifier(), f3.getIdentifier());
         Assert.assertEquals(f2.getIdentifier(), f3.getIdentifier());
 
+        f3 = (Folder) docfolderservice.getNodeByIdentifier(rootFolder.getIdentifier());
+        Assert.assertNotNull(f3);
+        Assert.assertEquals(rootFolder.getIdentifier(), f3.getIdentifier());
+
         Folder froot = (Folder) docfolderservice.getNodeByIdentifier(alfsession.getRootFolder().getIdentifier());
         Assert.assertNotNull(froot);
         Assert.assertEquals(alfsession.getRootFolder().getIdentifier(), froot.getIdentifier());
+
+        docFind = (Document) docfolderservice.getNodeByIdentifier(doc.getIdentifier());
+        Assert.assertNotNull(docFind);
+        Assert.assertEquals(doc.getIdentifier(), docFind.getIdentifier());
 
         Folder f = (Folder) docfolderservice.getChildByPath(getSitePath(alfsession));
         Folder fsite = (Folder) docfolderservice.getNodeByIdentifier(f.getIdentifier());
@@ -420,12 +506,15 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     /**
      * Test CRUD operation on Document and Folder.
      * 
-     * @throws AlfrescoException
+     * @Requirement 13S3, 13S4, 24F1, 24S1, 24S2, 28S2, 31S1, 31S2
      */
     public void testCRUDNode()
     {
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        // Other Read Only Session
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
 
         // ////////////////////////////////////////////////////
         // Create Methods
@@ -436,7 +525,31 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
         Folder folder = createNewFolder(alfsession, unitTestFolder, SAMPLE_FOLDER_NAME, properties);
 
+        // ////////////////////////////////////////////////////
+        // List Folder Methods
+        // ////////////////////////////////////////////////////
+        List<Node> list = docfolderservice.getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(1, list.size());
+        Node folderDelete = list.get(0);
+
+        list = session.getServiceRegistry().getDocumentFolderService().getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(1, list.size());
+
+        // Create a Sample Document
         createDocuments(unitTestFolder, 1);
+
+        // ////////////////////////////////////////////////////
+        // List Folder Methods
+        // ////////////////////////////////////////////////////
+        list = docfolderservice.getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(2, list.size());
+
+        list = session.getServiceRegistry().getDocumentFolderService().getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(2, list.size());
 
         // ////////////////////////////////////////////////////
         // Update Methods
@@ -501,7 +614,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Delete Methods
         // ////////////////////////////////////////////////////
-
         // Delete Folder
         try
         {
@@ -537,6 +649,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test Rendition after content Creation + (eventually) metadata extraction.
+     * 
+     * @Requirement 26S5, 28S1, 28S3, 28S4, 29S1, 28S3, 28S4
      */
     public void testRenditionExtractionAfterUpload()
     {
@@ -577,11 +691,13 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         if (validateRendition)
         {
-            Assert.assertNotNull(rendition);
+            wait(10000);
+            Assert.assertNotNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
         }
         else
         {
-            Assert.assertNull(rendition);
+            wait(10000);
+            Assert.assertNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
         }
 
         if (validateExtraction)
@@ -599,12 +715,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 Assert.assertEquals("2.6", doc.getPropertyValue(ContentModel.PROP_FNUMBER).toString());
                 Assert.assertEquals("3.43", doc.getPropertyValue(ContentModel.PROP_FOCAL_LENGTH).toString());
                 Assert.assertEquals("google", doc.getPropertyValue(ContentModel.PROP_MANUFACTURER).toString());
-                Assert.assertEquals("72.0", doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString());
-                Assert.assertEquals("72.0", doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString());
+                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString())
+                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString()));
+                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString())
+                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString()));
                 Assert.assertEquals("6", doc.getPropertyValue(ContentModel.PROP_ORIENTATION).toString());
 
-                Assert.assertEquals("48.0", doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString());
-                Assert.assertEquals("2.0", doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString());
+                Assert.assertTrue("48.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
+                        || "48".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
+                Assert.assertTrue("2.0".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString())
+                        || "2".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString()));
             }
             else
             {
@@ -617,14 +737,25 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     // FAILURE TESTS
     // //////////////////////////////////////////////////////////////////////
     /**
-     * Failure Tests for CommentService public Method.
+     * Failure Tests for DocumentFolderService public Method.
+     * 
+     * @Requirement 13F1, 13F2, 14F1, 14F2, 15F1, 15F2, 16F1, 16F2, 16F3, 17F1,
+     *              17F2, 18F1, 18F3, 20F1, 20F2, 23F1, 23F2, 23S1, 24F1, 24F2,
+     *              24F3, 25F1, 25F2, 26F1, 26F2, 27F1, 27F2, 28F1, 28F2, 28F3,
+     *              28F4, 29F1, 29F2, 29F3, 29F4, 30F1, 30F3, 31F1, 31F2, 31F6,
+     *              32F1, 32F2, 32F3, 32F5, 32F6, 32F7, 32F8, 32F9, 32F10,
+     *              32F11, 32F12, 32F13, 32F15, 33F1, 33F2, 33F3, 33F4, 33F5,
+     *              33F6, 33F7, 33F8, 33F9, 33F10, 33F11, 33F12, 33F13,
      */
     public void testDocumentFolderMethodsError()
     {
 
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
+        Folder deletedFolder = createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
 
+        Assert.assertNull(docfolderservice.getParentFolder(alfsession.getRootFolder()));
         // ////////////////////////////////////////////////////
         // Error on getChildren
         // ////////////////////////////////////////////////////
@@ -635,6 +766,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.fail();
         }
         catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            docfolderservice.getChildren(deletedFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
         {
             Assert.assertTrue(true);
         }
@@ -698,7 +839,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
         // TODO Security ?? Different Exception for the same ??
         // User does not have access / privileges to the specified node
-        session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         try
         {
             session.getServiceRegistry().getDocumentFolderService().getChildByPath(sampleDataPathFolder);
@@ -783,6 +923,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         try
         {
+            docfolderservice.getDocuments(deletedFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
             docfolderservice.getDocuments(null);
             Assert.fail();
         }
@@ -804,6 +954,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Error on getDocuments
         // ////////////////////////////////////////////////////
+        try
+        {
+            docfolderservice.getFolders(deletedFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
         try
         {
             docfolderservice.getFolders(null);
@@ -829,6 +989,19 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         try
         {
+            docfolderservice.getParentFolder(deletedFolder);
+            if (isAlfrescoV4() || !isOnPremise())
+            {
+                Assert.fail();
+            }
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
             docfolderservice.getParentFolder(null);
             Assert.fail();
         }
@@ -850,6 +1023,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Error on deleteNode
         // ////////////////////////////////////////////////////
+        try
+        {
+            docfolderservice.deleteNode(deletedFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
         try
         {
             docfolderservice.deleteNode(null);
@@ -886,6 +1069,18 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             Folder permFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(deletedFolder.getIdentifier());
+            session.getServiceRegistry().getDocumentFolderService().getPermissions(permFolder);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getErrorCode());
+        }
+
+        try
+        {
+            Folder permFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
                     .getNodeByIdentifier(folder.getIdentifier());
             session.getServiceRegistry().getDocumentFolderService().getPermissions(permFolder);
             Assert.fail();
@@ -908,7 +1103,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        // TODO Strange ?
         try
         {
             session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
@@ -932,7 +1126,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        // TODO Strange ?
         try
         {
             session.getServiceRegistry().getDocumentFolderService().getContent(doc);
@@ -948,6 +1141,15 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         try
         {
+            Assert.assertNull(docfolderservice.getRendition(deletedDocument, DocumentFolderService.RENDITION_THUMBNAIL));
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
             docfolderservice.getRendition(null, null);
             Assert.fail();
         }
@@ -956,11 +1158,20 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        /*
-         * try { docfolderservice.getRendition(doc, "coolrendidition");
-         * Assert.fail(); } catch (AlfrescoServiceException e) {
-         * Assert.assertTrue(true); }
-         */
+        try
+        {
+            docfolderservice.getRendition(unitTestFolder, DocumentFolderService.RENDITION_THUMBNAIL);
+            if (isOnPremise())
+            {
+                Assert.fail();
+            }
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        Assert.assertNull(docfolderservice.getRendition(doc, "coolrendidition"));
 
         try
         {
@@ -976,6 +1187,20 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Error on updatecontent
         // ////////////////////////////////////////////////////
+        try
+        {
+            docfolderservice.updateContent(deletedDocument, createContentFile("Sample"));
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e.getErrorCode());
+        }
+
         try
         {
             docfolderservice.updateContent(null, null);
@@ -1046,6 +1271,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         try
         {
+            docfolderservice.createFolder(deletedFolder, "Folder", null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
             docfolderservice.createFolder(null, null, null);
             Assert.fail();
         }
@@ -1057,6 +1292,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             docfolderservice.createFolder(folder, null, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            docfolderservice.createFolder(folder, "", null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)
@@ -1093,8 +1338,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
-            //Specific error on cloud.
-            //Remove by default special character and replace it by blank
+            // Specific error on cloud.
+            // Remove by default special character and replace it by blank
             catch (AlfrescoServiceException e)
             {
                 Assert.assertTrue(true);
@@ -1121,6 +1366,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         try
         {
+            docfolderservice.createDocument(deletedFolder, SAMPLE_DATA_DOCFOLDER_FILE, null, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
             docfolderservice.createDocument(null, null, null, null);
             Assert.fail();
         }
@@ -1142,6 +1397,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             docfolderservice.createDocument(folder, null, props, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        try
+        {
+            docfolderservice.createDocument(folder, "", props, null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)

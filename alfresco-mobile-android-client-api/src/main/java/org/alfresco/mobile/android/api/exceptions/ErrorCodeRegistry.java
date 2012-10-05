@@ -49,7 +49,7 @@ public interface ErrorCodeRegistry
     /** Generic error for all session error. */
     int SESSION_GENERIC = 100;
 
-    /** The user credentials provided are not authorized to access the server */
+    /** The user credentials provided are not authorized to access the server. */
     int SESSION_UNAUTHORIZED = 101;
 
     /** API key or secret were not recognised. */
@@ -61,7 +61,7 @@ public interface ErrorCodeRegistry
     /** Access token has expired. */
     int SESSION_ACCESS_TOKEN_EXPIRED = 104;
 
-    /** The Refresh token has expired */
+    /** The Refresh token has expired. */
     int SESSION_REFRESH_TOKEN_EXPIRED = 105;
 
     /** The server connected to does not contain any repositories. */
@@ -118,6 +118,7 @@ public interface ErrorCodeRegistry
     /** Generic error code for all ActivitstreamService. */
     int ACTIVITISTREAM_GENERIC = 500;
 
+    /** The activitistream not found. */
     int ACTIVITISTREAM_NOT_FOUND = 501;
 
     // ///////////////////////////////////
@@ -165,10 +166,10 @@ public interface ErrorCodeRegistry
     /** Generic error code for all PersonService. */
     int PERSON_GENERIC = 800;
 
-    /** Person not found */
+    /** Person not found. */
     int PERSON_NOT_FOUND = 801;
 
-    /** Person not found */
+    /** Person not found. */
     int PERSON_AVATAR_NOT_FOUND = 802;
 
     // ///////////////////////////////////
@@ -185,13 +186,4 @@ public interface ErrorCodeRegistry
     // ///////////////////////////////////
     /** Generic error code for all RatingService. */
     int RATING_GENERIC = 1000;
-
-    /**
-     * Displays a human readable summary of the error code.
-     * 
-     * @param errorCode : value of the error code
-     * @return String value of the error code. null if no code matches.
-     */
-    String getLabelErrorCode(int errorCode);
-
 }

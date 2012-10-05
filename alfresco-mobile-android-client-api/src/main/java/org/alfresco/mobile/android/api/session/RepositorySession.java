@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -32,7 +33,12 @@ import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
 {
 
-    /** Define the specific repository identifier. By default not necessary. */
+    /**
+     * Define the specific repository identifier. By default not necessary. <br/>
+     * Value must be a String value that represents a valid repository identifier.<br/>
+     * Default : null<br/>
+     * <b>This parameter can't be changed after the session creation</b>.
+     */
     public static final String REPOSITORY_ID = "org.alfresco.mobile.binding.repository.id";
 
     /**
@@ -44,11 +50,17 @@ public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
      * @param username
      * @param password
      * @return
-     * @throws AlfrescoConnectionException
+     * @throws AlfrescoSessionException
      */
     public static RepositorySession connect(String url, String username, String password,
             Map<String, Serializable> parameters)
     {
+        if (url == null || url.isEmpty()) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "url")); }
+
+        if (username == null || username.isEmpty()) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "username")); }
+
         return new RepositorySessionImpl(url, username, password, parameters);
     }
 

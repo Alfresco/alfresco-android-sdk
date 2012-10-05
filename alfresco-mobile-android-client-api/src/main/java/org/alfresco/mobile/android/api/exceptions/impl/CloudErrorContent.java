@@ -26,20 +26,31 @@ import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * Cloud Implementation of AlfrescoErrorContent.
+ * Cloud Implementation of {@link AlfrescoErrorContent}.
  * 
  * @author Jean Marie Pascal
  */
 public class CloudErrorContent implements AlfrescoErrorContent
 {
+
+    /** The HTTP error code. */
     private int code;
 
+    /** The message associated to the exception. */
     private String message;
 
+    /** The callstack. */
     private String callstack;
 
+    /** The description url. */
     private String descriptionURL;
 
+    /**
+     * Parses json exception response and try to retrieve essential values.
+     * 
+     * @param errorContentValue the raw data from the HTTP request.
+     * @return the cloud error content object.
+     */
     @SuppressWarnings("unchecked")
     public static CloudErrorContent parseJson(String errorContentValue)
     {
@@ -64,21 +75,29 @@ public class CloudErrorContent implements AlfrescoErrorContent
         return errorContent;
     }
 
+    /** {@inheritDoc} */
     public int getCode()
     {
         return code;
     }
 
+    /** {@inheritDoc} */
     public String getMessage()
     {
         return message;
     }
 
+    /** {@inheritDoc} */
     public String getStackTrace()
     {
         return callstack;
     }
 
+    /**
+     * Gets the description url associated to this error message.
+     * 
+     * @return the description url
+     */
     public String getDescriptionURL()
     {
         return descriptionURL;

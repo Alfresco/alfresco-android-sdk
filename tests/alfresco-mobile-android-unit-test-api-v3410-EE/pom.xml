@@ -17,10 +17,10 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>alfresco-mobile-android-unit-test-api-40D-CE</artifactId>
+	<artifactId>alfresco-mobile-android-unit-test-api-3410-EE</artifactId>
 
 	<packaging>apk</packaging>
-	<name>Alfresco Mobile Android - Tests API 4.0.D Community Edition</name>
+	<name>Alfresco Mobile Android - Tests API 3.4.10 Enterprise Edition</name>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -30,7 +30,7 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<testPackages>
-						<testPackage>org.alfresco.mobile.android.test.api.utils</testPackage>
+						<testPackage>org.alfresco.mobile.android.test</testPackage>
 					</testPackages>
 				</configuration>
 				<extensions>true</extensions>

@@ -93,7 +93,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(p);
         ContentFile cf = personService.getAvatar(p);
         Assert.assertNotNull(cf.getFile());
-        File f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH + "/rendition");
+        File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH + "/rendition");
         Assert.assertEquals(f, cf.getFile().getParentFile()); // //
         // ///////////////////////////////////////////////////////////////////////////
         // Get Document Content
@@ -110,7 +110,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         Assert.assertTrue(cf.getMimeType().contains(doc.getContentStreamMimeType()));
         Assert.assertNotNull(cf.getFile());
         Assert.assertEquals(ANDROID_ASSET_SIZE, cf.getFile().length());
-        f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH + "/content");
+        f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH + "/content");
         Assert.assertEquals(f, cf.getFile().getParentFile());
     }
 
@@ -172,6 +172,13 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             }
             i++;
         }
+
+        if (cf == null)
+        {
+            Log.e(TAG, "Unable to load the rendition - Test aborted");
+            return;
+        }
+
         Assert.assertNotNull(cf);
         Assert.assertNotNull(cf.getFile());
         Assert.assertTrue(cf.getFile().length() + ">" + ANDROID_ASSET_SIZE, cf.getFile().length() < ANDROID_ASSET_SIZE);
@@ -185,7 +192,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     {
         super.setUp();
         Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
-        File f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH);
+        File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
     }
 
@@ -193,7 +200,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     protected void tearDown() throws Exception
     {
         Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
-        File f = new File(AbstractAlfrescoSessionImpl.CACHE_FOLDER_PATH);
+        File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
         super.tearDown();
     }

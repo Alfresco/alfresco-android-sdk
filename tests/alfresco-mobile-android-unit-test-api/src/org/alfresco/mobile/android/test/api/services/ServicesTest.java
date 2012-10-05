@@ -35,6 +35,8 @@ public class ServicesTest extends AlfrescoSDKTestCase
     /**
      * Test to check creation of alfresco Service after binding with an alfresco
      * server.
+     * 
+     * @Requirement 82S1, 
      */
     public void testAlfrescoServices()
     {

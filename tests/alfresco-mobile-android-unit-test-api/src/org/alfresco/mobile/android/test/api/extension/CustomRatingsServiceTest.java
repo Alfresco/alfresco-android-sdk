@@ -24,7 +24,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -97,7 +97,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
     /**
      * Simple test to check Services Extension point
      * 
-     * @throws AlfrescoConnectionException
+     * @throws AlfrescoSessionException
      */
     public void testServicesExtension()
     {

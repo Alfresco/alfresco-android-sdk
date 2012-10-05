@@ -24,7 +24,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoConnectionException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
@@ -108,7 +108,7 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
         }
         catch (Exception e)
         {
-            throw new AlfrescoConnectionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
         }
         return s;
     }

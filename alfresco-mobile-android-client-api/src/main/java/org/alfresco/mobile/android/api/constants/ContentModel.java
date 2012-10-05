@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Provides all identifiers that are available inside Alfresco Mobile SDK. <br/>
- * Use those constants if you need to get a specific property or aspect.
+ * Use those constants to get a specific property or aspect.
  * 
  * @see org.alfresco.mobile.android.api.model.Node#getProperty(String)
  * @see org.alfresco.mobile.android.api.model.Node#hasAspect(String)

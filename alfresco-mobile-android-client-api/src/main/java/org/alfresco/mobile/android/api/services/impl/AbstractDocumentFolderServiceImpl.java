@@ -71,6 +71,7 @@ import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
@@ -173,10 +174,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return new PagingResultImpl<Node>(page, hasMoreItem, children.getNumItems().intValue());
         }
-        catch (CmisObjectNotFoundException e)
-        {
-            return null;
-        }
         catch (Exception e)
         {
             convertException(e);
@@ -256,14 +253,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             return getChildById(identifier);
         }
-        catch (CmisObjectNotFoundException e)
-        {
-            //Case Cloud : Node Not found
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
-        }
         catch (CmisInvalidArgumentException e)
         {
-            //Case OnPremise : Node Not found (Object id is invalid:)
+            // Case OnPremise : Node Not found (Object id is invalid:)
             throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_NODE_NOT_FOUND, e);
         }
         catch (Exception e)
@@ -371,10 +363,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return result;
         }
-        catch (CmisObjectNotFoundException e)
-        {
-            return null;
-        }
         catch (Exception e)
         {
             convertException(e);
@@ -426,7 +414,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!(n instanceof Folder)) { throw new AlfrescoServiceException(
                     ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.19")
-                            + newId +" : " + n.getType() + " " + n.getName() ); }
+                            + newId + " : " + n.getType() + " " + n.getName()); }
             return (Folder) n;
         }
         catch (Exception e)
@@ -695,8 +683,22 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             return getChildById(objectId);
         }
+        catch (CmisRuntimeException e)
+        {
+            // Alfresco 3.4 : In case where a null value is provided (definition type property
+            // is not null)
+            if (e.getErrorContent() != null && e.getErrorContent().contains("cannot be null or empty."))
+            {
+                throw new IllegalArgumentException(e);
+            }
+            else
+            {
+                convertException(e);
+            }
+        }
         catch (Exception e)
         {
+            Log.d(TAG, Log.getStackTraceString(e));
             // In case where a null value is provided (definition type property
             // is not null)
             if (e.getMessage() != null && e.getMessage().contains("cannot be null or empty."))
@@ -986,9 +988,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** Alfresco OpenCMIS extension prefix for all aspects. */
     public static final String CMISPREFIX_ASPECTS = "P:";
-    public static final String CMISPREFIX_DOCUMENT = "D:";
-    public static final String CMISPREFIX_FOLDER = "F:";
 
+    public static final String CMISPREFIX_DOCUMENT = "D:";
+
+    public static final String CMISPREFIX_FOLDER = "F:";
 
     /** All CMIS properties identifier in one list. */
     private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();

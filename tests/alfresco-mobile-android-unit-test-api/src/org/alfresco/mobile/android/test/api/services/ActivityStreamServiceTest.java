@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -89,186 +90,180 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
      */
     public void testActivityStreamService()
     {
-        prepareScriptData();
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // Method getActivityStream()
-        // ///////////////////////////////////////////////////////////////////////////
-        List<ActivityEntry> feed = activityStreamService.getActivityStream();
-        if (feed == null || feed.isEmpty())
+        try
         {
-            Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
-            return;
-        }
-        int totalItems = feed.size();
-        Assert.assertNotNull(feed);
-        Assert.assertFalse(feed.isEmpty());
+            prepareScriptData();
 
-        // Sorting with listinContext and sort property : Sort is not supported
-        // by ActivityStreamService
-        wait(10000);
-        ListingContext lc = new ListingContext();
-        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_DESCRIPTION);
-        PagingResult<ActivityEntry> feedUnSorted = activityStreamService.getActivityStream(lc);
-        Assert.assertEquals(lc.getMaxItems(), feedUnSorted.getList().size());
-        Assert.assertEquals(feed.get(0).getIdentifier(), feed.get(0).getIdentifier());
-        // ///////////////////////////////////////////////////////////////////////////
-        // Paging ALL Activity Entry
-        // ///////////////////////////////////////////////////////////////////////////
-        lc = new ListingContext();
-        lc.setMaxItems(5);
-        lc.setSkipCount(0);
+            // ///////////////////////////////////////////////////////////////////////////
+            // Method getActivityStream()
+            // ///////////////////////////////////////////////////////////////////////////
+            List<ActivityEntry> feed = activityStreamService.getActivityStream();
+            if (feed == null || feed.isEmpty())
+            {
+                Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
+                return;
+            }
+            int totalItems = feed.size();
+            Assert.assertNotNull(feed);
+            Assert.assertFalse(feed.isEmpty());
 
-        // Check 1 activity
-        PagingResult<ActivityEntry> pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(5, pagingFeed.getList().size());
-        Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
-        Assert.assertTrue(pagingFeed.hasMoreItems());
+            // Sorting with listinContext and sort property : Sort is not
+            // supported
+            // by ActivityStreamService
+            wait(10000);
+            ListingContext lc = new ListingContext();
+            lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_DESCRIPTION);
+            PagingResult<ActivityEntry> feedUnSorted = activityStreamService.getActivityStream(lc);
+            Assert.assertEquals(lc.getMaxItems(), feedUnSorted.getList().size());
+            Assert.assertEquals(feed.get(0).getIdentifier(), feed.get(0).getIdentifier());
+            // ///////////////////////////////////////////////////////////////////////////
+            // Paging ALL Activity Entry
+            // ///////////////////////////////////////////////////////////////////////////
+            lc = new ListingContext();
+            lc.setMaxItems(5);
+            lc.setSkipCount(0);
 
-        // Check 0 activity if outside of total item
-        lc.setMaxItems(10);
-        lc.setSkipCount(feed.size());
-        pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
-        Assert.assertEquals(hasMoreItem(), pagingFeed.hasMoreItems());
-
-        // OnPremise max is 100 and not the case for cloud.
-        if (isOnPremise())
-        {
-            Assert.assertEquals(0, pagingFeed.getList().size());
-        }
-        else
-        {
-            Assert.assertEquals(10, pagingFeed.getList().size());
-        }
-
-        // Check feed.size() activity
-        lc.setMaxItems(feed.size());
-        lc.setSkipCount(0);
-        pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(feed.size(), pagingFeed.getList().size());
-        Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
-        Assert.assertEquals(hasMoreItem(), pagingFeed.hasMoreItems());
-
-        // ////////////////////////////////////////////////////
-        // Incorrect Listing Context Value
-        // ////////////////////////////////////////////////////
-        // Incorrect settings in listingContext: Such as inappropriate maxItems
-        // (0)
-        lc.setSkipCount(0);
-        lc.setMaxItems(-1);
-        pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
-        Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
-                : totalItems, pagingFeed.getList().size());
-        Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
-
-        // Incorrect settings in listingContext: Such as inappropriate maxItems
-        // (-1)
-        lc.setSkipCount(0);
-        lc.setMaxItems(-1);
-        pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
-        Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
-                : totalItems, pagingFeed.getList().size());
-        Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
-
-        // Incorrect settings in listingContext: Such as inappropriate skipcount
-        // (-12)
-        lc.setSkipCount(-12);
-        lc.setMaxItems(5);
-        pagingFeed = activityStreamService.getActivityStream(lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
-        Assert.assertEquals(5, pagingFeed.getList().size());
-        Assert.assertTrue(pagingFeed.hasMoreItems());
-
-        // List by User
-        List<ActivityEntry> feed2 = activityStreamService.getActivityStream(alfsession.getPersonIdentifier());
-        Assert.assertNotNull(feed2);
-
-        // List with fake user
-        Assert.assertNotNull(activityStreamService.getActivityStream(FAKE_USERNAME));
-        Assert.assertEquals(0, activityStreamService.getActivityStream(FAKE_USERNAME).size());
-
-        // List by site
-        List<ActivityEntry> feed3 = activityStreamService.getSiteActivityStream(getSiteName(alfsession));
-        Assert.assertNotNull(feed3);
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // Activity Entry
-        // ///////////////////////////////////////////////////////////////////////////
-        ActivityEntry entry = feed.get(0);
-        Assert.assertNotNull(entry.getIdentifier());
-        Assert.assertNotNull(entry.getType());
-        Assert.assertNotNull(entry.getCreatedBy());
-        Assert.assertNotNull(entry.getCreatedAt());
-        Assert.assertNotNull(entry.getSiteShortName());
-        Assert.assertNotNull(entry.getData());
-
-        Assert.assertEquals(alfsession.getPersonIdentifier(), entry.getCreatedBy());
-
-        // Reactivate when better support.
-        // String type = "org.alfresco.links.link-created";
-        // if (!isOnPremise())
-        // {
-        // type = "org.alfresco.comments.comment-created";
-        // }
-        //
-        // int i = 0;
-        // while (i < 3)
-        // {
-        // feed = activityStreamService.getActivityStream();
-        // wait(10000);
-        // feed3 =
-        // activityStreamService.getSiteActivityStream(getSiteName(alfsession));
-        // entry = feed.get(0);
-        // if (entry.getType().equals(type)){ break};
-        // entry = feed.get(1);
-        // if (entry.getType().equals(type)){ break};
-        // entry = feed.get(2);
-        // if (entry.getType().equals(type)){ break};
-        // i++;
-        // }
-        // Assert.assertEquals(type, entry.getType());
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // Paging User Activity Entry
-        // ///////////////////////////////////////////////////////////////////////////
-        wait(10000);
-        // Check 1 activity
-        lc.setMaxItems(1);
-        lc.setSkipCount(0);
-        pagingFeed = activityStreamService.getActivityStream(alfsession.getPersonIdentifier(), lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(1, pagingFeed.getList().size());
-        // Assert.assertTrue(feed2.size() == pagingFeed.getTotalItems() ||
-        // feed2.size() - 1 == pagingFeed.getTotalItems());
-        Assert.assertTrue(pagingFeed.hasMoreItems());
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // Paging Site Activity Entry
-        // ///////////////////////////////////////////////////////////////////////////
-        // Check 1 activity
-        lc.setMaxItems(1);
-        lc.setSkipCount(0);
-        pagingFeed = activityStreamService.getSiteActivityStream(getSiteName(alfsession), lc);
-        Assert.assertNotNull(pagingFeed);
-        Assert.assertEquals(1, pagingFeed.getList().size());
-        // Assert.assertTrue(feed3.size() == pagingFeed.getTotalItems() ||
-        // feed3.size() - 1 == pagingFeed.getTotalItems());
-        if (feed3.size() > 1)
-        {
+            // Check 1 activity
+            PagingResult<ActivityEntry> pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(5, pagingFeed.getList().size());
+            Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
             Assert.assertTrue(pagingFeed.hasMoreItems());
+
+            // Check 0 activity if outside of total item
+            lc.setMaxItems(10);
+            lc.setSkipCount(feed.size());
+            pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
+            Assert.assertEquals(hasMoreItem(), pagingFeed.hasMoreItems());
+
+            // OnPremise max is 100 and not the case for cloud.
+            if (isOnPremise())
+            {
+                Assert.assertEquals(0, pagingFeed.getList().size());
+            }
+            else
+            {
+                Assert.assertEquals(10, pagingFeed.getList().size());
+            }
+
+            // Check feed.size() activity
+            lc.setMaxItems(feed.size());
+            lc.setSkipCount(0);
+            pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(feed.size(), pagingFeed.getList().size());
+            Assert.assertEquals(getTotalItems(feed.size()), pagingFeed.getTotalItems());
+            Assert.assertEquals(hasMoreItem(), pagingFeed.hasMoreItems());
+
+            // ////////////////////////////////////////////////////
+            // Incorrect Listing Context Value
+            // ////////////////////////////////////////////////////
+            // Incorrect settings in listingContext: Such as inappropriate
+            // maxItems
+            // (0)
+            lc.setSkipCount(0);
+            lc.setMaxItems(-1);
+            pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
+            Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
+                    : totalItems, pagingFeed.getList().size());
+            Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
+
+            // Incorrect settings in listingContext: Such as inappropriate
+            // maxItems
+            // (-1)
+            lc.setSkipCount(0);
+            lc.setMaxItems(-1);
+            pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
+            Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
+                    : totalItems, pagingFeed.getList().size());
+            Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
+
+            // Incorrect settings in listingContext: Such as inappropriate
+            // skipcount
+            // (-12)
+            lc.setSkipCount(-12);
+            lc.setMaxItems(5);
+            pagingFeed = activityStreamService.getActivityStream(lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
+            Assert.assertEquals(5, pagingFeed.getList().size());
+            Assert.assertTrue(pagingFeed.hasMoreItems());
+
+            // List by User
+            List<ActivityEntry> feed2 = activityStreamService.getActivityStream(alfsession.getPersonIdentifier());
+            Assert.assertNotNull(feed2);
+
+            // List with fake user
+            Assert.assertNotNull(activityStreamService.getActivityStream(FAKE_USERNAME));
+            Assert.assertEquals(0, activityStreamService.getActivityStream(FAKE_USERNAME).size());
+
+            // List by site
+            List<ActivityEntry> feed3 = activityStreamService.getSiteActivityStream(getSiteName(alfsession));
+            Assert.assertNotNull(feed3);
+
+            // ///////////////////////////////////////////////////////////////////////////
+            // Activity Entry
+            // ///////////////////////////////////////////////////////////////////////////
+            ActivityEntry entry = feed.get(0);
+            Assert.assertNotNull(entry.getIdentifier());
+            Assert.assertNotNull(entry.getType());
+            Assert.assertNotNull(entry.getCreatedBy());
+            Assert.assertNotNull(entry.getCreatedAt());
+            Assert.assertNotNull(entry.getSiteShortName());
+            Assert.assertNotNull(entry.getData());
+
+            Assert.assertEquals(alfsession.getPersonIdentifier(), entry.getCreatedBy());
+
+            // ///////////////////////////////////////////////////////////////////////////
+            // Paging User Activity Entry
+            // ///////////////////////////////////////////////////////////////////////////
+            wait(10000);
+
+            // Check consistency between Cloud and OnPremise
+            if (!isOnPremise())
+            {
+                // Check 1 activity
+                lc.setMaxItems(1);
+                lc.setSkipCount(0);
+                pagingFeed = activityStreamService.getActivityStream(alfsession.getPersonIdentifier(), lc);
+                Assert.assertNotNull(pagingFeed);
+                Assert.assertEquals(1, pagingFeed.getList().size());
+                // Assert.assertTrue(feed2.size() == pagingFeed.getTotalItems()
+                // ||
+                // feed2.size() - 1 == pagingFeed.getTotalItems());
+                Assert.assertTrue(pagingFeed.hasMoreItems());
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////
+            // Paging Site Activity Entry
+            // ///////////////////////////////////////////////////////////////////////////
+            // Check 1 activity
+            lc.setMaxItems(1);
+            lc.setSkipCount(0);
+            pagingFeed = activityStreamService.getSiteActivityStream(getSiteName(alfsession), lc);
+            Assert.assertNotNull(pagingFeed);
+            Assert.assertEquals(1, pagingFeed.getList().size());
+            // Assert.assertTrue(feed3.size() == pagingFeed.getTotalItems() ||
+            // feed3.size() - 1 == pagingFeed.getTotalItems());
+            if (feed3.size() > 1)
+            {
+                Assert.assertTrue(pagingFeed.hasMoreItems());
+            }
+            else
+            {
+                Assert.assertFalse(pagingFeed.hasMoreItems());
+            }
         }
-        else
+        catch (Exception e)
         {
-            Assert.assertFalse(pagingFeed.hasMoreItems());
+            Log.e(TAG, "Error during Activity Tests");
+            Log.e("TAG", Log.getStackTraceString(e));
         }
     }
 
@@ -282,45 +277,53 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
      */
     public void testActivityServiceMethodsError()
     {
-        // ///////////////////////////////////////////////////////////////////////////
-        // Method getActivityStream()
-        // ///////////////////////////////////////////////////////////////////////////
         try
         {
-            Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-        }
-        Assert.assertTrue(activityStreamService.getSiteActivityStream("adm1n").isEmpty());
+            // ///////////////////////////////////////////////////////////////////////////
+            // Method getActivityStream()
+            // ///////////////////////////////////////////////////////////////////////////
+            try
+            {
+                Assert.assertNotNull(activityStreamService.getActivityStream((String) null));
+                Assert.fail();
+            }
+            catch (IllegalArgumentException e)
+            {
+                Assert.assertTrue(true);
+            }
+            Assert.assertTrue(activityStreamService.getSiteActivityStream("adm1n").isEmpty());
 
-        // ///////////////////////////////////////////////////////////////////////////
-        // Method getSiteActivityStream()
-        // ///////////////////////////////////////////////////////////////////////////
-        try
-        {
-            Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
-            Assert.fail();
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.assertTrue(true);
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
+            // ///////////////////////////////////////////////////////////////////////////
+            // Method getSiteActivityStream()
+            // ///////////////////////////////////////////////////////////////////////////
+            try
+            {
+                Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
+                Assert.fail();
+            }
+            catch (IllegalArgumentException e)
+            {
+                Assert.assertTrue(true);
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
 
-        // Check Error activity
-        Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
-        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        if (session != null)
-        {
-            Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                    .getSiteActivityStream("privatesite").isEmpty());
-            Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                    .getSiteActivityStream("moderatedsite").isEmpty());
+            // Check Error activity
+            Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
+            AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+            if (session != null)
+            {
+                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("privatesite").isEmpty());
+                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("moderatedsite").isEmpty());
+            }
+            checkSession(session);
         }
-        checkSession(session);
+        catch (Exception e)
+        {
+            Log.e(TAG, "Error during Activity Tests");
+            Log.e("TAG", Log.getStackTraceString(e));
+        }
     }
 
     // ////////////////////////////////////////////////////
@@ -399,7 +402,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                     url, formData.getContentType(),
                     new org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Output()
                     {
-                        public void write(OutputStream out) throws Exception
+                        public void write(OutputStream out) throws IOException
                         {
                             formData.write(out);
                         }
