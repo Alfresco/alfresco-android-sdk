@@ -313,7 +313,7 @@
 			<url>https://repository.apache.org/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>maven.alfresco.com</id>
+			<id>artifacts.alfresco.com</id>
 			<name>Alfresco Maven Repository</name>
 			<url>http://artifacts.alfresco.com/nexus/content/repositories/releases</url>
 		</repository>
