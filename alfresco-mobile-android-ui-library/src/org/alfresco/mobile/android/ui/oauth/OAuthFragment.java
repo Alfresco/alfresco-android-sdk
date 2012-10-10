@@ -20,9 +20,12 @@ package org.alfresco.mobile.android.ui.oauth;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
@@ -138,7 +141,19 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                     // the acces token
                     webview.setVisibility(View.GONE);
                     code = OAuthHelper.retrieveCode(url);
-                    retrieveAccessToken(code);
+                    if (code != null)
+                    {
+                        retrieveAccessToken(code);
+                    }
+                    else
+                    {
+                        if (onOAuthAccessTokenListener != null)
+                        {
+                            onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
+                                    ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
+                                            .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
+                        }
+                    }
                     return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);

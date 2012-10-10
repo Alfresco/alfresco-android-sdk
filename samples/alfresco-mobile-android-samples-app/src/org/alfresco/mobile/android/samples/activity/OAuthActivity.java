@@ -103,7 +103,10 @@ public class OAuthActivity extends Activity
             @Override
             public void failedRequestAccessToken(Exception e)
             {
-                mProgressDialog.dismiss();
+                if (mProgressDialog != null)
+                {
+                    mProgressDialog.dismiss();
+                }
                 MessengerManager.showLongToast(OAuthActivity.this, e.getMessage());
             }
 
