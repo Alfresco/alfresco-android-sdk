@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.impl;
 
-import static org.alfresco.mobile.android.api.constants.OAuthConstant.CLOUD_URL;
+import static org.alfresco.mobile.android.api.constants.OAuthConstant.PUBLIC_API_HOSTNAME;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -84,7 +84,7 @@ public class CloudSessionImpl extends CloudSession
             parameters.put(USER, USER_ME);
         }
 
-        initSettings(CLOUD_URL, parameters);
+        initSettings(PUBLIC_API_HOSTNAME, parameters);
 
         // Normal case : With OAuth data.
         if (oauthData != null)

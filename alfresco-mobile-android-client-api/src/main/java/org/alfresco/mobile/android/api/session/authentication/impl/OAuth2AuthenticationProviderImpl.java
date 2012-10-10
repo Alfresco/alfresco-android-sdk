@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 
@@ -74,9 +75,10 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
         return null;
     }
 
-    public OAuthData refreshToken()
+    public OAuthData refreshToken(AlfrescoSession session)
     {
-       return OAuthHelper.refreshToken(token);
+       OAuthHelper helper = new OAuthHelper(session.getBaseUrl());
+       return helper.refreshToken(token);
     }
 
     @Override

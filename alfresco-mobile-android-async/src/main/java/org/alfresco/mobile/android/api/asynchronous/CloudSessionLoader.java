@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
-import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 
 import android.content.Context;
 
@@ -38,7 +37,9 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
 {
     public static final int ID = CloudSessionLoader.class.hashCode();
 
-    public static final String USER = "org.alfresco.mobile.internal.credential.user";
+    private static final String USER = "org.alfresco.mobile.internal.credential.user";
+
+    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     private Map<String, Serializable> settings;
 
@@ -72,11 +73,20 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
         {
             if (requestNewRefreshToken)
             {
-                oauthData = OAuthHelper.refreshToken(oauthData);
+                OAuthHelper helper = null;
+                if (!settings.containsKey(BASE_URL))
+                {
+                    helper = new OAuthHelper((String) settings.get(BASE_URL));
+                }
+                else
+                {
+                    helper = new OAuthHelper();
+                }
+                oauthData = helper.refreshToken(oauthData);
             }
-            
+
             cloudSession = CloudSession.connect(oauthData, settings);
-            
+
             if (settings.containsKey(USER) && settings.get(USER) == CloudSession.USER_ME)
             {
                 userPerson = cloudSession.getServiceRegistry().getPersonService().getPerson(CloudSession.USER_ME);

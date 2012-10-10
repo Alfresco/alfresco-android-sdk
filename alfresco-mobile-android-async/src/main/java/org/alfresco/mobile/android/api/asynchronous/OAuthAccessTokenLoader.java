@@ -46,6 +46,8 @@ public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAut
 
     public static final String PARAM_OPERATION = "operation";
 
+    public static final String PARAM_BASEURL = "baseUrl";
+
     public static final int OPERATION_REFRESH_TOKEN = 10;
 
     public static final int OPERATION_ACCESS_TOKEN = 1;
@@ -73,9 +75,10 @@ public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAut
         checkValues(b);
         this.b = b;
     }
-    
+
     /**
      * This Token can only be used for refreshing an OAuth Token.
+     * 
      * @param context
      * @param data
      */
@@ -94,14 +97,17 @@ public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAut
         OAuthData data = null;
         try
         {
+
+            OAuthHelper helper = new OAuthHelper((String) b.get(PARAM_BASEURL));
+
             switch (b.getInt(PARAM_OPERATION))
             {
                 case OPERATION_ACCESS_TOKEN:
-                    data = OAuthHelper.getAccessToken(b.getString(PARAM_APIKEY), b.getString(PARAM_APISECRET),
+                    data = helper.getAccessToken(b.getString(PARAM_APIKEY), b.getString(PARAM_APISECRET),
                             b.getString(PARAM_CALLBACK_URL), b.getString(PARAM_CODE));
                     break;
                 case OPERATION_REFRESH_TOKEN:
-                    data = OAuthHelper.refreshToken(oauthData);
+                    data = helper.refreshToken(oauthData);
                     break;
                 default:
                     break;

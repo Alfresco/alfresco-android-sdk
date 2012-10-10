@@ -148,6 +148,13 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
             tmpSettings.put(AUTHENTICATOR_CLASSNAME,
                     "org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl");
         }
+        
+        if (!tmpSettings.containsKey(AUTHENTICATOR_CLASSNAME))
+        {
+            tmpSettings.put(SessionParameter.COMPRESSION,
+                    "org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl");
+        }
+        
         userParameters = tmpSettings;
     }
 
