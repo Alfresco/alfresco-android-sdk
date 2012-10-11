@@ -61,27 +61,21 @@ public class PropertyImpl implements Property
         this.value = value;
     }
 
-    /**
-     * @return Returns if the property is a multi-value property.
-     */
+    /** {@inheritDoc} */
     public boolean isMultiValued()
     {
         if (prop != null) { return prop.isMultiValued(); }
         return false;
     }
 
-    /**
-     * @return Returns the property data type.
-     */
+    /** {@inheritDoc} */
     public PropertyType getType()
     {
         if (prop != null) { return PropertyType.fromValue(prop.getType().value()); }
         return null;
     }
 
-    /**
-     * @return Returns the property value (single or multiple).
-     */
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public <T> T getValue()
     {

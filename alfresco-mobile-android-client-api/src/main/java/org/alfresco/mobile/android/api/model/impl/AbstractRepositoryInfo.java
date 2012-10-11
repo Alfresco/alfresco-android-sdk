@@ -21,40 +21,42 @@ import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 
 /**
+ * Base common implementation of RepositoryInfo.
  * 
  * @author Jean Marie Pascal
- *
  */
 public abstract class AbstractRepositoryInfo implements RepositoryInfo
 {
+
+    /** The CMIS repository info. */
     protected final org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo;
 
+    /** The capabilities associated to the repository. */
     protected RepositoryCapabilities capabilities;
 
+    /**
+     * Instantiates a new abstract repository info.
+     * 
+     * @param repositoryInfo the repository info
+     */
     public AbstractRepositoryInfo(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
         this.repositoryInfo = repositoryInfo;
     }
 
-    /**
-     * Returns the unique identifier of the repository.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return repositoryInfo.getId();
     }
 
-    /**
-     * Returns the public name of the repository.
-     */
+    /** {@inheritDoc} */
     public String getName()
     {
         return repositoryInfo.getName();
     }
 
-    /**
-     * Returns the description of the repository.
-     */
+    /** {@inheritDoc} */
     public String getDescription()
     {
         return repositoryInfo.getDescription();

@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+// TODO: Auto-generated Javadoc
 /**
  * Provides informations about Alfresco Share site. </br> A site is a project
  * area where you can share content and collaborate with other site
@@ -35,22 +36,38 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class SiteImpl implements Site
 {
+    
+    /**
+     * Instantiates a new site impl.
+     */
     public SiteImpl()
     {
     }
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The name. */
     private String name;
 
+    /** The title. */
     private String title;
 
+    /** The description. */
     private String description;
 
+    /** The visibility. */
     private String visibility;
 
+    /** The node. */
     private String node;
 
+    /**
+     * Parse Json Response from Alfresco REST API to create a Site.
+     *
+     * @param json : json response that contains data from the repository
+     * @return Site object that contains essential information about it.
+     */
     public static SiteImpl parseJson(Map<String, Object> json)
     {
         SiteImpl site = new SiteImpl();
@@ -72,6 +89,12 @@ public class SiteImpl implements Site
         return site;
     }
 
+    /**
+     * Parse Json Response from Alfresco Public API to create a Site.
+     *
+     * @param json : json response that contains data from the repository
+     * @return Site object that contains essential information about it.
+     */
     public static SiteImpl parsePublicAPIJson(Map<String, Object> json)
     {
         SiteImpl site = new SiteImpl();
@@ -85,35 +108,24 @@ public class SiteImpl implements Site
         return site;
     }
 
-    /**
-     * @return Returns the description of the site
-     */
+    /** {@inheritDoc} */
     public String getDescription()
     {
         return description;
     }
 
-    /**
-     * @return Returns the short name (unique identifier) of the site
-     */
+    /** {@inheritDoc} */
     public String getShortName()
     {
         return name;
     }
-
-    /**
-     * @return Returns the site’s visibility. Visibility value are public,
-     *         private or moderated.
-     * @see SiteVisibility
-     */
+    /** {@inheritDoc} */
     public SiteVisibility getVisibility()
     {
         return SiteVisibility.fromValue(visibility);
     }
 
-    /**
-     * @return Returns the title of the site.
-     */
+    /** {@inheritDoc} */
     public String getTitle()
     {
         return title;

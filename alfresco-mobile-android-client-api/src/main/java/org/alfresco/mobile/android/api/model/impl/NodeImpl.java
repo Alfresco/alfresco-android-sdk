@@ -83,41 +83,31 @@ public class NodeImpl implements Node
     // ////////////////////////////////////////////////////
     // Shortcut and common methods
     // ////////////////////////////////////////////////////
-    /**
-     * @return Returns unique identifier of the node.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return getPropertyValue(PropertyIds.OBJECT_ID);
     }
 
-    /**
-     * @return Returns the name of the node.
-     */
+    /** {@inheritDoc} */
     public String getName()
     {
         return getPropertyValue(PropertyIds.NAME);
     }
-
-    /**
-     * @return Returns the title of the Node
-     */
+    
+    /** {@inheritDoc} */
     public String getTitle()
     {
         return getPropertyValue(ContentModel.PROP_TITLE);
     }
 
-    /**
-     * @return Returns the description of the Node
-     */
+    /** {@inheritDoc} */
     public String getDescription()
     {
         return getPropertyValue(ContentModel.PROP_DESCRIPTION);
     }
 
-    /**
-     * @return Returns the type of this Node
-     */
+    /** {@inheritDoc} */
     public String getType()
     {
         if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
@@ -132,35 +122,25 @@ public class NodeImpl implements Node
         return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
     }
 
-    /**
-     * @return Returns the username of the person who created the node.
-     */
+    /** {@inheritDoc} */
     public String getCreatedBy()
     {
         return getPropertyValue(PropertyIds.CREATED_BY);
     }
 
-    /**
-     * @return Returns the timestamp in the session’s locale when the node was
-     *         created.
-     */
+    /** {@inheritDoc} */
     public GregorianCalendar getCreatedAt()
     {
         return getPropertyValue(PropertyIds.CREATION_DATE);
     }
 
-    /**
-     * @return Returns the username of the person who modified the node.
-     */
+    /** {@inheritDoc} */
     public String getModifiedBy()
     {
         return getPropertyValue(PropertyIds.LAST_MODIFIED_BY);
     }
 
-    /**
-     * @return Returns the timestamp in the session’s locale when the node was
-     *         modified.
-     */
+    /** {@inheritDoc} */
     public GregorianCalendar getModifiedAt()
     {
         return getPropertyValue(PropertyIds.LAST_MODIFICATION_DATE);
@@ -170,13 +150,7 @@ public class NodeImpl implements Node
     // Properties and Aspects
     // ////////////////////////////////////////////////////
 
-    /**
-     * Returns the requested property. Use this methods if your property is a
-     * multi-value
-     * 
-     * @param name : unique identifier of your property.
-     * @return Property object.
-     */
+    /** {@inheritDoc} */
     public Property getProperty(String name)
     {
         // Match specific alfresco metadata name to its translated cmis version
@@ -184,12 +158,7 @@ public class NodeImpl implements Node
         return getProp(AbstractDocumentFolderServiceImpl.getPropertyName(name));
     }
 
-    /**
-     * Returns a Map of all available properties for the specific node object. <br>
-     * NB : All property id are CMIS based.
-     * 
-     * @return map of properties object
-     */
+    /** {@inheritDoc} */
     public Map<String, Property> getProperties()
     {
         if (object != null)
@@ -206,12 +175,7 @@ public class NodeImpl implements Node
         return null;
     }
 
-    /**
-     * Returns the value of the property with the given name.
-     * 
-     * @param name
-     * @return
-     */
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public <T> T getPropertyValue(String name)
     {
@@ -245,12 +209,7 @@ public class NodeImpl implements Node
         }
     }
 
-    /**
-     * Determines if the node has the specified aspect.
-     * 
-     * @param aspectName : unique identifier of aspect Name.
-     * @return true if the specified aspect is present, false otherwise
-     */
+    /** {@inheritDoc} */
     public boolean hasAspect(String aspectName)
     {
         String tmpAspectName = aspectName;
@@ -273,11 +232,7 @@ public class NodeImpl implements Node
         }
     }
 
-    /**
-     * Returns a Map of all available aspects.
-     * 
-     * @return
-     */
+    /** {@inheritDoc} */
     public List<String> getAspects()
     {
         AlfrescoAspects alf = (AlfrescoAspects) object;
@@ -297,19 +252,13 @@ public class NodeImpl implements Node
     // Types
     // ////////////////////////////////////////////////////
 
-    /**
-     * @return Return true if this instance represents a folder, false if this
-     *         represents a document
-     */
+    /** {@inheritDoc} */
     public boolean isFolder()
     {
         return ObjectType.FOLDER_BASETYPE_ID.equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
     }
 
-    /**
-     * @return Return true if this instance represents a document, false if this
-     *         represents a folder
-     */
+    /** {@inheritDoc} */
     public boolean isDocument()
     {
         return ObjectType.DOCUMENT_BASETYPE_ID.equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));

@@ -46,25 +46,19 @@ public class PagingResultImpl<T> implements PagingResult<T>
     /** Total size of items available. */
     private int numItems;
 
-    /**
-     * Return a list of all object present in a page.
-     */
+    /** {@inheritDoc} */
     public List<T> getList()
     {
         return objects;
     }
 
-    /**
-     * Returns True if there are more items available.
-     */
+    /** {@inheritDoc} */
     public Boolean hasMoreItems()
     {
         return hasMoreItems;
     }
 
-    /**
-     * Returns the number of all items presents.
-     */
+    /** {@inheritDoc} */
     public int getTotalItems()
     {
         return numItems;

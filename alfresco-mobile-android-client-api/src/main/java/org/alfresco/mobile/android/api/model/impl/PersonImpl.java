@@ -92,6 +92,12 @@ public class PersonImpl implements Person
         return person;
     }
 
+    /**
+     * Parse Json Response from Alfresco Public API to create a Person.
+     * 
+     * @param json : json response that contains data from the repository
+     * @return Person object that contains essential information about it.
+     */
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json)
     {
         PersonImpl person = new PersonImpl();
@@ -105,41 +111,31 @@ public class PersonImpl implements Person
         return person;
     }
 
-    /**
-     * @return Returns the unique identifier to the content of avatar rendition.
-     */
+    /** {@inheritDoc} */
     public String getAvatarIdentifier()
     {
         return avatarIdentifier;
     }
 
-    /**
-     * @return Returns the username of this person.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return username;
     }
 
-    /**
-     * @return Returns the first name of this person.
-     */
+    /** {@inheritDoc} */
     public String getFirstName()
     {
         return firstName;
     }
 
-    /**
-     * @return Returns the last name of this person.
-     */
+    /** {@inheritDoc} */
     public String getLastName()
     {
         return lastName;
     }
 
-    /**
-     * @return Returns the full name of this person.
-     */
+    /** {@inheritDoc} */
     public String getFullName()
     {
         if ((firstName != null && firstName.length() != 0) || (lastName != null && lastName.length() != 0)) { return firstName

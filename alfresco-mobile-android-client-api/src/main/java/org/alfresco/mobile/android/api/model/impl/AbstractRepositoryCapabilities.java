@@ -23,9 +23,9 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
 
 /**
+ * Base common implementation of RepositoryCapabilities.
  * 
  * @author Jean Marie Pascal
- *
  */
 public abstract class AbstractRepositoryCapabilities implements RepositoryCapabilities
 {
@@ -33,9 +33,6 @@ public abstract class AbstractRepositoryCapabilities implements RepositoryCapabi
     /** Map of Alfresco Specific capabilities. */
     protected Map<String, Boolean> capabilities = new HashMap<String, Boolean>(2);
 
-    // ////////////////////////////////////////////////////////////////////////////////////
-    // DEVELOPER Flags
-    // ////////////////////////////////////////////////////////////////////////////////////
     /**
      * Like action and LikeService are only available since Alfresco V4. This
      * flag indicate if this feature is available with the current repository.
@@ -61,6 +58,7 @@ public abstract class AbstractRepositoryCapabilities implements RepositoryCapabi
         return capabilities.get(CAPABILITY_COMMENTS_COUNT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean doesSupportCapability(String capability)
     {
