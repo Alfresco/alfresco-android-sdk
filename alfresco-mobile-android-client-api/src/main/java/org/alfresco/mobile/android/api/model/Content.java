@@ -30,16 +30,22 @@ public interface Content extends Serializable
 
     /**
      * Returns the length of the content in bytes.
+     *
+     * @return the length
      */
     long getLength();
 
     /**
      * Returns the mime type of the content.
+     *
+     * @return the mime type
      */
     String getMimeType();
 
     /**
      * Returns the name of the file representing the content.
+     *
+     * @return the file name
      */
     String getFileName();
 

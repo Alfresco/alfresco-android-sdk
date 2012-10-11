@@ -29,24 +29,33 @@ import java.io.Serializable;
  */
 public interface Site extends Serializable
 {
+    
     /**
      * Returns the short name of the site.
+     *
+     * @return the short name
      */
     String getShortName();
 
     /**
      * Returns the unique identifier of the site.
+     *
+     * @return the title
      */
     String getTitle();
 
     /**
      * Returns the description of the site.
+     *
+     * @return the description
      */
     String getDescription();
 
     /**
      * Returns the visibility of the site i.e. “public”, “moderated” or
      * “private”, represented by an enum.
+     *
+     * @return the visibility
      */
     SiteVisibility getVisibility();
 

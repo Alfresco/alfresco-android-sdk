@@ -29,6 +29,8 @@ public interface ContentStream extends Content
 {
 
     /**
+     * Gets the input stream.
+     *
      * @return Returns an InputStream to the content.
      */
     InputStream getInputStream();

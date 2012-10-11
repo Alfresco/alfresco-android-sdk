@@ -37,47 +37,65 @@ public interface Node extends Serializable, Parcelable
     // ////////////////////////////////////////////////////
     /**
      * Returns unique identifier of the node.
+     *
+     * @return the identifier
      */
      String getIdentifier();
 
     /**
      * Returns the name of the node.
+     *
+     * @return the name
      */
      String getName();
 
     /**
-     * Returns the title of the Node
+     * Returns the title of the Node.
+     *
+     * @return the title
      */
      String getTitle();
 
     /**
-     * Returns the description of the Node
+     * Returns the description of the Node.
+     *
+     * @return the description
      */
      String getDescription();
 
     /**
-     * Returns the type of this Node
+     * Returns the type of this Node.
+     *
+     * @return the type
      */
      String getType();
 
     /**
      * Returns the username of the person who created the node.
+     *
+     * @return the created by
      */
      String getCreatedBy();
 
     /**
      * Returns the timestamp in the session’s locale when the node was created.
+     *
+     * @return the created at
      */
      GregorianCalendar getCreatedAt();
 
     /**
      * Returns the username of the person who modified the node.
+     *
+     * @return the modified by
      */
      String getModifiedBy();
 
     /**
+     * Gets the modified at.
+     *
      * @return Returns the timestamp in the session’s locale when the node was
-     *         modified.
+     * modified.
      */
      GregorianCalendar getModifiedAt();
 
@@ -104,8 +122,9 @@ public interface Node extends Serializable, Parcelable
 
     /**
      * Returns the value of the property with the given name.
-     * 
+     *
      * @param name : unique identifier label of the property
+     * @return the property value
      */
     <T> T getPropertyValue(String name);
 
@@ -119,6 +138,8 @@ public interface Node extends Serializable, Parcelable
 
     /**
      * Returns all the aspects applied to the node.
+     *
+     * @return the aspects
      */
      List<String> getAspects();
 
@@ -128,13 +149,17 @@ public interface Node extends Serializable, Parcelable
 
     /**
      * Return true if this instance represents a folder, false if this
-     * represents a document
+     * represents a document.
+     *
+     * @return true, if is folder
      */
      boolean isFolder();
 
     /**
      * Return true if this instance represents a document, false if this
-     * represents a folder
+     * represents a folder.
+     *
+     * @return true, if is document
      */
      boolean isDocument();
 }

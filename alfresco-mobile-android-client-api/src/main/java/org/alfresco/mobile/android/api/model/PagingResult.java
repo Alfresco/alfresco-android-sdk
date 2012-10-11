@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * Provides Paging Result for all Mobile SDK object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public interface PagingResult<T>
@@ -29,16 +29,22 @@ public interface PagingResult<T>
 
     /**
      * Return a list of all object present in a page.
+     *
+     * @return the list
      */
     List<T> getList();
 
     /**
      * Returns True if there are more items available.
+     *
+     * @return True if there are more items available.
      */
     Boolean hasMoreItems();
 
     /**
      * Returns the number of all items presents.
+     *
+     * @return the total items
      */
     int getTotalItems();
 

@@ -38,38 +38,53 @@ public interface ActivityEntry
 
     /**
      * Returns the identifier of this specific activity entry.
+     *
+     * @return the activity entry identifier.
      */
      String getIdentifier();
 
     /**
      * Returns the identifier of this specific activity.
+     *
+     * @return the site short name associated to this activity entry.
      */
      String getSiteShortName();
 
     /**
      * Returns the username of the person who posted the activity entry.
+     *
+     * @return the created by value
      */
      String getCreatedBy();
 
     /**
      * Returns the timestamp in the session’s locale when the activity entry was
      * created.
+     *
+     * @return the created at value
      */
      GregorianCalendar getCreatedAt();
 
     /**
      * Returns the type of the activity entry e.g. “file-added”.
+     *
+     * @return the type of the activity entry.
      */
      String getType();
 
     /**
      * Returns a map of all extra data specific to a certain type of activity
      * entry.
+     *
+     * @return a map of extra data.
      */
      Map<String, String> getData();
 
     /**
      * Returns the value of a specific key available in the extra data.
+     *
+     * @param key key associated to a specific extra value
+     * @return the data 
      */
      String getData(String key);
 }
