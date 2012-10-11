@@ -56,7 +56,7 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
     }
 
     /** {@inheritDoc} */
-    protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext)
+    protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext, boolean isReadOperation)
     {
         String link = OnPremiseUrlRegistry.getCommentsUrl(session, node.getIdentifier());
         UrlBuilder url = new UrlBuilder(link);
@@ -67,7 +67,7 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
             url.addParameter(OnPremiseConstant.PARAM_STARTINDEX, listingContext.getSkipCount());
             url.addParameter(OnPremiseConstant.PARAM_PAGESIZE, listingContext.getMaxItems());
         }
-        else
+        else if (isReadOperation)
         {
             url.addParameter(OnPremiseConstant.PARAM_REVERSE, true);
         }
