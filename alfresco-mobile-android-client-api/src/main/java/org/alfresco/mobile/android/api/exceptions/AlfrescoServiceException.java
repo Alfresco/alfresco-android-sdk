@@ -28,9 +28,6 @@ public class AlfrescoServiceException extends AlfrescoException
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** Name of the exception. */
-    public static final String EXCEPTION_NAME = "AlfrescoServiceException";
-
     /**
      * Default constructor.
      *

@@ -74,7 +74,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
      *            for Onpremise)
      * @return UrlBuilder to retrieve for a specific user node comments url.
      */
-    protected abstract UrlBuilder getCommentsUrl(Node node, ListingContext listingContext);
+    protected abstract UrlBuilder getCommentsUrl(Node node, ListingContext listingContext, boolean isReadOperation);
 
     /** {@inheritDoc} */
     public PagingResult<Comment> getComments(Node node, ListingContext listingContext)
@@ -83,7 +83,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
         try
         {
-            return computeComment(getCommentsUrl(node, listingContext));
+            return computeComment(getCommentsUrl(node, listingContext, true));
         }
         catch (AlfrescoServiceException er)
         {
@@ -112,7 +112,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
         try
         {
             // build URL
-            UrlBuilder url = getCommentsUrl(node, null);
+            UrlBuilder url = getCommentsUrl(node, null, false);
 
             // prepare json data
             JSONObject jo = new JSONObject();

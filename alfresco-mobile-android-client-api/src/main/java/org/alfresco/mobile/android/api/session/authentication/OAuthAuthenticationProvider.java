@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication;
 
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+
+
 /**
  * Implementation of OAuth2 AuthenticationProvider.
  * 
@@ -28,7 +31,7 @@ public interface OAuthAuthenticationProvider extends AuthenticationProvider
 
     String getRefreshToken();
 
-    OAuthData refreshToken();
+    OAuthData refreshToken(AlfrescoSession session);
     
     void setOAuthData(OAuthData data);
 

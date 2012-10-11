@@ -148,6 +148,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
             tmpSettings.put(AUTHENTICATOR_CLASSNAME,
                     "org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl");
         }
+
+        if (!tmpSettings.containsKey(SessionParameter.COMPRESSION))
+        {
+            tmpSettings.put(SessionParameter.COMPRESSION, "true");
+        }
+
         userParameters = tmpSettings;
     }
 
@@ -220,8 +226,9 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
         userParameters.put(key, value);
     }
-    
-    private void checkRemoveParameter(String key){
+
+    private void checkRemoveParameter(String key)
+    {
         if (LISTING_MAX_ITEMS.equals(key))
         {
             userParameters.remove(key);
@@ -300,6 +307,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         addParameterIfExist(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
                 SessionParameter.AUTHENTICATION_PROVIDER_CLASS);
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
+        addParameterIfExist(SessionParameter.COMPRESSION, SessionParameter.COMPRESSION);
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)

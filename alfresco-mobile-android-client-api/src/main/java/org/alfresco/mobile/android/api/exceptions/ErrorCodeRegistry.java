@@ -31,17 +31,23 @@ public interface ErrorCodeRegistry
     /** Default Generic Error for all API. */
     int GENERAL_GENERIC = 0;
 
-    /** Invalid HTTP Response code from the server. */
+    /**
+     * Invalid HTTP Response code from the server i.e. outside the 200 - 299
+     * range.
+     */
     int GENERAL_HTTP_RESP = 1;
 
-    /** Something happens wrong with the filesystem. */
-    int GENERAL_IO = 4;
-
-    /** Node not found. */
+    /** The requested node could not be found. */
     int GENERAL_NODE_NOT_FOUND = 2;
 
-    /** Access Denied / No rights. */
+    /**
+     * Access Denied. The current user is not allowed to perform the current
+     * operation.
+     */
     int GENERAL_ACCESS_DENIED = 3;
+
+    /** An I/O error occurred. */
+    int GENERAL_IO = 4;
 
     // ///////////////////////////////////
     // SESSION ERRORS
@@ -86,10 +92,10 @@ public interface ErrorCodeRegistry
     int PARSING_JSONDATA_EMPTY = 201;
 
     /** The “entry” object is missing from the JSON response. */
-    int PARSING_ENTRY_TAG_MISSED = 203;
+    int PARSING_ENTRY_TAG_MISSED = 202;
 
     /** The “entries” object is missing from the JSON response. */
-    int PARSING_ENTRIES_TAG_MISSED = 204;
+    int PARSING_ENTRIES_TAG_MISSED = 203;
 
     // ///////////////////////////////////
     // COMMENTS ERRORS
@@ -139,17 +145,14 @@ public interface ErrorCodeRegistry
     /** Failed to retrieve permissions for node. */
     int DOCFOLDER_PERMISSIONS = 603;
 
-    /** Failed to convert folder. */
-    int DOCFOLDER_FOLDER_NULL = 604;
+    /** Failed to convert node. */
+    int DOCFOLDER_WRONG_CONVERT = 604;
 
     /** No parent node found. */
     int DOCFOLDER_PARENT_NOT_FOUND = 605;
 
-    /** Failed to convert node. */
-    int DOCFOLDER_CONVERT_NODE_FAILED = 606;
-
-    /** Rendition not found / Not authorized. */
-    int DOCFOLDER_NO_RENDITION = 607;
+    /** Thumbnail not found / Not authorized. */
+    int DOCFOLDER_NO_THUMBNAIL = 606;
 
     // ///////////////////////////////////
     // TAGGING ERRORS
@@ -178,12 +181,12 @@ public interface ErrorCodeRegistry
     /** Generic error code for SearchService. */
     int SEARCH_GENERIC = 900;
 
-    /** Unsupported search language. */
-    int SEARCH_LANGUAGE_NOT_SUPPORTED = 901;
-
     // ///////////////////////////////////
     // RATINGS ERRORS
     // ///////////////////////////////////
     /** Generic error code for all RatingService. */
     int RATING_GENERIC = 1000;
+
+    /** Failed to retrieve tags. */
+    int RATING_NOT_FOUND = 1001;
 }

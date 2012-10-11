@@ -78,18 +78,4 @@ public class CommentCreateLoaderCallback extends BaseLoaderCallback implements L
     {
         this.mListener = mListener;
     }
-
-    public void start()
-    {
-        if (getLoaderManager().getLoader(CommentCreateLoader.ID) == null)
-        {
-            getLoaderManager().initLoader(CommentCreateLoader.ID, null, this);
-        }
-        else
-        {
-            getLoaderManager().restartLoader(CommentCreateLoader.ID, null, this);
-        }
-        getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
-    }
-
 }

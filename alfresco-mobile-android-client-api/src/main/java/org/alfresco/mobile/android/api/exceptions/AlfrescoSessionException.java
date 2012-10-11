@@ -30,9 +30,6 @@ public class AlfrescoSessionException extends AlfrescoException
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The Constant EXCEPTION_NAME. */
-    public static final String EXCEPTION_NAME = "AlfrescoConnectionException";
-
     /**
      * Default constructor.
      *

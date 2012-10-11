@@ -75,7 +75,7 @@ public interface ServerConfiguration
     String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
             + "/alfresco-mobile/cloud-config.properties";
 
-    String ALFRESCO_CLOUD_URL = OAuthConstant.CLOUD_URL;
+    String ALFRESCO_CLOUD_URL = OAuthConstant.PUBLIC_API_HOSTNAME;
 
     String ALFRESCO_CLOUD_USER = "username@acme.com";
 

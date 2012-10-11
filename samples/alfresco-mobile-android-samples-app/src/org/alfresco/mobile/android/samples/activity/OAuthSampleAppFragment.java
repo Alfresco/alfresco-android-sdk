@@ -21,6 +21,15 @@ import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 
 public class OAuthSampleAppFragment extends OAuthFragment
 {
+    public OAuthSampleAppFragment(String oauthUrl, String apikey, String apiSecret)
+    {
+       super(oauthUrl, apikey, apiSecret);
+    }
+    
+    public OAuthSampleAppFragment()
+    {
+    }
+
     public static final String TAG = "OAuthSampleAppFragment";
     
 }

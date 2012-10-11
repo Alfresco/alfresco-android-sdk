@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.impl;
 
-import static org.alfresco.mobile.android.api.constants.OAuthConstant.CLOUD_URL;
+import static org.alfresco.mobile.android.api.constants.OAuthConstant.PUBLIC_API_HOSTNAME;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -37,7 +37,6 @@ import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.SessionListener;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticationProvider;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -65,8 +64,6 @@ public class CloudSessionImpl extends CloudSession
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
 
-    private SessionListener sessionListener;
-
     public CloudSessionImpl()
     {
 
@@ -87,7 +84,7 @@ public class CloudSessionImpl extends CloudSession
             parameters.put(USER, USER_ME);
         }
 
-        initSettings(CLOUD_URL, parameters);
+        initSettings(PUBLIC_API_HOSTNAME, parameters);
 
         // Normal case : With OAuth data.
         if (oauthData != null)
@@ -256,16 +253,6 @@ public class CloudSessionImpl extends CloudSession
     protected void switchNetwork(CloudNetwork network)
     {
         currentNetwork = network;
-    }
-
-    public void addSessionListener(SessionListener listener)
-    {
-        this.sessionListener = listener;
-    }
-
-    public SessionListener getSessionListener()
-    {
-        return sessionListener;
     }
 
     @Override

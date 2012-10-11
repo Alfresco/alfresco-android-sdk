@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -34,6 +33,8 @@ import android.net.Uri;
 
 public final class OAuthHelper implements OAuthConstant
 {
+    private String baseUrl = PUBLIC_API_HOSTNAME;
+
     private static final String PARAM_CLIENT_ID = "client_id";
 
     private static final String PARAM_CLIENT_SECRET = "client_secret";
@@ -41,7 +42,7 @@ public final class OAuthHelper implements OAuthConstant
     private static final String PARAM_REDIRECT_ID = "redirect_uri";
 
     private static final String PARAM_RESPONSE_TYPE = "response_type";
-    
+
     private static final String PARAM_REFRESH_TOKEN = "refresh_token";
 
     private static final String PARAM_SCOPE = "scope";
@@ -51,13 +52,21 @@ public final class OAuthHelper implements OAuthConstant
     private static final String RESPONSE_TYPE_CODE = "code";
 
     private static final String GRANT_TYPE_AUTH_CODE = "authorization_code";
-    
+
     private static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
     private static final String FORMAT = "application/x-www-form-urlencoded";
 
-    private OAuthHelper()
+    public OAuthHelper()
     {
+    }
+
+    public OAuthHelper(String baseOAuthUrl)
+    {
+        if (baseOAuthUrl != null && !baseOAuthUrl.isEmpty())
+        {
+            this.baseUrl = baseOAuthUrl;
+        }
     }
 
     /**
@@ -68,9 +77,9 @@ public final class OAuthHelper implements OAuthConstant
      * @param scope
      * @return
      */
-    public static String getAuthorizationUrl(String apiKey, String callback, String scope)
+    public String getAuthorizationUrl(String apiKey, String callback, String scope)
     {
-        UrlBuilder builder = new UrlBuilder(AUTHORIZE_URL);
+        UrlBuilder builder = new UrlBuilder(baseUrl + PUBLIC_API_OAUTH_AUTHORIZE_PATH);
         builder.addParameter(PARAM_CLIENT_ID, apiKey);
         builder.addParameter(PARAM_REDIRECT_ID, callback);
         builder.addParameter(PARAM_SCOPE, scope);
@@ -99,13 +108,13 @@ public final class OAuthHelper implements OAuthConstant
      * @param code
      * @return
      */
-    public static OAuthData getAccessToken(String apiKey, String apiSecret, String callback, String code)
+    public OAuthData getAccessToken(String apiKey, String apiSecret, String callback, String code)
     {
         OAuth2DataImpl data = null;
 
         try
         {
-            UrlBuilder builder = new UrlBuilder(TOKEN_URL);
+            UrlBuilder builder = new UrlBuilder(baseUrl + PUBLIC_API_OAUTH_TOKEN_PATH);
 
             Map<String, String> params = new HashMap<String, String>();
             params.put(RESPONSE_TYPE_CODE, code);
@@ -137,9 +146,9 @@ public final class OAuthHelper implements OAuthConstant
      * @param data
      * @return
      */
-    public static OAuthData refreshToken(OAuthData data)
+    public OAuthData refreshToken(OAuthData data)
     {
-        UrlBuilder builder = new UrlBuilder(TOKEN_URL);
+        UrlBuilder builder = new UrlBuilder(baseUrl + PUBLIC_API_OAUTH_TOKEN_PATH);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_REFRESH_TOKEN, data.getRefreshToken());

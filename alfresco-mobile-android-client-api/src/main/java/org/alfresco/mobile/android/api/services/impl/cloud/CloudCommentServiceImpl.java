@@ -56,7 +56,7 @@ public class CloudCommentServiceImpl extends AbstractCommentService
     }
 
     /** {@inheritDoc} */
-    protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext)
+    protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext, boolean isReadOperation)
     {
         String link = CloudUrlRegistry.getCommentsUrl((CloudSession) session, node.getIdentifier());
         UrlBuilder url = new UrlBuilder(link);

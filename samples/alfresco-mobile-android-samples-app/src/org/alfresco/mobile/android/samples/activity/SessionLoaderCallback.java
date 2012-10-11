@@ -63,17 +63,17 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
 
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
-    
+
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
 
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
-    private static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
+    public static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
             + "/alfresco-mobile/cloud-config.properties";
 
-    private static final boolean ENABLE_CONFIG_FILE = true;
+    public static final boolean ENABLE_CONFIG_FILE = true;
 
     private String url;
 
@@ -123,7 +123,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         // Specific for Test Instance server
         if (oauth != null || (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
         {
-            String tmpurl = null;
+            String tmpurl = null, oauthUrl = null, apikey = null, apisecret = null, callback = null;
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE)
             {
@@ -138,11 +138,16 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                         // load a properties file
                         prop.load(is);
                         tmpurl = prop.getProperty("url");
+                        oauthUrl = prop.getProperty("oauth_url");
+                        apikey = prop.getProperty("apikey");
+                        apisecret = prop.getProperty("apisecret");
+                        callback = prop.getProperty("callback");
                     }
                     catch (IOException ex)
                     {
                         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, ex);
-                    } finally
+                    }
+                    finally
                     {
                         IOUtils.closeStream(is);
                     }
@@ -155,6 +160,11 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                 settings.put(USER, username);
                 settings.put(PASSWORD, password);
                 settings.put(BASE_URL, tmpurl);
+            }
+
+            if (oauthUrl != null && !oauthUrl.isEmpty())
+            {
+                settings.put(BASE_URL, oauthUrl);
             }
 
             return new CloudSessionLoader(context, oauth, settings);
@@ -176,7 +186,8 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         }
         else
         {
-            String message = (results != null && results.getException() != null) ? results.getException().getMessage() : "";
+            String message = (results != null && results.getException() != null) ? results.getException().getMessage()
+                    : "";
             MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
         }
     }
