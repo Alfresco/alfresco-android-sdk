@@ -24,4 +24,7 @@ public interface OnNodeUpdateListener
     void beforeUpdate(Node node);
 
     void afterUpdate(Node node);
+    
+    void onExeceptionDuringUpdate(Exception e);
+
 }

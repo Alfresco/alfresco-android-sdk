@@ -29,7 +29,8 @@
     <string name="content_description">Description</string>
     <string name="content_description_hint">Enter a description (Optional)</string>
     <string name="content_tags">Tags</string>
-    <string name="content_tags_hint">No Tag (Optional)</string>
+    <string name="content_tags_hint">No Tag</string>
+    <string name="content_tags_enter_hint">Comma-separated tag values (Optional)</string>
     <string name="content_title">Title</string>
     <string name="content_create">Upload File</string>
 

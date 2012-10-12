@@ -26,27 +26,16 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.tag.TagLoaderCallback;
-import org.alfresco.mobile.android.ui.tag.TagLoaderCallback.OnLoaderListener;
-import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment;
-import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment.onTagPickerListener;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
-import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,7 +43,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public abstract class UpdateNodeDialogFragment extends BaseFragment
@@ -70,10 +58,6 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
 
     protected OnNodeUpdateListener onUpdateListener;
-
-    protected EditText editTags;
-
-    protected List<Tag> selectedTags;
 
     private Node node;
 
@@ -111,28 +95,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
 
-        editTags = (EditText) v.findViewById(R.id.content_tags);
-
-        TagLoaderCallback tags = new TagLoaderCallback(alfSession, getActivity(), node);
-        tags.setOnLoaderListener(new OnLoaderListener()
-        {
-            @Override
-            public void afterLoading(PagingResult<Tag> tags)
-            {
-                displayTags(tags.getList());
-                Log.d(TAG, tags.toString());
-            }
-        });
-        tags.start();
-
-        ImageButton ib = (ImageButton) v.findViewById(R.id.pick_tag);
-        ib.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                createPickTag();
-            }
-        });
+        v.findViewById(R.id.tags_line).setVisibility(View.GONE);
 
         Button button = (Button) v.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
@@ -154,10 +117,6 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 if (desc.getText() != null && desc.getText().length() > 0)
                 {
                     props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
-                }
-                if (selectedTags != null && !selectedTags.isEmpty())
-                {
-                    props.put(ContentModel.PROP_TAGS, (ArrayList<Tag>) selectedTags);
                 }
                 UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), node, props);
                 up.setOnUpdateListener(onUpdateListener);
@@ -190,94 +149,6 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
             tsize.setVisibility(View.GONE);
         }
 
-        tv.addTextChangedListener(new TextWatcher()
-        {
-            public void afterTextChanged(Editable s)
-            {
-                if (tv.getText().length() == 0)
-                {
-                    bcreate.setEnabled(false);
-                }
-                else
-                {
-                    bcreate.setEnabled(true);
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-            }
-        });
-
         return v;
-    }
-
-    @TargetApi(13)
-    public void createPickTag()
-    {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(TagPickerDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        Log.d(TAG, "selectedTags : " + selectedTags);
-        TagPickerDialogFragment newFragment = TagPickerDialogFragment.newInstance(alfSession, selectedTags);
-        newFragment.setOnTagPickerListener(new onTagPickerListener()
-        {
-            @Override
-            public void onValidateTags(List<Tag> tags)
-            {
-                displayTags(tags);
-            }
-        });
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        {
-            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-        else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        {
-            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                    R.anim.slide_out_right);
-        }
-
-        newFragment.show(ft, TagPickerDialogFragment.TAG);
-    }
-
-    private void displayTags(List<Tag> tags)
-    {
-        selectedTags = tags;
-        String s = "";
-        for (int i = 0; i < tags.size(); i++)
-        {
-            if (i == 0)
-            {
-                s = tags.get(i).getValue();
-            }
-            else
-            {
-                s += "," + tags.get(i).getValue();
-            }
-        }
-        editTags.setText(s);
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        if (selectedTags != null)
-        {
-            selectedTags.clear();
-        }
-        super.onDismiss(dialog);
     }
 }

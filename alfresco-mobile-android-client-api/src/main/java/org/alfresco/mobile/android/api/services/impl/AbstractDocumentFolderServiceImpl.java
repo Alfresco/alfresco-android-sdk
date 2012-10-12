@@ -533,7 +533,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            convertException(e);
+            Log.e(TAG, "Metadata extraction : KO");
         }
     }
 
@@ -571,7 +571,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            convertException(e);
+            Log.e(TAG, "Generate Thumbnail : KO");
         }
     }
 
