@@ -36,27 +36,37 @@ public interface Person extends Serializable
 
     /**
      * Returns the username of the person.
+     *
+     * @return the identifier
      */
     String getIdentifier();
 
     /**
      * Returns the first name of the person.
+     *
+     * @return the first name
      */
     String getFirstName();
 
     /**
      * Returns the last name of the person.
+     *
+     * @return the last name
      */
     String getLastName();
 
     /**
      * Returns the full name of the person, if first name and last name are not
      * set the username is returned.
+     *
+     * @return the full name
      */
     String getFullName();
 
     /**
      * Returns the unique identifier to the content of avatar rendition.
+     *
+     * @return the avatar identifier
      */
     String getAvatarIdentifier();
 

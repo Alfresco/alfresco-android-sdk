@@ -62,7 +62,7 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
     }
 
     @Override
-    public String getAcessToken()
+    public String getAccessToken()
     {
         if (token != null) { return token.getAccessToken(); }
         return null;

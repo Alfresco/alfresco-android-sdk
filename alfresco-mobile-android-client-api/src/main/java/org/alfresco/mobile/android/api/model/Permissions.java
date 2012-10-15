@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * Permissions represent the actions a person can perform on a node.
  * 
@@ -29,21 +30,29 @@ public interface Permissions extends Serializable
 
     /**
      * Returns Determines whether the current user can edit the node.
+     *
+     * @return true, if the node is editable.
      */
     boolean canEdit();
 
     /**
      * Returns Determines whether the current user can delete the node.
+     *
+     * @return true, if the node is deletable.
      */
     boolean canDelete();
 
     /**
      * Returns Determines whether the current user can add children to the node.
+     *
+     * @return true, if the node can have more children.
      */
     boolean canAddChildren();
 
     /**
      * Returns Determines whether the current user can comment on the node.
+     *
+     * @return true, if the node is commentable.
      */
     boolean canComment();
 

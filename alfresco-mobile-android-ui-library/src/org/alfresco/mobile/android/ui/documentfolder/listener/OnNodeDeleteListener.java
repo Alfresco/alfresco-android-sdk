@@ -24,4 +24,7 @@ public interface OnNodeDeleteListener
     void beforeDelete(Node node);
 
     void afterDelete(Node node);
+    
+    void onExeceptionDuringDeletion(Exception e);
+
 }

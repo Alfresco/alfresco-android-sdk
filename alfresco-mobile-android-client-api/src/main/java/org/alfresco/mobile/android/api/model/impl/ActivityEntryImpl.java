@@ -117,6 +117,12 @@ public class ActivityEntryImpl implements ActivityEntry
         return activityItem;
     }
 
+    /**
+     * Parse Json Response from Alfresco Public API to create an ActivityEntry.
+     * 
+     * @param jo : json response that contains data from the repository
+     * @return ActivityEntry that contains informations about the activity.
+     */
     @SuppressWarnings("unchecked")
     public static ActivityEntryImpl parsePublicAPIJson(Map<String, Object> jo)
     {
@@ -166,62 +172,44 @@ public class ActivityEntryImpl implements ActivityEntry
         return activityItem;
     }
 
-    /**
-     * @return Returns a map of all extra data specific to a certain type of
-     *         activity.
-     */
+    /** {@inheritDoc} */
     public Map<String, String> getData()
     {
         return data;
     }
 
-    /**
-     * Return the value of a specific key available in extra data.
-     * 
-     * @param key : reference
-     * @return value associated to this key. Null if not present.
-     */
+    /** {@inheritDoc} */
     public String getData(String key)
     {
         if (data == null || !data.containsKey(key)) { return null; }
         return data.get(key);
     }
 
-    /**
-     * @return Returns the identifier of this specific activity.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return identifier;
     }
 
-    /**
-     * @return Returns the site associated to a specific activity entry
-     */
+    /** {@inheritDoc} */
     public String getSiteShortName()
     {
         return siteShortName;
     }
 
-    /**
-     * @return Returns Username who create this specific activity entry
-     */
+    /** {@inheritDoc} */
     public String getCreatedBy()
     {
         return postUserId;
     }
 
-    /**
-     * @return Returns Creation date of this specific activity entry
-     */
+    /** {@inheritDoc} */
     public GregorianCalendar getCreatedAt()
     {
         return postDate;
     }
 
-    /**
-     * @return Returns Specific Type of this activity.
-     */
+    /** {@inheritDoc} */
     public String getType()
     {
         return type;

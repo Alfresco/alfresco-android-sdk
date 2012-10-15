@@ -29,56 +29,76 @@ public interface RepositoryInfo
 
     /**
      * Returns the unique identifier of the repository.
+     *
+     * @return the identifier
      */
     String getIdentifier();
 
     /**
      * Returns the name of the repository.
+     *
+     * @return the name
      */
     String getName();
 
     /**
      * Returns the description of the repository.
+     *
+     * @return the description
      */
     String getDescription();
 
     /**
      * Returns the full version string of the repository using the pattern:
      * major.minor.maintenance (build).
+     *
+     * @return the version
      */
     String getVersion();
 
     /**
      * Returns the major version of the repository, null if it could not be
      * determined.
+     *
+     * @return the major version
      */
     Integer getMajorVersion();
 
     /**
      * Returns the minor version of the repository, null if it could not be
      * determined.
+     *
+     * @return the minor version
      */
     Integer getMinorVersion();
 
     /**
      * Returns the maintenance version of the repository, null if it could not
      * be determined.
+     *
+     * @return the maintenance version
      */
     Integer getMaintenanceVersion();
 
     /**
      * Returns the build number as string, null if it could not be determined.
+     *
+     * @return the builds the number
      */
     String getBuildNumber();
 
     /**
      * Returns the edition of the repository i.e. Community or Enterprise or a
      * product name if it’s not an Alfresco repository.
+     *
+     * @return the edition
      */
     String getEdition();
 
     /**
      * Returns an object representing the capabilities of the repository.
+     *
+     * @return the capabilities
      */
     RepositoryCapabilities getCapabilities();
 

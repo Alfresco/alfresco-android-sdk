@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
  */
 public interface OAuthAuthenticationProvider extends AuthenticationProvider
 {
-    String getAcessToken();
+    String getAccessToken();
 
     String getRefreshToken();
 

@@ -30,19 +30,25 @@ import org.alfresco.mobile.android.api.model.ContentStream;
 public class ContentStreamImpl extends ContentImpl implements ContentStream
 {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The input stream. */
     private InputStream inputStream;
 
+    /**
+     * Instantiates a new content stream impl.
+     */
     public ContentStreamImpl()
     {
     }
 
     /**
      * Internal : transform cmis content stream object into alfresco sdk content
-     * stream
-     * 
-     * @param content
+     * stream.
+     *
+     * @param fileName the file name
+     * @param content the content
      */
     public ContentStreamImpl(String fileName, org.apache.chemistry.opencmis.commons.data.ContentStream content)
     {
@@ -57,9 +63,12 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
     }
 
     /**
-     * @param stream
-     * @param mimetype
-     * @param length
+     * Instantiates a new content stream impl.
+     *
+     * @param fileName the file name
+     * @param stream the stream
+     * @param mimetype the mimetype
+     * @param length the length
      */
     public ContentStreamImpl(String fileName, InputStream stream, String mimetype, long length)
     {
@@ -69,6 +78,13 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
         this.inputStream = stream;
     }
     
+    /**
+     * Instantiates a new content stream impl.
+     *
+     * @param stream the stream
+     * @param mimetype the mimetype
+     * @param length the length
+     */
     public ContentStreamImpl(InputStream stream, String mimetype, long length)
     {
         this.length = length;
@@ -76,9 +92,7 @@ public class ContentStreamImpl extends ContentImpl implements ContentStream
         this.inputStream = stream;
     }
 
-    /**
-     * @return Returns an InputStream to the content.
-     */
+    /** {@inheritDoc} */
     public InputStream getInputStream()
     {
         return inputStream;

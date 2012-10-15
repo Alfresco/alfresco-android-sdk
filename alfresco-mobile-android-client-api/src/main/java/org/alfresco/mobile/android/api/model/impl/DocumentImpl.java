@@ -41,28 +41,20 @@ public class DocumentImpl extends NodeImpl implements Document
         super(o);
     }
 
-    /**
-     * @return Returns the content stream length or -1 if the document has no
-     *         content
-     */
+    /** {@inheritDoc} */
     public long getContentStreamLength()
     {
         BigInteger bigInt = getPropertyValue(PropertyIds.CONTENT_STREAM_LENGTH);
         return (bigInt == null) ? (long) -1 : bigInt.longValue();
     }
 
-    /**
-     * @return Returns the content stream MIME type or null if the document has
-     *         no content
-     */
+    /** {@inheritDoc} */
     public String getContentStreamMimeType()
     {
         return getPropertyValue(PropertyIds.CONTENT_STREAM_MIME_TYPE);
     }
 
-    /**
-     * @return Returns the version label of this document
-     */
+    /** {@inheritDoc} */
     public String getVersionLabel()
     {
         // If no versionlabel aspect on it, default 1.0 ? Incompatible if CMIS
@@ -70,17 +62,13 @@ public class DocumentImpl extends NodeImpl implements Document
         return getPropertyValue(PropertyIds.VERSION_LABEL);
     }
 
-    /**
-     * @return Returns the comment provided for this version of this document.
-     */
+    /** {@inheritDoc} */
     public String getVersionComment()
     {
         return getPropertyValue(PropertyIds.CHECKIN_COMMENT);
     }
 
-    /**
-     * @return Returns true if latest version.
-     */
+    /** {@inheritDoc} */
     public Boolean isLatestVersion()
     {
         return getPropertyValue(PropertyIds.IS_LATEST_VERSION);

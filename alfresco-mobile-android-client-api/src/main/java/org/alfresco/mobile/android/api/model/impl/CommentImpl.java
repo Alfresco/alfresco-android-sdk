@@ -96,6 +96,12 @@ public class CommentImpl implements Comment
         return comment;
     }
 
+    /**
+     * Parse Json Response from Alfresco Public API to create a comment Object.
+     * 
+     * @param json : json response that contains data from the repository
+     * @return Comment that contains informations about the comment.
+     */
     @SuppressWarnings("unchecked")
     public static CommentImpl parsePublicAPIJson(Map<String, Object> json)
     {
@@ -124,34 +130,25 @@ public class CommentImpl implements Comment
         return comment;
     }
 
-    /**
-     * @return Returns unique identifier of the comment.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return identifier;
     }
 
-    /**
-     * @return Returns the name of this comment.
-     */
+    /** {@inheritDoc} */
     public String getName()
     {
         return name;
     }
 
-    /**
-     * @return Returns the title of this comment.
-     */
+    /** {@inheritDoc} */
     public String getTitle()
     {
         return title;
     }
 
-    /**
-     * @return Returns the timestamp in the session’s locale when this comment
-     *         was created.
-     */
+    /** {@inheritDoc} */
     public GregorianCalendar getCreatedAt()
     {
         GregorianCalendar g = new GregorianCalendar();
@@ -170,45 +167,31 @@ public class CommentImpl implements Comment
         return g;
     }
 
-    /**
-     * Return the HTML formatted comment content. The content could be HTML
-     * formatted content. So markup could be present.
-     * 
-     * @return comment content
-     */
+    /** {@inheritDoc} */
     public String getContent()
     {
         return content;
     }
 
-    /**
-     * @return Returns the author of the comment as Person Object.
-     */
+    /** {@inheritDoc} */
     public String getCreatedBy()
     {
         return (author != null) ? author.getIdentifier() : null;
     }
 
-    /**
-     * @return Indicates whether the comment has been edited since it was
-     *         initially created.
-     */
+    /** {@inheritDoc} */
     public boolean isEdited()
     {
         return isUpdated;
     }
 
-    /**
-     * @return Returns true if the current user can edit this comment.
-     */
+    /** {@inheritDoc} */
     public boolean canEdit()
     {
         return edit;
     }
 
-    /**
-     * @return Returns true if the current user can delete this comment.
-     */
+    /** {@inheritDoc} */
     public boolean canDelete()
     {
         return delete;

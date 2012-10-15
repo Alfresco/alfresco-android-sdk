@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.samples.ui.activitystream.ActivitiesFragment;
 import org.alfresco.mobile.android.samples.ui.properties.DetailsFragment;
 import org.alfresco.mobile.android.samples.ui.search.SimpleSearchFragment;
 import org.alfresco.mobile.android.samples.ui.sites.BrowserAllSitesFragment;
-import org.alfresco.mobile.android.samples.ui.tags.TagsBrowserFragment;
 import org.alfresco.mobile.android.samples.ui.tags.TagsListNodeFragment;
 
 import android.app.Fragment;
@@ -67,7 +66,6 @@ public final class FragmentFactory
             put(ListUISamplesFragments.FRAG_TAG, ListUISamplesFragments.class);
             put(ActivitiesFragment.TAG, ActivitiesFragment.class);
             put(BrowserAllSitesFragment.TAG, BrowserAllSitesFragment.class);
-            put(TagsBrowserFragment.TAG, TagsBrowserFragment.class);
             put(DetailsFragment.TAG, DetailsFragment.class);
             put(SimpleSearchFragment.TAG, SimpleSearchFragment.class);
             put(TagsListNodeFragment.TAG, TagsListNodeFragment.class);

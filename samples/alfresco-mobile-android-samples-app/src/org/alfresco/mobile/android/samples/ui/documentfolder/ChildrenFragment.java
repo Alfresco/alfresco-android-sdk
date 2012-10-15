@@ -278,6 +278,12 @@ public class ChildrenFragment extends NavigationFragment
                         });
 
             }
+
+            @Override
+            public void onExeceptionDuringCreation(Exception arg0)
+            {
+                mProgressDialog.dismiss();
+            }
         });
 
         newFragment.show(ft, CreateFolderDialogFragment.TAG);
@@ -326,6 +332,12 @@ public class ChildrenFragment extends NavigationFragment
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
                             }
                         });
+            }
+
+            @Override
+            public void onExeceptionDuringCreation(Exception arg0)
+            {
+                mProgressDialog.dismiss();
             }
         });
 

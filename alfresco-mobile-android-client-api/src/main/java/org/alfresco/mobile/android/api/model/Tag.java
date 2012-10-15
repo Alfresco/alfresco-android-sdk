@@ -18,7 +18,8 @@
 package org.alfresco.mobile.android.api.model;
 
 /**
- * Tag :
+ * Tags are keywords or terms assigned to a piece of information like documents
+ * or folders .
  * 
  * @author Jean Marie Pascal
  */
@@ -27,11 +28,15 @@ public interface Tag
 
     /**
      * Returns unique identifier of the tag.
+     * 
+     * @return the identifier
      */
     String getIdentifier();
 
     /**
      * Returns the value of the tag.
+     * 
+     * @return the value
      */
     String getValue();
 }

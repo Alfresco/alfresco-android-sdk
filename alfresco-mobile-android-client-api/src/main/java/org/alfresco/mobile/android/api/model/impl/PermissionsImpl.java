@@ -12,22 +12,30 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 public class PermissionsImpl implements Permissions
 {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The node. */
     private NodeImpl node;
 
+    /**
+     * Instantiates a new permissions impl.
+     */
     public PermissionsImpl()
     {
     }
 
+    /**
+     * Instantiates a new permissions impl.
+     *
+     * @param node the node
+     */
     public PermissionsImpl(Node node)
     {
         this.node = (NodeImpl) node;
     }
 
-    /**
-     * @return Determines whether the current user can delete the node.
-     */
+    /** {@inheritDoc} */
     public boolean canDelete()
     {
         if (node.isDocument())
@@ -44,26 +52,19 @@ public class PermissionsImpl implements Permissions
         }
     }
 
-    /**
-     * @return Determines whether the current user can edit the node.
-     */
+    /** {@inheritDoc} */
     public boolean canEdit()
     {
         return node.hasAllowableAction(Action.CAN_UPDATE_PROPERTIES);
     }
 
-    /**
-     * @return Returns true if it's possible to create folder or a document as
-     *         child of this folder.
-     */
+    /** {@inheritDoc} */
     public boolean canAddChildren()
     {
         return (node.hasAllowableAction(Action.CAN_CREATE_FOLDER) && node.hasAllowableAction(Action.CAN_CREATE_DOCUMENT));
     }
 
-    /**
-     * @return determines whether the given user can comment on the given node.
-     */
+    /** {@inheritDoc} */
     public boolean canComment()
     {
         return canEdit() || canAddChildren();

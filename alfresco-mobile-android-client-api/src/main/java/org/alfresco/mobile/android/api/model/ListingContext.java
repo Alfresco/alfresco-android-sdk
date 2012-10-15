@@ -29,23 +29,40 @@ import java.io.Serializable;
 public class ListingContext implements Serializable
 {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The Constant DEFAULT_MAX_ITEMS. */
     public static final int DEFAULT_MAX_ITEMS = 50;
 
+    /** The sorting. */
     private String sorting = null;
 
+    /** The max items inside a list of result. */
     private int maxItems = DEFAULT_MAX_ITEMS;
 
+    /** The skip count. */
     private int skipCount = 0;
 
+    /** The sorting modifier. */
     private boolean sortingModifier = true;
 
+    /**
+     * Instantiates a new listing context.
+     */
     public ListingContext()
     {
         super();
     }
 
+    /**
+     * Instantiates a new listing context.
+     * 
+     * @param sorting the sorting
+     * @param maxItems the max items
+     * @param skipCount the skip count
+     * @param sortingModifier the sorting modifier
+     */
     public ListingContext(String sorting, int maxItems, int skipCount, boolean sortingModifier)
     {
         super();
@@ -57,6 +74,8 @@ public class ListingContext implements Serializable
 
     /**
      * Returns the sorting field for the list.
+     * 
+     * @return the sort property
      */
     public String getSortProperty()
     {
@@ -66,7 +85,7 @@ public class ListingContext implements Serializable
     /**
      * Define the sorting field for the list.
      * 
-     * @param sortProperty
+     * @param sortProperty the new sort property
      */
     public void setSortProperty(String sortProperty)
     {
@@ -85,6 +104,8 @@ public class ListingContext implements Serializable
 
     /**
      * Returns the sorting direction.
+     * 
+     * @param sortAscending the new checks if is sort ascending
      */
     public void setIsSortAscending(Boolean sortAscending)
     {
@@ -92,8 +113,9 @@ public class ListingContext implements Serializable
     }
 
     /**
-     * Returns the maximum items within the list. If maxItems <= 0 replace by
-     * default Max Items
+     * Returns the maximum items within the list.
+     * 
+     * @return the max items. If maxItems <= 0 replace by default Max Items
      */
     public int getMaxItems()
     {
@@ -102,6 +124,8 @@ public class ListingContext implements Serializable
     }
 
     /**
+     * Sets the max items.
+     * 
      * @param maxItems : maximum items Sets the maximum items inside the list.
      */
     public void setMaxItems(int maxItems)
@@ -111,7 +135,8 @@ public class ListingContext implements Serializable
 
     /**
      * Returns current skip count
-     * if skipCount < 0, returns 0;
+     * 
+     * @return the skip count. If skipCount < 0, returns 0.
      */
     public int getSkipCount()
     {
@@ -120,6 +145,8 @@ public class ListingContext implements Serializable
     }
 
     /**
+     * Sets the skip count.
+     * 
      * @param skipCount : current skip count Sets the current skip count.
      */
     public void setSkipCount(int skipCount)

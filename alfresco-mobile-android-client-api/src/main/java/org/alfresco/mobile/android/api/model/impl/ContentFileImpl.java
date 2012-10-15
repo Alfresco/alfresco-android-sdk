@@ -31,10 +31,15 @@ import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 public class ContentFileImpl extends ContentImpl implements ContentFile
 {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The file. */
     protected File file;
 
+    /**
+     * Instantiates a new content file impl.
+     */
     public ContentFileImpl()
     {
     }
@@ -69,6 +74,8 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
     }
 
     /**
+     * Gets the file.
+     *
      * @return Returns the File object representing the content.
      */
     public File getFile()
@@ -77,8 +84,8 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
     }
 
     /**
-     * Callback for receiving progress feedback during transfer of the ContentFile
-     * 
+     * Callback for receiving progress feedback during transfer of the ContentFile.
+     *
      * @param nBytes : Number of bytes read.
      */
     @Override
@@ -87,8 +94,8 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
     }
 
     /**
-     * Callback for receiving progress feedback during transfer of the ContentFile
-     * 
+     * Callback for receiving progress feedback during transfer of the ContentFile.
+     *
      * @param nBytes : Number of bytes written.
      */
     @Override

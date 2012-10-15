@@ -81,7 +81,8 @@
 
             <TableRow
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:id="@+id/tags_line" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -92,25 +93,14 @@
                     android:id="@+id/content_tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/content_tags_hint" />
+                    android:hint="@string/content_tags_enter_hint" />
             </TableRow>
         </TableLayout>
 
-        <ImageButton
-            android:id="@+id/pick_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/mime_tags"
-            android:contentDescription="@string/tags_pick" />
+      
     </LinearLayout>
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"

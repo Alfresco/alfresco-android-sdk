@@ -30,4 +30,6 @@ public interface OnNodeCreateListener
             ContentFile contentFile);
 
     void afterContentCreation(Node node);
+    
+    void onExeceptionDuringCreation(Exception e);
 }

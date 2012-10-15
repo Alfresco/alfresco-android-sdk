@@ -28,16 +28,22 @@ import java.io.Serializable;
 public class ContentImpl implements Serializable
 {
 
+    /** The Constant serialVersionUID. */
     protected static final long serialVersionUID = 1L;
 
+    /** The length. */
     protected long length;
 
+    /** The mime type. */
     protected String mimeType;
 
+    /** The file name. */
     protected String fileName;
 
     /**
      * Returns the length of the content in bytes.
+     *
+     * @return the length
      */
     public long getLength()
     {
@@ -46,6 +52,8 @@ public class ContentImpl implements Serializable
 
     /**
      * Returns the mime type of the content.
+     *
+     * @return the mime type
      */
     public String getMimeType()
     {
@@ -54,6 +62,8 @@ public class ContentImpl implements Serializable
 
     /**
      * Returns the name of the file representing the content.
+     *
+     * @return the file name
      */
     public String getFileName()
     {

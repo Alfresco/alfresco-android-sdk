@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.api.model.Tag;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * TagImpl
- * 
+ * TagImpl.
+ *
  * @author Jean Marie Pascal
  */
 public class TagImpl implements Tag
@@ -34,13 +34,21 @@ public class TagImpl implements Tag
     /** Unique identifier to a specific tag. */
     private String identifier;
 
-    /** Value of the tag */
+    /** Value of the tag. */
     private String value;
 
+    /**
+     * Instantiates a new tag impl.
+     */
     public TagImpl()
     {
     }
     
+    /**
+     * Instantiates a new tag impl.
+     *
+     * @param value the value of the tag
+     */
     public TagImpl (String value)
     {
         this.identifier = null;
@@ -51,6 +59,12 @@ public class TagImpl implements Tag
         }
     }
 
+    /**
+     * Parse Json Response from Alfresco Public API to create a Site.
+     *
+     * @param jo the jo
+     * @return Tag object that contains essential information about it.
+     */
     public static Tag parsePublicAPIJson(Map<String, Object> jo)
     {
         TagImpl tagItem = new TagImpl();
@@ -59,17 +73,13 @@ public class TagImpl implements Tag
         return tagItem;
     }
 
-    /**
-     * @return Returns the identifier of this specific activity.
-     */
+    /** {@inheritDoc} */
     public String getIdentifier()
     {
         return identifier;
     }
 
-    /**
-     * @return Returns the value of the tag.
-     */
+    /** {@inheritDoc} */
     public String getValue()
     {
         return value;

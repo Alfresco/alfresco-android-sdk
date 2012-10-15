@@ -30,18 +30,14 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
+import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment;
-import org.alfresco.mobile.android.ui.tag.actions.TagPickerDialogFragment.onTagPickerListener;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.annotation.TargetApi;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -55,10 +51,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-public abstract class CreateDocumentDialogFragment extends BaseFragment implements LoaderCallbacks<LoaderResult<Document>>
+public abstract class CreateDocumentDialogFragment extends BaseFragment implements
+        LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "CreateContentDialogFragment";
 
@@ -74,7 +70,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
 
     private EditText editTags;
 
-    private List<Tag> selectedTags;
+    private List<Tag> selectedTags = new ArrayList<Tag>();
 
     private OnNodeCreateListener onCreateListener;
 
@@ -115,15 +111,6 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
 
         editTags = (EditText) v.findViewById(R.id.content_tags);
 
-        ImageButton ib = (ImageButton) v.findViewById(R.id.pick_tag);
-        ib.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                createPickTag();
-            }
-        });
-
         Button button = (Button) v.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
         {
@@ -144,6 +131,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
                 {
                     b.putString(ARGUMENT_CONTENT_DESCRIPTION, desc.getText().toString());
                 }
+                onValidateTags();
                 if (selectedTags != null && !selectedTags.isEmpty())
                 {
                     ArrayList<String> listTagValue = new ArrayList<String>(selectedTags.size());
@@ -210,7 +198,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
         if (onCreateListener != null)
         {
             onCreateListener.beforeContentCreation((Folder) getArguments().get(ARGUMENT_FOLDER),
-                    args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+                    args.getString(ARGUMENT_CONTENT_NAME), props,
+                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
         }
 
         return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
@@ -237,44 +226,17 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
     {
     }
 
-    @TargetApi(13)
-    public void createPickTag()
+
+    public void onValidateTags()
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(TagPickerDialogFragment.TAG);
-        if (prev != null)
+        String s = editTags.getText().toString();
+        String[] listValues = s.split(",");
+        for (int i = 0; i < listValues.length; i++)
         {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        TagPickerDialogFragment newFragment = TagPickerDialogFragment.newInstance(alfSession, selectedTags);
-        newFragment.setOnTagPickerListener(new onTagPickerListener()
-        {
-            @Override
-            public void onValidateTags(List<Tag> tags)
-            {
-                selectedTags = tags;
-                String s = "";
-                for (int i = 0; i < tags.size(); i++)
-                {
-                    if (i == 0)
-                    {
-                        s = tags.get(i).getValue();
-                    }
-                    else
-                    {
-                        s += "," + tags.get(i).getValue();
-                    }
-                }
-                editTags.setText(s);
+            if (listValues[i] != null && !listValues[i].isEmpty()){
+                selectedTags.add(new TagImpl(listValues[i].trim()));
             }
-        });
-
-        ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                R.anim.slide_out_right);
-        newFragment.show(ft, TagPickerDialogFragment.TAG);
+        }
     }
 
     public void setOnCreateListener(OnNodeCreateListener onCreateListener)
