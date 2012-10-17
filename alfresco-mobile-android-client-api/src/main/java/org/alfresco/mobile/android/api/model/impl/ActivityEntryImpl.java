@@ -113,7 +113,19 @@ public class ActivityEntryImpl implements ActivityEntry
                 JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE));
         activityItem.data.put(OnPremiseConstant.MEMEBERUSERNAME_VALUE,
                 JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERUSERNAME_VALUE));
-
+        activityItem.data.put(OnPremiseConstant.FOLLOWERUSERNAME_VALUE,
+                JSONConverter.getString(activitySummary, OnPremiseConstant.FOLLOWERUSERNAME_VALUE));
+        activityItem.data.put(OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE,
+                JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE));
+        activityItem.data.put(OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE,
+                JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERFIRSTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERFIRSTNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERUSERNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
+        
         return activityItem;
     }
 
@@ -168,7 +180,19 @@ public class ActivityEntryImpl implements ActivityEntry
                 JSONConverter.getString(activitySummary, CloudConstant.MEMEBERFIRSTNAME_VALUE));
         activityItem.data.put(CloudConstant.MEMEBERUSERNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.MEMEBERUSERNAME_VALUE));
-
+        activityItem.data.put(CloudConstant.FOLLOWERUSERNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.FOLLOWERUSERNAME_VALUE));
+        activityItem.data.put(CloudConstant.SUBSCRIBERFIRSTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.SUBSCRIBERFIRSTNAME_VALUE));
+        activityItem.data.put(CloudConstant.SUBSCRIBERLASTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.SUBSCRIBERLASTNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERFIRSTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERFIRSTNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERUSERNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
+        activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
+        
         return activityItem;
     }
 

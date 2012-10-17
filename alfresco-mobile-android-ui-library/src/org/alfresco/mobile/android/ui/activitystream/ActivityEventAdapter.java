@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -86,10 +87,38 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
                 vh.icon.setImageDrawable(getContext().getResources().getDrawable(getFileDrawableId(item)));
                 break;
             case DISPLAY_ICON_CREATOR:
-                renditionManager.display(vh.icon, item.getCreatedBy(), getFileDrawableId(item));
+                getCreatorAvatar(vh, item);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)
+    {
+        String type = item.getType();
+
+        if (type.startsWith(PREFIX_FILE))
+        {
+            renditionManager.display(vh.icon, item.getCreatedBy(), getFileDrawableId(item));
+        }
+        else if (type.startsWith(PREFIX_GROUP))
+        {
+            vh.icon.setImageDrawable(getContext().getResources().getDrawable(getFileDrawableId(item)));
+        }
+        else if (type.startsWith(PREFIX_USER))
+        {
+            renditionManager.display(vh.icon, item.getData().get(CloudConstant.MEMEBERUSERNAME_VALUE),
+                    getFileDrawableId(item));
+        }
+        else if (type.startsWith(PREFIX_SUBSCRIPTION))
+        {
+            renditionManager.display(vh.icon, item.getData().get(CloudConstant.FOLLOWERUSERNAME_VALUE),
+                    getFileDrawableId(item));
+        }
+        else
+        {
+            renditionManager.display(vh.icon, item.getCreatedBy(), getFileDrawableId(item));
         }
     }
 
@@ -136,6 +165,10 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
     public static final String PREFIX_BLOG = "org.alfresco.blog";
 
+    public static final String PREFIX_SUBSCRIPTION = "org.alfresco.subscriptions";
+
+    public static final String PREFIX_GROUP = "org.alfresco.site.group";
+
     // TODO Constant Manager ?
     @SuppressWarnings("serial")
     private static Map<String, Integer> eventIcon = new HashMap<String, Integer>()
@@ -150,6 +183,8 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             put(PREFIX_FOLDER, R.drawable.ic_menu_archive);
             put(PREFIX_COMMENT, R.drawable.ic_menu_start_conversation);
             put(PREFIX_BLOG, R.drawable.ic_menu_notifications);
+            put(PREFIX_SUBSCRIPTION, R.drawable.ic_menu_notifications);
+            put(PREFIX_GROUP, R.drawable.ic_menu_notifications);
         }
     };
 
@@ -161,6 +196,8 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private static final String PARAM_CUSTOM = "{2}";
 
     private static final String PARAM_SITE_LINK = "{4}";
+    
+    private static final String PARAM_SUBSCRIBER = "{5}";
 
     private static final String PARAM_STATUS = "{6}";
 
@@ -198,6 +235,12 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             if (s.contains(PARAM_STATUS))
             {
                 s = s.replace(PARAM_STATUS, item.getData(OnPremiseConstant.STATUS_VALUE));
+            }
+            
+            if (s.contains(PARAM_SUBSCRIBER))
+            {
+                s = s.replace(PARAM_SUBSCRIBER, "<b>" + item.getData(OnPremiseConstant.USERFIRSTNAME_VALUE) + " "
+                        + item.getData(OnPremiseConstant.USERLASTNAME_VALUE) + "</b>");
             }
         }
 

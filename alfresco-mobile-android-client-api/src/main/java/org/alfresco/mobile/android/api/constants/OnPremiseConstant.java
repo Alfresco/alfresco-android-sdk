@@ -135,6 +135,19 @@ public interface OnPremiseConstant
     String MEMEBERUSERNAME_VALUE = "memberUserName";
 
     String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
+    
+    String FOLLOWERUSERNAME_VALUE = "followerUserName";
+    
+    String SUBSCRIBERFIRSTNAME_VALUE = "subscriberFirstName";
+    
+    String SUBSCRIBERLASTNAME_VALUE = "subscriberLastName";
+
+    String USERFIRSTNAME_VALUE = "userFirstName";
+    
+    String USERUSERNAME_VALUE = "userUserName";
+
+    String USERLASTNAME_VALUE = "userLastName";
+
 
     // CONTAINERS
     String CONTAINER_VALUE = "containers";
