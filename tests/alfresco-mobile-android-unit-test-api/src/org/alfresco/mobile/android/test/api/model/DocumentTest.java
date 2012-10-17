@@ -156,13 +156,14 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // UpdateDocument
         wait(2000);
         Document docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
+        
+        Assert.assertTrue(doc.getContentStreamLength() > docUpdated.getContentStreamLength());
+        Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
+        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         if (isAlfrescoV4())
         {
             Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         }
-        Assert.assertTrue(doc.getContentStreamLength() > docUpdated.getContentStreamLength());
-        Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
-        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
 
         docUpdated = docfolderservice.updateContent(doc, createContentFile("This is a long text"));
         Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
@@ -461,10 +462,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
                     ((List<String>) customDoc.getProperty("fdk:textMultiple").getValue()).get(1));
             Assert.assertEquals("Ceci est un message.", customDoc.getProperty("fdk:mltext").getValue());
 
-            Assert.assertEquals(cal.getTimeInMillis(), ((GregorianCalendar) customDoc.getProperty("fdk:date")
-                    .getValue()).getTimeInMillis());
-            Assert.assertEquals(cal.getTimeInMillis(), ((GregorianCalendar) customDoc.getProperty("fdk:dateTime")
-                    .getValue()).getTimeInMillis());
+            Assert.assertTrue(((GregorianCalendar) customDoc.getProperty("fdk:date")
+                    .getValue()).getTimeInMillis() - cal.getTimeInMillis() < 10 );
+            Assert.assertTrue(((GregorianCalendar) customDoc.getProperty("fdk:dateTime")
+                    .getValue()).getTimeInMillis() - cal.getTimeInMillis() < 10);
 
             // NUMBER
             Assert.assertEquals(new BigInteger("1"), customDoc.getProperty("fdk:int").getValue());
