@@ -361,18 +361,6 @@ public class SessionTest extends AlfrescoSDKTestCase
         Assert.assertNull(alfsession.getParameter("Key 6"));
         alfsession.removeParameter("Key 7");
         Assert.assertNull(alfsession.getParameter("Key 7"));
-
-        // /////////////////////
-        // DISCONNECT
-        // /////////////////////
-        alfsession.disconnect();
-
-        Assert.assertNull(alfsession.getBaseUrl());
-        Assert.assertNull(alfsession.getPersonIdentifier());
-        Assert.assertNull(alfsession.getParameterKeys());
-        Assert.assertNull(alfsession.getRepositoryInfo());
-        Assert.assertNull(alfsession.getRootFolder());
-        Assert.assertNull(alfsession.getServiceRegistry());
     }
 
     /**

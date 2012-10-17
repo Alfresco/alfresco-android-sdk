@@ -135,11 +135,6 @@ public interface AlfrescoSession
     Folder getRootFolder();
 
     /**
-     * Disconnects the session and clears up any state.
-     */
-    void disconnect();
-
-    /**
      * Allow to add some extra parameters as settings to modify behaviour of the
      * session. Settings provide session configuration parameters e.g. cache
      * settings, default paging values, ordering etc.

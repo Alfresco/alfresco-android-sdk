@@ -416,21 +416,6 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
         }
     }
 
-    @Override
-    public void disconnect()
-    {
-        this.authenticator = null;
-        this.cmisSession = null;
-        this.repositoryInfo = null;
-        this.rootNode = null;
-        this.services = null;
-        this.userIdentifier = null;
-        this.password = null;
-        this.sessionParameters = null;
-        this.userParameters = null;
-        this.baseUrl = null;
-    }
-
     // ///////////////////////////////////////////////
     // BINDINGS
     // ///////////////////////////////////////////////
