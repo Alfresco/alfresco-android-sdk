@@ -415,6 +415,7 @@ public abstract class BaseListFragment extends BaseFragment
     public void onLoaderException(Exception e)
     {
         MessengerManager.showToast(getActivity(), e.getMessage());
+        setListShown(true);
     }
 
     @SuppressWarnings("unchecked")
