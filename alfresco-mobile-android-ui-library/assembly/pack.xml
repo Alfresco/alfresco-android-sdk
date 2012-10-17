@@ -26,10 +26,11 @@
 			<excludes>
 				<exclude>src/main/**</exclude>
 				<exclude>gen/**</exclude>
+				<exclude>assembly/**</exclude>
 				<exclude>bin/**</exclude>
 				<exclude>backup/**</exclude>
 				<exclude>target/**</exclude>
-				<exclude>pom.xml</exclude>
+				<exclude>pom.*</exclude>
 				<exclude>.*</exclude>
 				<exclude>.settings/**</exclude>
 			</excludes>
