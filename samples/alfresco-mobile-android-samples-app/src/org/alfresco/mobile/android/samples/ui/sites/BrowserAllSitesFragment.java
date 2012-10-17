@@ -35,7 +35,7 @@ import android.widget.ListView;
 public class BrowserAllSitesFragment extends SitesFragment
 {
     
-    public static final String TAG = "AllBrowserSitesFragment";
+    public static final String TAG = "BrowserAllSitesFragment";
 
     public BrowserAllSitesFragment()
     {
