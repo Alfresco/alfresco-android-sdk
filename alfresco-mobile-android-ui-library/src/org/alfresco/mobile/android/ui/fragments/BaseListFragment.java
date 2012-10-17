@@ -178,6 +178,7 @@ public abstract class BaseListFragment extends BaseFragment
         }
         else
         {
+            ev.setVisibility(View.GONE);
             lv.setVisibility(View.GONE);
             pb.setVisibility(View.VISIBLE);
         }

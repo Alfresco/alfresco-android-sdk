@@ -149,6 +149,7 @@ public class RenditionManager
 
     public Bitmap getBitmapFromMemCache(String key)
     {
+        if (key == null || key.isEmpty()) { return null; }
         String hashKey = StorageManager.md5(key);
         return mMemoryCache.get(hashKey);
     }
