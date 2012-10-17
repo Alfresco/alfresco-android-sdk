@@ -60,11 +60,15 @@ public class CommentCreateLoaderCallback extends BaseLoaderCallback implements L
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Comment>> arg0, LoaderResult<Comment> comment)
+    public void onLoadFinished(Loader<LoaderResult<Comment>> arg0, LoaderResult<Comment> commentResult)
     {
         if (mListener != null)
         {
-            mListener.afterCommentCreation(comment.getData());
+            if (commentResult.hasException()){
+                mListener.onExeceptionDuringCreation(commentResult.getException());
+            } else {
+                mListener.afterCommentCreation(commentResult.getData());
+            }
         }
     }
 

@@ -70,11 +70,18 @@ public class DeleteLoaderCallback implements LoaderCallbacks<LoaderResult<Void>>
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Void>> arg0, LoaderResult<Void> arg1)
+    public void onLoadFinished(Loader<LoaderResult<Void>> arg0, LoaderResult<Void> results)
     {
         if (mListener != null)
         {
-            mListener.afterDelete(node);
+            if (results.hasException())
+            {
+                mListener.onExeceptionDuringDeletion(results.getException());
+            }
+            else
+            {
+                mListener.afterDelete(node);
+            }
         }
     }
 

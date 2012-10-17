@@ -104,7 +104,6 @@ public class CommentsFragment extends CommentFragment
         @Override
         public void beforeCommentCreation(String content)
         {
-            Log.d("COMMENT", "BEFORE COMMENT");
             commentText.setEnabled(false);
             bAdd.setEnabled(false);
         }
@@ -112,12 +111,17 @@ public class CommentsFragment extends CommentFragment
         @Override
         public void afterCommentCreation(Comment c)
         {
-            Log.d("COMMENT", "AFTER COMMENT");
             commentText.setEnabled(true);
             commentText.setText("");
             bAdd.setEnabled(true);
             reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
+        }
+
+        @Override
+        public void onExeceptionDuringCreation(Exception e)
+        {
+            MessengerManager.showLongToast(getActivity(), e.getMessage());
         }
     };
 
