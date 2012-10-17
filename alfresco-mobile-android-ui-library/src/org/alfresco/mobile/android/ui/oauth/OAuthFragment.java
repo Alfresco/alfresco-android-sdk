@@ -139,7 +139,6 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                 {
                     // authorization complete hide webview for now & retrieve
                     // the acces token
-                    webview.setVisibility(View.GONE);
                     code = OAuthHelper.retrieveCode(url);
                     if (code != null)
                     {
