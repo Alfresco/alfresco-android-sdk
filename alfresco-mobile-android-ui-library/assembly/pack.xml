@@ -25,6 +25,7 @@
 			</includes>
 			<excludes>
 				<exclude>src/main/**</exclude>
+				<exclude>src/site/**</exclude>
 				<exclude>gen/**</exclude>
 				<exclude>assembly/**</exclude>
 				<exclude>bin/**</exclude>
