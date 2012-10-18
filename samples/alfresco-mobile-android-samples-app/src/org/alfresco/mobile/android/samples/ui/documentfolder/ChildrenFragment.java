@@ -330,6 +330,7 @@ public class ChildrenFragment extends NavigationFragment
                             public void onCancel(DialogInterface dialog)
                             {
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
+                                dialog.dismiss();
                             }
                         });
             }

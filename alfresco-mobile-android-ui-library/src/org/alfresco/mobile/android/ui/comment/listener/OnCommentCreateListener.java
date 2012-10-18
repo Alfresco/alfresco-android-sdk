@@ -24,4 +24,6 @@ public interface OnCommentCreateListener
     void beforeCommentCreation(String content);
 
     void afterCommentCreation(Comment comment);
+    
+    void onExeceptionDuringCreation(Exception e);
 }

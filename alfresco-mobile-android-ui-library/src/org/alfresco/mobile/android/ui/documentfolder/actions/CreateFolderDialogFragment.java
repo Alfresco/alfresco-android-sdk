@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.LoaderManager.LoaderCallbacks;
@@ -34,6 +35,7 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -144,11 +146,24 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Folder>> arg0, LoaderResult<Folder> folder)
+    public void onLoadFinished(Loader<LoaderResult<Folder>> arg0, LoaderResult<Folder> results)
     {
+        if (results.hasException())
+        {
+            MessengerManager.showLongToast(getActivity(), results.getException().getMessage());
+            Log.e(TAG, Log.getStackTraceString(results.getException()));
+        }
+
         if (onCreateListener != null)
         {
-            onCreateListener.afterContentCreation(folder.getData());
+            if (results.hasException())
+            {
+                onCreateListener.onExeceptionDuringCreation(results.getException());
+            }
+            else
+            {
+                onCreateListener.afterContentCreation(results.getData());
+            }
         }
         getDialog().dismiss();
     }

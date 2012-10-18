@@ -50,6 +50,10 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
     public Loader<LoaderResult<Boolean>> onCreateLoader(int id, Bundle args)
     {
         boolean isCreate = false;
+        if (likeMenuItem != null)
+        {
+            likeMenuItem.setEnabled(false);
+        }
         if (args != null)
         {
             isCreate = args.getBoolean(IS_CREATE);
@@ -68,7 +72,7 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
     @Override
     public void onLoadFinished(Loader<LoaderResult<Boolean>> arg0, LoaderResult<Boolean> isLiked)
     {
-        if (isLiked.getData() == null)
+        if (isLiked.hasException() || isLiked.getData() == null)
         {
             MessengerManager.showToast(context, R.string.error_retrieve_likes);
         }
@@ -79,6 +83,10 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         else if (likeMenuItem != null)
         {
             likeMenuItem.setIcon(R.drawable.ic_unlike);
+        }
+        if (likeMenuItem != null)
+        {
+            likeMenuItem.setEnabled(true);
         }
     }
 

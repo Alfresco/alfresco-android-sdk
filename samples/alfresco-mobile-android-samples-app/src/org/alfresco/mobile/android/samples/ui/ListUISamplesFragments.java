@@ -86,6 +86,11 @@ public class ListUISamplesFragments extends ListFragment
             f = ChildrenFragment.newInstance("/");
             f.setSession(SessionUtils.getsession(getActivity()));
         }
+        else if (BrowserAllSitesFragment.TAG.equals(tag))
+        {
+            f = BrowserAllSitesFragment.newInstance();
+            f.setSession(SessionUtils.getsession(getActivity()));
+        }
         else if (BrowserFavoriteSitesFragment.TAG.equals(tag))
         {
             f = BrowserFavoriteSitesFragment.newInstance(SessionUtils.getsession(getActivity()).getPersonIdentifier());

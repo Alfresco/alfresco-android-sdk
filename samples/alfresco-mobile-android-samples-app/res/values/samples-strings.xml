@@ -24,8 +24,8 @@
     <string name="api_reference_option">API Reference</string>
     <string name="learn_more_option">Learn More...</string>
     <string name="api_reference_title">API Reference</string>
-    <string name="api_reference_url">http://docs.alfresco.com/mobile_sdk_android_preview/index.jsp</string>
-    <string name="learn_more_url">http://www.alfresco.com/products/mobile</string>
+    <string name="api_reference_url">http://dev.alfresco.com/resource/mobileSDK/Android/</string>
+    <string name="learn_more_url">https://developer.alfresco.com/mobile</string>
     <!-- Choose Server -->
     <string name="choose_server_title">Server Type</string>
     <string name="server_onpremise">Repository</string>

@@ -150,14 +150,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (childObjects != null)
             {
-                Log.d("BrowserFragment", "childObjects : " + childObjects.size());
+                Log.d(TAG, "childObjects : " + childObjects.size());
                 for (ObjectInFolderData objectData : childObjects)
                 {
                     if (objectData.getObject() != null)
                     {
                         Node n = convertNode(objectFactory.convertObject(objectData.getObject(), ctxt));
                         page.add(n);
-                        Log.d("BrowserFragment", "ITEMS : " + n.getName());
                     }
                 }
             }

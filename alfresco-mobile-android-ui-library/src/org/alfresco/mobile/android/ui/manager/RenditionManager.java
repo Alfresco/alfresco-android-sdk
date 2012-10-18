@@ -129,6 +129,7 @@ public class RenditionManager
 
     public void addBitmapToDiskMemoryCache(String key, ContentStream cf)
     {
+        if (key == null || key.isEmpty()) { return; }
         String hashKey = StorageManager.md5(key);
         try
         {
@@ -149,12 +150,14 @@ public class RenditionManager
 
     public Bitmap getBitmapFromMemCache(String key)
     {
+        if (key == null || key.isEmpty()) { return null; }
         String hashKey = StorageManager.md5(key);
         return mMemoryCache.get(hashKey);
     }
 
     public Bitmap getBitmapFromDiskCache(String key)
     {
+        if (key == null || key.isEmpty()) { return null; }
         String hashKey = StorageManager.md5(key);
         Snapshot snapshot = null;
         try

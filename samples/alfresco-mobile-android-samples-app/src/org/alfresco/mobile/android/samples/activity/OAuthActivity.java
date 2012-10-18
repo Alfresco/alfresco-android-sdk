@@ -56,7 +56,13 @@ public class OAuthActivity extends Activity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdkapp_main);
-
+    }
+    
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        
         String tmpurl = null, oauthUrl = null, apikey = null, apisecret = null, callback = null;
         // Check Properties available inside the device
         if (SessionLoaderCallback.ENABLE_CONFIG_FILE)

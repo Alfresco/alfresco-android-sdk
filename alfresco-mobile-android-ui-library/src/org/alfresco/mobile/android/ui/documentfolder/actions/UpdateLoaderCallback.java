@@ -82,11 +82,18 @@ public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCa
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Node>> arg0, LoaderResult<Node> result)
+    public void onLoadFinished(Loader<LoaderResult<Node>> arg0, LoaderResult<Node> results)
     {
         if (mListener != null)
         {
-            mListener.afterUpdate(result.getData());
+            if (results.hasException())
+            {
+                mListener.onExeceptionDuringUpdate(results.getException());
+            }
+            else
+            {
+                mListener.afterUpdate(results.getData());
+            }
         }
     }
 

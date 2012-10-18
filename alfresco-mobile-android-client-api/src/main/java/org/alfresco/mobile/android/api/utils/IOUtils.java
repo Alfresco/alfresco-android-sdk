@@ -120,8 +120,6 @@ public final class IOUtils
 
     public static void closeStream(Closeable stream)
     {
-        Log.d("IOUTILS", "Stream close");
-
         if (stream != null)
         {
             try

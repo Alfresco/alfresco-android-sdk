@@ -214,9 +214,17 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
             MessengerManager.showLongToast(getActivity(), results.getException().getMessage());
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
-        else if (onCreateListener != null)
+
+        if (onCreateListener != null)
         {
-            onCreateListener.afterContentCreation(results.getData());
+            if (results.hasException())
+            {
+                onCreateListener.onExeceptionDuringCreation(results.getException());
+            }
+            else
+            {
+                onCreateListener.afterContentCreation(results.getData());
+            }
         }
         getDialog().dismiss();
     }
@@ -226,14 +234,14 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
     {
     }
 
-
     public void onValidateTags()
     {
         String s = editTags.getText().toString();
         String[] listValues = s.split(",");
         for (int i = 0; i < listValues.length; i++)
         {
-            if (listValues[i] != null && !listValues[i].isEmpty()){
+            if (listValues[i] != null && !listValues[i].isEmpty())
+            {
                 selectedTags.add(new TagImpl(listValues[i].trim()));
             }
         }
