@@ -11,4 +11,9 @@ Known Issues
 - Rotating the device whilst entering a comment can lose the entered text.
 - Files uploaded to an on-premise server will have two versions to be created, if tags are applied three version will be present.
 - Thumbnails will not be shown for documents uploaded to Alfresco in the Cloud until they have been viewed in Share.
+- When connecting to Alfresco in the Cloud only the users home network will be accessed.
 
+
+For an up to date list of known issues with the samples app please use the following URL:
+
+https://issues.alfresco.com/jira/secure/IssueNavigator.jspa?mode=hide&requestId=15094
