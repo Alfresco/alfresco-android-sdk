@@ -12,7 +12,7 @@
 
 	<groupId>org.alfresco.mobile.android.sdk</groupId>
 	<artifactId>alfresco-mobile-android-sdk</artifactId>
-	<version>1.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android SDK (Parent)</name>
@@ -37,7 +37,7 @@
 		<url>https://github.com/Alfresco/alfresco-android-sdk.git</url>
 		<connection>scm:git:git://github.com/Alfresco/alfresco-android-sdk.git</connection>
 		<developerConnection>scm:git:git@github.com:Alfresco/alfresco-android-sdk.git</developerConnection>
-	  <tag>release-1.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<modules>
