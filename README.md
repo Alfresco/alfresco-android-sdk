@@ -8,9 +8,17 @@ This SDK provides functionality to connect to both on-premise and Cloud-based se
 Documentation
 -------------
 
-Full documentation, including getting started instructions can be found in the [Android SDK Reference PDF](https://developer.alfresco.com/resources/alfresco/pdf/AndroidSDKReference-v1.0.pdf). 
+Full documentation, including getting started instructions can be found [here](https://developer.alfresco.com/resources/alfresco/pdf/Android-SDK-1.0.pdf). 
 
 More information can be found on our [developer portal](http://developer.alfresco.com/mobile) and on our [website](http://www.alfresco.com/products/mobile).
+
+
+Releases
+--------
+
+The master branch is used for development of new features so it's stability can not be guaranteed, for the current stable release 
+[download the pre-built binaries](https://developer.alfresco.com/resources/alfresco/downloads/alfresco-android-sdk.zip) from the developer portal. 
+Alternatively, use one of the [tags](https://github.com/Alfresco/alfresco-android-sdk/tags) to build from source.
 
 
 License
