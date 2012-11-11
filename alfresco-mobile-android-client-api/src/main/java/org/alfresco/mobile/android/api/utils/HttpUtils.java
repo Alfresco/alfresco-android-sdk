@@ -55,13 +55,12 @@ public final class HttpUtils
 
     public static Response invokePOST(UrlBuilder url, String contentType, Map<String, String> params)
     {
-        return invoke(url, "POST", contentType, null, null, null, null, params);
+        return invoke(url, "POST", contentType, null, null, true, null, null, params);
     }
-
+    
     private static Response invoke(UrlBuilder url, String method, String contentType,
-            Map<String, List<String>> httpHeaders, Output writer, BigInteger offset, BigInteger length,
-            Map<String, String> params)
-    {
+            Map<String, List<String>> httpHeaders, Output writer, boolean forceOutput, BigInteger offset, BigInteger length,
+            Map<String, String> params){
         try
         {
             Log.d("URL", url.toString());
@@ -70,7 +69,7 @@ public final class HttpUtils
             HttpURLConnection conn = (HttpURLConnection) (new URL(url.toString())).openConnection();
             conn.setRequestMethod(method);
             conn.setDoInput(true);
-            conn.setDoOutput(writer != null);
+            conn.setDoOutput(writer != null || forceOutput);
             conn.setAllowUserInteraction(false);
             conn.setUseCaches(false);
             conn.setRequestProperty("User-Agent", ClientVersion.OPENCMIS_CLIENT);
@@ -197,6 +196,13 @@ public final class HttpUtils
         {
             throw new CmisConnectionException("Cannot access " + url + ": " + e.getMessage(), e);
         }
+    }
+
+    private static Response invoke(UrlBuilder url, String method, String contentType,
+            Map<String, List<String>> httpHeaders, Output writer, BigInteger offset, BigInteger length,
+            Map<String, String> params)
+    {
+        return invoke(url, method, contentType, httpHeaders, writer, false, offset, length, params);
     }
 
 }

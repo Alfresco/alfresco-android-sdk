@@ -74,7 +74,7 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
             if (requestNewRefreshToken)
             {
                 OAuthHelper helper = null;
-                if (!settings.containsKey(BASE_URL))
+                if (settings.containsKey(BASE_URL))
                 {
                     helper = new OAuthHelper((String) settings.get(BASE_URL));
                 }
