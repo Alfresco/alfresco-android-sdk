@@ -137,7 +137,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, ContentFile>
 
             byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
-            while (size > 0)
+            while (size - downloaded > 0)
             {
                 if (size - downloaded < MAX_BUFFER_SIZE)
                 {
