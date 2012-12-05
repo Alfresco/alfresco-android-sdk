@@ -371,6 +371,10 @@ public abstract class BaseListFragment extends BaseFragment
         isFullLoad = Boolean.FALSE;
         hasmore = Boolean.FALSE;
         skipCount = 0;
+        if (adapter != null)
+        {
+            adapter.clear();
+        }
         adapter = null;
 
         if (getLoaderManager().getLoader(loaderId) == null)
@@ -423,7 +427,7 @@ public abstract class BaseListFragment extends BaseFragment
     {
         if (!isFullLoad)
         {
-            if (data == null || data.getTotalItems() == -1 && !hasmore)
+            if ((data == null || data.getTotalItems() <= 0) && !hasmore )
             {
                 lv.setEmptyView(ev);
                 isFullLoad = Boolean.TRUE;
