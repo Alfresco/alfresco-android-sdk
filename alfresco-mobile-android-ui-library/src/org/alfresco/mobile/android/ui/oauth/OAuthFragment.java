@@ -22,7 +22,6 @@ import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -35,6 +34,7 @@ import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +66,10 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 
     private OnOAuthAccessTokenListener onOAuthAccessTokenListener;
+
+    private OnOAuthWebViewListener onOAuthWebViewListener;
+
+    private boolean isLoaded;
 
     public OAuthFragment()
     {
@@ -135,28 +139,48 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
             public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 // check for our custom callback protocol
-                if (url.startsWith(getText(R.string.oauth_callback).toString()))
+                if (!isLoaded)
                 {
-                    // authorization complete hide webview for now & retrieve
-                    // the acces token
-                    code = OAuthHelper.retrieveCode(url);
-                    if (code != null)
-                    {
-                        retrieveAccessToken(code);
-                    }
-                    else
-                    {
-                        if (onOAuthAccessTokenListener != null)
-                        {
-                            onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
-                                    ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
-                                            .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
-                        }
-                    }
+                    onCodeUrl(url);
                     return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            {
+                super.onPageStarted(view, url, favicon);
+                if (!isLoaded)
+                {
+                    onCodeUrl(url);
+                }
+                if (onOAuthWebViewListener != null)
+                {
+                    onOAuthWebViewListener.onPageStarted(webview, url, favicon);
+                }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url)
+            {
+                super.onPageFinished(view, url);
+                if (onOAuthWebViewListener != null)
+                {
+                    onOAuthWebViewListener.onPageFinished(webview, url);
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
+            {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (onOAuthWebViewListener != null)
+                {
+                    onOAuthWebViewListener.onReceivedError(webview, errorCode, description, failingUrl);
+                }
+            }
+
         });
 
         OAuthHelper helper = new OAuthHelper(baseOAuthUrl);
@@ -165,6 +189,32 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         webview.loadUrl(helper.getAuthorizationUrl(apiKey, callback, scope));
 
         return v;
+    }
+
+    private void onCodeUrl(String url)
+    {
+        // check for our custom callback protocol
+        if (url.startsWith(getText(R.string.oauth_callback).toString()))
+        {
+            isLoaded = true;
+
+            // authorization complete hide webview for now & retrieve
+            // the acces token
+            code = OAuthHelper.retrieveCode(url);
+            if (code != null)
+            {
+                retrieveAccessToken(code);
+            }
+            else
+            {
+                if (onOAuthAccessTokenListener != null)
+                {
+                    onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
+                            ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
+                                    .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
+                }
+            }
+        }
     }
 
     @Override
@@ -186,7 +236,6 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         b.putInt(OAuthAccessTokenLoader.PARAM_OPERATION, OAuthAccessTokenLoader.OPERATION_ACCESS_TOKEN);
         b.putString(OAuthAccessTokenLoader.PARAM_CODE, code);
         lm.restartLoader(OAuthAccessTokenLoader.ID, b, this);
-        lm.getLoader(OAuthAccessTokenLoader.ID).forceLoad();
     }
 
     @Override
@@ -237,5 +286,21 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     public void setOnOAuthAccessTokenListener(OnOAuthAccessTokenListener onOAuthAccessTokenListener)
     {
         this.onOAuthAccessTokenListener = onOAuthAccessTokenListener;
+    }
+
+    public void setOnOAuthWebViewListener(OnOAuthWebViewListener onOAuthWebViewListener)
+    {
+        this.onOAuthWebViewListener = onOAuthWebViewListener;
+    }
+
+    public interface OnOAuthWebViewListener
+    {
+
+        void onPageStarted(WebView view, String url, Bitmap favicon);
+
+        void onPageFinished(WebView view, String url);
+
+        void onReceivedError(WebView view, int errorCode, String description, String failingUrl);
+
     }
 }
