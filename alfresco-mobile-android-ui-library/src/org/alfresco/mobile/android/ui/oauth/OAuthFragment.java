@@ -119,6 +119,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         }
 
         final WebView webview = (WebView) v.findViewById(R.id.webview);
+        webview.getSettings().setJavaScriptEnabled(true);
 
         final Activity activity = getActivity();
         webview.setWebChromeClient(new WebChromeClient()
