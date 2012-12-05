@@ -97,6 +97,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)
     {
         String type = item.getType();
+        String tmp = null;
 
         if (type.startsWith(PREFIX_FILE))
         {
@@ -108,13 +109,21 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         }
         else if (type.startsWith(PREFIX_USER))
         {
-            renditionManager.display(vh.icon, item.getData().get(CloudConstant.MEMEBERUSERNAME_VALUE),
-                    getFileDrawableId(item));
+            tmp = getData(item, CloudConstant.MEMEBERUSERNAME_VALUE);
+            if (tmp.isEmpty())
+            {
+                tmp = null;
+            }
+            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
-            renditionManager.display(vh.icon, item.getData().get(CloudConstant.FOLLOWERUSERNAME_VALUE),
-                    getFileDrawableId(item));
+            tmp = getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE);
+            if (tmp.isEmpty())
+            {
+                tmp = null;
+            }
+            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
         }
         else
         {
@@ -129,7 +138,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
         if (s.startsWith(PREFIX_FILE))
         {
-            drawable = MimeTypeManager.getIcon(item.getData(OnPremiseConstant.TITLE_VALUE));
+            drawable = MimeTypeManager.getIcon(getData(item, OnPremiseConstant.TITLE_VALUE));
         }
         else
         {
@@ -210,21 +219,19 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
             if (s.contains(PARAM_CUSTOM))
             {
-                s = s.replace(PARAM_CUSTOM, item.getData(OnPremiseConstant.ROLE_VALUE));
-                s = s.replace(PARAM_USER_PROFILE, "<b>" + item.getData(OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
-                        + item.getData(OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_CUSTOM, getData(item, OnPremiseConstant.ROLE_VALUE));
+                s = s.replace(PARAM_USER_PROFILE, "<b>" + getData(item, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
             }
             else
             {
-                s = s.replace(
-                        PARAM_USER_PROFILE,
-                        "<b>" + item.getData(OnPremiseConstant.FIRSTNAME_VALUE) + " "
-                                + item.getData(OnPremiseConstant.LASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_USER_PROFILE, "<b>" + getData(item, OnPremiseConstant.FIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.LASTNAME_VALUE) + "</b>");
             }
 
             if (s.contains(PARAM_TITLE))
             {
-                s = s.replace(PARAM_TITLE, "<b>" + item.getData(OnPremiseConstant.TITLE_VALUE) + "</b>");
+                s = s.replace(PARAM_TITLE, "<b>" + getData(item, OnPremiseConstant.TITLE_VALUE) + "</b>");
             }
 
             if (s.contains(PARAM_SITE_LINK))
@@ -234,17 +241,29 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
             if (s.contains(PARAM_STATUS))
             {
-                s = s.replace(PARAM_STATUS, item.getData(OnPremiseConstant.STATUS_VALUE));
+                s = s.replace(PARAM_STATUS, getData(item, OnPremiseConstant.STATUS_VALUE));
             }
-            
+
             if (s.contains(PARAM_SUBSCRIBER))
             {
-                s = s.replace(PARAM_SUBSCRIBER, "<b>" + item.getData(OnPremiseConstant.USERFIRSTNAME_VALUE) + " "
-                        + item.getData(OnPremiseConstant.USERLASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_SUBSCRIBER, "<b>" + getData(item, OnPremiseConstant.USERFIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.USERLASTNAME_VALUE) + "</b>");
             }
         }
-
         return s;
+    }
+
+    private String getData(ActivityEntry entry, String key)
+    {
+        String value = "";
+        if (entry == null) { return value; }
+
+        value = entry.getData(key);
+        if (value == null)
+        {
+            value = "";
+        }
+        return value;
     }
 
     // TODO Constant Manager ?
