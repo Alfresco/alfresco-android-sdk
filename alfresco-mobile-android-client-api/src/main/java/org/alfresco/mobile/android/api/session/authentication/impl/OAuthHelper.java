@@ -30,9 +30,12 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 import android.net.Uri;
+import android.util.Log;
 
 public final class OAuthHelper implements OAuthConstant
 {
+    private static final String TAG = "OAuthHelper";
+    
     private String baseUrl = PUBLIC_API_HOSTNAME;
 
     private static final String PARAM_CLIENT_ID = "client_id";
@@ -127,7 +130,7 @@ public final class OAuthHelper implements OAuthConstant
 
             if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
-                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_ACCESS_TOKEN_EXPIRED);
+                ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID);
             }
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             data = new OAuth2DataImpl(apiKey, apiSecret);
@@ -135,7 +138,7 @@ public final class OAuthHelper implements OAuthConstant
         }
         catch (Exception e)
         {
-            // TODO: handle exception
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return data;
     }

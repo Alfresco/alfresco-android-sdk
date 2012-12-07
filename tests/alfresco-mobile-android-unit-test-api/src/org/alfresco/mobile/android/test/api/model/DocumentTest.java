@@ -41,6 +41,7 @@ import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -154,10 +155,12 @@ public class DocumentTest extends AlfrescoSDKTestCase
         }
 
         // UpdateDocument
-        wait(2000);
+        // Force waiting + remove object from cache
+        wait(5000);
+        ((AbstractAlfrescoSessionImpl)alfsession).getCmisSession().removeObjectFromCache(doc.getIdentifier());
         Document docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
         
-        Assert.assertTrue(doc.getContentStreamLength() > docUpdated.getContentStreamLength());
+        Assert.assertTrue(doc.getContentStreamLength() +" > "+ docUpdated.getContentStreamLength(), doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         if (isAlfrescoV4())
