@@ -151,14 +151,15 @@ public abstract class SearchFragment extends BaseListFragment implements
 
         Log.d(TAG, keywords + " " + fullText + " " + isExact);
 
-        getLoaderManager().restartLoader(SearchLoader.ID, b, this);
+       /* getLoaderManager().restartLoader(SearchLoader.ID, b, this);
         getLoaderManager().getLoader(SearchLoader.ID).forceLoad();
 
         isFullLoad = false;
         if (adapter != null)
         {
             ((NodeAdapter) adapter).clear();
-        }
+        }*/
+        reload(b, SearchLoader.ID, this);
     }
 
     public Boolean hasActivateThumbnail()
