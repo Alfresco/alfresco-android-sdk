@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
@@ -80,7 +82,8 @@ public class ActivityEntryImpl implements ActivityEntry
         String postDate = JSONConverter.getString(jo, OnPremiseConstant.POSTDATE_VALUE);
 
         GregorianCalendar g = new GregorianCalendar();
-        g.setTime(DateUtils.parseDate(postDate, DateUtils.FORMAT_3));
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
+        g.setTime(DateUtils.parseDate(postDate, sdf));
         activityItem.postDate = g;
 
         activityItem.type = JSONConverter.getString(jo, OnPremiseConstant.ACTIVITYTYPE_VALUE);
@@ -146,7 +149,8 @@ public class ActivityEntryImpl implements ActivityEntry
         String postDate = JSONConverter.getString(jo, CloudConstant.POSTEDAT_VALUE);
 
         GregorianCalendar g = new GregorianCalendar();
-        g.setTime(DateUtils.parseDate(postDate, DateUtils.FORMAT_3));
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
+        g.setTime(DateUtils.parseDate(postDate, sdf));
         activityItem.postDate = g;
 
         activityItem.type = JSONConverter.getString(jo, CloudConstant.ACTIVITYTYPE_VALUE);

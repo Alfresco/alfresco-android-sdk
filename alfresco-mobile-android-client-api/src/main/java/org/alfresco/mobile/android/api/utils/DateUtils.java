@@ -53,11 +53,21 @@ public final class DateUtils
 
     public static Date parseDate(String atomPubDate)
     {
+        return parseDate(atomPubDate, Locale.getDefault());
+    }
+    
+    /**
+     * @since 1.0.1
+     * @param atomPubDate
+     * @return
+     */
+    public static Date parseDate(String atomPubDate, Locale locale)
+    {
         Date d = null;
         SimpleDateFormat sdf;
         for (int i = 0; i < DATE_FORMATS.length; i++)
         {
-            sdf = new SimpleDateFormat(DATE_FORMATS[i], Locale.UK);
+            sdf = new SimpleDateFormat(DATE_FORMATS[i], locale);
             sdf.setLenient(true);
             try
             {
@@ -72,11 +82,20 @@ public final class DateUtils
 
         return d;
     }
-
+    
     public static Date parseDate(String date, String format)
     {
+        return parseDate(date, new SimpleDateFormat(format, Locale.getDefault()));
+    }
+    
+    /**
+     * @since 1.0.1
+     * @param atomPubDate
+     * @return
+     */
+    public static Date parseDate(String date, SimpleDateFormat sdf)
+    {
         Date d = null;
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.UK);
         sdf.setLenient(true);
         try
         {
