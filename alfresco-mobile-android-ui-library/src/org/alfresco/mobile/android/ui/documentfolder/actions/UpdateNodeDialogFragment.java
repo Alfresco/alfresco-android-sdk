@@ -81,7 +81,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getDialog().setTitle(R.string.metadata_prop_edit_metadata);
+        getDialog().setTitle(R.string.edit_metadata);
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);

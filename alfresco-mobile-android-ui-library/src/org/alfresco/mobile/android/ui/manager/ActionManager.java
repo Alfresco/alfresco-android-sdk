@@ -42,7 +42,25 @@ public class ActionManager
      * @param myFile
      * @param mimeType
      */
-    public static void actionView(Context context, File myFile, String mimeType)
+    public static void actionView(final Context context, File myFile, String mimeType)
+    {
+        actionView(context, myFile, mimeType, new ActionManagerListener()
+        {
+            @Override
+            public void onActivityNotFoundException(ActivityNotFoundException e)
+            {
+                MessengerManager.showToast(context, R.string.error_unable_open_file);
+            }
+        });
+    }
+
+    /**
+     * @param context
+     * @param myFile
+     * @param mimeType
+     * @since 1.0.1
+     */
+    public static void actionView(Context context, File myFile, String mimeType, ActionManagerListener listener)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(myFile);
@@ -54,7 +72,10 @@ public class ActionManager
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerManager.showToast(context, R.string.error_unable_open_file);
+            if (listener != null)
+            {
+                listener.onActivityNotFoundException(e);
+            }
         }
     }
 
@@ -81,7 +102,7 @@ public class ActionManager
             MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
         }
     }
-    
+
     public static void openIn(Fragment fr, File myFile, String mimeType)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -161,7 +182,7 @@ public class ActionManager
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("*/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.pick_file_title)), requestCode);
+        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
     }
 
     /**
@@ -192,4 +213,8 @@ public class ActionManager
         return s;
     }
 
+    public interface ActionManagerListener
+    {
+        void onActivityNotFoundException(ActivityNotFoundException e);
+    }
 }

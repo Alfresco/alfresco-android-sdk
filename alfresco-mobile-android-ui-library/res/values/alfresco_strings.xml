@@ -14,158 +14,14 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources>
 
     <!-- ************************** -->
-    <!-- ALFRESCO SDK APP SPECIFIC -->
+    <!-- ALFRESCO SDK MANUAL -->
     <!-- ************************** -->
     <string name="name">UI Lib</string>
-
-    <!-- Create content -->
-    <string name="content_name">Name</string>
-    <string name="content_name_hint">Enter a name (Required)</string>
-    <string name="content_description">Description</string>
-    <string name="content_description_hint">Enter a description (Optional)</string>
-    <string name="content_tags">Tags</string>
-    <string name="content_tags_hint">No Tag</string>
-    <string name="content_tags_enter_hint">Comma-separated tag values (Optional)</string>
-    <string name="content_title">Title</string>
-    <string name="content_create">Upload File</string>
-
-    <!-- Properties -->
-    <!-- General -->
-    <string name="metadata">Metadata</string>
-    <string name="metadata_prop_name">Name</string>
-    <string name="metadata_prop_type">Type</string>
-    <string name="metadata_prop_content_mimetype">Mimetype</string>
-    <string name="metadata_prop_content_size">Size</string>
-    
-     <!-- Version -->
-     <string name="metadata_prop_version">Version</string>
-
-    <!-- Titled Aspect -->
-    <string name="metadata_aspect_titled">Titled</string>
-    <string name="metadata_prop_title">Title</string>
-    <string name="metadata_prop_description">Description</string>
-
-    <!-- Auditable Aspect -->
-    <string name="metadata_aspect_auditable">Auditable</string>
-    <string name="metadata_prop_creator">Creator</string>
-    <string name="metadata_prop_creationdate">Created Date</string>
-    <string name="metadata_prop_modifier">Modifier</string>
-    <string name="metadata_prop_modificationdate">Modified Date</string>
-
-    <!-- Author Aspect -->
-    <string name="metadata_aspect_author">Author</string>
-    <string name="metadata_prop_author">Author</string>
-
-    <!-- Exif Aspect -->
-    <string name="metadata_aspect_exif">EXIF</string>
-    <string name="metadata_prop_datetime_original">Date and Time</string>
-    <string name="metadata_prop_pixelx_dimension">Image Width</string>
-    <string name="metadata_prop_pixely_dimension">Image Height</string>
-    <string name="metadata_prop_exposure_time">Exposure Time</string>
-    <string name="metadata_prop_fnumber">F Number</string>
-    <string name="metadata_prop_flash_activated">Flash Activated</string>
-    <string name="metadata_prop_focal_length">Focal Length</string>
-    <string name="metadata_prop_iso_speed">ISO Speed</string>
-    <string name="metadata_prop_manufacturer">Camera Manufacturer</string>
-    <string name="metadata_prop_model">Camera Model</string>
-    <string name="metadata_prop_software">Camera Software</string>
-    <string name="metadata_prop_orientation">Orientation</string>
-    <string name="metadata_prop_xresolution">Horizontal Resolution</string>
-    <string name="metadata_prop_yresolution">Vertical Resolution</string>
-    <string name="metadata_prop_resolution_unit">Resolution Unit</string>
-
-    <!-- Geographic Aspect -->
-    <string name="metadata_aspect_geographic">Geographic</string>
-    <string name="metadata_prop_latitude">Latitude</string>
-    <string name="metadata_prop_longitude">Longitude</string>
-
-    <!-- Audio Aspect -->
-    <string name="metadata_aspect_audio">Audio</string>
-    <string name="metadata_prop_album">Album</string>
-    <string name="metadata_prop_artist">Artist</string>
-    <string name="metadata_prop_composer">Composer</string>
-    <string name="metadata_prop_engineer">Engineer</string>
-    <string name="metadata_prop_genre">Genre</string>
-    <string name="metadata_prop_track_number">Track Number</string>
-    <string name="metadata_prop_release_date">Release Date</string>
-    <string name="metadata_prop_sample_rate">Sample Rate</string>
-    <string name="metadata_prop_sample_type">Sample Type</string>
-    <string name="metadata_prop_channel_type">Channel Type</string>
-    <string name="metadata_prop_compressor">Compressor</string>
-
-    <!-- Actions -->
-    <string name="action_create">Create</string>
-    <string name="action_open">Open in</string>
-    <string name="action_comments">Comments</string>
-    <string name="action_versions">Version History</string>
-    <string name="action_tags">Tags</string>
-    <string name="action_add">Add</string>
-    <string name="action_create_folder">Create folder</string>
-    <string name="action_downlaod">Download</string>
-    <string name="action_upload">Upload file</string>
-    <string name="action_photo">Take photo</string>
-    <string name="action_video">Make video</string>
-    <string name="action_audio">Record audio</string>
-    <string name="action_search">Search</string>
-    <string name="action_share">Share</string>
-    <string name="action_refresh">Refresh</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_like">Like</string>
-    <string name="action_save_back">Save back</string>
-    <string name="action_save_back_description"> has been modified. Do you want to upload this new version ?</string>
-    <string name="action_save_back_sucess"> has been uploaded successfully.</string>
-    <string name="action_delete_desc">Are you sure you want to delete this item :</string>
-    <string name="action_delete_sucess"> has been deleted successfully.</string>
-    <string name="action_update_sucess"> has been updated successfully.</string>
-    <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
-    <string name="action_favorite">Favorite</string>
-    
-
-    <!-- Search -->
-    <string name="search_hint">Enter search term </string>
-    <string name="search_option">Options</string>
-    <string name="search_empty">No results found. Please try a different search.</string>
-
-    <plurals name="search_results">
-        <item quantity="zero">0 documents found</item>
-        <item quantity="one">%1$s document found</item>
-        <item quantity="other">%1$s documents found</item>
-    </plurals>
-
-    <!-- Pick File -->
-    <string name="folder_create">Create a new folder</string>
-    <string name="metadata_prop_edit_metadata">Edit Metadata</string>
-    <string name="update">Update</string>
-
-    <!-- Pick File -->
-    <string name="pick_file_title">Choose an app to pick a file</string>
-
-    <!-- Title -->
-    <string name="title_repository">Repository</string>
-
-    <!-- Loading -->
-    <string name="load_more_progress">Loading in progress&#8230;</string>
-    <string name="load_more">Load more&#8230;</string>
-
-    <!-- Versions -->
-    <string name="version">Version:</string>
-    <string name="version_modified">Last modified:</string>
-    <string name="version_modified_by">Last modified by:</string>
-    <string name="version_comment">Comment:</string>
-    <string name="version_ccurent">Current Version:</string>
-
-    <!-- Download -->
-    <string name="download">Download</string>
-    <string name="download_complete">Download complete : </string>
-    <string name="download_complete_error">Error during download operation.</string>
-    <string name="download_progress">Downloading content..</string>
 
     <!-- Relative Date -->
     <string name="relative_date_just_now">just now</string>
@@ -188,16 +44,25 @@
         <item quantity="other">%1$s years ago</item>
     </plurals>
 
-    <string name="file_size_empty">0 byte</string>
-    <string name="file_size_bytes">bytes</string>
-    <string name="file_size_kilobytes">KB</string>
-    <string name="file_size_megabytes">MB</string>
-    <string name="file_size_gigabytes">GB</string>
-
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK AUTO -->
+    <!-- ************************** -->
+    <!-- Generic -->
+    <string name="required">Required</string>
+    <string name="actions">Actions</string>
+    <string name="confirm">Confirm</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <!-- Listing -->
+    <string name="load_more">Load more&#8230;</string>
+    <string name="load_more_progress">Loading in progress&#8230;</string>
+    <string name="listing_nodata">No data.</string>
+    <!-- Dialog -->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_wait">Please wait</string>
     <!-- Activities -->
     <string name="activities">Activities</string>
-
-    <!-- 0 = Item title / page link, 1 = User profile link, 2 = custom0, 3 = custom1, 4 = Site link -->
     <string name="org_alfresco_blog_post_created">{0} blog post created by {1}</string>
     <string name="org_alfresco_blog_post_updated">{0} blog post updated by {1}</string>
     <string name="org_alfresco_blog_post_deleted">{0} blog post deleted by {1}</string>
@@ -243,40 +108,131 @@
     <string name="org_alfresco_subscriptions_followed">{1} is now following {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} has subscribed to {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
-
-    <!-- Person -->
-    <string name="people_title">Name</string>
-
-    <!-- Tags -->
-    <string name="tags_pick">Pick Tags</string>
-
-    <!-- Comments -->
-    <string name="comment_add_hint">Type your comment here &#8230;</string>
-
-    <!-- Folder Creation -->
-    <string name="folder_add_hint">Type the folder name here &#8230;</string>
-    <string name="thumbnail_description">Thumbnail</string>
-
-    <!-- Comments -->
-    <string name="filter_hint">Type here to filter &#8230;</string>
-
-    <!-- Error Message -->
+    <!-- Metadata -->
+    <string name="metadata">Properties</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="metadata_prop_name">Name</string>
+    <string name="metadata_prop_type">Type</string>
+    <string name="metadata_prop_content_mimetype">Mimetype</string>
+    <string name="metadata_prop_content_size">Size</string>
+    <!-- Metadata Titled -->
+    <string name="metadata_aspect_titled">Titled</string>
+    <string name="metadata_prop_title">Title</string>
+    <string name="metadata_prop_description">Description</string>
+    <!-- Metadata Auditable -->
+    <string name="metadata_aspect_auditable">Auditable</string>
+    <string name="metadata_prop_creator">Creator</string>
+    <string name="metadata_prop_creationdate">Creation Date</string>
+    <string name="metadata_prop_modifier">Modifier</string>
+    <string name="metadata_prop_modificationdate">Modification Date</string>
+    <!-- Metadata Author -->
+    <string name="metadata_aspect_author">Author</string>
+    <string name="metadata_prop_author">Author</string>
+    <!-- Metadata EXIF -->
+    <string name="metadata_aspect_exif">EXIF</string>
+    <string name="metadata_prop_datetime_original">Date and Time</string>
+    <string name="metadata_prop_pixelx_dimension">Image Width</string>
+    <string name="metadata_prop_pixely_dimension">Image Height</string>
+    <string name="metadata_prop_exposure_time">Exposure Time</string>
+    <string name="metadata_prop_fnumber">F Number</string>
+    <string name="metadata_prop_flash_activated">Flash Activated</string>
+    <string name="metadata_prop_focal_length">Focal Length</string>
+    <string name="metadata_prop_iso_speed">ISO Speed</string>
+    <string name="metadata_prop_manufacturer">Camera Manufacturer</string>
+    <string name="metadata_prop_model">Camera Model</string>
+    <string name="metadata_prop_software">Camera Software</string>
+    <string name="metadata_prop_orientation">Orientation</string>
+    <string name="metadata_prop_xresolution">Horizontal Resolution</string>
+    <string name="metadata_prop_yresolution">Vertical Resolution</string>
+    <string name="metadata_prop_resolution_unit">Resolution Unit</string>
+    <!-- Metadata Geographic -->
+    <string name="metadata_aspect_geographic">Geographic</string>
+    <string name="metadata_prop_latitude">Latitude</string>
+    <string name="metadata_prop_longitude">Longitude</string>
+    <!-- Metadata Audio -->
+    <string name="metadata_aspect_audio">Audio</string>
+    <string name="metadata_prop_album">Album</string>
+    <string name="metadata_prop_artist">Artist</string>
+    <string name="metadata_prop_composer">Composer</string>
+    <string name="metadata_prop_engineer">Engineer</string>
+    <string name="metadata_prop_genre">Genre</string>
+    <string name="metadata_prop_track_number">Track Number</string>
+    <string name="metadata_prop_release_date">Release Date</string>
+    <string name="metadata_prop_sample_rate">Sample Rate</string>
+    <string name="metadata_prop_sample_type">Sample Type</string>
+    <string name="metadata_prop_channel_type">Channel Type</string>
+    <string name="metadata_prop_compressor">Compressor</string>
+    <!-- Metadata Version -->
+    <string name="metadata_prop_version">Version</string>
+    <string name="metadata_prop_version_modification_date">Modification date</string>
+    <string name="metadata_prop_version_modified_by">Last modification by</string>
+    <string name="metadata_prop_version_comment">Comment</string>
+    <string name="metadata_prop_version_current">Current version</string>
+    <!-- Upload/Create Content -->
+    <string name="content_app_pick_file">Choose an application to pick a file</string>
+    <string name="content_upload">Upload File</string>
+    <string name="content_name">Name</string>
+    <string name="content_name_hint">Enter a name (Required)</string>
+    <string name="content_description">Description</string>
+    <string name="content_description_hint">Enter a description (Optional)</string>
+    <string name="content_tags">Tags</string>
+    <string name="content_tags_hint">Comma-separated tag values (Optional)</string>
+    <string name="content_title">Title</string>
+    <!-- Create Folder -->
+    <string name="folder_create">Create a new folder</string>
+    <string name="folder_name">Name</string>
+    <string name="folder_name_hint">Type the folder name here &#8230;</string>
+    <!-- Update Properties -->
+    <string name="edit">Edit</string>
+    <string name="update">Update</string>
+    <string name="edit_metadata">Edit Properties</string>
+    <!-- Download -->
+    <string name="download">Download</string>
+    <string name="download_complete">Download complete</string>
+    <string name="download_error">An error occurs during download operation.</string>
+    <string name="download_progress">Downloading in progress &#8230;</string>
+    <!-- Empty -->
     <string name="empty_child">No document found</string>
     <string name="empty_site">No sites available</string>
     <string name="empty_version">No version history available</string>
-    <string name="empty_session">No Session available. Please retry</string>
+    <string name="empty_session">No Session available</string>
     <string name="empty_actvity">No activity found</string>
     <string name="empty_tag">No tag found</string>
-    <string name="empty_comment">No comment</string>
-
-    <!-- Share -->
-    <string name="share_content">Share Content</string>
-    <string name="share_url">Share URL</string>
-    <string name="share_url_long">Sharing URL from Alfresco Android Mobile</string>
-
+    <string name="empty_comment">No comment found</string>
+    <string name="empty_search">No document found</string>
+    <!-- Size -->
+    <string name="file_size_empty">0 byte</string>
+    <string name="file_size_bytes">bytes</string>
+    <string name="file_size_kilobytes">KB</string>
+    <string name="file_size_megabytes">MB</string>
+    <string name="file_size_gigabytes">GB</string>
+    <!-- Search -->
+    <string name="search">Search</string>
+    <string name="search_hint">Enter search term</string>
+    <!-- Comments -->
+    <string name="comments">Comments</string>
+    <string name="comment_create_hint">Type your comment here &#8230;</string>
+    <!-- Actions -->
+    <string name="create">Create</string>
+    <string name="add">Add</string>
+    <string name="like">Like</string>
+    <string name="open_in">Open in</string>
+    <string name="take_photo">Take photo</string>
+    <string name="make_video">Make video</string>
+    <string name="record_audio">Record audio</string>
+    <string name="version_history">Version History</string>
+    <string name="tags">Tags</string>
+    <string name="share">Share</string>
+    <string name="refresh">Refresh</string>
+    <string name="delete">Delete</string>
+    <string name="save_back">Save Back</string>
     <!-- Errors -->
     <string name="error_unable_open_file">Unable to open this file</string>
     <string name="error_unable_share_link">Unable to share link</string>
     <string name="error_unable_share_content">Unable to share content</string>
+    <!-- Share -->
+    <string name="share_url">Share Link</string>
+    <string name="share_content">Share Content</string>
+    <string name="share_url_long">Sharing Link from Alfresco Android Mobile</string>
 
 </resources>

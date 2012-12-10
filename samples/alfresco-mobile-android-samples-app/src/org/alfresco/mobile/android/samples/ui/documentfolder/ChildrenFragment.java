@@ -207,11 +207,11 @@ public class ChildrenFragment extends NavigationFragment
         if (parentFolder != null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.CREATE_FOLDER, Menu.FIRST + MenuActionItem.CREATE_FOLDER,
-                    R.string.action_create_folder);
+                    R.string.folder_create);
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.UPLOAD, Menu.FIRST + MenuActionItem.UPLOAD, R.string.action_upload);
+            mi = menu.add(Menu.NONE, MenuActionItem.UPLOAD, Menu.FIRST + MenuActionItem.UPLOAD, R.string.content_upload);
             mi.setIcon(R.drawable.ic_upload);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }

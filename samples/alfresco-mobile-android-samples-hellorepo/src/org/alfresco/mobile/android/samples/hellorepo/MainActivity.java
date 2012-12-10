@@ -17,14 +17,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+{
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Modify to suit your Alfresco server installation 
+        // Modify to suit your Alfresco server installation
         String url = "http://localhost:8080/alfresco";
         String username = "admin";
         String password = "password";
@@ -33,12 +35,14 @@ public class MainActivity extends Activity {
 
     }
 
-    class ConnectToRepo extends AsyncTask<String, Integer, String> {
+    class ConnectToRepo extends AsyncTask<String, Integer, String>
+    {
 
         private static final String TAG = "ConnectToRepo";
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(String... params)
+        {
 
             Log.d(TAG, "doInBackground");
             Log.d(TAG, params[0] + ":" + params[1] + ":" + params[2]);
@@ -48,17 +52,17 @@ public class MainActivity extends Activity {
             String password = params[2];
 
             // HelloRepo
-            try {
+            try
+            {
                 // connect to on-premise repo
-                RepositorySession session = RepositorySession.connect(url,
-                        username, password);
+                RepositorySession session = RepositorySession.connect(url, username, password);
 
-                if (session != null) {
+                if (session != null)
+                {
 
                     // Get some repository information
                     Log.d(TAG, "baseUrl: " + session.getBaseUrl());
-                    Log.d(TAG, "rootFolder: "
-                            + session.getRootFolder().getName());
+                    Log.d(TAG, "rootFolder: " + session.getRootFolder().getName());
 
                     // Obtain a repository information object
                     RepositoryInfo repoInfo = session.getRepositoryInfo();
@@ -70,8 +74,7 @@ public class MainActivity extends Activity {
                     Log.d(TAG, "repoEdition: " + repoInfo.getEdition());
 
                     // Get site service
-                    SiteService siteService = session.getServiceRegistry()
-                            .getSiteService();
+                    SiteService siteService = session.getServiceRegistry().getSiteService();
 
                     // Get sites for current user
                     List<Site> sites = siteService.getSites();
@@ -83,30 +86,32 @@ public class MainActivity extends Activity {
                     Folder folder = siteService.getDocumentLibrary(site);
 
                     // Find DocumentFolderService
-                    DocumentFolderService documentFolderService = session
-                            .getServiceRegistry().getDocumentFolderService();
+                    DocumentFolderService documentFolderService = session.getServiceRegistry()
+                            .getDocumentFolderService();
 
                     // Get children of document library
-                    List<Node> nodes = documentFolderService
-                            .getChildren(folder);
+                    List<Node> nodes = documentFolderService.getChildren(folder);
 
-                    for (Node node : nodes) {
+                    for (Node node : nodes)
+                    {
 
                         Log.d(TAG,
-                                "node: " + node.getTitle() + "="
-                                        + node.getName() + " created by: "
-                                        + node.getCreatedBy() + " isFolder: "
-                                        + node.isFolder());
+                                "node: " + node.getTitle() + "=" + node.getName() + " created by: "
+                                        + node.getCreatedBy() + " isFolder: " + node.isFolder());
 
                     }
 
-                } else {
+                }
+                else
+                {
 
                     Log.d(TAG, "No Session available!");
 
                 }
 
-            } catch (AlfrescoSessionException e) {
+            }
+            catch (AlfrescoSessionException e)
+            {
                 Log.e(TAG, "Failed to connect: " + e.toString());
             }
 
@@ -115,14 +120,16 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String result)
+        {
             super.onPostExecute(result);
             Log.d(TAG, "onPostExecute");
             Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
+        protected void onProgressUpdate(Integer... values)
+        {
             super.onProgressUpdate(values);
             Log.d(TAG, "onProgressUpdate");
 

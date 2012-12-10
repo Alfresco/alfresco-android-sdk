@@ -28,20 +28,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_menu_start_conversation"
-        android:text="@string/action_comments" />
+        android:text="@string/comments" />
 
     <Button
         android:id="@+id/display_all_versions"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_menu_recent_history"
-        android:text="@string/action_versions" />
+        android:text="@string/version_history" />
 
     <Button
         android:id="@+id/display_all_tags"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/mime_tags"
-        android:text="@string/action_tags" />
+        android:text="@string/tags" />
 
 </LinearLayout>

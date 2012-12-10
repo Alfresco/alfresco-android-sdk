@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
@@ -178,5 +179,20 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
     {
         this.onCreateListener = onCreateListener;
     }
-
+    
+    @Override
+    public void onDestroyView()
+    {
+        if (getDialog() != null && getRetainInstance())
+        {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
+    
+    @Override
+    public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+    }
 }

@@ -52,18 +52,18 @@ public class VersionsAdapter extends BaseListAdapter<Document, GenericVersionVie
     @Override
     protected void updateTopText(GenericVersionViewHolder vh, Document item)
     {
-        vh.topText.setText(res.getString(R.string.version) + " " + item.getVersionLabel());
+        vh.topText.setText(res.getString(R.string.metadata_prop_version) + " " + item.getVersionLabel());
     }
 
     @Override
     protected void updateBottomText(GenericVersionViewHolder vh, Document item)
     {
         String s = formatDate(getContext(), item.getModifiedAt().getTime());
-        vh.line1Text.setText(res.getString(R.string.version_modified) + " " + s);
+        vh.line1Text.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + s);
 
         // modified by
         s = item.getModifiedBy();
-        vh.line2Text.setText(res.getString(R.string.version_modified_by) + " " + s);
+        vh.line2Text.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + s);
 
         // comment
         /*s = (item.getProperty("cmis:checkinComment") != null) ? (String) item.getProperty("cmis:checkinComment")
@@ -72,7 +72,7 @@ public class VersionsAdapter extends BaseListAdapter<Document, GenericVersionVie
         vh.line3Text.setVisibility(View.GONE);
 
         // current version
-        vh.bottomText.setText(res.getString(R.string.version_ccurent) + " " + item.isLatestVersion());
+        vh.bottomText.setText(res.getString(R.string.metadata_prop_version_current) + " " + item.isLatestVersion());
     }
 
     @Override

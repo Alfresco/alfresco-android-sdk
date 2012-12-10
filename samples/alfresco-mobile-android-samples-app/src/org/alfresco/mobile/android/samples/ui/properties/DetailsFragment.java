@@ -23,13 +23,13 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
+import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.activity.MainActivity;
 import org.alfresco.mobile.android.samples.ui.documentfolder.actions.DownloadTaskCallback;
 import org.alfresco.mobile.android.samples.ui.documentfolder.actions.IsLikedLoaderCallBack;
 import org.alfresco.mobile.android.samples.utils.MenuActionItem;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.samples.utils.UIUtils;
-import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
@@ -235,14 +235,14 @@ public class DetailsFragment extends BaseFragment
         if (node.isDocument() && (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.OPEN_IN, Menu.FIRST + MenuActionItem.OPEN_IN,
-                    R.string.action_downlaod);
+                    R.string.download);
             mi.setIcon(R.drawable.ic_download);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.LIKE, Menu.FIRST + MenuActionItem.LIKE, R.string.action_like);
+            mi = menu.add(Menu.NONE, MenuActionItem.LIKE, Menu.FIRST + MenuActionItem.LIKE, R.string.like);
             mi.setIcon(R.drawable.ic_unlike);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             likeMenuItem = mi;

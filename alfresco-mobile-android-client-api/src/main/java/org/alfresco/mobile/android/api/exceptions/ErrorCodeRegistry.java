@@ -62,7 +62,7 @@ public interface ErrorCodeRegistry
     int SESSION_API_KEYS_INVALID = 102;
 
     /** Authorization code is invalid or expired. */
-    int SESSION_AUTH_CODE_INVALID = 102;
+    int SESSION_AUTH_CODE_INVALID = 103;
 
     /** Access token has expired. */
     int SESSION_ACCESS_TOKEN_EXPIRED = 104;

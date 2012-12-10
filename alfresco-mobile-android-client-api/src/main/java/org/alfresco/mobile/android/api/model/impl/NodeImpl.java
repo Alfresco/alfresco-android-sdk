@@ -314,11 +314,11 @@ public class NodeImpl implements Node
     }
 
     /**
-     * @return Returns a set of all available allowable actions.
+     * @return Returns a set of all available allowable actions. If no allowable actions available returns an empty collection.
      */
     public Set<String> getAllowableActions()
     {
-        Set<String> s = null;
+        Set<String> s = new HashSet<String>();
         if (object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
         {
             Set<Action> actions = object.getAllowableActions().getAllowableActions();
