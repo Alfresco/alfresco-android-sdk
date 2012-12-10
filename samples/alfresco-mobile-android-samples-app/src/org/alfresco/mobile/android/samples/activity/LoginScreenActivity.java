@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.activity;
 
+import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.samples.ui.accounts.LoginFragment;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.os.Bundle;

@@ -21,9 +21,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.activity.SessionLoaderCallback;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
