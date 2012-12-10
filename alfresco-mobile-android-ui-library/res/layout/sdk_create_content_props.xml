@@ -93,7 +93,7 @@
                     android:id="@+id/content_tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/content_tags_enter_hint" />
+                    android:hint="@string/content_tags_hint" />
             </TableRow>
         </TableLayout>
 

@@ -62,7 +62,7 @@ public abstract class SearchFragment extends BaseListFragment implements
     {
         loaderId = SearchLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.search_empty;
+        emptyListMessageId = R.string.empty_search;
         initLoader = false;
     }
 

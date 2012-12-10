@@ -88,7 +88,7 @@ public class DownloadTaskCallback implements DownloadTaskListener
         }
         else
         {
-            MessengerManager.showToast(activity, activity.getText(R.string.download_complete_error).toString());
+            MessengerManager.showToast(activity, activity.getText(R.string.download_error).toString());
         }
     }
 

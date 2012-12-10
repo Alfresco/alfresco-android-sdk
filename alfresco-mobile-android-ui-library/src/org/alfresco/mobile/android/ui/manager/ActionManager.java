@@ -182,7 +182,7 @@ public class ActionManager
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("*/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.pick_file_title)), requestCode);
+        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
     }
 
     /**

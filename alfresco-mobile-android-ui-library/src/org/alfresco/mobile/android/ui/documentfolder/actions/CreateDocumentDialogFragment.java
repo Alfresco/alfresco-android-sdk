@@ -101,7 +101,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getDialog().setTitle(R.string.content_create);
+        getDialog().setTitle(R.string.content_upload);
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
