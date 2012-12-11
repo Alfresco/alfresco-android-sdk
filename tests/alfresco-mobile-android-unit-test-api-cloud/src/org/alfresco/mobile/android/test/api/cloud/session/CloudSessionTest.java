@@ -37,6 +37,8 @@ import android.util.Log;
 public class CloudSessionTest extends AlfrescoSDKTestCase
 {
 
+    public final static String NETWORK_ID = "alftester.com";
+    
     @Override
     protected void initSession()
     {
@@ -64,17 +66,17 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
         try
         {
             Map<String, Serializable> settings = new HashMap<String, Serializable>(1);
-            settings.put(CloudSession.CLOUD_NETWORK_ID, "alfresco.com");
+            settings.put(CloudSession.CLOUD_NETWORK_ID, NETWORK_ID);
 
             CloudSession session = createCloudSession(settings);
 
             Assert.assertNotNull(session);
             Assert.assertNotNull(session.getRepositoryInfo());
-            Assert.assertEquals("alfresco.com", session.getNetwork().getIdentifier());
+            Assert.assertEquals(NETWORK_ID, session.getNetwork().getIdentifier());
 
             CloudNetwork network = session.getNetwork();
 
-            if ("alfresco.com".equals(network.getIdentifier()))
+            if (NETWORK_ID.equals(network.getIdentifier()))
             {
                 Assert.assertNotNull(network.getCreatedAt());
                 Assert.assertEquals("Free", network.getSubscriptionLevel());
@@ -114,7 +116,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
 
         for (CloudNetwork network : networks)
         {
-            if ("alfresco.com".equals(network.getIdentifier()))
+            if (NETWORK_ID.equals(network.getIdentifier()))
             {
                 Assert.assertNotNull(network.getCreatedAt());
                 Assert.assertEquals("Free", network.getSubscriptionLevel());
