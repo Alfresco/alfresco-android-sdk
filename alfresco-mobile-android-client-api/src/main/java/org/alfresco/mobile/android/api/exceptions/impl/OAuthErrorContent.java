@@ -58,7 +58,7 @@ public class OAuthErrorContent implements AlfrescoErrorContent
         }
 
         OAuthErrorContent errorContent = null;
-        if (json.containsKey(CloudConstant.ERROR_VALUE) && json.containsKey(CloudConstant.ERRORDESCRIPTION_VALUE))
+        if (json.containsKey(CloudConstant.ERROR_VALUE) || json.containsKey(CloudConstant.ERRORDESCRIPTION_VALUE))
         {
             errorContent = new OAuthErrorContent();
             errorContent.message = JSONConverter.getString(json, CloudConstant.ERROR_VALUE);

@@ -25,6 +25,11 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Implementation of OAuthData.
+ * 
+ * @author Jean Marie Pascal
+ */
 public final class OAuth2DataImpl implements OAuthData, Parcelable
 {
 
@@ -57,7 +62,7 @@ public final class OAuth2DataImpl implements OAuthData, Parcelable
         this.apiKey = apikey;
         this.apiSecret = apiSecret;
     }
-    
+
     public OAuth2DataImpl(String apikey, String apiSecret, String accessToken, String refreshToken)
     {
         this.apiKey = apikey;
@@ -80,7 +85,7 @@ public final class OAuth2DataImpl implements OAuthData, Parcelable
     {
         return accessToken;
     }
-    
+
     /** {@inheritDoc} */
     public String getRefreshToken()
     {
@@ -98,6 +103,7 @@ public final class OAuth2DataImpl implements OAuthData, Parcelable
     {
         return apiSecret;
     }
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
