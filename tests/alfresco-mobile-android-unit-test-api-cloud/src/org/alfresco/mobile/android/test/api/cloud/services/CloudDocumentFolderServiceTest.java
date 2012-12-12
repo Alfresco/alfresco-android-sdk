@@ -46,9 +46,16 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
 
         Assert.assertNotNull(doc);
 
-        checkRendition(doc, false, false);
+        checkRendition(doc, true, true);
     }
 
+    @Override
+    public void testDocumentFolderMethodsError()
+    {
+        // TODO Auto-generated method stub
+        super.testDocumentFolderMethodsError();
+    }
+    
     public void testStaticRenditionExtraction()
     {
         // Create Session with extract metadata and create thumbnail true.

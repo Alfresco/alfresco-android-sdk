@@ -17,10 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.exceptions.impl;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoErrorContent;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -148,6 +148,8 @@ public final class ExceptionHelper
             {
                 er = OAuthErrorContent.parseJson(resp.getErrorContent());
             }
+            else if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST && session == null) { throw new AlfrescoSessionException(
+                    serviceErrorCode, OAuthErrorContent.parseJson(resp.getErrorContent())); }
             if (er == null)
             {
                 try

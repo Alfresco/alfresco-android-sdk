@@ -299,7 +299,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         return createFolderInSite(alfsession, getSiteName(session));
     }
 
-    private static Folder createFolderInSite(AlfrescoSession session, String sitename)
+    private Folder createFolderInSite(AlfrescoSession session, String sitename)
     {
         SiteService siteService = session.getServiceRegistry().getSiteService();
         Folder container = siteService.getDocumentLibrary(siteService.getSite(sitename));
@@ -314,7 +314,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
      * @param properties : map of properties that folder must include.
      * @return newly created folder.
      */
-    public static Folder createNewFolder(AlfrescoSession session, Folder parentFolder, String folderName,
+    public Folder createNewFolder(AlfrescoSession session, Folder parentFolder, String folderName,
             Map<String, Serializable> properties)
     {
         DocumentFolderService docfolderservice = session.getServiceRegistry().getDocumentFolderService();
@@ -334,6 +334,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             {
                 folder = (Folder) docfolderservice.getChildByPath(parentFolder, folderName);
                 docfolderservice.deleteNode(folder);
+                wait(3000);
                 folder = docfolderservice.createFolder(parentFolder, folderName, properties);
             }
             catch (AlfrescoException e1)

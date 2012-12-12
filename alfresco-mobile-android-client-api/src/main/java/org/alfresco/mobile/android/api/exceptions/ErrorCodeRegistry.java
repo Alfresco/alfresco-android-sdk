@@ -58,7 +58,7 @@ public interface ErrorCodeRegistry
     /** The user credentials provided are not authorized to access the server. */
     int SESSION_UNAUTHORIZED = 101;
 
-    /** API key or secret were not recognised. */
+    /** API key or secret were not recognized. */
     int SESSION_API_KEYS_INVALID = 102;
 
     /** Authorization code is invalid or expired. */

@@ -387,7 +387,21 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull("Comment file is null", doc);
         // User does not have access / privileges to the specified node
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        Assert.assertNotNull(session.getServiceRegistry().getTaggingService().getTags(doc));
+        if (!isOnPremise(session))
+        {
+            try
+            {
+               session.getServiceRegistry().getTaggingService().getTags(doc);
+            }
+            catch (AlfrescoServiceException e)
+            {
+                Assert.assertTrue(true);
+            }
+        }
+        else
+        {
+            Assert.assertNotNull(session.getServiceRegistry().getTaggingService().getTags(doc));
+        }
 
         // ////////////////////////////////////////////////////
         // Error on addTags()

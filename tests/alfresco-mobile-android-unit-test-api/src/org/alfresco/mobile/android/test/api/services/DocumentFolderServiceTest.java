@@ -589,13 +589,25 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Rendition Methods
         // ////////////////////////////////////////////////////
         ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
-        Assert.assertNull(cf);
+        if (isOnPremise()){
+            Assert.assertNull(cf);
+        } else {
+            Assert.assertNotNull(cf);
+        }
 
         cf = docfolderservice.getRendition(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        Assert.assertNull(cf);
+        if (isOnPremise()){
+            Assert.assertNull(cf);
+        } else {
+            Assert.assertNotNull(cf);
+        }
 
         ContentStream ci = docfolderservice.getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        Assert.assertNull(ci);
+        if (isOnPremise()){
+            Assert.assertNull(ci);
+        } else {
+            Assert.assertNotNull(ci);
+        }
 
         // ////////////////////////////////////////////////////
         // Content Methods

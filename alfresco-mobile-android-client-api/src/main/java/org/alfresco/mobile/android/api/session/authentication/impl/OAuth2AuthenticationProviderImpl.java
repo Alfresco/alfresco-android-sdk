@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.api.session.authentication.OAuthAuthenticatio
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 
 /**
- * DRAFT
+ * OAuth2 Implementation of OAuthAuthenticationProvider. Used for Public API
  * 
  * @author Jean Marie Pascal
  */
@@ -77,8 +77,8 @@ public class OAuth2AuthenticationProviderImpl extends AuthenticationProviderImpl
 
     public OAuthData refreshToken(AlfrescoSession session)
     {
-       OAuthHelper helper = new OAuthHelper(session.getBaseUrl());
-       return helper.refreshToken(token);
+        OAuthHelper helper = new OAuthHelper(session.getBaseUrl());
+        return helper.refreshToken(token);
     }
 
     @Override

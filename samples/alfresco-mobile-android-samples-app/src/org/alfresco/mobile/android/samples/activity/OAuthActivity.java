@@ -26,7 +26,9 @@ import java.util.Properties;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.exceptions.impl.OAuthErrorContent;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.samples.R;
@@ -57,12 +59,12 @@ public class OAuthActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdkapp_main);
     }
-    
+
     @Override
     protected void onResume()
     {
         super.onResume();
-        
+
         String tmpurl = null, oauthUrl = null, apikey = null, apisecret = null, callback = null;
         // Check Properties available inside the device
         if (SessionLoaderCallback.ENABLE_CONFIG_FILE)
@@ -113,7 +115,18 @@ public class OAuthActivity extends Activity
                 {
                     mProgressDialog.dismiss();
                 }
-                MessengerManager.showLongToast(OAuthActivity.this, e.getMessage());
+
+                String message = e.getMessage();
+                if (e instanceof AlfrescoSessionException
+                        && ((AlfrescoSessionException) e).getAlfrescoErrorContent() instanceof OAuthErrorContent)
+                {
+                    message = ((OAuthErrorContent) ((AlfrescoSessionException) e).getAlfrescoErrorContent())
+                            .getMessage()
+                            + " " + ((OAuthErrorContent) ((AlfrescoSessionException) e).getAlfrescoErrorContent())
+                                    .getDescription();
+                }
+
+                MessengerManager.showLongToast(OAuthActivity.this, message);
             }
 
             @Override

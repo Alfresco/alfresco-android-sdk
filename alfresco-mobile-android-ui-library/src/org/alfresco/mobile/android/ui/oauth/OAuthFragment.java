@@ -229,7 +229,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     {
         LoaderManager lm = getLoaderManager();
         Bundle b = new Bundle();
-        b.putString(OAuthAccessTokenLoader.PARAM_CODE, code);
+        b.putString(OAuthAccessTokenLoader.PARAM_CODE, "code");
         b.putString(OAuthAccessTokenLoader.PARAM_APIKEY, apiKey);
         b.putString(OAuthAccessTokenLoader.PARAM_APISECRET, apiSecret);
         b.putString(OAuthAccessTokenLoader.PARAM_CALLBACK_URL, callback);
@@ -255,7 +255,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
 
         if (onOAuthAccessTokenListener != null)
         {
-            if (result.hasException())
+            if (result.hasException() || result.getData() == null)
             {
                 onOAuthAccessTokenListener.failedRequestAccessToken(result.getException());
             }
