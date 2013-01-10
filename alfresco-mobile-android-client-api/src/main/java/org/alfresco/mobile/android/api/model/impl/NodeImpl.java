@@ -295,9 +295,9 @@ public class NodeImpl implements Node
      */
     public boolean hasAllowableAction(String action)
     {
-        if (object != null && object.getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
         {
-            for (Action c : Action.values())
+            for (Action c : object.getAllowableActions().getAllowableActions())
             {
                 if (c.value().equals(action)) { return true; }
             }
@@ -319,7 +319,7 @@ public class NodeImpl implements Node
     public Set<String> getAllowableActions()
     {
         Set<String> s = new HashSet<String>();
-        if (object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
         {
             Set<Action> actions = object.getAllowableActions().getAllowableActions();
             s = new HashSet<String>(actions.size());
