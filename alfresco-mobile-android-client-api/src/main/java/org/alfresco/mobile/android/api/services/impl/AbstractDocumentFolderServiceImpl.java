@@ -486,6 +486,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
+            Log.d("TAG", Log.getStackTraceString(e));
             convertException(e);
         }
         return null;
