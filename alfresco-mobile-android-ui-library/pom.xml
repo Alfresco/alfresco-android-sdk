@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
 		<artifactId>alfresco-mobile-android-sdk</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android-ui-library</artifactId>
@@ -39,7 +39,7 @@
 						<phase>package</phase>
 						<configuration>
 							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>alfresco-android-sdk</finalName>
+							<finalName>alfresco-android-sdk-${project.version}</finalName>
 							<attach>true</attach>
 							<descriptors>
 								<descriptor>assembly/pack.xml</descriptor>

@@ -50,7 +50,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedExce
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession
+public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Serializable
 {
 
     /** Default Value of cache folder for the session. */
