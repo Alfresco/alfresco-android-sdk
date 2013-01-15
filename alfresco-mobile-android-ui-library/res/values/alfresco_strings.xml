@@ -84,6 +84,10 @@
     <string name="org_alfresco_documentlibrary_files_deleted">{0} documents deleted by {1}</string>
     <string name="org_alfresco_documentlibrary_file_updated">{0} document updated by {1}</string>
     <string name="org_alfresco_documentlibrary_files_updated">{0} documents updated by {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_added">{0} folder added by {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_added">{0} folders added by {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_deleted">{0} was deleted by {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">{0} folders deleted {1}</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} document checked out to Google Docs by {1}</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} document checked in from Google Docs by {1}</string>
     <string name="org_alfresco_documentlibrary_inline_edit">{0} document edited by {1}</string>

@@ -292,6 +292,10 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             put("org.alfresco.documentlibrary.files-deleted", R.string.org_alfresco_documentlibrary_files_deleted);
             put("org.alfresco.documentlibrary.file-updated", R.string.org_alfresco_documentlibrary_file_updated);
             put("org.alfresco.documentlibrary.files-updated", R.string.org_alfresco_documentlibrary_files_updated);
+            put("org.alfresco.documentlibrary.folder-added", R.string.org_alfresco_documentlibrary_folder_added);
+            put("org.alfresco.documentlibrary.folder-deleted", R.string.org_alfresco_documentlibrary_folders_deleted);
+            put("org.alfresco.documentlibrary.folders-added", R.string.org_alfresco_documentlibrary_folder_added);
+            put("org.alfresco.documentlibrary.folders-deleted", R.string.org_alfresco_documentlibrary_folders_deleted);
             put("org.alfresco.documentlibrary.google-docs-checkout",
                     R.string.org_alfresco_documentlibrary_google_docs_checkout);
             put("org.alfresco.documentlibrary.google-docs-checkin",
