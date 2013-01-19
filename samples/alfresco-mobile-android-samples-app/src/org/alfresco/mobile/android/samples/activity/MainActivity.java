@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
@@ -57,6 +58,12 @@ public class MainActivity extends CommonActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdkapp_main);
+
+        //Retrieve Parcelable object from Intent.
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("session"))
+        {
+            SessionUtils.setsession(this, (AlfrescoSession) getIntent().getExtras().getParcelable("session"));
+        }
 
         FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.FRAG_TAG);
 

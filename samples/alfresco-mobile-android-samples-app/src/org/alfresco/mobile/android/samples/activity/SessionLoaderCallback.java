@@ -181,8 +181,15 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         mProgressDialog.dismiss();
         if (results != null && !results.hasException())
         {
-            SessionUtils.setsession(context, results.getData());
-            context.startActivity(new Intent(context, MainActivity.class));
+            //Uncomment to use Context save for Session Object.
+            //SessionUtils.setsession(context, results.getData());
+            
+            //Test Serializable / Deserializable of Session object.
+            Bundle b = new Bundle();
+            b.putParcelable("session", results.getData());
+            Intent onPremiseIntent = new Intent(context, MainActivity.class);
+            onPremiseIntent.putExtras(b);
+            context.startActivity(onPremiseIntent);
         }
         else
         {

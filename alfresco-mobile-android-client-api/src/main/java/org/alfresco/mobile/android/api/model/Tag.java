@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
+
 /**
  * Tags are keywords or terms assigned to a piece of information like documents
  * or folders .
  * 
  * @author Jean Marie Pascal
  */
-public interface Tag
+public interface Tag extends Serializable
 {
 
     /**

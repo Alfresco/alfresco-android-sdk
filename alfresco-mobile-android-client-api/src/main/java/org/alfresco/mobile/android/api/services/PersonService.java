@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Person;
+
+import android.os.Parcelable;
 
 /**
  * The PersonService can be used to get informations about people.</br> The
@@ -29,7 +32,7 @@ import org.alfresco.mobile.android.api.model.Person;
  * 
  * @author Jean Marie Pascal
  */
-public interface PersonService
+public interface PersonService extends Parcelable
 {
     /**
      * @param personIdentifier : unique identifier of a person

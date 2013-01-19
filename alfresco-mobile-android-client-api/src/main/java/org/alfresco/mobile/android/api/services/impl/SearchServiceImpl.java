@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.SearchService;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -42,6 +43,8 @@ import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.data.ObjectList;
 import org.apache.chemistry.opencmis.commons.spi.DiscoveryService;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -52,6 +55,7 @@ import android.util.Log;
  */
 public class SearchServiceImpl extends AlfrescoService implements SearchService
 {
+    
     /** Tag for Logging purpose. */
     private static final String TAG = "SearchService";
 
@@ -344,4 +348,25 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         return " ORDER BY " + s;
     }
 
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<SearchServiceImpl> CREATOR = new Parcelable.Creator<SearchServiceImpl>()
+    {
+        public SearchServiceImpl createFromParcel(Parcel in)
+        {
+            return new SearchServiceImpl(in);
+        }
+
+        public SearchServiceImpl[] newArray(int size)
+        {
+            return new SearchServiceImpl[size];
+        }
+    };
+
+    public SearchServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(AlfrescoSession.class.getClassLoader()));
+    }
+    
 }

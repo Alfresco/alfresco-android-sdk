@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
+
 /**
  * The RepositoryInfo class provides information on the repository the session
  * is connected to, for example, repository version number, edition,
@@ -24,7 +26,7 @@ package org.alfresco.mobile.android.api.model;
  * 
  * @author Jean Marie PASCAL
  */
-public interface RepositoryInfo
+public interface RepositoryInfo extends Serializable
 {
 
     /**

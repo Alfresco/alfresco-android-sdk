@@ -25,12 +25,16 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.impl.AbstractRatingsService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * The RatingsService can be used to manage like (as ratings) on any content
@@ -118,6 +122,27 @@ public class CloudRatingsServiceImpl extends AbstractRatingsService
         }
 
         return false;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudRatingsServiceImpl> CREATOR = new Parcelable.Creator<CloudRatingsServiceImpl>()
+    {
+        public CloudRatingsServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudRatingsServiceImpl(in);
+        }
+
+        public CloudRatingsServiceImpl[] newArray(int size)
+        {
+            return new CloudRatingsServiceImpl[size];
+        }
+    };
+
+    public CloudRatingsServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 
 }

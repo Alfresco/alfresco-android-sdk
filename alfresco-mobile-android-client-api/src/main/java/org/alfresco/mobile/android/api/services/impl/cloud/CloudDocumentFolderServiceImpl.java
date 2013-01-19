@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
@@ -33,6 +34,9 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Cloud implementation of DocumentFolderService
@@ -128,4 +132,26 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
         return null;
     }
 
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudDocumentFolderServiceImpl> CREATOR = new Parcelable.Creator<CloudDocumentFolderServiceImpl>()
+    {
+        public CloudDocumentFolderServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudDocumentFolderServiceImpl(in);
+        }
+
+        public CloudDocumentFolderServiceImpl[] newArray(int size)
+        {
+            return new CloudDocumentFolderServiceImpl[size];
+        }
+    };
+
+    public CloudDocumentFolderServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
+    }
+    
 }

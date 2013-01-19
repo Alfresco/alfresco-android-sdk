@@ -31,6 +31,8 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 
+import android.os.Parcelable;
+
 /**
  * DocumentFolderService manages Folders and Documents in an Alfresco
  * repository. The service provides methods to create and update nodes. The
@@ -47,7 +49,7 @@ import org.alfresco.mobile.android.api.model.Permissions;
  * 
  * @author Jean Marie Pascal
  */
-public interface DocumentFolderService
+public interface DocumentFolderService extends Parcelable
 {
 
     /**

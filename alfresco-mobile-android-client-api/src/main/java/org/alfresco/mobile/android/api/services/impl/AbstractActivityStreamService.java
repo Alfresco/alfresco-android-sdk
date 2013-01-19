@@ -39,7 +39,6 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
  */
 public abstract class AbstractActivityStreamService extends AlfrescoService implements ActivityStreamService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 

@@ -38,7 +38,6 @@ import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
  */
 public abstract class AbstractRatingsService extends AlfrescoService implements RatingService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 

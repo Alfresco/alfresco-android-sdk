@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import java.io.Serializable;
+
+import android.os.Parcelable;
+
 /**
  * Provides a registry of all services that are available for the current
  * session. </br> Depending on repository session informations, certain service
@@ -27,7 +31,7 @@ package org.alfresco.mobile.android.api.services;
  * 
  * @author Jean Marie Pascal
  */
-public interface ServiceRegistry
+public interface ServiceRegistry extends Parcelable
 {
 
     /**

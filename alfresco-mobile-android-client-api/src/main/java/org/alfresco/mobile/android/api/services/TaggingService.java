@@ -19,10 +19,13 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
+
+import android.os.Parcelable;
 
 /**
  * Tags are keywords or terms assigned to a piece of information including
@@ -36,7 +39,7 @@ import org.alfresco.mobile.android.api.model.Tag;
  * 
  * @author Jean Marie Pascal
  */
-public interface TaggingService
+public interface TaggingService extends Parcelable
 {
     /**
      * @return Returns a list of all tags currently available in the repository.

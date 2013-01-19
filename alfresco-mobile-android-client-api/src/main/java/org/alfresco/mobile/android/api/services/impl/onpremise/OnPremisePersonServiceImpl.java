@@ -27,7 +27,9 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -36,6 +38,8 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -45,7 +49,6 @@ import android.util.Log;
  */
 public class OnPremisePersonServiceImpl extends AbstractPersonService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -128,6 +131,27 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         return PersonImpl.parseJson(json);
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremisePersonServiceImpl> CREATOR = new Parcelable.Creator<OnPremisePersonServiceImpl>()
+    {
+        public OnPremisePersonServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremisePersonServiceImpl(in);
+        }
+
+        public OnPremisePersonServiceImpl[] newArray(int size)
+        {
+            return new OnPremisePersonServiceImpl[size];
+        }
+    };
+
+    public OnPremisePersonServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 
 }

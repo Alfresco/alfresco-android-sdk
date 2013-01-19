@@ -31,10 +31,14 @@ import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractActivityStreamService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Specific implementation of ActivityStreamService for Public Cloud API.
@@ -120,5 +124,26 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
         }
 
         return new PagingResultImpl<ActivityEntry>(result, response.getHasMoreItems(), response.getSize());
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudActivityStreamServiceImpl> CREATOR = new Parcelable.Creator<CloudActivityStreamServiceImpl>()
+    {
+        public CloudActivityStreamServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudActivityStreamServiceImpl(in);
+        }
+
+        public CloudActivityStreamServiceImpl[] newArray(int size)
+        {
+            return new CloudActivityStreamServiceImpl[size];
+        }
+    };
+
+    public CloudActivityStreamServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 }

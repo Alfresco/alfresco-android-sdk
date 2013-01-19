@@ -20,11 +20,14 @@ package org.alfresco.mobile.android.api.services;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
+
+import android.os.Parcelable;
 
 /**
  * The Search service provides methods for querying the repository and returning
@@ -32,7 +35,7 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
  * 
  * @author Jean Marie Pascal
  */
-public interface SearchService
+public interface SearchService extends Parcelable
 {
     
     /**

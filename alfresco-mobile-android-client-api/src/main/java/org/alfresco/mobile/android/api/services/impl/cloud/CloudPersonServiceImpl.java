@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -36,6 +37,8 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -107,6 +110,27 @@ public class CloudPersonServiceImpl extends AbstractPersonService
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
         Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json).get(CloudConstant.ENTRY_VALUE);
         return PersonImpl.parsePublicAPIJson(data);
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudPersonServiceImpl> CREATOR = new Parcelable.Creator<CloudPersonServiceImpl>()
+    {
+        public CloudPersonServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudPersonServiceImpl(in);
+        }
+
+        public CloudPersonServiceImpl[] newArray(int size)
+        {
+            return new CloudPersonServiceImpl[size];
+        }
+    };
+
+    public CloudPersonServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 
 }

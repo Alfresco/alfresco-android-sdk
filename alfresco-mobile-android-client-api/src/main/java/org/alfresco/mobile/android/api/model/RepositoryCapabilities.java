@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
+
 /**
  * The RepositoryCapabilities class provides information on what alfresco
  * specific operations are supported by the repository.
  * 
  * @author Jean Marie PASCAL
  */
-public interface RepositoryCapabilities
+public interface RepositoryCapabilities extends Serializable
 {
 
     /** Flag to check if the repository support like operation. */

@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
+import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -45,22 +46,24 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * AlfrescoSession is the base class for all connection to a repository.
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Serializable
+public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Parcelable
 {
-
     /** Default Value of cache folder for the session. */
     public static final String DEFAULT_CACHE_FOLDER_PATH = "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache";
 
     protected String baseUrl;
 
-    private String userIdentifier;
+    protected String userIdentifier;
 
-    private String password;
+    protected String password;
 
     /** Root Folder for the specific session. */
     protected Folder rootNode;

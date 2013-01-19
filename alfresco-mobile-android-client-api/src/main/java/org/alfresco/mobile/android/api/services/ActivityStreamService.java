@@ -19,9 +19,12 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+
+import android.os.Parcelable;
 
 /**
  * Alfresco provides support for a news/activity feed in the context of an
@@ -31,7 +34,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
  * 
  * @author Jean Marie Pascal
  */
-public interface ActivityStreamService
+public interface ActivityStreamService extends Parcelable
 {
 
     /**

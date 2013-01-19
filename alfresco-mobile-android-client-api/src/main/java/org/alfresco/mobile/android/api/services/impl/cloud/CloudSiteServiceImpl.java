@@ -22,18 +22,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
+import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -193,6 +200,27 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
     {
         return computeSites(url, true);
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudSiteServiceImpl> CREATOR = new Parcelable.Creator<CloudSiteServiceImpl>()
+    {
+        public CloudSiteServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudSiteServiceImpl(in);
+        }
+
+        public CloudSiteServiceImpl[] newArray(int size)
+        {
+            return new CloudSiteServiceImpl[size];
+        }
+    };
+
+    public CloudSiteServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 
 }

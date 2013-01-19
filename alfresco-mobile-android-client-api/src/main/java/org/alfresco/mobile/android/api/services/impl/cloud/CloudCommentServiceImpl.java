@@ -30,12 +30,17 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractCommentService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Specific implementation of CommentService for Public Cloud API.
@@ -104,5 +109,26 @@ public class CloudCommentServiceImpl extends AbstractCommentService
         }
 
         return new PagingResultImpl<Comment>(result, response.getHasMoreItems(), response.getSize());
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudCommentServiceImpl> CREATOR = new Parcelable.Creator<CloudCommentServiceImpl>()
+    {
+        public CloudCommentServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudCommentServiceImpl(in);
+        }
+
+        public CloudCommentServiceImpl[] newArray(int size)
+        {
+            return new CloudCommentServiceImpl[size];
+        }
+    };
+
+    public CloudCommentServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 }

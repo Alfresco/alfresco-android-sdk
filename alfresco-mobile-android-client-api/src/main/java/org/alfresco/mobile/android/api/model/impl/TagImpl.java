@@ -30,6 +30,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class TagImpl implements Tag
 {
+    private static final long serialVersionUID = 1L;
 
     /** Unique identifier to a specific tag. */
     private String identifier;

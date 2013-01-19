@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudRepositoryInfoImpl;
@@ -45,10 +46,15 @@ import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthe
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -160,26 +166,29 @@ public class CloudSessionImpl extends CloudSession
             rootNode = new FolderImpl(cmisSession.getRootFolder());
             repositoryInfo = new CloudRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
-            // Extension Point to implement and manage services
-            if (hasParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME))
-            {
-                services = createServiceRegistry((String) getParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME));
-            }
-            else
-            {
-                services = new CloudServiceRegistry(this);
-            }
-
-            // Retrieve AuthenticationProvider
-            passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
-            authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
-                    .getAlfrescoAuthenticationProvider();
-
+            create();
         }
         catch (Exception e)
         {
             throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
+    }
+    
+    private void create(){
+        // Extension Point to implement and manage services
+        if (hasParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME))
+        {
+            services = createServiceRegistry((String) getParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME));
+        }
+        else
+        {
+            services = new CloudServiceRegistry(this);
+        }
+
+        // Retrieve AuthenticationProvider
+        passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
+        authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
+                .getAlfrescoAuthenticationProvider();
     }
 
     // //////////////////////////////////////////////////////////////
@@ -273,5 +282,57 @@ public class CloudSessionImpl extends CloudSession
         } else {
             return null;
         }
+    }
+
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<CloudSessionImpl> CREATOR = new Parcelable.Creator<CloudSessionImpl>()
+    {
+        public CloudSessionImpl createFromParcel(Parcel in)
+        {
+            return new CloudSessionImpl(in);
+        }
+
+        public CloudSessionImpl[] newArray(int size)
+        {
+            return new CloudSessionImpl[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int arg1)
+    {
+        dest.writeString(baseUrl);
+        dest.writeString(userIdentifier);
+        dest.writeString(password);
+        dest.writeSerializable(currentNetwork);
+        dest.writeParcelable(rootNode, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeSerializable(repositoryInfo);
+        dest.writeSerializable(cmisSession);
+        Bundle b = new Bundle();
+        b.putSerializable("userParameters", (Serializable) userParameters);
+        dest.writeBundle(b);
+    }
+
+    @SuppressWarnings("unchecked")
+    public CloudSessionImpl(Parcel o)
+    {
+        this.baseUrl = o.readString();
+        this.userIdentifier = o.readString();
+        this.password = o.readString();
+        this.currentNetwork = (CloudNetwork) o.readSerializable();
+        this.rootNode = o.readParcelable(FolderImpl.class.getClassLoader());
+        this.repositoryInfo = (RepositoryInfo) o.readSerializable();
+        this.cmisSession = (Session) o.readSerializable();
+        Bundle b = o.readBundle();
+        this.userParameters = (Map<String, Serializable>) b.getSerializable("userParameters");
+        create();
     }
 }

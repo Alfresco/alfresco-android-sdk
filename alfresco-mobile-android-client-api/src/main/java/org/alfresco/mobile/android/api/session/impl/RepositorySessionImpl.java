@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
@@ -32,6 +33,10 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -108,6 +113,12 @@ public class RepositorySessionImpl extends RepositorySession
         repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
         // Extension Point to implement and manage services
+        create();
+    }
+    
+    
+    private void create(){
+        // Extension Point to implement and manage services
         if (hasParameter(ONPREMISE_SERVICES_CLASSNAME))
         {
             services = createServiceRegistry((String) getParameter(ONPREMISE_SERVICES_CLASSNAME));
@@ -120,5 +131,55 @@ public class RepositorySessionImpl extends RepositorySession
         passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
         authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
                 .getAlfrescoAuthenticationProvider();
+    }
+
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<RepositorySessionImpl> CREATOR = new Parcelable.Creator<RepositorySessionImpl>()
+    {
+        public RepositorySessionImpl createFromParcel(Parcel in)
+        {
+            return new RepositorySessionImpl(in);
+        }
+
+        public RepositorySessionImpl[] newArray(int size)
+        {
+            return new RepositorySessionImpl[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int arg1)
+    {
+        dest.writeString(baseUrl);
+        dest.writeString(userIdentifier);
+        dest.writeString(password);
+        dest.writeParcelable(rootNode, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeSerializable(repositoryInfo);
+        dest.writeSerializable(cmisSession);
+        Bundle b = new Bundle();
+        b.putSerializable("userParameters", (Serializable) userParameters);
+        dest.writeBundle(b);
+    }
+
+    @SuppressWarnings("unchecked")
+    public RepositorySessionImpl(Parcel o)
+    {
+        this.baseUrl = o.readString();
+        this.userIdentifier = o.readString();
+        this.password = o.readString();
+        this.rootNode = o.readParcelable(FolderImpl.class.getClassLoader());
+        this.repositoryInfo = (RepositoryInfo) o.readSerializable();
+        this.cmisSession = (Session) o.readSerializable();
+        Bundle b = o.readBundle();
+        this.userParameters = (Map<String, Serializable>) b.getSerializable("userParameters");
+        create();
     }
 }

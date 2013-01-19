@@ -31,9 +31,12 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
@@ -42,6 +45,9 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * @author Jean Marie Pascal
@@ -174,4 +180,27 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
 
         return new PagingResultImpl<Tag>(result, response.getHasMoreItems(), response.getSize());
     }
+    
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudTaggingServiceImpl> CREATOR = new Parcelable.Creator<CloudTaggingServiceImpl>()
+    {
+        public CloudTaggingServiceImpl createFromParcel(Parcel in)
+        {
+            return new CloudTaggingServiceImpl(in);
+        }
+
+        public CloudTaggingServiceImpl[] newArray(int size)
+        {
+            return new CloudTaggingServiceImpl[size];
+        }
+    };
+
+    public CloudTaggingServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
+    }
+    
 }

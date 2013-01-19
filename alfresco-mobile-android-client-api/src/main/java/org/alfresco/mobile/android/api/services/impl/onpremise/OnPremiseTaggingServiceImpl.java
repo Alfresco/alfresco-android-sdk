@@ -30,9 +30,12 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
@@ -41,6 +44,9 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Tags are keywords or terms assigned to a piece of information including
@@ -56,7 +62,6 @@ import org.json.JSONException;
  */
 public class OnPremiseTaggingServiceImpl extends AlfrescoService implements TaggingService
 {
-
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
@@ -256,5 +261,26 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         }
 
         return new PagingResultImpl<Tag>(tags, hasMoreItems, totalItems);
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseTaggingServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseTaggingServiceImpl>()
+    {
+        public OnPremiseTaggingServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremiseTaggingServiceImpl(in);
+        }
+
+        public OnPremiseTaggingServiceImpl[] newArray(int size)
+        {
+            return new OnPremiseTaggingServiceImpl[size];
+        }
+    };
+
+    public OnPremiseTaggingServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 }

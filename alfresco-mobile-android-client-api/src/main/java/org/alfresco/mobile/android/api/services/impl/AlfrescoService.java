@@ -45,6 +45,8 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -55,7 +57,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoService
+public abstract class AlfrescoService implements Parcelable
 {
     /** Repository Session. */
     protected AlfrescoSession session;
@@ -316,5 +318,20 @@ public abstract class AlfrescoService
             convertException(e);
         }
         return null;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+    
+    @Override
+    public void writeToParcel(Parcel dest, int arg1)
+    {
+        dest.writeParcelable(session, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }

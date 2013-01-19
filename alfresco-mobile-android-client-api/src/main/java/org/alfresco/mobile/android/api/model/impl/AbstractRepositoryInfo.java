@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.api.model.RepositoryInfo;
 public abstract class AbstractRepositoryInfo implements RepositoryInfo
 {
 
+    private static final long serialVersionUID = 1L;
+
     /** The CMIS repository info. */
     protected final org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo;
 
