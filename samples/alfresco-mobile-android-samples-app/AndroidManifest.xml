@@ -18,8 +18,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.samples"
-    android:versionCode="1"
-    android:versionName="8" >
+    android:versionCode="2"
+    android:versionName="9" >
 
     <uses-sdk
         android:minSdkVersion="11"
