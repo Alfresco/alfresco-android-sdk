@@ -22,9 +22,12 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenCallback;
+import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.samples.ui.ListUISamplesFragments;
 import org.alfresco.mobile.android.samples.ui.comment.CommentsFragment;
 import org.alfresco.mobile.android.samples.ui.documentfolder.ChildrenFragment;
@@ -149,6 +152,13 @@ public class MainActivity extends CommonActivity
         {
             ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
         }
+        
+        if (SessionUtils.getsession(this) instanceof CloudSession){
+            MenuItem mi = menu.add(Menu.NONE, MenuActionItem.REFRESH_TOKEN, Menu.FIRST + MenuActionItem.REFRESH_TOKEN,
+                    R.string.refresh_token);
+            mi.setIcon(R.drawable.ic_cloud);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
 
         super.onCreateOptionsMenu(menu);
 
@@ -160,6 +170,10 @@ public class MainActivity extends CommonActivity
     {
         switch (item.getItemId())
         {
+            case MenuActionItem.REFRESH_TOKEN:
+                OAuthRefreshTokenCallback callback = new OAuthRefreshTokenCallback(this, (CloudSession) SessionUtils.getsession(this));
+                getLoaderManager().initLoader(OAuthRefreshTokenLoader.ID, null, callback);
+                return true;
             case MenuActionItem.CREATE_FOLDER:
                 ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).createFolder();
                 return true;
