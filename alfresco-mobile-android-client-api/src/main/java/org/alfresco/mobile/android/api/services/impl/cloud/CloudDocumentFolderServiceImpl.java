@@ -58,22 +58,25 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
 
     @Override
     /** {@inheritDoc} */
-    public ContentStream getRenditionStream(String identifier, String type)
+    public ContentStream getRenditionStream(String identifier, String title)
     {
         org.alfresco.mobile.android.api.model.ContentStream cf = null;
         try
         {
-            String internalRenditionType = RENDITION_CMIS_THUMBNAIL;
-            if (!RENDITION_THUMBNAIL.equals(type))
+            String internalRenditionType = null;
+            if (RENDITION_THUMBNAIL.equals(title))
             {
-                internalRenditionType = RENDITION_ALL;
+                internalRenditionType = RENDITION_CMIS_THUMBNAIL;
+            }
+            else if (RENDITION_PREVIEW.equals(title))
+            {
+                internalRenditionType = RENDITION_WEBPREVIEW;
             }
 
             // First GetInfo
-            String renditionIdentifier = getRendition(identifier, internalRenditionType);
+            String renditionIdentifier = getRendition(identifier, internalRenditionType, title);
             if (renditionIdentifier == null) { return null; }
 
-            
             // Second getData
             UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
                     renditionIdentifier));
@@ -106,33 +109,36 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
 
     /** Constant to retrieve cmis:thumbnail data inside the atompub response. */
     private static final String RENDITION_CMIS_THUMBNAIL = "cmis:thumbnail";
- 
+
+    /** Constant to retrieve alf:webpreview data inside the atompub response. */
+    private static final String RENDITION_WEBPREVIEW = "alf:webpreview";
+
     /** Constant to retrieve all rendition data inside the atompub response. */
     private static final String RENDITION_ALL = "*";
 
     /**
      * Internal method to retrieve unique identifier of a node rendition.
+     * 
      * @param identifier : node identifier
      * @param type : kind of rendition
      * @return unique identifier of rendition node.
      */
-    private String getRendition(String identifier, String type)
+    private String getRendition(String identifier, String kind, String title)
     {
         OperationContext context = cmisSession.createOperationContext();
-        context.setRenditionFilterString(type);
+        context.setRenditionFilterString(RENDITION_ALL);
         CmisObject object = cmisSession.getObject(identifier, context);
         if (object != null)
         {
             List<Rendition> renditions = object.getRenditions();
             for (Rendition rendition : renditions)
             {
-                if (type.equals(rendition.getKind())) { return rendition.getStreamId(); }
+                if (kind.equalsIgnoreCase(rendition.getKind()) && title.equalsIgnoreCase(rendition.getTitle())) { return rendition.getStreamId(); }
             }
         }
         return null;
     }
 
-    
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
@@ -153,5 +159,5 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     {
         super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
-    
+
 }

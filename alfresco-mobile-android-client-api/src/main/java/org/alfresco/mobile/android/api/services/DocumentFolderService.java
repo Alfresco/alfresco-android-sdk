@@ -303,6 +303,8 @@ public interface DocumentFolderService extends Parcelable
      * @see #getRendition(Node, String)
      */
     String RENDITION_THUMBNAIL = "doclib";
+    
+    String RENDITION_PREVIEW = "imgpreview";
 
     /**
      * Retrieve a specific type of Rendition for the specified identifier.
