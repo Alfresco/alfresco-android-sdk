@@ -68,7 +68,7 @@ public class MainActivity extends CommonActivity
             SessionUtils.setsession(this, (AlfrescoSession) getIntent().getExtras().getParcelable("session"));
         }
 
-        FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.FRAG_TAG);
+        FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.TAG);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
@@ -153,13 +153,6 @@ public class MainActivity extends CommonActivity
             ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
         }
         
-        if (SessionUtils.getsession(this) instanceof CloudSession){
-            MenuItem mi = menu.add(Menu.NONE, MenuActionItem.REFRESH_TOKEN, Menu.FIRST + MenuActionItem.REFRESH_TOKEN,
-                    R.string.refresh_token);
-            mi.setIcon(R.drawable.ic_cloud);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        }
-
         super.onCreateOptionsMenu(menu);
 
         return true;
@@ -170,10 +163,6 @@ public class MainActivity extends CommonActivity
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.REFRESH_TOKEN:
-                OAuthRefreshTokenCallback callback = new OAuthRefreshTokenCallback(this, (CloudSession) SessionUtils.getsession(this));
-                getLoaderManager().initLoader(OAuthRefreshTokenLoader.ID, null, callback);
-                return true;
             case MenuActionItem.CREATE_FOLDER:
                 ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).createFolder();
                 return true;

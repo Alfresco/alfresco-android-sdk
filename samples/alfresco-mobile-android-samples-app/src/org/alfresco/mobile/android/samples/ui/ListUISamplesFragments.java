@@ -23,8 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenCallback;
+import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.samples.ui.activitystream.ActivitiesFragment;
 import org.alfresco.mobile.android.samples.ui.documentfolder.ChildrenFragment;
 import org.alfresco.mobile.android.samples.ui.search.SimpleSearchFragment;
@@ -44,8 +47,7 @@ import android.widget.TextView;
 
 public class ListUISamplesFragments extends ListFragment
 {
-
-    public static final String FRAG_TAG = ListUISamplesFragments.class.getName();
+    public static final String TAG = ListUISamplesFragments.class.getName();
 
     private List<String> listText = new ArrayList<String>();
     
@@ -106,6 +108,12 @@ public class ListUISamplesFragments extends ListFragment
             f = ActivitiesFragment.newInstance();
             f.setSession(SessionUtils.getsession(getActivity()));
         }
+         else if (OAuthRefreshTokenCallback.TAG.equals(tag))
+         {
+             OAuthRefreshTokenCallback callback = new OAuthRefreshTokenCallback(getActivity(), (CloudSession) SessionUtils.getsession(getActivity()));
+             getActivity().getLoaderManager().initLoader(OAuthRefreshTokenLoader.ID, null, callback);
+             return;
+         }
 
         FragmentDisplayer.replaceFragment(getActivity(), f, R.id.body, tag, true);
     }
@@ -118,6 +126,7 @@ public class ListUISamplesFragments extends ListFragment
         values.put(getText(R.string.sample_browse_company_home_option).toString(), ChildrenFragment.TAG);
         values.put(getText(R.string.sample_browse_activities_option).toString(), ActivitiesFragment.TAG);
         values.put(getText(R.string.sample_search_option).toString(), SimpleSearchFragment.TAG);
+        values.put(getText(R.string.refresh_token).toString(), OAuthRefreshTokenCallback.TAG);
         return values;
     }
 }

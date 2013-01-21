@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.samples.oauth;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
@@ -33,25 +34,22 @@ import android.util.Log;
 public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<OAuthData>>
 {
 
-    private static final String TAG = "AccountLoginLoaderCallback";
+    public static final String TAG = "OAuthRefreshTokenCallback";
 
     private Activity activity;
 
     private CloudSession session;
     
-    private String oldToken;
-
     public OAuthRefreshTokenCallback(Activity activity, CloudSession session)
     {
         this.activity = activity;
         this.session = session;
-        this.oldToken = session.getOAuthData().getAccessToken();
     }
 
     @Override
     public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle args)
     {
-        MessengerManager.showLongToast(activity, "SESSION : Start Refreshing");
+        MessengerManager.showLongToast(activity, activity.getString(R.string.refresh_token_start));
         Loader<LoaderResult<OAuthData>> loader = new OAuthRefreshTokenLoader(activity, session);
         return loader;
     }
@@ -61,14 +59,13 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
     {
         if (!results.hasException())
         {
-            MessengerManager.showLongToast(activity, "Session has been refreshed. \n OLD TOKEN : " + oldToken + " \n NEW TOKEN : " + results.getData().getAccessToken());
+            MessengerManager.showLongToast(activity, activity.getString(R.string.refresh_token_finish));
         }
         else
         {
-            MessengerManager.showLongToast(activity, "ERROR : Session has NOT been refreshed");
+            MessengerManager.showLongToast(activity, activity.getString(R.string.refresh_token_error));
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
-        activity.setProgressBarIndeterminateVisibility(false);
     }
 
     @Override

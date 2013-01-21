@@ -63,7 +63,7 @@ public final class FragmentFactory
     public static final Map<String, Class> FRAGMENT_REGISTRY = new HashMap<String, Class>()
     {
         {
-            put(ListUISamplesFragments.FRAG_TAG, ListUISamplesFragments.class);
+            put(ListUISamplesFragments.TAG, ListUISamplesFragments.class);
             put(ActivitiesFragment.TAG, ActivitiesFragment.class);
             put(BrowserAllSitesFragment.TAG, BrowserAllSitesFragment.class);
             put(DetailsFragment.TAG, DetailsFragment.class);

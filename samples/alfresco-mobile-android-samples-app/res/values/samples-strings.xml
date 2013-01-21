@@ -110,6 +110,10 @@
     <string name="validation_creadentials">Validation of your credentials&#8230;</string>
     <string name="document_actions">Actions</string>
     
-    <string name="refresh_token">Refresh Token</string>
+    <string name="refresh_token">Refresh Access Token</string>
+    <string name="refresh_token_start">Start refreshing access token.</string>
+    <string name="refresh_token_finish">Session has been refreshed.</string>
+    <string name="refresh_token_error">An error occured during the refresh operation.</string>
+    
 
 </resources>
