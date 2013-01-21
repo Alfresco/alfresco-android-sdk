@@ -26,6 +26,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -211,7 +212,8 @@ public class ChildrenFragment extends NavigationFragment
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.UPLOAD, Menu.FIRST + MenuActionItem.UPLOAD, R.string.content_upload);
+            mi = menu
+                    .add(Menu.NONE, MenuActionItem.UPLOAD, Menu.FIRST + MenuActionItem.UPLOAD, R.string.content_upload);
             mi.setIcon(R.drawable.ic_upload);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -321,8 +323,15 @@ public class ChildrenFragment extends NavigationFragment
             }
 
             @Override
-            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
+            public void beforeContentCreation(Folder folder, String name, Map<String, Serializable> props,
+                    ContentFile cf)
             {
+                //By default if there's no title we add the same value as the name.
+                if (!props.containsKey(ContentModel.PROP_TITLE))
+                {
+                    props.put(ContentModel.PROP_TITLE, name);
+                }
+
                 mProgressDialog = ProgressDialog.show(getActivity(), getActivity().getText(R.string.dialog_wait),
                         getActivity().getText(R.string.contact_server_progress), true, true, new OnCancelListener()
                         {
