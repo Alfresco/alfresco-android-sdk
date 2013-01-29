@@ -238,6 +238,17 @@ public class SessionTest extends AlfrescoSDKTestCase
                 Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
                         OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY, alfsession.getRepositoryInfo().getEdition());
             }
+        } else {
+            if (alfsession.getRepositoryInfo().getEdition().contains("Enterprise"))
+            {
+                Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
+                        OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE, alfsession.getRepositoryInfo().getEdition());
+            }
+            else if (alfsession.getRepositoryInfo().getEdition().contains("Community"))
+            {
+                Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
+                        OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY, alfsession.getRepositoryInfo().getEdition());
+            }
         }
 
         // /////////////////////

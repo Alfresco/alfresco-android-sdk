@@ -93,6 +93,9 @@ public class RepositorySessionImpl extends RepositorySession
                 .startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
         String version = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo().getProductVersion(),
                 0);
+
+        RepositoryInfo tmpRepositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
+
         if (isAlfresco && version != null && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
             param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
@@ -110,14 +113,23 @@ public class RepositorySessionImpl extends RepositorySession
 
         // Init Services + Object
         rootNode = new FolderImpl(cmisSession.getRootFolder());
+
         repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
+
+        // On cmisatom binding sometimes the edition is not well formated. In
+        // this case we use service/cmis binding.
+        if (repositoryInfo.getEdition() == OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN
+                && tmpRepositoryInfo.getEdition() != OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN)
+        {
+            repositoryInfo = tmpRepositoryInfo;
+        }
 
         // Extension Point to implement and manage services
         create();
     }
-    
-    
-    private void create(){
+
+    private void create()
+    {
         // Extension Point to implement and manage services
         if (hasParameter(ONPREMISE_SERVICES_CLASSNAME))
         {
