@@ -193,9 +193,11 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         }
         else
         {
-            String message = (results != null && results.getException() != null) ? results.getException().getMessage()
-                    : "";
-            MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
+            //Uncomment to display exception from Server side.
+            //String message = (results != null && results.getException() != null) ? results.getException().getMessage()
+            //        : "";
+            //MessengerManager.showLongToast(context, message);
+            MessengerManager.showLongToast(context, context.getString(R.string.error_login));
         }
     }
 
