@@ -8,7 +8,7 @@
 	</parent>
 
 	<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-	<artifactId>afresco-mobile-android-sdk-samples</artifactId>
+	<artifactId>alfresco-mobile-android-sdk-samples</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Android SDK - Samples (Parent)</name>
