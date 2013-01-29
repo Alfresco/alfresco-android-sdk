@@ -383,6 +383,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /** {@inheritDoc} */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties)
     {
+        return createFolder(parentFolder, folderName, properties, null, null);
+    }
+
+    /** {@inheritDoc} */
+    public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties,
+            List<String> aspects)
+    {
+        return createFolder(parentFolder, folderName, properties, aspects, null);
+    }
+
+    /** {@inheritDoc} */
+    public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties,
+            List<String> aspects, String type)
+    {
         if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
@@ -398,8 +412,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 tmpProperties = new HashMap<String, Serializable>();
             }
             tmpProperties.put(ContentModel.PROP_NAME, folderName);
+            
+            if (!isStringNull(type))
+            {
+                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_FOLDER + type);
+            }
 
             convertProps(tmpProperties, BaseTypeId.CMIS_FOLDER.value());
+            
+            if (!isListNull(aspects))
+            {
+                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
+                        addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), aspects));
+            }
+            
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
@@ -427,6 +453,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
             ContentFile contentFile)
     {
+        return createDocument(parentFolder, documentName, properties, contentFile, null, null);
+    }
+
+    /** {@inheritDoc} */
+    public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
+            ContentFile contentFile, List<String> aspects)
+    {
+        return createDocument(parentFolder, documentName, properties, contentFile, aspects, null);
+    }
+
+    /** {@inheritDoc} */
+    public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
+            ContentFile contentFile, List<String> aspects, String type)
+    {
         if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
 
@@ -443,7 +483,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             tmpProperties.put(ContentModel.PROP_NAME, documentName);
 
+            if (!isStringNull(type))
+            {
+                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
+            }
+
             convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());
+
+            if (!isListNull(aspects))
+            {
+                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
+                        addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), aspects));
+            }
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -486,7 +537,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            Log.d("TAG", Log.getStackTraceString(e));
+            Log.d(TAG, Log.getStackTraceString(e));
             convertException(e);
         }
         return null;
@@ -685,7 +736,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (CmisRuntimeException e)
         {
-            // Alfresco 3.4 : In case where a null value is provided (definition type property
+            // Alfresco 3.4 : In case where a null value is provided (definition
+            // type property
             // is not null)
             if (e.getErrorContent() != null && e.getErrorContent().contains("cannot be null or empty."))
             {
@@ -969,17 +1021,31 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
 
         // add aspects flags to objectId
-        StringBuffer buf = new StringBuffer(objectId);
         for (Entry<String, String> props : ALFRESCO_ASPECTS.entrySet())
         {
             if (properties.containsKey(props.getKey()) && !objectId.contains(props.getValue()))
             {
-                buf.append(",");
-                buf.append(props.getValue());
+                objectId = objectId.concat("," + props.getValue());
             }
         }
 
-        properties.put(PropertyIds.OBJECT_TYPE_ID, buf.toString());
+        Log.d(TAG, objectId);
+
+        properties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
+    }
+
+    private static String addAspects(String objectId, List<String> aspects)
+    {
+        String objectIdWithAspects = objectId;
+        for (String aspect : aspects)
+        {
+            if (!objectIdWithAspects.contains(aspect))
+            {
+                objectIdWithAspects = objectIdWithAspects.concat("," + CMISPREFIX_ASPECTS + aspect);
+            }
+        }
+
+        return objectIdWithAspects;
     }
 
     // ////////////////////////////////////////////////////////////////
