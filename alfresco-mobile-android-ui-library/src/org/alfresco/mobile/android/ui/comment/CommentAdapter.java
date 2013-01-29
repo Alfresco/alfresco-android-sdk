@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.comment;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Comment;
@@ -58,7 +59,11 @@ public class CommentAdapter extends BaseListAdapter<Comment, GenericViewHolder>
     @Override
     protected void updateBottomText(GenericViewHolder vh, Comment item)
     {
-        vh.bottomText.setText(formatDate(getContext(), item.getCreatedAt().getTime()));
+        GregorianCalendar g = item.getCreatedAt();
+        if (g != null)
+        {
+            vh.bottomText.setText(formatDate(getContext(), g.getTime()));
+        }
         if (vh.content != null)
         {
             vh.content.setText(Html.fromHtml(item.getContent().trim()));

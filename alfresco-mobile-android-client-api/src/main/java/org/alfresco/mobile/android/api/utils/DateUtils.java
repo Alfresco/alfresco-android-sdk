@@ -29,11 +29,12 @@ import java.util.Locale;
  */
 public final class DateUtils
 {
-    
-    private DateUtils(){
-        
+
+    private DateUtils()
+    {
+
     }
-    
+
     public static final String FORMAT_1 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     public static final String FORMAT_2 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -48,14 +49,23 @@ public final class DateUtils
 
     public static Date parseJsonDate(String jsonDate)
     {
-        return parseDate(jsonDate, FORMAT_4);
+        Date d = null;
+        if (jsonDate != null)
+        {
+            d = parseDate(jsonDate, FORMAT_4);
+            if (d == null)
+            {
+                d = parseDate(jsonDate);
+            }
+        }
+        return d;
     }
 
     public static Date parseDate(String atomPubDate)
     {
         return parseDate(atomPubDate, Locale.getDefault());
     }
-    
+
     /**
      * @since 1.0.1
      * @param atomPubDate
@@ -82,12 +92,12 @@ public final class DateUtils
 
         return d;
     }
-    
+
     public static Date parseDate(String date, String format)
     {
         return parseDate(date, new SimpleDateFormat(format, Locale.getDefault()));
     }
-    
+
     /**
      * @since 1.0.1
      * @param atomPubDate
