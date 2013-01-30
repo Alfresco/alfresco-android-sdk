@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities
  */
 public class OnPremiseRepositoryCapabilitiesImpl  extends AbstractRepositoryCapabilities
 {
+    private static final long serialVersionUID = 1L;
+    
     private RepositoryInfo repositoryInfo;
 
     /**

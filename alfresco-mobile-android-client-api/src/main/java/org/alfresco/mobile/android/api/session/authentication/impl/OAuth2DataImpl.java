@@ -17,22 +17,19 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication.impl;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * Implementation of OAuthData.
  * 
  * @author Jean Marie Pascal
  */
-public final class OAuth2DataImpl implements OAuthData, Serializable
+public final class OAuth2DataImpl implements OAuthData
 {
+    private static final long serialVersionUID = 1L;
 
     private static final String PARAM_ACCESS_TOKEN = "access_token";
 

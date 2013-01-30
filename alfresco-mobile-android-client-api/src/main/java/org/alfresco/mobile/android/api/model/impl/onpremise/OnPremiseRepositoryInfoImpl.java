@@ -32,6 +32,8 @@ import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
      * 

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +28,10 @@ import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-public class PublicAPIResponse
+public class PublicAPIResponse implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     private Boolean hasMoreItems;
 
     private int size;

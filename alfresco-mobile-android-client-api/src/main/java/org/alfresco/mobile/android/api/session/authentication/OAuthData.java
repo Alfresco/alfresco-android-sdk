@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication;
 
+import java.io.Serializable;
+
 /**
  * Class to embed informations about OAuth context.
  * 
  * @author Jean Marie Pascal
  */
-public interface OAuthData
+public interface OAuthData extends Serializable
 {
     /**
      * Returns the API key.

@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryInfo;
  */
 public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 {
-
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
