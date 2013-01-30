@@ -161,23 +161,25 @@ public class MainActivity extends CommonActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        Boolean b = Boolean.TRUE;
         switch (item.getItemId())
         {
             case MenuActionItem.CREATE_FOLDER:
                 ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).createFolder();
-                return true;
+               break;
             case MenuActionItem.UPLOAD:
                 ActionManager.actionPickFile(getFragment(ChildrenFragment.TAG), RequestCode.REQUESTCODE_FILEPICKER);
-                return true;
+                break;
             case MenuActionItem.OPEN_IN:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).openin();
-                return true;
+                break;
             case MenuActionItem.LIKE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).like();
-                return true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                b = super.onOptionsItemSelected(item);
         }
+        return b;
     }
 
     /**
