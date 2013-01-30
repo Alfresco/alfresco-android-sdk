@@ -113,7 +113,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_DOC_NAME + ".txt", doc.getName());
         Assert.assertEquals(SAMPLE_DOC_NAME, doc.getTitle());
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, doc.getDescription());
-        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getType());
+        Assert.assertEquals(ContentModel.TYPE_CONTENT, doc.getType());
+        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
@@ -243,7 +244,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_DOC_NAME + ".txt", doc.getName());
         Assert.assertNull(doc.getTitle());
         Assert.assertNull(doc.getDescription());
-        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getType());
+        Assert.assertEquals(ContentModel.TYPE_CONTENT, doc.getType());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
@@ -527,7 +528,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertTrue(customDoc.hasAspect(ContentModel.ASPECT_AUDIO));
             Assert.assertTrue(customDoc.hasAspect("fdk:exif"));
 
-            Assert.assertEquals("cmis:document", customDoc.getType());
+            Assert.assertEquals(ContentModel.TYPE_CONTENT, customDoc.getType());
             Assert.assertEquals("Alfresco", customDoc.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customDoc.getProperty(ContentModel.PROP_ARTIST).getValue());
             
@@ -600,7 +601,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertTrue(customFolder.hasAspect(ContentModel.ASPECT_AUDIO));
             Assert.assertTrue(customFolder.hasAspect("fdk:exif"));
 
-            Assert.assertEquals("cmis:folder", customFolder.getType());
+            Assert.assertEquals(ContentModel.TYPE_FOLDER, customFolder.getType());
             Assert.assertEquals("Alfresco", customFolder.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
             

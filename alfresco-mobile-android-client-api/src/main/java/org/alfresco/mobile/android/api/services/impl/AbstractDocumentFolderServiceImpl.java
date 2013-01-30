@@ -53,6 +53,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
@@ -412,20 +413,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 tmpProperties = new HashMap<String, Serializable>();
             }
             tmpProperties.put(ContentModel.PROP_NAME, folderName);
-            
+
             if (!isStringNull(type))
             {
                 tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_FOLDER + type);
             }
 
             convertProps(tmpProperties, BaseTypeId.CMIS_FOLDER.value());
-            
+
             if (!isListNull(aspects))
             {
                 tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
                         addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), aspects));
             }
-            
+
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
@@ -727,10 +728,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 updatebility.add(Updatability.WHENCHECKEDOUT);
             }
 
+            String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
+            
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
                     changeTokenHolder, objectFactory.convertProperties(properties,
-                            cmisSession.getTypeDefinition(node.getType()), updatebility), null);
+                            cmisSession.getTypeDefinition(nodeType), updatebility), null);
 
             return getChildById(objectId);
         }
@@ -1017,7 +1020,16 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         else
         {
-            objectId = typeId;
+            if (ContentModel.TYPE_CONTENT.equals(typeId))
+            {
+                objectId = ObjectType.DOCUMENT_BASETYPE_ID;
+            }
+            else if (ContentModel.TYPE_FOLDER.equals(typeId))
+            {
+                objectId = ObjectType.FOLDER_BASETYPE_ID;
+            } else {
+                objectId = typeId;
+            }
         }
 
         // add aspects flags to objectId
