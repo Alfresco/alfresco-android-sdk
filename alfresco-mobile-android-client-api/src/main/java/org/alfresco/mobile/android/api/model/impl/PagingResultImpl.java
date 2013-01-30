@@ -29,6 +29,8 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 public class PagingResultImpl<T> implements PagingResult<T>
 {
 
+    private static final long serialVersionUID = 1L;
+
     public PagingResultImpl(List<T> objects, boolean hasMoreItems, int totalItems)
     {
         super();

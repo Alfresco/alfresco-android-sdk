@@ -85,7 +85,9 @@ public class FolderTest extends AlfrescoSDKTestCase
         }
         // Type
         Assert.assertNotNull(folder.getType());
-        Assert.assertEquals(ObjectType.FOLDER_BASETYPE_ID, folder.getType());
+        Assert.assertEquals(ContentModel.TYPE_FOLDER, folder.getType());
+        Assert.assertEquals(ObjectType.FOLDER_BASETYPE_ID, folder.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
+
 
         // Check Properties Methods
         // Possible to get the same results with 3 differents ways
@@ -161,7 +163,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_FOLDER_NAME, childFolder.getName());
         Assert.assertEquals(SAMPLE_FOLDER_NAME, childFolder.getTitle());
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, childFolder.getDescription());
-        Assert.assertEquals(ObjectType.FOLDER_BASETYPE_ID, childFolder.getType());
+        Assert.assertEquals(ContentModel.TYPE_FOLDER, childFolder.getType());
         Assert.assertEquals(alfsession.getPersonIdentifier(), childFolder.getCreatedBy());
         Assert.assertTrue(compareDate(new Date(), childFolder.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), childFolder.getModifiedBy());

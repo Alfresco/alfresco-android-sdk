@@ -46,6 +46,8 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 public class ActivityEntryImpl implements ActivityEntry
 {
 
+    private static final long serialVersionUID = 1L;
+
     /** Unique identifier to a specific activity entry. */
     private String identifier;
 

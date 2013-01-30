@@ -94,7 +94,7 @@ public class NodeImpl implements Node
     {
         return getPropertyValue(PropertyIds.NAME);
     }
-    
+
     /** {@inheritDoc} */
     public String getTitle()
     {
@@ -110,16 +110,31 @@ public class NodeImpl implements Node
     /** {@inheritDoc} */
     public String getType()
     {
-        if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
+        if (getPropertyValue(PropertyIds.OBJECT_TYPE_ID) != null)
         {
-            return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                    AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+            if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
+            {
+                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
+                        AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+            }
+            else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER))
+            {
+                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
+                        AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
+            }
+            else if (ObjectType.DOCUMENT_BASETYPE_ID.equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
+            {
+                return ContentModel.TYPE_CONTENT;
+            }
+            else if (ObjectType.FOLDER_BASETYPE_ID.equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID))) { return ContentModel.TYPE_FOLDER; }
+            return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
         }
-        else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER)) { return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                .replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, ""); }
-        return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
+        else
+        {
+            return null;
+        }
     }
 
     /** {@inheritDoc} */
@@ -295,7 +310,8 @@ public class NodeImpl implements Node
      */
     public boolean hasAllowableAction(String action)
     {
-        if (object != null && object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null
+                && object.getAllowableActions().getAllowableActions() != null)
         {
             for (Action c : object.getAllowableActions().getAllowableActions())
             {
@@ -314,12 +330,14 @@ public class NodeImpl implements Node
     }
 
     /**
-     * @return Returns a set of all available allowable actions. If no allowable actions available returns an empty collection.
+     * @return Returns a set of all available allowable actions. If no allowable
+     *         actions available returns an empty collection.
      */
     public Set<String> getAllowableActions()
     {
         Set<String> s = new HashSet<String>();
-        if (object != null && object.getAllowableActions() != null && object.getAllowableActions().getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null
+                && object.getAllowableActions().getAllowableActions() != null)
         {
             Set<Action> actions = object.getAllowableActions().getAllowableActions();
             s = new HashSet<String>(actions.size());

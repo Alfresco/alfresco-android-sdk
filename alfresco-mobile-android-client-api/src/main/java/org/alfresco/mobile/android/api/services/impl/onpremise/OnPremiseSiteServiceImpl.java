@@ -30,13 +30,18 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.AlphaComparator;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -52,7 +57,6 @@ import org.apache.http.HttpStatus;
  */
 public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 {
-
     /**
      * Default constructor for service. </br> Used by the
      * {@link AbstractServiceRegistry}.
@@ -287,5 +291,26 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
     {
         return computeSites(url, listingContext);
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseSiteServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseSiteServiceImpl>()
+    {
+        public OnPremiseSiteServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremiseSiteServiceImpl(in);
+        }
+
+        public OnPremiseSiteServiceImpl[] newArray(int size)
+        {
+            return new OnPremiseSiteServiceImpl[size];
+        }
+    };
+
+    public OnPremiseSiteServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 }

@@ -185,20 +185,30 @@ public class RenditionManager
      */
     public void display(ImageView iv, Node n, int initDrawableId)
     {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE);
+        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, false);
     }
 
     public void display(ImageView iv, int initDrawableId, String identifier)
     {
-        display(iv, identifier, initDrawableId, TYPE_NODE);
+        display(iv, identifier, initDrawableId, TYPE_NODE, false);
     }
 
     public void display(ImageView iv, String username, int initDrawableId)
     {
-        display(iv, username, initDrawableId, TYPE_PERSON);
+        display(iv, username, initDrawableId, TYPE_PERSON, false);
     }
 
-    private void display(ImageView iv, String identifier, int initDrawableId, int type)
+    public void preview(ImageView iv, Node n, int initDrawableId)
+    {
+        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, true);
+    }
+    
+    public void preview(ImageView iv, int initDrawableId, String identifier)
+    {
+        display(iv, identifier, initDrawableId, TYPE_NODE, true);
+    }
+    
+    private void display(ImageView iv, String identifier, int initDrawableId, int type, boolean preview)
     {
         final String imageKey = identifier;
         final Bitmap bitmap = getBitmapFromMemCache(imageKey);
@@ -209,7 +219,7 @@ public class RenditionManager
         }
         else if (cancelPotentialWork(identifier, iv))
         {
-            final BitmapWorkerTask task = new BitmapWorkerTask(session, iv, identifier, type);
+            final BitmapWorkerTask task = new BitmapWorkerTask(session, iv, identifier, type, preview);
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), initDrawableId);
             final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), bm, task);
             iv.setImageDrawable(asyncDrawable);
@@ -323,7 +333,14 @@ public class RenditionManager
 
         private String username;
 
+        private boolean preview;
+
         public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type)
+        {
+            this(session, imageView, identifier, type, false);
+        }
+        
+        public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type, boolean preview)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
@@ -338,6 +355,7 @@ public class RenditionManager
             {
                 this.username = identifier;
             }
+            this.preview = preview;
         }
 
         private String getId()
@@ -369,9 +387,21 @@ public class RenditionManager
                 {
                     try
                     {
+                        String renditionId = DocumentFolderService.RENDITION_THUMBNAIL;
+                        if (preview){
+                            renditionId = DocumentFolderService.RENDITION_PREVIEW;
+                        }
+                        
                         cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                                 .getDocumentFolderService()).getRenditionStream(identifier,
-                                DocumentFolderService.RENDITION_THUMBNAIL);
+                                        renditionId);
+                        
+                        if (cf == null && preview){
+                            cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
+                                    .getDocumentFolderService()).getRenditionStream(identifier,
+                                    DocumentFolderService.RENDITION_THUMBNAIL);
+                        }
+                        
                     }
                     catch (AlfrescoServiceException e)
                     {
@@ -424,6 +454,7 @@ public class RenditionManager
                 final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
                 if (this == bitmapWorkerTask && imageView != null)
                 {
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     imageView.setImageBitmap(bitmap);
                 }
             }

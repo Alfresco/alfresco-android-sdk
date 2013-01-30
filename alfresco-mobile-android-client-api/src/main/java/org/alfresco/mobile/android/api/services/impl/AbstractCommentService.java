@@ -48,7 +48,6 @@ import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
  */
 public abstract class AbstractCommentService extends AlfrescoService implements CommentService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 

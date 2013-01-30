@@ -22,16 +22,14 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Implementation of OAuthData.
  * 
  * @author Jean Marie Pascal
  */
-public final class OAuth2DataImpl implements OAuthData, Parcelable
+public final class OAuth2DataImpl implements OAuthData
 {
+    private static final long serialVersionUID = 1L;
 
     private static final String PARAM_ACCESS_TOKEN = "access_token";
 
@@ -102,63 +100,5 @@ public final class OAuth2DataImpl implements OAuthData, Parcelable
     public String getApiSecret()
     {
         return apiSecret;
-    }
-
-    // ////////////////////////////////////////////////////
-    // Save State - serialization / deserialization
-    // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
-    @Override
-    public int describeContents()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeString(apiKey);
-        dest.writeString(apiSecret);
-        dest.writeString(accessToken);
-        dest.writeString(tokenType);
-        dest.writeString(expiresIn);
-        dest.writeString(refreshToken);
-        dest.writeString(scope);
-    }
-
-    /**
-     * Android specific internal methods to retrieve information depending on
-     * state.</br> This method is similar as "deserialization" in java world.
-     */
-    public static final Parcelable.Creator<OAuth2DataImpl> CREATOR = new Parcelable.Creator<OAuth2DataImpl>()
-    {
-        public OAuth2DataImpl createFromParcel(Parcel in)
-        {
-            return new OAuth2DataImpl(in);
-        }
-
-        public OAuth2DataImpl[] newArray(int size)
-        {
-            return new OAuth2DataImpl[size];
-        }
-    };
-
-    /**
-     * Constructor of a OAuth2Data object depending of a Parcel object
-     * previously created by writeToParcel method.
-     * 
-     * @param o the Parcel object
-     */
-    public OAuth2DataImpl(Parcel o)
-    {
-        this.apiKey = o.readString();
-        this.apiSecret = o.readString();
-        this.accessToken = o.readString();
-        this.tokenType = o.readString();
-        this.expiresIn = o.readString();
-        this.refreshToken = o.readString();
-        this.scope = o.readString();
     }
 }

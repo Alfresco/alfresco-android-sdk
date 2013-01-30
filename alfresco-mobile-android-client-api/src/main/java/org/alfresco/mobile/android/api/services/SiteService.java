@@ -21,10 +21,13 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
+
+import android.os.Parcelable;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -38,7 +41,7 @@ import org.alfresco.mobile.android.api.model.Site;
  * 
  * @author Jean Marie Pascal
  */
-public interface SiteService
+public interface SiteService extends Parcelable
 {
     
     /**

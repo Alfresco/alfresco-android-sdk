@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import java.util.Map;
  * 
  * @author Jean Marie Pascal
  */
-public interface ActivityEntry
+public interface ActivityEntry  extends Serializable
 {
 
     /**

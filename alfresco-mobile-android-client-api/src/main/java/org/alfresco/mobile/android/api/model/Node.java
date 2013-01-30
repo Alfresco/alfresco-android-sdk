@@ -64,9 +64,11 @@ public interface Node extends Serializable, Parcelable
      String getDescription();
 
     /**
-     * Returns the type of this Node.
+     * Returns the type of this Node. <br/>
      *
-     * @return the type
+     * @return By default  {@link org.alfresco.mobile.android.api.constants.ContentModel#TYPE_CONTENT
+     *            TYPE_CONTENT} in document case or {@link org.alfresco.mobile.android.api.constants.ContentModel#TYPE_FOLDER
+     *            TYPE_FOLDER} in folder case.<br/> In other cases it returns the specific custom type like my:customdoc
      */
      String getType();
 

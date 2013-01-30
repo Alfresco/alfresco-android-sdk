@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.samples.R;
-import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
@@ -61,7 +60,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
 {
 
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
-
+    
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
@@ -181,14 +180,23 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         mProgressDialog.dismiss();
         if (results != null && !results.hasException())
         {
-            SessionUtils.setsession(context, results.getData());
-            context.startActivity(new Intent(context, MainActivity.class));
+            //Uncomment to use Context save for Session Object.
+            //SessionUtils.setsession(context, results.getData());
+            
+            //Test Serializable / Deserializable of Session object.
+            Bundle b = new Bundle();
+            b.putParcelable(MainActivity.PARAM_SESSION, results.getData());
+            Intent onPremiseIntent = new Intent(context, MainActivity.class);
+            onPremiseIntent.putExtras(b);
+            context.startActivity(onPremiseIntent);
         }
         else
         {
-            String message = (results != null && results.getException() != null) ? results.getException().getMessage()
-                    : "";
-            MessengerManager.showLongToast(context, R.string.error_login + " : " + message);
+            //Uncomment to display exception from Server side.
+            //String message = (results != null && results.getException() != null) ? results.getException().getMessage()
+            //        : "";
+            //MessengerManager.showLongToast(context, message);
+            MessengerManager.showLongToast(context, context.getString(R.string.error_login));
         }
     }
 

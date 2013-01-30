@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
@@ -38,6 +39,9 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.spi.VersioningService;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Implementation of VersionService.
  * 
@@ -45,7 +49,6 @@ import org.apache.chemistry.opencmis.commons.spi.VersioningService;
  */
 public class VersionServiceImpl extends AlfrescoService implements VersionService
 {
-
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
@@ -149,5 +152,26 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
             convertException(e);
         }
         return null;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<VersionServiceImpl> CREATOR = new Parcelable.Creator<VersionServiceImpl>()
+    {
+        public VersionServiceImpl createFromParcel(Parcel in)
+        {
+            return new VersionServiceImpl(in);
+        }
+
+        public VersionServiceImpl[] newArray(int size)
+        {
+            return new VersionServiceImpl[size];
+        }
+    };
+
+    public VersionServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(AlfrescoSession.class.getClassLoader()));
     }
 }

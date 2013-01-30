@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
@@ -151,8 +152,16 @@ public class CommentImpl implements Comment
     /** {@inheritDoc} */
     public GregorianCalendar getCreatedAt()
     {
-        GregorianCalendar g = new GregorianCalendar();
-        g.setTime(DateUtils.parseJsonDate(creationDate));
+        GregorianCalendar g = null;
+        if (creationDate != null)
+        {
+            Date d = DateUtils.parseJsonDate(creationDate);
+            if (d != null)
+            {
+                g = new GregorianCalendar();
+                g.setTime(d);
+            }
+        }
         return g;
     }
 
@@ -162,8 +171,16 @@ public class CommentImpl implements Comment
      */
     public GregorianCalendar getModifiedAt()
     {
-        GregorianCalendar g = new GregorianCalendar();
-        g.setTime(DateUtils.parseJsonDate(modificationDate));
+        GregorianCalendar g = null;
+        if (modificationDate != null)
+        {
+            Date d = DateUtils.parseJsonDate(modificationDate);
+            if (d != null)
+            {
+                g = new GregorianCalendar();
+                g.setTime(d);
+            }
+        }
         return g;
     }
 

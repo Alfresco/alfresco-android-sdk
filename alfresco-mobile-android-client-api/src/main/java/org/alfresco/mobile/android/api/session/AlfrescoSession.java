@@ -26,13 +26,15 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 
+import android.os.Parcelable;
+
 /**
  * RepositorySession represents a connection to an on-premise repository as a
  * specific user.
  * 
  * @author Jean Marie Pascal
  */
-public interface AlfrescoSession
+public interface AlfrescoSession extends Parcelable
 {
     // ///////////////////////////////////////////////
     // EXTENSION

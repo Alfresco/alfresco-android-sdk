@@ -25,8 +25,14 @@ import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.SearchServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.VersionServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Provides a registry of all services that are available for the current
@@ -40,7 +46,6 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
  */
 public class OnPremiseServiceRegistry extends AbstractServiceRegistry
 {
-
     public OnPremiseServiceRegistry(AlfrescoSession session)
     {
         super(session);
@@ -104,5 +109,25 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
         }
         return personService;
     }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseServiceRegistry> CREATOR = new Parcelable.Creator<OnPremiseServiceRegistry>()
+    {
+        public OnPremiseServiceRegistry createFromParcel(Parcel in)
+        {
+            return new OnPremiseServiceRegistry(in);
+        }
 
+        public OnPremiseServiceRegistry[] newArray(int size)
+        {
+            return new OnPremiseServiceRegistry[size];
+        }
+    };
+
+    public OnPremiseServiceRegistry(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
+    }
 }

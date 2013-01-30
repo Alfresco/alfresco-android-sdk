@@ -28,11 +28,16 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.ActivityEntryImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractActivityStreamService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Specific implementation of ActivityStreamService for OnPremise REST API.
@@ -41,7 +46,6 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
  */
 public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -129,5 +133,26 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
             convertException(e);
         }
         return null;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseActivityStreamServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseActivityStreamServiceImpl>()
+    {
+        public OnPremiseActivityStreamServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremiseActivityStreamServiceImpl(in);
+        }
+
+        public OnPremiseActivityStreamServiceImpl[] newArray(int size)
+        {
+            return new OnPremiseActivityStreamServiceImpl[size];
+        }
+    };
+
+    public OnPremiseActivityStreamServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 }

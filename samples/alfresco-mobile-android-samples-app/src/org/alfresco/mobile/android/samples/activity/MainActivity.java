@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
@@ -49,6 +50,8 @@ import android.view.MenuItem;
  */
 public class MainActivity extends CommonActivity
 {
+    /** Key to retrieve session object passed via Intent. */
+    public static final String PARAM_SESSION = "session";
 
     /** Called when the activity is first created. */
     @TargetApi(14)
@@ -58,7 +61,13 @@ public class MainActivity extends CommonActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sdkapp_main);
 
-        FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.FRAG_TAG);
+        //Retrieve Parcelable object from Intent.
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PARAM_SESSION))
+        {
+            SessionUtils.setsession(this, (AlfrescoSession) getIntent().getExtras().getParcelable(PARAM_SESSION));
+        }
+
+        FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.TAG);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
@@ -142,7 +151,7 @@ public class MainActivity extends CommonActivity
         {
             ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
         }
-
+        
         super.onCreateOptionsMenu(menu);
 
         return true;
@@ -151,23 +160,25 @@ public class MainActivity extends CommonActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        Boolean b = Boolean.TRUE;
         switch (item.getItemId())
         {
             case MenuActionItem.CREATE_FOLDER:
                 ((ChildrenFragment) getFragment(ChildrenFragment.TAG)).createFolder();
-                return true;
+               break;
             case MenuActionItem.UPLOAD:
                 ActionManager.actionPickFile(getFragment(ChildrenFragment.TAG), RequestCode.REQUESTCODE_FILEPICKER);
-                return true;
+                break;
             case MenuActionItem.OPEN_IN:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).openin();
-                return true;
+                break;
             case MenuActionItem.LIKE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).like();
-                return true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                b = super.onOptionsItemSelected(item);
         }
+        return b;
     }
 
     /**

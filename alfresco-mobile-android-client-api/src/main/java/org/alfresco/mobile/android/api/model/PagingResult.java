@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Jean Marie Pascal
  */
-public interface PagingResult<T>
+public interface PagingResult<T> extends Serializable
 {
 
     /**

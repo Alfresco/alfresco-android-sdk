@@ -27,6 +27,10 @@ import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Provides a registry of all services that are available for the current
@@ -103,6 +107,27 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
             this.personService = new CloudPersonServiceImpl((CloudSession) session);
         }
         return personService;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<CloudServiceRegistry> CREATOR = new Parcelable.Creator<CloudServiceRegistry>()
+    {
+        public CloudServiceRegistry createFromParcel(Parcel in)
+        {
+            return new CloudServiceRegistry(in);
+        }
+
+        public CloudServiceRegistry[] newArray(int size)
+        {
+            return new CloudServiceRegistry[size];
+        }
+    };
+
+    public CloudServiceRegistry(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
 
 }

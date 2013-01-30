@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities
  */
 public class CloudRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilities
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * In cloud context, like and comment count are by default enable.
      */

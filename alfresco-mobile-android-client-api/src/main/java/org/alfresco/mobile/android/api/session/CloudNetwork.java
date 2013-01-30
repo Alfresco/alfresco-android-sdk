@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session;
 
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 
 /**
@@ -29,7 +30,7 @@ import java.util.GregorianCalendar;
  * 
  * @author Jean Marie Pascal
  */
-public interface CloudNetwork
+public interface CloudNetwork extends Serializable
 {
     /**
      * Returns the identifier of the network.

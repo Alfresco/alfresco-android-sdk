@@ -21,10 +21,14 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * OnPremise implementation of DocumentFolderService
@@ -33,7 +37,6 @@ import org.apache.http.HttpStatus;
  */
 public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderServiceImpl
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -75,6 +78,27 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             convertException(e);
         }
         return null;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseDocumentFolderServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseDocumentFolderServiceImpl>()
+    {
+        public OnPremiseDocumentFolderServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremiseDocumentFolderServiceImpl(in);
+        }
+
+        public OnPremiseDocumentFolderServiceImpl[] newArray(int size)
+        {
+            return new OnPremiseDocumentFolderServiceImpl[size];
+        }
+    };
+
+    public OnPremiseDocumentFolderServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 
 }

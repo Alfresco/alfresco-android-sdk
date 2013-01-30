@@ -31,7 +31,6 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
  */
 public abstract class AbstractPersonService extends AlfrescoService implements PersonService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 

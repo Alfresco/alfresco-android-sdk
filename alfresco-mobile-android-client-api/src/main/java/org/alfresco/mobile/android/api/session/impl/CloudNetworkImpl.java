@@ -27,6 +27,8 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 public class CloudNetworkImpl implements CloudNetwork
 {
+    private static final long serialVersionUID = 1L;
+
     private String identifier;
 
     private String subscriptionLevel;

@@ -44,7 +44,6 @@ import android.util.Log;
  */
 public abstract class AbstractSiteServiceImpl extends AlfrescoService implements SiteService
 {
-
     /**
      * Default constructor for service. </br> Used by the
      * {@link AbstractServiceRegistry}.

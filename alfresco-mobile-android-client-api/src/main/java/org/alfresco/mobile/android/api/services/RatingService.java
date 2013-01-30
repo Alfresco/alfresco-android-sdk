@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Node;
+
+import android.os.Parcelable;
 
 /**
  * The RatingsService can be used to manage like (as ratings) on any content
@@ -26,7 +29,7 @@ import org.alfresco.mobile.android.api.model.Node;
  * 
  * @author Jean Marie Pascal
  */
-public interface RatingService
+public interface RatingService extends Parcelable
 {
     /**
      * Retrieves the number of likes for the specified node

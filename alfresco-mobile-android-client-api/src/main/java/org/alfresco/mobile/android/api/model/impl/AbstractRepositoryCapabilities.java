@@ -30,6 +30,8 @@ import org.alfresco.mobile.android.api.model.RepositoryCapabilities;
 public abstract class AbstractRepositoryCapabilities implements RepositoryCapabilities
 {
 
+    private static final long serialVersionUID = 1L;
+    
     /** Map of Alfresco Specific capabilities. */
     protected Map<String, Boolean> capabilities = new HashMap<String, Boolean>(2);
 

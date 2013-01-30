@@ -20,10 +20,13 @@ package org.alfresco.mobile.android.api.services;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+
+import android.os.Parcelable;
 
 /**
  * CommentService allows managing comments to any node inside an Alfresco
@@ -38,7 +41,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
  * 
  * @author Jean Marie Pascal
  */
-public interface CommentService
+public interface CommentService extends Parcelable
 {
     /**
      * Allowable sorting property : Creation Date

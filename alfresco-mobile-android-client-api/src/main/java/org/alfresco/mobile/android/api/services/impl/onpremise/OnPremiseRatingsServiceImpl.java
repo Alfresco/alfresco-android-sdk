@@ -23,13 +23,18 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.impl.AbstractRatingsService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * The RatingsService can be used to manage like (as ratings) on any content
@@ -40,7 +45,6 @@ import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
  */
 public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -113,6 +117,27 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
                 .getPersonIdentifier().equals(JSONConverter.getString(jso, OnPremiseConstant.APPLIEDBY_VALUE)); }
 
         return false;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    public static final Parcelable.Creator<OnPremiseRatingsServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseRatingsServiceImpl>()
+    {
+        public OnPremiseRatingsServiceImpl createFromParcel(Parcel in)
+        {
+            return new OnPremiseRatingsServiceImpl(in);
+        }
+
+        public OnPremiseRatingsServiceImpl[] newArray(int size)
+        {
+            return new OnPremiseRatingsServiceImpl[size];
+        }
+    };
+
+    public OnPremiseRatingsServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
 
 }

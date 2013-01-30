@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
 		<artifactId>alfresco-mobile-android-sdk</artifactId>
-		<version>1.0.1</version>
+		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-	<artifactId>afresco-mobile-android-sdk-samples</artifactId>
+	<artifactId>alfresco-mobile-android-sdk-samples</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Android SDK - Samples (Parent)</name>

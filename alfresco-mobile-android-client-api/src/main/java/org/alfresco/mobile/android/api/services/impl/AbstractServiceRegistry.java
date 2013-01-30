@@ -29,6 +29,8 @@ import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
+import android.os.Parcel;
+
 /**
  * Abstract class implementation of ServiceRegistry. Responsible of sharing
  * common methods between child class (OnPremise and Cloud)
@@ -37,7 +39,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
  */
 public abstract class AbstractServiceRegistry implements ServiceRegistry
 {
-
     protected DocumentFolderService documentFolderService;
 
     protected SearchService searchService;
@@ -82,5 +83,19 @@ public abstract class AbstractServiceRegistry implements ServiceRegistry
     {
         return versionService;
     }
-
+    
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+    
+    @Override
+    public void writeToParcel(Parcel dest, int arg1)
+    {
+        dest.writeParcelable(session, PARCELABLE_WRITE_RETURN_VALUE);
+    }
 }
