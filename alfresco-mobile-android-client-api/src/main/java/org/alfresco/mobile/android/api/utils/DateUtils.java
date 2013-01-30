@@ -95,6 +95,7 @@ public final class DateUtils
 
     public static Date parseDate(String date, String format)
     {
+        if (date == null) { return null; }
         return parseDate(date, new SimpleDateFormat(format, Locale.getDefault()));
     }
 

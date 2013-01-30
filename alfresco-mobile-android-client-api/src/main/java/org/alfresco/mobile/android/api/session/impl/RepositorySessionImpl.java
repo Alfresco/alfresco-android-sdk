@@ -117,11 +117,11 @@ public class RepositorySessionImpl extends RepositorySession
         repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
         // On cmisatom binding sometimes the edition is not well formated. In
-        // this case we use service/cmis binding.
+        // this case we use service/cmis binding. MOBSDK-508    
         if (repositoryInfo.getEdition() == OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN
                 && tmpRepositoryInfo.getEdition() != OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN)
         {
-            repositoryInfo = tmpRepositoryInfo;
+            repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo(), tmpRepositoryInfo.getEdition());
         }
 
         // Extension Point to implement and manage services

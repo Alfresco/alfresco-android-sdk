@@ -60,7 +60,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String title)
     {
-        org.alfresco.mobile.android.api.model.ContentStream cf = null;
+        ContentStream cf = null;
         try
         {
             String internalRenditionType = null;

@@ -34,6 +34,8 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     private static final long serialVersionUID = 1L;
 
+    private String edition = null;
+
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
      * 
@@ -43,6 +45,19 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
     public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
         super(repositoryInfo);
+    }
+
+    /**
+     * Specific constructor to support MOBSDK-508 issue.
+     * 
+     * @param repositoryInfo : cmis object.
+     * @param editionValue : Override this specific value.
+     */
+    public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo,
+            String editionValue)
+    {
+        super(repositoryInfo);
+        edition = editionValue;
     }
 
     /**
@@ -103,6 +118,10 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
      */
     public String getEdition()
     {
+        //Related to MOBSDK-508 issue.
+        if (edition != null) { return edition; }
+
+        //In normal case
         if (repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR))
         {
             if (repositoryInfo.getProductName().contains(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))

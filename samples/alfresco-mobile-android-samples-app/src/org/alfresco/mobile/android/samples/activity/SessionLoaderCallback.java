@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.samples.R;
-import org.alfresco.mobile.android.samples.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
@@ -61,7 +60,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
 {
 
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
-
+    
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
@@ -186,7 +185,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
             
             //Test Serializable / Deserializable of Session object.
             Bundle b = new Bundle();
-            b.putParcelable("session", results.getData());
+            b.putParcelable(MainActivity.PARAM_SESSION, results.getData());
             Intent onPremiseIntent = new Intent(context, MainActivity.class);
             onPremiseIntent.putExtras(b);
             context.startActivity(onPremiseIntent);

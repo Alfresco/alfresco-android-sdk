@@ -22,12 +22,9 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.intent.RequestCode;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenCallback;
-import org.alfresco.mobile.android.samples.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.samples.ui.ListUISamplesFragments;
 import org.alfresco.mobile.android.samples.ui.comment.CommentsFragment;
 import org.alfresco.mobile.android.samples.ui.documentfolder.ChildrenFragment;
@@ -53,6 +50,8 @@ import android.view.MenuItem;
  */
 public class MainActivity extends CommonActivity
 {
+    /** Key to retrieve session object passed via Intent. */
+    public static final String PARAM_SESSION = "session";
 
     /** Called when the activity is first created. */
     @TargetApi(14)
@@ -63,9 +62,9 @@ public class MainActivity extends CommonActivity
         setContentView(R.layout.sdkapp_main);
 
         //Retrieve Parcelable object from Intent.
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("session"))
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PARAM_SESSION))
         {
-            SessionUtils.setsession(this, (AlfrescoSession) getIntent().getExtras().getParcelable("session"));
+            SessionUtils.setsession(this, (AlfrescoSession) getIntent().getExtras().getParcelable(PARAM_SESSION));
         }
 
         FragmentDisplayer.loadFragment(this, R.id.body, ListUISamplesFragments.TAG);
