@@ -37,18 +37,22 @@ import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Editor;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
 import org.alfresco.mobile.android.ui.utils.thirdparty.LruCache;
 
+import android.R;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 /**
  * Utility class for downloading content and display it.
@@ -64,7 +68,9 @@ public class RenditionManager
 
     private AlfrescoSession session;
 
-    private int dpiClassification;
+    //private int dpiClassification;
+    
+    private DisplayMetrics dm;
 
     private LruCache<String, Bitmap> mMemoryCache;
 
@@ -83,9 +89,9 @@ public class RenditionManager
         this.context = context;
         this.session = session;
 
-        DisplayMetrics dm = new DisplayMetrics();
+        dm = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        dpiClassification = dm.densityDpi;
+        //dpiClassification = dm.densityDpi;
 
         // Get memory class of this device, exceeding this amount will throw an
         // OutOfMemory exception.
@@ -157,6 +163,11 @@ public class RenditionManager
 
     public Bitmap getBitmapFromDiskCache(String key)
     {
+        return getBitmapFromDiskCache(key, null);
+    }
+
+    public Bitmap getBitmapFromDiskCache(String key, Integer preview)
+    {
         if (key == null || key.isEmpty()) { return null; }
         String hashKey = StorageManager.md5(key);
         Snapshot snapshot = null;
@@ -166,7 +177,14 @@ public class RenditionManager
             if (snapshot != null)
             {
                 Log.d(TAG, "GET DiskCache : " + key);
-                return decodeStream(snapshot.getInputStream(0), dpiClassification);
+                if (preview != null)
+                {
+                    return decodeStream(mDiskCache, hashKey, preview, dm);
+                }
+                else
+                {
+                    return decodeStream(snapshot.getInputStream(0), dm);
+                }
             }
         }
         catch (IOException e)
@@ -185,30 +203,30 @@ public class RenditionManager
      */
     public void display(ImageView iv, Node n, int initDrawableId)
     {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, false);
+        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null);
     }
 
     public void display(ImageView iv, int initDrawableId, String identifier)
     {
-        display(iv, identifier, initDrawableId, TYPE_NODE, false);
+        display(iv, identifier, initDrawableId, TYPE_NODE, null);
     }
 
     public void display(ImageView iv, String username, int initDrawableId)
     {
-        display(iv, username, initDrawableId, TYPE_PERSON, false);
+        display(iv, username, initDrawableId, TYPE_PERSON, null);
     }
 
-    public void preview(ImageView iv, Node n, int initDrawableId)
+    public void preview(ImageView iv, Node n, int initDrawableId, Integer size)
     {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, true);
+        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, size);
     }
-    
+
     public void preview(ImageView iv, int initDrawableId, String identifier)
     {
-        display(iv, identifier, initDrawableId, TYPE_NODE, true);
+        display(iv, identifier, initDrawableId, TYPE_NODE, null);
     }
-    
-    private void display(ImageView iv, String identifier, int initDrawableId, int type, boolean preview)
+
+    private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
     {
         final String imageKey = identifier;
         final Bitmap bitmap = getBitmapFromMemCache(imageKey);
@@ -230,25 +248,22 @@ public class RenditionManager
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
-
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
         // Raw height and width of image
-        final int height = options.outHeight;
+        final int height =options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
-
+        
         if (height > reqHeight || width > reqWidth)
         {
-            if (width > height)
-            {
-                inSampleSize = Math.round((float) height / (float) reqHeight);
-            }
-            else
-            {
-                inSampleSize = Math.round((float) width / (float) reqWidth);
-            }
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
+        
+        Log.d(TAG, "height:" + height + "width" +width);
+        
         return inSampleSize;
     }
 
@@ -261,16 +276,14 @@ public class RenditionManager
             fis = new BufferedInputStream(new FileInputStream(f));
             // decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inDither = false;
-            o.inScaled = false;
-            o.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            o.inTargetDensity = dpiClassification;
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(fis, null, o);
             fis.close();
 
             // Find the correct scale value. It should be the power of 2.
+            //int requiredSizePx = Math.round((float)requiredSize * (dpiClassification / 160));
             int scale = calculateInSampleSize(o, requiredSize, requiredSize);
+            //Log.d(TAG, "Scale:" + scale + "Px" +requiredSizePx + "DPI" + dpiClassification);
 
             // decode with inSampleSize
             fis = new BufferedInputStream(new FileInputStream(f));
@@ -295,7 +308,49 @@ public class RenditionManager
         return bmp;
     }
 
-    public static Bitmap decodeStream(InputStream is, int dpiClassification)
+    public static Bitmap decodeStream(DiskLruCache mDiskCache, String snap, int requiredSize, DisplayMetrics dm)
+    {
+        InputStream fis = null;
+        Bitmap bmp = null;
+        try
+        {
+            fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));
+            // decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(fis, null, o);
+            fis.close();
+
+            // Find the correct scale value. It should be the power of 2.
+            int requiredSizePx = getDPI(dm, requiredSize);
+            int scale = calculateInSampleSize(o, requiredSizePx, requiredSizePx);
+            Log.d(TAG, "Scale:" + scale + " Px" +requiredSizePx + " Dpi" +dm.densityDpi);
+
+
+            // decode with inSampleSize
+            fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            o2.inPurgeable = true;
+            o.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            o.inTargetDensity = dm.densityDpi;
+            o.inJustDecodeBounds = false;
+            o.inPurgeable = true;
+            bmp = BitmapFactory.decodeStream(fis, null, o2);
+            fis.close();
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+        finally
+        {
+            IOUtils.closeStream(fis);
+        }
+        return bmp;
+    }
+
+    public static Bitmap decodeStream(InputStream is, DisplayMetrics dm)
     {
         if (is == null) { return null; }
         try
@@ -305,7 +360,7 @@ public class RenditionManager
             o.inDither = false;
             o.inScaled = false;
             o.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            o.inTargetDensity = dpiClassification;
+            o.inTargetDensity = dm.densityDpi;
             o.inPurgeable = true;
             return BitmapFactory.decodeStream(bis, null, o);
         }
@@ -333,14 +388,17 @@ public class RenditionManager
 
         private String username;
 
-        private boolean preview;
+        private Integer preview;
+        
+        private boolean hasPreview = false;
 
         public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
-            this(session, imageView, identifier, type, false);
+            this(session, imageView, identifier, type, null);
         }
-        
-        public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type, boolean preview)
+
+        public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type,
+                Integer preview)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
@@ -388,20 +446,24 @@ public class RenditionManager
                     try
                     {
                         String renditionId = DocumentFolderService.RENDITION_THUMBNAIL;
-                        if (preview){
+                        if (preview != null)
+                        {
                             renditionId = DocumentFolderService.RENDITION_PREVIEW;
                         }
-                        
+
                         cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
-                                .getDocumentFolderService()).getRenditionStream(identifier,
-                                        renditionId);
-                        
-                        if (cf == null && preview){
+                                .getDocumentFolderService()).getRenditionStream(identifier, renditionId);
+
+                        if (cf == null && preview != null)
+                        {
+                            hasPreview = false;
                             cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                                     .getDocumentFolderService()).getRenditionStream(identifier,
                                     DocumentFolderService.RENDITION_THUMBNAIL);
+                        } else if (cf != null && preview != null){
+                            hasPreview = true;
                         }
-                        
+
                     }
                     catch (AlfrescoServiceException e)
                     {
@@ -426,11 +488,11 @@ public class RenditionManager
                     if (mDiskCache != null)
                     {
                         addBitmapToDiskMemoryCache(key, cf);
-                        bm = getBitmapFromDiskCache(key);
+                        bm = getBitmapFromDiskCache(key, preview);
                     }
                     else
                     {
-                        bm = decodeStream(cf.getInputStream(), dpiClassification);
+                        bm = decodeStream(cf.getInputStream(), dm);
                     }
                 }
             }
@@ -454,11 +516,32 @@ public class RenditionManager
                 final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
                 if (this == bitmapWorkerTask && imageView != null)
                 {
-                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     imageView.setImageBitmap(bitmap);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                    if (preview != null){
+                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                        imageView.setBackgroundResource(org.alfresco.mobile.android.ui.R.drawable.shadow_picture);
+                    }
+                    
+                    if (hasPreview)
+                    {
+                        //int previewInPx =  getDPI(imageView.getContext().getResources().getDisplayMetrics(), preview);
+                       // if (bitmap.getWidth() < previewInPx && bitmap.getHeight() < previewInPx){
+                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageView.getLayoutParams();
+                            params.width = bitmap.getWidth();
+                            params.height = bitmap.getHeight();
+                            imageView.setLayoutParams(params);
+                        //}
+                        Log.d(TAG,  "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
+                    }
                 }
             }
         }
+    }
+    
+    public static int getDPI(DisplayMetrics dm, int sizeInDp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
