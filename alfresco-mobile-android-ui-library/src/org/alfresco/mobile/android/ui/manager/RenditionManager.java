@@ -37,14 +37,12 @@ import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Editor;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
 import org.alfresco.mobile.android.ui.utils.thirdparty.LruCache;
 
-import android.R;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -68,8 +66,6 @@ public class RenditionManager
 
     private AlfrescoSession session;
 
-    //private int dpiClassification;
-    
     private DisplayMetrics dm;
 
     private LruCache<String, Bitmap> mMemoryCache;
@@ -91,7 +87,6 @@ public class RenditionManager
 
         dm = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        //dpiClassification = dm.densityDpi;
 
         // Get memory class of this device, exceeding this amount will throw an
         // OutOfMemory exception.
@@ -251,19 +246,19 @@ public class RenditionManager
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
         // Raw height and width of image
-        final int height =options.outHeight;
+        final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
-        
+
         if (height > reqHeight || width > reqWidth)
         {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
-        
-        Log.d(TAG, "height:" + height + "width" +width);
-        
+
+        Log.d(TAG, "height:" + height + "width" + width);
+
         return inSampleSize;
     }
 
@@ -281,9 +276,7 @@ public class RenditionManager
             fis.close();
 
             // Find the correct scale value. It should be the power of 2.
-            //int requiredSizePx = Math.round((float)requiredSize * (dpiClassification / 160));
             int scale = calculateInSampleSize(o, requiredSize, requiredSize);
-            //Log.d(TAG, "Scale:" + scale + "Px" +requiredSizePx + "DPI" + dpiClassification);
 
             // decode with inSampleSize
             fis = new BufferedInputStream(new FileInputStream(f));
@@ -324,8 +317,7 @@ public class RenditionManager
             // Find the correct scale value. It should be the power of 2.
             int requiredSizePx = getDPI(dm, requiredSize);
             int scale = calculateInSampleSize(o, requiredSizePx, requiredSizePx);
-            Log.d(TAG, "Scale:" + scale + " Px" +requiredSizePx + " Dpi" +dm.densityDpi);
-
+            Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
 
             // decode with inSampleSize
             fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));
@@ -389,8 +381,6 @@ public class RenditionManager
         private String username;
 
         private Integer preview;
-        
-        private boolean hasPreview = false;
 
         public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
@@ -453,17 +443,6 @@ public class RenditionManager
 
                         cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                                 .getDocumentFolderService()).getRenditionStream(identifier, renditionId);
-
-                        if (cf == null && preview != null)
-                        {
-                            hasPreview = false;
-                            cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
-                                    .getDocumentFolderService()).getRenditionStream(identifier,
-                                    DocumentFolderService.RENDITION_THUMBNAIL);
-                        } else if (cf != null && preview != null){
-                            hasPreview = true;
-                        }
-
                     }
                     catch (AlfrescoServiceException e)
                     {
@@ -517,30 +496,13 @@ public class RenditionManager
                 if (this == bitmapWorkerTask && imageView != null)
                 {
                     imageView.setImageBitmap(bitmap);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-                    if (preview != null){
-                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                        imageView.setBackgroundResource(org.alfresco.mobile.android.ui.R.drawable.shadow_picture);
-                    }
-                    
-                    if (hasPreview)
-                    {
-                        //int previewInPx =  getDPI(imageView.getContext().getResources().getDisplayMetrics(), preview);
-                       // if (bitmap.getWidth() < previewInPx && bitmap.getHeight() < previewInPx){
-                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageView.getLayoutParams();
-                            params.width = bitmap.getWidth();
-                            params.height = bitmap.getHeight();
-                            imageView.setLayoutParams(params);
-                        //}
-                        Log.d(TAG,  "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
-                    }
                 }
             }
         }
     }
-    
-    public static int getDPI(DisplayMetrics dm, int sizeInDp){
+
+    public static int getDPI(DisplayMetrics dm, int sizeInDp)
+    {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
     }
 
