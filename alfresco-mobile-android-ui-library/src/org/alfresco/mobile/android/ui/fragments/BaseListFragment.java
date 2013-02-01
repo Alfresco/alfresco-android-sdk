@@ -427,10 +427,14 @@ public abstract class BaseListFragment extends BaseFragment
     {
         if (!isFullLoad)
         {
-            if ((data == null || data.getTotalItems() == 0 || data.getList().isEmpty()) && !hasmore )
+            if ((data == null || data.getTotalItems() == 0 || data.getList().isEmpty()) && !hasmore)
             {
                 lv.setEmptyView(ev);
                 isFullLoad = Boolean.TRUE;
+                if (((ArrayAdapter<Object>) adapter) != null)
+                {
+                    lv.setAdapter(null);
+                }
                 Log.d("BaseListFragment", "ITEMS : Empty !");
             }
             else
