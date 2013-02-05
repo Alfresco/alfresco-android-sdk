@@ -22,5 +22,8 @@
 	<dimen name="browse_bottomtext_size">12sp</dimen>
 	<dimen name="browse_margin">6dip</dimen>
 	<dimen name="browse_icons">50dip</dimen>
+	
+	<dimen name="width_dialog">500dip</dimen>
+	<dimen name="padding_dialog">10dip</dimen>
 
 </resources>

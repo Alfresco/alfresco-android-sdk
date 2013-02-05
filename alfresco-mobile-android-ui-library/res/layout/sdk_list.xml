@@ -46,9 +46,11 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="gone"
+        android:layout_margin="@dimen/padding_dialog" >
 
         <ImageView
+            android:id="@+id/empty_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
