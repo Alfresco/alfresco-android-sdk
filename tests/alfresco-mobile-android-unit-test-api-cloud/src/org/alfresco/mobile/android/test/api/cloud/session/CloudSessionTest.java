@@ -59,7 +59,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
     }
 
     /**
-     * @Requirement 70S3, 71S3
+     * @Requirement 70S3, 71S3, 66S3
      */
     public void testCreateCloudSessionWithNetworkID()
     {
@@ -87,6 +87,15 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
             // Base Url
             Assert.assertNotNull(session.getBaseUrl());
             Assert.assertEquals(settings.get(BASE_URL), session.getBaseUrl());
+            
+            //Root Folder
+            Assert.assertNotNull(session.getRootFolder());
+            
+            CloudSession cloudSession = createCloudSession();
+            
+            //Default Network root folder is not the same as other network root folder.
+            Assert.assertFalse(cloudSession.getRootFolder().equals(session.getRootFolder()));
+            
         }
         catch (Exception e)
         {
@@ -151,7 +160,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
     /**
      * Success Test during CloudSession creation
      * 
-     * @Requirement 61S1, 63S1, 64S1, 66S2, 67S1, 72F1, 72F2, 72S1, 72S2, 72S3,
+     * @Requirement 61S1, 62S1, 63S1, 64S1, 66S2, 67S1, 72F1, 72F2, 72S1, 72S2, 72S3,
      *              72S4, 72S5, 72S6, 72S7,73F1, 73S1 73S2, 73S3, 73S4, 73S5,
      *              73S6, 73S7, 74F1, 74F2, 74S1 74S2, 74S3, 74S4, 74S5, 75S1
      */
