@@ -223,6 +223,7 @@ public class FolderTest extends AlfrescoSDKTestCase
 
     /**
      * Check permissions depending on user right.
+     * @Requirement 25S1, 25S2, 25S3, 25S4
      */
     public void testPermissions()
     {

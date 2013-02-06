@@ -80,6 +80,11 @@ public class DocumentTest extends AlfrescoSDKTestCase
      */
     public void testDocumentMethod() throws Exception
     {
+        
+        //Create Consumer session
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        DocumentFolderService consumerDocFolderService = session.getServiceRegistry().getDocumentFolderService();
+        
         Folder folder = createUnitTestFolder(alfsession);
         Assert.assertNotNull(folder);
 
@@ -137,7 +142,16 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(stream.getFileName());
         Assert.assertEquals(SAMPLE_DOC_NAME.length(), stream.getLength());
         Assert.assertEquals(SAMPLE_DOC_NAME, readContent(stream));
-
+        
+        //26S1
+        stream = consumerDocFolderService.getContentStream(doc);
+        Assert.assertNotNull(stream);
+        Assert.assertEquals(doc.getContentStreamMimeType(), stream.getMimeType().split(";")[0]);
+        Assert.assertNotNull(stream.getInputStream());
+        Assert.assertNotNull(stream.getFileName());
+        Assert.assertEquals(SAMPLE_DOC_NAME.length(), stream.getLength());
+        Assert.assertEquals(SAMPLE_DOC_NAME, readContent(stream));
+        
         // ContentFIle
         ContentFile file = docfolderservice.getContent(doc);
         Assert.assertNotNull(file);
@@ -192,7 +206,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
         docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
         GregorianCalendar gc2 = docUpdated.getPropertyValue(PropertyIds.CREATION_DATE);
-        // Equals because read only properties!! (chemistry remove read only
+        // 31F5 Equals because read only properties!! (chemistry remove read only
         // properties before update)
         Assert.assertEquals(gc.get(Calendar.DAY_OF_YEAR), gc2.get(Calendar.DAY_OF_YEAR));
         Assert.assertEquals("Hello", docUpdated.getName());
@@ -224,12 +238,13 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e.getErrorCode());
         }
 
-        // try to update with a wrong value
+        //31F5 : try to update with a wrong value
         try
         {
             props.clear();
             props.put(PropertyIds.NAME, "");
             docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
+            Assert.fail();
         }
         catch (IllegalArgumentException e)
         {
@@ -264,6 +279,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
         
         // ContentStream
         stream = docfolderservice.getContentStream(doc);
+        Assert.assertNull(stream);
+        
+        //26S2
+        stream = consumerDocFolderService.getContentStream(doc);
         Assert.assertNull(stream);
 
         // ContentFIle

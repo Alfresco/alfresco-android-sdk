@@ -454,6 +454,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // getChildByPath with folder relative path
         f2 = (Folder) docfolderservice.getChildByPath(unitTestFolder, SAMPLE_FOLDER_NAME);
         Assert.assertNotNull(f2);
+        //16S1
+        Assert.assertTrue(f2.isFolder());
+        Assert.assertFalse(f2.isDocument());
+        Assert.assertEquals(ContentModel.TYPE_FOLDER, f2.getType());
         Assert.assertEquals(folder.getIdentifier(), f2.getIdentifier());
 
         docFind = (Document) docfolderservice.getChildByPath(unitTestFolder, SAMPLE_FOLDER_NAME + "/"
@@ -500,6 +504,13 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(f2);
         Assert.assertNotNull(f3);
         Assert.assertEquals(f2.getName() + " != " + f3.getName(), f2.getIdentifier(), f3.getIdentifier());
+        
+        //16S3 Test relative parent path
+        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, ".."));
+        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, "../.."));
+
+        //16S5 Test relative current path
+        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, "."));
 
     }
 
@@ -777,7 +788,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
         Folder deletedFolder = createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
 
+        //23S1
         Assert.assertNull(docfolderservice.getParentFolder(alfsession.getRootFolder()));
+        
         // ////////////////////////////////////////////////////
         // Error on getChildren
         // ////////////////////////////////////////////////////
@@ -838,6 +851,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         try
         {
             session.getServiceRegistry().getDocumentFolderService().getChildren(folder);
+            Assert.fail();
         }
         catch (AlfrescoServiceException e)
         {
@@ -857,6 +871,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
+        //15F1
         Assert.assertNull(docfolderservice.getChildByPath("/ABCDEF"));
 
         // TODO Security ?? Different Exception for the same ??
