@@ -431,7 +431,7 @@ public abstract class BaseListFragment extends BaseFragment
             {
                 lv.setEmptyView(ev);
                 isFullLoad = Boolean.TRUE;
-                if (((ArrayAdapter<Object>) adapter) != null)
+                if (adapter != null)
                 {
                     lv.setAdapter(null);
                 }

@@ -19,7 +19,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:minWidth="700dp"
+    android:minWidth="@dimen/width_dialog"
     android:orientation="vertical"
     android:visibility="visible" >
 
@@ -34,7 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:shrinkColumns="1"
-            android:stretchColumns="1" >
+            android:stretchColumns="1"
+            android:layout_margin="@dimen/padding_dialog" >
 
             <TableRow
                 android:layout_width="wrap_content"
