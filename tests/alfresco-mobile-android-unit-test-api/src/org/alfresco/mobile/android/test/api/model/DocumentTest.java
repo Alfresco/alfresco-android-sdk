@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.model;
 
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,6 +39,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -74,7 +76,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
      * 
      * @Requirement 25S1, 26S1, 26S2, 26S3, 26S4, 27S1, 27S2, 27S3, 27S4, 30S1,
      *              30S2, 30S3, 30S4, 31F3, 31F4, 31F5, 33S1, 33S2, 33S3, 33S4,
-     *              33S5, 33S6, 33S7, 33S8, 33S9,
+     *              33S5, 33S6, 33S7, 33S8, 33S9, 18S3
      */
     public void testDocumentMethod() throws Exception
     {
@@ -195,7 +197,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(gc.get(Calendar.DAY_OF_YEAR), gc2.get(Calendar.DAY_OF_YEAR));
         Assert.assertEquals("Hello", docUpdated.getName());
 
-        // Create Empty content Document
+        // Create Empty content Document : 18S3
         doc = docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, null);
 
         // Create a document that already exist
@@ -259,7 +261,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // Text plain in case of Alfresco 3.4
         Assert.assertTrue((doc.getContentStreamMimeType() == null)
                 || (doc.getContentStreamMimeType().equals("text/plain")));
-
+        
         // ContentStream
         stream = docfolderservice.getContentStream(doc);
         Assert.assertNull(stream);
@@ -299,6 +301,18 @@ public class DocumentTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(doc);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
+        
+        // Create Empty content Document 18S3
+        File f = new File(getContext().getCacheDir(), "tempMobile.txt");
+        if (f.length() > 0)
+        {
+            f.delete();
+        }
+        Assert.assertEquals(0, f.length());
+        
+        doc = docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, new ContentFileImpl(f));
+        Assert.assertEquals(0, doc.getContentStreamLength());
+        
     }
 
     /**

@@ -632,6 +632,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(cf);
         Assert.assertTrue(cf.getMimeType().contains(doc2.getContentStreamMimeType()));
         Assert.assertNotNull(cf.getFile());
+        
         // ////////////////////////////////////////////////////
         // Delete Methods
         // ////////////////////////////////////////////////////
