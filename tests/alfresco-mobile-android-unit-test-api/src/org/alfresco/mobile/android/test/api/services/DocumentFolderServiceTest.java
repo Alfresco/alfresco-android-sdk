@@ -200,7 +200,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Incorrect settings in listingContext: Such as inappropriate maxItems
         // (0)
         lc.setSkipCount(0);
-        lc.setMaxItems(-1);
+        lc.setMaxItems(0);
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertNotNull(pagingResult);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
