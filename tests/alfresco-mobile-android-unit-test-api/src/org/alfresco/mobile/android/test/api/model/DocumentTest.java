@@ -80,11 +80,11 @@ public class DocumentTest extends AlfrescoSDKTestCase
      */
     public void testDocumentMethod() throws Exception
     {
-        
-        //Create Consumer session
+
+        // Create Consumer session
         AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         DocumentFolderService consumerDocFolderService = session.getServiceRegistry().getDocumentFolderService();
-        
+
         Folder folder = createUnitTestFolder(alfsession);
         Assert.assertNotNull(folder);
 
@@ -121,7 +121,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_DOC_NAME, doc.getTitle());
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, doc.getDescription());
         Assert.assertEquals(ContentModel.TYPE_CONTENT, doc.getType());
-        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
+        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue()
+                .toString());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
@@ -142,8 +143,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(stream.getFileName());
         Assert.assertEquals(SAMPLE_DOC_NAME.length(), stream.getLength());
         Assert.assertEquals(SAMPLE_DOC_NAME, readContent(stream));
-        
-        //26S1
+
+        // 26S1
         stream = consumerDocFolderService.getContentStream(doc);
         Assert.assertNotNull(stream);
         Assert.assertEquals(doc.getContentStreamMimeType(), stream.getMimeType().split(";")[0]);
@@ -151,9 +152,16 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(stream.getFileName());
         Assert.assertEquals(SAMPLE_DOC_NAME.length(), stream.getLength());
         Assert.assertEquals(SAMPLE_DOC_NAME, readContent(stream));
-        
+
         // ContentFIle
-        ContentFile file = docfolderservice.getContent(doc);
+        // 27S1
+        ContentFile file = consumerDocFolderService.getContent(doc);
+        Assert.assertNotNull(file);
+        Assert.assertEquals(doc.getContentStreamMimeType(), file.getMimeType().split(";")[0]);
+        Assert.assertNotNull(file.getFileName());
+        Assert.assertEquals(SAMPLE_DOC_NAME.length(), file.getLength());
+
+        file = docfolderservice.getContent(doc);
         Assert.assertNotNull(file);
         Assert.assertEquals(doc.getContentStreamMimeType(), file.getMimeType().split(";")[0]);
         Assert.assertNotNull(file.getFileName());
@@ -175,7 +183,16 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // Force waiting + remove object from cache
         wait(5000);
         ((AbstractAlfrescoSessionImpl) alfsession).getCmisSession().removeObjectFromCache(doc.getIdentifier());
-        Document docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
+        Document docUpdated = null;
+        try
+        {
+            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
+        }
+        catch (Exception e)
+        {
+            wait(5000);
+            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
+        }
 
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
@@ -185,6 +202,21 @@ public class DocumentTest extends AlfrescoSDKTestCase
         {
             Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         }
+
+        // 27S6
+        try
+        {
+            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+        }
+        catch (Exception e)
+        {
+            wait(5000);
+            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+        }
+        Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
+                doc.getContentStreamLength() > docUpdated.getContentStreamLength());
+        Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
+        Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, readContent(docfolderservice.getContentStream(docUpdated)));
 
         docUpdated = docfolderservice.updateContent(doc, createContentFile("This is a long text"));
         Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
@@ -206,7 +238,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
         docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
         GregorianCalendar gc2 = docUpdated.getPropertyValue(PropertyIds.CREATION_DATE);
-        // 31F5 Equals because read only properties!! (chemistry remove read only
+        // 31F5 Equals because read only properties!! (chemistry remove read
+        // only
         // properties before update)
         Assert.assertEquals(gc.get(Calendar.DAY_OF_YEAR), gc2.get(Calendar.DAY_OF_YEAR));
         Assert.assertEquals("Hello", docUpdated.getName());
@@ -238,7 +271,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ErrorCodeRegistry.DOCFOLDER_NODE_ALREADY_EXIST, e.getErrorCode());
         }
 
-        //31F5 : try to update with a wrong value
+        // 31F5 : try to update with a wrong value
         try
         {
             props.clear();
@@ -276,12 +309,12 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // Text plain in case of Alfresco 3.4
         Assert.assertTrue((doc.getContentStreamMimeType() == null)
                 || (doc.getContentStreamMimeType().equals("text/plain")));
-        
+
         // ContentStream
         stream = docfolderservice.getContentStream(doc);
         Assert.assertNull(stream);
-        
-        //26S2
+
+        // 26S2
         stream = consumerDocFolderService.getContentStream(doc);
         Assert.assertNull(stream);
 
@@ -320,7 +353,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(doc);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
-        
+
         // Create Empty content Document 18S3
         File f = new File(getContext().getCacheDir(), "tempMobile.txt");
         if (f.length() > 0)
@@ -328,10 +361,23 @@ public class DocumentTest extends AlfrescoSDKTestCase
             f.delete();
         }
         Assert.assertEquals(0, f.length());
-        
+
         doc = docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, new ContentFileImpl(f));
         Assert.assertEquals(0, doc.getContentStreamLength());
-        
+
+        // 33F14
+        gc = new GregorianCalendar();
+        gc.setTime(new Date());
+        props = new HashMap<String, Serializable>();
+        props.clear();
+        props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
+        Document folderUp = docfolderservice.createDocument(folder, "Hello", props, null);
+        gc2 = folderUp.getPropertyValue(PropertyIds.CREATION_DATE);
+        // 33F14 read only properties!! (chemistry remove read only
+        // properties before creation)
+        Assert.assertFalse(gc.get(Calendar.DAY_OF_YEAR) != gc2.get(Calendar.DAY_OF_YEAR));
+        Assert.assertEquals("Hello", folderUp.getName());
+
     }
 
     /**
@@ -529,6 +575,43 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("50", customDoc.getProperty("fdk:minmaxConstraint").getValue());
             Assert.assertEquals("custom@alfresco.com", customDoc.getProperty("fdk:regexConstraint").getValue());
             Assert.assertEquals("Paris, France", customDoc.getProperty("fdk:capitalCity").getValue());
+
+            // Add one document
+            properties = new HashMap<String, Serializable>();
+
+            // TEXT
+            properties.put("fdk:text", "This is textb.");
+            list = new ArrayList<String>();
+            list.add("This is text 1b.");
+            list.add("This is text 2b.");
+            properties.put("fdk:textMultiple", (Serializable) list);
+            properties.put("fdk:mltext", "Ceci est un message modified.");
+            properties.put("fdk:int", 12);
+            properties.put("fdk:long", 22L);
+            properties.put("fdk:double", new Double(1522.56));
+            properties.put("fdk:float", 0.2345456f);
+
+            // BOOLEAN
+            properties.put("fdk:boolean", true);
+
+            Document modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
+
+            Assert.assertEquals("This is textb.", modifiedDoc.getProperty("fdk:text").getValue());
+            Assert.assertTrue(modifiedDoc.getProperty("fdk:textMultiple").isMultiValued());
+            Assert.assertEquals(2, ((List<String>) modifiedDoc.getProperty("fdk:textMultiple").getValue()).size());
+            Assert.assertEquals("This is text 1b.", ((List<String>) modifiedDoc.getProperty("fdk:textMultiple")
+                    .getValue()).get(0));
+            Assert.assertEquals("This is text 2b.", ((List<String>) modifiedDoc.getProperty("fdk:textMultiple")
+                    .getValue()).get(1));
+            Assert.assertEquals("Ceci est un message modified.", modifiedDoc.getProperty("fdk:mltext").getValue());
+            // NUMBER
+            Assert.assertEquals(new BigInteger("12"), modifiedDoc.getProperty("fdk:int").getValue());
+            Assert.assertEquals(new BigInteger("22"), modifiedDoc.getProperty("fdk:long").getValue());
+            Assert.assertEquals(0,
+                    new BigDecimal("1522.56").compareTo((BigDecimal) modifiedDoc.getProperty("fdk:double").getValue()));
+            Assert.assertEquals(1,
+                    new BigDecimal(0.2345456f).compareTo((BigDecimal) modifiedDoc.getProperty("fdk:float").getValue()));
+
         }
 
     }
@@ -547,14 +630,14 @@ public class DocumentTest extends AlfrescoSDKTestCase
             properties.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION);
             properties.put(ContentModel.PROP_ARTIST, "Artist");
             properties.put("fdk:manufacturer", "Alfresco");
-            
+
             List<String> aspects = new ArrayList<String>(1);
             aspects.add("fdk:exif");
 
             // CREATE DOCUMENT WITH LIST OF ASPECTS
             Document customDoc = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createDocument(folder, "fdkCompany", properties, null, aspects);
-            
+
             // Check Aspects
             Assert.assertNotNull(customDoc.getAspects());
             Assert.assertTrue(customDoc.hasAspect(ContentModel.ASPECT_TITLED));
@@ -564,12 +647,33 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ContentModel.TYPE_CONTENT, customDoc.getType());
             Assert.assertEquals("Alfresco", customDoc.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customDoc.getProperty(ContentModel.PROP_ARTIST).getValue());
-            
-            
+
+            // Update Properties
+            HashMap<String, Serializable> propertiesM = new HashMap<String, Serializable>();
+            propertiesM.put(ContentModel.PROP_TITLE, SAMPLE_DOC_NAME + "M");
+            propertiesM.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION + "M");
+            propertiesM.put(ContentModel.PROP_ARTIST, "ArtistM");
+            propertiesM.put("fdk:manufacturer", "AlfrescoM");
+
+            Document customDoc2 = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
+                    .updateProperties(customDoc, propertiesM);
+
+            // Check Aspects
+            Assert.assertNotNull(customDoc2.getAspects());
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_AUDIO));
+            Assert.assertTrue(customDoc2.hasAspect("fdk:exif"));
+
+            Assert.assertEquals(ContentModel.TYPE_CONTENT, customDoc2.getType());
+            Assert.assertEquals("AlfrescoM", customDoc2.getProperty("fdk:manufacturer").getValue());
+            Assert.assertEquals("ArtistM", customDoc2.getProperty(ContentModel.PROP_ARTIST).getValue());
+            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customDoc2.getTitle());
+            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customDoc2.getDescription());
+
             // CREATE DOCUMENT WITH LIST OF ASPECTS + CUSTOM TYPE
             customDoc = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createDocument(folder, "fdkCompany1", properties, null, aspects, "fdk:everything");
-            
+
             // Check Aspects
             Assert.assertNotNull(customDoc.getAspects());
             Assert.assertTrue(customDoc.hasAspect(ContentModel.ASPECT_TITLED));
@@ -579,24 +683,22 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("fdk:everything", customDoc.getType());
             Assert.assertEquals("Alfresco", customDoc.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customDoc.getProperty(ContentModel.PROP_ARTIST).getValue());
-            
-            
+
             // CREATE DOCUMENT WITH CUSTOM TYPE
             customDoc = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createDocument(folder, "fdkCompany2", null, null, null, "fdk:everything");
-            
+
             // Check Aspects
             Assert.assertNotNull(customDoc.getAspects());
             Assert.assertFalse(customDoc.hasAspect(ContentModel.ASPECT_TITLED));
             Assert.assertFalse(customDoc.hasAspect(ContentModel.ASPECT_AUDIO));
             Assert.assertFalse(customDoc.hasAspect("fdk:exif"));
             Assert.assertEquals("fdk:everything", customDoc.getType());
-            
-            
+
             // CREATE DOCUMENT WITH CUSTOM TYPE
             customDoc = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createDocument(folder, "fdkCompany3", null, null, null, "fdk:company");
-            
+
             // Check Aspects
             Assert.assertNotNull(customDoc.getAspects());
             Assert.assertFalse(customDoc.hasAspect(ContentModel.ASPECT_TITLED));
@@ -605,7 +707,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("fdk:company", customDoc.getType());
         }
     }
-    
+
     public void testCreateFolderBasedOnCustomModel()
     {
         // No Custom model on Cloud Instance.
@@ -620,14 +722,14 @@ public class DocumentTest extends AlfrescoSDKTestCase
             properties.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION);
             properties.put(ContentModel.PROP_ARTIST, "Artist");
             properties.put("fdk:manufacturer", "Alfresco");
-            
+
             List<String> aspects = new ArrayList<String>(1);
             aspects.add("fdk:exif");
 
             // CREATE DOCUMENT WITH LIST OF ASPECTS
             Folder customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createFolder(folder, "fdkCompany", properties, aspects);
-            
+
             // Check Aspects
             Assert.assertNotNull(customFolder.getAspects());
             Assert.assertTrue(customFolder.hasAspect(ContentModel.ASPECT_TITLED));
@@ -638,11 +740,32 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("Alfresco", customFolder.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
             
-            
-            //CREATE FOLDER WITH LIST OF ASPECTS + CUSTOM TYPE
+            // Update Properties
+            HashMap<String, Serializable> propertiesM = new HashMap<String, Serializable>();
+            propertiesM.put(ContentModel.PROP_TITLE, SAMPLE_DOC_NAME + "M");
+            propertiesM.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION + "M");
+            propertiesM.put(ContentModel.PROP_ARTIST, "ArtistM");
+            propertiesM.put("fdk:manufacturer", "AlfrescoM");
+
+            Folder customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+                    .updateProperties(customFolder, propertiesM);
+
+            // Check Aspects
+            Assert.assertNotNull(customDoc2.getAspects());
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_AUDIO));
+            Assert.assertTrue(customDoc2.hasAspect("fdk:exif"));
+
+            Assert.assertEquals(ContentModel.TYPE_FOLDER, customDoc2.getType());
+            Assert.assertEquals("AlfrescoM", customDoc2.getProperty("fdk:manufacturer").getValue());
+            Assert.assertEquals("ArtistM", customDoc2.getProperty(ContentModel.PROP_ARTIST).getValue());
+            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customDoc2.getTitle());
+            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customDoc2.getDescription());
+
+            // CREATE FOLDER WITH LIST OF ASPECTS + CUSTOM TYPE
             customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createFolder(folder, "fdkCompany2", properties, aspects, "fdk:customfolder");
-            
+
             Assert.assertNotNull(customFolder.getAspects());
             Assert.assertTrue(customFolder.hasAspect(ContentModel.ASPECT_TITLED));
             Assert.assertTrue(customFolder.hasAspect(ContentModel.ASPECT_AUDIO));
@@ -652,29 +775,43 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("Alfresco", customFolder.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
             
+            //UpdateProperties
+            customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+                    .updateProperties(customFolder, propertiesM);
+
+            // Check Aspects
+            Assert.assertNotNull(customDoc2.getAspects());
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
+            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_AUDIO));
+            Assert.assertTrue(customDoc2.hasAspect("fdk:exif"));
+
+            Assert.assertEquals("fdk:customfolder", customFolder.getType());
+            Assert.assertEquals("AlfrescoM", customDoc2.getProperty("fdk:manufacturer").getValue());
+            Assert.assertEquals("ArtistM", customDoc2.getProperty(ContentModel.PROP_ARTIST).getValue());
+            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customDoc2.getTitle());
+            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customDoc2.getDescription());
+
             // CREATE DOCUMENT WITH CUSTOM TYPE
             customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createFolder(folder, "fdkCompany3", null, null, "fdk:customfolder");
-            
+
             // Check Aspects
             Assert.assertNotNull(customFolder.getAspects());
             Assert.assertFalse(customFolder.hasAspect(ContentModel.ASPECT_TITLED));
             Assert.assertFalse(customFolder.hasAspect(ContentModel.ASPECT_AUDIO));
             Assert.assertFalse(customFolder.hasAspect("fdk:exif"));
             Assert.assertEquals("fdk:customfolder", customFolder.getType());
-            
-            
+
             // CREATE DOCUMENT WITH CUSTOM TYPE
             customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createFolder(folder, "fdkCompany4", null, null, "fdk:custom_folder");
-            
+
             // Check Aspects
             Assert.assertNotNull(customFolder.getAspects());
             Assert.assertFalse(customFolder.hasAspect(ContentModel.ASPECT_TITLED));
             Assert.assertFalse(customFolder.hasAspect(ContentModel.ASPECT_AUDIO));
             Assert.assertFalse(customFolder.hasAspect("fdk:exif"));
             Assert.assertEquals("fdk:custom_folder", customFolder.getType());
-            
         }
     }
 }

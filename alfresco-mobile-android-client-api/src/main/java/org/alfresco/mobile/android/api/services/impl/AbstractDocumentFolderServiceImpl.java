@@ -700,9 +700,30 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
 
+        if (isMapNull(properties)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "properties")); }
+
         try
         {
             Map<String, Serializable> tmpProperties = convertProps(properties, node.getType());
+
+            // Check Custom type
+            if (!ContentModel.TYPE_CONTENT.equals(node.getType()) && !ContentModel.TYPE_FOLDER.equals(node.getType()))
+            {
+                String objectBaseTypeId = node.getProperty(PropertyIds.BASE_TYPE_ID).getValue();
+                if (ObjectType.DOCUMENT_BASETYPE_ID.equals(objectBaseTypeId))
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + node.getType());
+                }
+                else if (ObjectType.FOLDER_BASETYPE_ID.equals(objectBaseTypeId))
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_FOLDER + node.getType());
+                }
+            }
+
+            // Check Custom Aspects
+            tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
+                    addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), node.getAspects()));
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -728,13 +749,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
 
             String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
-            tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, nodeType);
+            // tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, nodeType);
 
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
-                    changeTokenHolder,
-                    objectFactory.convertProperties(tmpProperties, cmisSession.getTypeDefinition(nodeType), updatebility),
-                    null);
+                    changeTokenHolder, objectFactory.convertProperties(tmpProperties,
+                            cmisSession.getTypeDefinition(nodeType), updatebility), null);
 
             return getChildById(objectId);
         }
@@ -903,8 +923,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** {@inheritDoc} */
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)
-
     {
+        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+
         return getRenditionStream(node.getIdentifier(), type);
     }
 
@@ -1002,13 +1024,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     private static Map<String, Serializable> convertProps(Map<String, Serializable> properties, String typeId)
     {
-        
+
         Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
         if (properties != null)
         {
             tmpProperties.putAll(properties);
         }
-        
+
         // Transform Alfresco properties to cmis properties
         for (Entry<String, String> props : ALFRESCO_TO_CMIS.entrySet())
         {
@@ -1054,7 +1076,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         Log.d(TAG, objectId);
 
         tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
-        
+
         return tmpProperties;
     }
 

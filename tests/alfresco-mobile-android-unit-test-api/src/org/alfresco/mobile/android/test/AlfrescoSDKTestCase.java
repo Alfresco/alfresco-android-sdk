@@ -534,6 +534,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     {
         return "Sites/" + getSiteName(session);
     }
+    
+    public static String getSitePath(String siteShortName)
+    {
+        return "Sites/" + siteShortName;
+    }
 
     public static String getFolderPath(AlfrescoSession session)
     {

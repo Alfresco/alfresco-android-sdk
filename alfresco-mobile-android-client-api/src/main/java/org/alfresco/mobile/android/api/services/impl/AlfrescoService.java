@@ -231,6 +231,18 @@ public abstract class AlfrescoService implements Parcelable
     {
         return (l == null || l.isEmpty());
     }
+    
+    /**
+     * Utils method to check if a map is null/empty.
+     * 
+     * @param l : object to check
+     * @return true if the list is null or empty.
+     */
+    @SuppressWarnings("rawtypes")
+    protected boolean isMapNull(Map m)
+    {
+        return (m == null || m.isEmpty());
+    }
 
     protected boolean isOnPremiseSession()
     {
