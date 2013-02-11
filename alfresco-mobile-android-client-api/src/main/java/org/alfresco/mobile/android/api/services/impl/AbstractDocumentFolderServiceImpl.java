@@ -407,10 +407,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         try
         {
             Node n = null;
-            Map<String, Serializable> tmpProperties = properties;
-            if (tmpProperties == null)
+            Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
+            if (properties != null)
             {
-                tmpProperties = new HashMap<String, Serializable>();
+                tmpProperties.putAll(properties);
             }
             tmpProperties.put(ContentModel.PROP_NAME, folderName);
 
@@ -419,7 +419,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_FOLDER + type);
             }
 
-            convertProps(tmpProperties, BaseTypeId.CMIS_FOLDER.value());
+            tmpProperties = convertProps(tmpProperties, BaseTypeId.CMIS_FOLDER.value());
 
             if (!isListNull(aspects))
             {
@@ -476,10 +476,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         try
         {
-            Map<String, Serializable> tmpProperties = properties;
-            if (tmpProperties == null)
+            Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
+            if (properties != null)
             {
-                tmpProperties = new HashMap<String, Serializable>();
+                tmpProperties.putAll(properties);
             }
 
             tmpProperties.put(ContentModel.PROP_NAME, documentName);
@@ -489,7 +489,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
             }
 
-            convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());
+            tmpProperties = convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());
 
             if (!isListNull(aspects))
             {
@@ -514,7 +514,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             // EXTRACT METADATA + Generate Thumbnails
             if (RepositoryVersionHelper.isAlfrescoProduct(session))
             {
-                Log.d("ExtractMetadata", "ExtractMetadata");
                 if (session.getParameter(AlfrescoSession.EXTRACT_METADATA) != null
                         && (Boolean) session.getParameter(AlfrescoSession.EXTRACT_METADATA))
                 {
@@ -703,7 +702,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         try
         {
-            convertProps(properties, node.getType());
+            Map<String, Serializable> tmpProperties = convertProps(properties, node.getType());
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -729,11 +728,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
 
             String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
-            
+            tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, nodeType);
+
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
-                    changeTokenHolder, objectFactory.convertProperties(properties,
-                            cmisSession.getTypeDefinition(nodeType), updatebility), null);
+                    changeTokenHolder,
+                    objectFactory.convertProperties(tmpProperties, cmisSession.getTypeDefinition(nodeType), updatebility),
+                    null);
 
             return getChildById(objectId);
         }
@@ -999,24 +1000,31 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      *            id.
      * @param typeId : Type Id of the node.
      */
-    private static void convertProps(Map<String, Serializable> properties, String typeId)
+    private static Map<String, Serializable> convertProps(Map<String, Serializable> properties, String typeId)
     {
+        
+        Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
+        if (properties != null)
+        {
+            tmpProperties.putAll(properties);
+        }
+        
         // Transform Alfresco properties to cmis properties
         for (Entry<String, String> props : ALFRESCO_TO_CMIS.entrySet())
         {
-            if (properties.containsKey(props.getKey()))
+            if (tmpProperties.containsKey(props.getKey()))
             {
-                properties.put(props.getValue(), properties.get(props.getKey()));
-                properties.remove(props.getKey());
+                tmpProperties.put(props.getValue(), tmpProperties.get(props.getKey()));
+                tmpProperties.remove(props.getKey());
             }
         }
 
         // Take ObjectId provided in map or the default one provided by the
         // method
         String objectId = null;
-        if (properties.containsKey(PropertyIds.OBJECT_TYPE_ID))
+        if (tmpProperties.containsKey(PropertyIds.OBJECT_TYPE_ID))
         {
-            objectId = (String) properties.get(PropertyIds.OBJECT_TYPE_ID);
+            objectId = (String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID);
         }
         else
         {
@@ -1027,7 +1035,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             else if (ContentModel.TYPE_FOLDER.equals(typeId))
             {
                 objectId = ObjectType.FOLDER_BASETYPE_ID;
-            } else {
+            }
+            else
+            {
                 objectId = typeId;
             }
         }
@@ -1035,7 +1045,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         // add aspects flags to objectId
         for (Entry<String, String> props : ALFRESCO_ASPECTS.entrySet())
         {
-            if (properties.containsKey(props.getKey()) && !objectId.contains(props.getValue()))
+            if (tmpProperties.containsKey(props.getKey()) && !objectId.contains(props.getValue()))
             {
                 objectId = objectId.concat("," + props.getValue());
             }
@@ -1043,7 +1053,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         Log.d(TAG, objectId);
 
-        properties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
+        tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
+        
+        return tmpProperties;
     }
 
     private static String addAspects(String objectId, List<String> aspects)

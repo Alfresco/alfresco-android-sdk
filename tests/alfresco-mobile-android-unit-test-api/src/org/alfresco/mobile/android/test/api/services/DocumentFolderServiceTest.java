@@ -589,23 +589,32 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Rendition Methods
         // ////////////////////////////////////////////////////
         ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
-        if (isOnPremise()){
+        if (isOnPremise())
+        {
             Assert.assertNull(cf);
-        } else {
+        }
+        else
+        {
             Assert.assertNotNull(cf);
         }
 
         cf = docfolderservice.getRendition(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise()){
+        if (isOnPremise())
+        {
             Assert.assertNull(cf);
-        } else {
+        }
+        else
+        {
             Assert.assertNotNull(cf);
         }
 
         ContentStream ci = docfolderservice.getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise()){
+        if (isOnPremise())
+        {
             Assert.assertNull(ci);
-        } else {
+        }
+        else
+        {
             Assert.assertNotNull(ci);
         }
 
@@ -1453,6 +1462,29 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
+
+    }
+
+    public void testArguments()
+    {
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        List<Node> list = docfolderservice.getChildren(unitTestFolder);
+        Assert.assertNotNull(list);
+        Assert.assertEquals(0, list.size());
+        // ////////////////////////////////////////////////////
+        // Create Methods
+        // ////////////////////////////////////////////////////
+
+        // Create sample folder
+        Map<String, Serializable> properties = new HashMap<String, Serializable>();
+        properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
+        Map<String, Serializable> copy = new HashMap<String, Serializable>(properties);
+        docfolderservice.createFolder(unitTestFolder, SAMPLE_FOLDER_DESCRIPTION, copy);
+        Assert.assertTrue(copy.equals(properties));
+        
+        
 
     }
 }

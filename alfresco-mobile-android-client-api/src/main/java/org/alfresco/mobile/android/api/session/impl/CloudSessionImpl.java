@@ -22,6 +22,7 @@ import static org.alfresco.mobile.android.api.constants.OAuthConstant.PUBLIC_API
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,14 +84,20 @@ public class CloudSessionImpl extends CloudSession
      */
     public CloudSessionImpl(OAuthData oauthData, Map<String, Serializable> parameters)
     {
-        // Add user identifier if it's not previously added
-        // By default for cloud don't use a specific username but -me-
-        if (oauthData != null && !parameters.containsKey(USER))
+        Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
+        if (parameters != null)
         {
-            parameters.put(USER, USER_ME);
+            tmpProperties.putAll(parameters);
         }
 
-        initSettings(PUBLIC_API_HOSTNAME, parameters);
+        // Add user identifier if it's not previously added
+        // By default for cloud don't use a specific username but -me-
+        if (oauthData != null && !tmpProperties.containsKey(USER))
+        {
+            tmpProperties.put(USER, USER_ME);
+        }
+
+        initSettings(PUBLIC_API_HOSTNAME, tmpProperties);
 
         // Normal case : With OAuth data.
         if (oauthData != null)
