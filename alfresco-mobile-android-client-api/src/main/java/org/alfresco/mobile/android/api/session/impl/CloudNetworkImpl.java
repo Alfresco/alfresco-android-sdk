@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -25,6 +25,11 @@ import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+/**
+ * Implementation of CloudNetwork.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class CloudNetworkImpl implements CloudNetwork
 {
     private static final long serialVersionUID = 1L;
@@ -39,8 +44,11 @@ public class CloudNetworkImpl implements CloudNetwork
 
     private GregorianCalendar creationTime;
 
+    private Boolean isEnabled;
+
     /**
      * Parse a public API Response to create a CloudNetwork object.
+     * 
      * @param json : JsonResponse from the Public API
      * @return CloudNetwork object
      */
@@ -50,15 +58,19 @@ public class CloudNetworkImpl implements CloudNetwork
         CloudNetworkImpl network = new CloudNetworkImpl();
 
         network.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
+
+        network.isEnabled = JSONConverter.getBoolean(json, CloudConstant.ISENABLED_VALUE);
+
         network.isHomeNetwork = JSONConverter.getBoolean(json, CloudConstant.HOMENETWORK_VALUE);
 
-        //TODO Delete before release
         Map<String, Object> jso = (Map<String, Object>) json.get(CloudConstant.NETWORK_VALUE);
-        if (jso == null){
+        if (jso == null)
+        {
             jso = json;
         }
 
-        if (jso.containsKey(CloudConstant.ID_VALUE)){
+        if (jso.containsKey(CloudConstant.ID_VALUE))
+        {
             network.identifier = JSONConverter.getString(jso, CloudConstant.ID_VALUE);
         }
         network.subscriptionLevel = JSONConverter.getString(jso, CloudConstant.SUBSCRIPTIONLEVEL_VALUE);
@@ -104,6 +116,23 @@ public class CloudNetworkImpl implements CloudNetwork
     public GregorianCalendar getCreatedAt()
     {
         return creationTime;
+    }
+
+    /**
+     * Not exposed at the CloudNetwork interface. <br/>
+     * It helps to manage the case where public network (like gmail) are used as
+     * main network. <br/>
+     * It's not possible to access Document Library if the network is NOT
+     * enabled. <br/>
+     * 
+     * @deprecated : This method may be removed after the implementation of
+     *             defaultNetwork in PublicAPI. Cf. MOBSDK-506.
+     * @return true if the network is enabled. False otherwise.
+     */
+    @Deprecated
+    public Boolean isEnabled()
+    {
+        return isEnabled;
     }
 
 }

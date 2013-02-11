@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -153,6 +153,8 @@ public interface CloudConstant extends OnPremiseConstant
     String PAIDNETWORK_VALUE = "paidNetwork";
 
     String HOMENETWORK_VALUE = "homeNetwork";
+    
+    String ISENABLED_VALUE = "isEnabled";
 
     // PEOPLE
     String AVATARID_VALUE = "avatarId";

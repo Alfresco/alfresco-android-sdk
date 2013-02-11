@@ -141,9 +141,15 @@ public class CloudSessionImpl extends CloudSession
             }
 
             List<CloudNetwork> listNetworks = networks.getList();
+
+            // Support GMail case where a user has a disabled homeNetwork
+            // cf. MOBSDK-506.
+            // In this case it's the latest enabled network which is going to be
+            // available as default Network for the session.
             for (CloudNetwork cloudNetwork : listNetworks)
             {
-                if (cloudNetwork.isHomeNetwork() && networkIdentifier == null)
+                if (cloudNetwork.isHomeNetwork() && ((CloudNetworkImpl) cloudNetwork).isEnabled()
+                        && networkIdentifier == null)
                 {
                     currentNetwork = cloudNetwork;
                     break;
@@ -152,6 +158,10 @@ public class CloudSessionImpl extends CloudSession
                 {
                     currentNetwork = cloudNetwork;
                     break;
+                }
+                else if (!cloudNetwork.isHomeNetwork() && ((CloudNetworkImpl) cloudNetwork).isEnabled())
+                {
+                    currentNetwork = cloudNetwork;
                 }
             }
 
@@ -173,8 +183,9 @@ public class CloudSessionImpl extends CloudSession
             throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
     }
-    
-    private void create(){
+
+    private void create()
+    {
         // Extension Point to implement and manage services
         if (hasParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME))
         {
@@ -227,7 +238,7 @@ public class CloudSessionImpl extends CloudSession
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
                 authenticator.getHTTPHeaders());
-        
+
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
@@ -272,14 +283,16 @@ public class CloudSessionImpl extends CloudSession
             ((OAuthAuthenticationProvider) authenticator).setOAuthData((OAuthData) data);
         }
     }
-    
+
     @Override
     public OAuthData getOAuthData()
     {
         if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider)
         {
             return ((OAuthAuthenticationProvider) authenticator).getOAuthData();
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
