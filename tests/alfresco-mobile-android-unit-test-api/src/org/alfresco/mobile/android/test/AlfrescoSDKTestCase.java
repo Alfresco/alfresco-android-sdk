@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -37,6 +38,7 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
@@ -324,6 +326,17 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         Folder folder = null;
         try
         {
+            folder = (Folder) docfolderservice.getChildByPath(parentFolder, folderName);
+            if (folder != null)
+            {
+                List<Node> children = docfolderservice.getChildren(folder);
+                for (Node node : children)
+                {
+                    docfolderservice.deleteNode(node);
+                }
+                docfolderservice.deleteNode(folder);
+                wait(3000);
+            }
             folder = docfolderservice.createFolder(parentFolder, folderName, properties);
         }
         catch (AlfrescoException e)
@@ -332,6 +345,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             // recreate it.
             try
             {
+                wait(3000);
                 folder = (Folder) docfolderservice.getChildByPath(parentFolder, folderName);
                 docfolderservice.deleteNode(folder);
                 wait(3000);
@@ -447,8 +461,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     protected Document createDocument(Folder folder, String docName)
     {
-        return alfsession.getServiceRegistry().getDocumentFolderService()
-                .createDocument(folder, docName, null, null);
+        return alfsession.getServiceRegistry().getDocumentFolderService().createDocument(folder, docName, null, null);
     }
 
     /**
@@ -534,7 +547,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     {
         return "Sites/" + getSiteName(session);
     }
-    
+
     public static String getSitePath(String siteShortName)
     {
         return "Sites/" + siteShortName;
