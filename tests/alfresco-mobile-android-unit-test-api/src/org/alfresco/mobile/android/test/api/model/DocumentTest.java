@@ -589,7 +589,6 @@ public class DocumentTest extends AlfrescoSDKTestCase
             properties.put("fdk:int", 12);
             properties.put("fdk:long", 22L);
             properties.put("fdk:double", new Double(1522.56));
-            properties.put("fdk:float", 0.2345456f);
 
             // BOOLEAN
             properties.put("fdk:boolean", true);
@@ -609,8 +608,6 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(new BigInteger("22"), modifiedDoc.getProperty("fdk:long").getValue());
             Assert.assertEquals(0,
                     new BigDecimal("1522.56").compareTo((BigDecimal) modifiedDoc.getProperty("fdk:double").getValue()));
-            Assert.assertEquals(1,
-                    new BigDecimal(0.2345456f).compareTo((BigDecimal) modifiedDoc.getProperty("fdk:float").getValue()));
 
         }
 
