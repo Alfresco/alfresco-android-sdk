@@ -147,7 +147,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Folder>> arg0, LoaderResult<Folder> results)
+    public void onLoadFinished(Loader<LoaderResult<Folder>> loader, LoaderResult<Folder> results)
     {
         if (results.hasException())
         {
@@ -159,7 +159,9 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
         {
             if (results.hasException())
             {
-                onCreateListener.onExeceptionDuringCreation(results.getException());
+                FolderCreateLoader loaderF = (FolderCreateLoader) loader;
+                onCreateListener.onExeceptionDuringCreation(results.getException(), loaderF.getParentFolder(),
+                        loaderF.getFolderName(), loaderF.getProperties(), null);
             }
             else
             {
@@ -179,7 +181,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
     {
         this.onCreateListener = onCreateListener;
     }
-    
+
     @Override
     public void onDestroyView()
     {
@@ -189,7 +191,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
         }
         super.onDestroyView();
     }
-    
+
     @Override
     public void onDismiss(DialogInterface dialog)
     {

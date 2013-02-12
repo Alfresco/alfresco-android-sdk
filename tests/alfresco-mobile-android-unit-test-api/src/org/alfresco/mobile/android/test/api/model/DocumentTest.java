@@ -594,6 +594,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
             properties.put("fdk:boolean", true);
 
             Document modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
+            wait(2000);
+            modifiedDoc = (Document) docfolderservice.getNodeByIdentifier(modifiedDoc.getIdentifier());
 
             Assert.assertEquals("This is textb.", modifiedDoc.getProperty("fdk:text").getValue());
             Assert.assertTrue(modifiedDoc.getProperty("fdk:textMultiple").isMultiValued());
