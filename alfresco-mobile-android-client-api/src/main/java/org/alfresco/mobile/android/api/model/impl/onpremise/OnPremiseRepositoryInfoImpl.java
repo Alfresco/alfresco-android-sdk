@@ -118,10 +118,10 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
      */
     public String getEdition()
     {
-        //Related to MOBSDK-508 issue.
+        // Related to MOBSDK-508 issue.
         if (edition != null) { return edition; }
 
-        //In normal case
+        // In normal case
         if (repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR))
         {
             if (repositoryInfo.getProductName().contains(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
@@ -150,6 +150,7 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
      */
     public boolean isAlfrescoProduct()
     {
+        if (repositoryInfo.getProductName() == null) { return false; }
         return repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
     }
 

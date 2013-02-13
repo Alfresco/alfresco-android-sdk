@@ -87,4 +87,19 @@ public class FolderCreateLoader extends AbstractBaseLoader<LoaderResult<Folder>>
 
         return result;
     }
+    
+    public Folder getParentFolder()
+    {
+        return parentFolder;
+    }
+
+    public Map<String, Serializable> getProperties()
+    {
+        return properties;
+    }
+
+    public String getFolderName()
+    {
+        return folderName;
+    }
 }

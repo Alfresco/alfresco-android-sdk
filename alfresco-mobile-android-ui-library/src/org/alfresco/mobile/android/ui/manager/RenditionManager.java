@@ -50,7 +50,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 /**
  * Utility class for downloading content and display it.
@@ -420,6 +419,8 @@ public class RenditionManager
         @Override
         protected Bitmap doInBackground(Void... params)
         {
+            if (session == null) { return null; }
+
             Bitmap bm = null;
             ContentStream cf = null;
             String key = getId();

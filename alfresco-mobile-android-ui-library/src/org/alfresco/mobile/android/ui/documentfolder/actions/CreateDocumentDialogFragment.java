@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
+import org.alfresco.mobile.android.api.asynchronous.FolderCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -207,7 +208,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Document>> arg0, LoaderResult<Document> results)
+    public void onLoadFinished(Loader<LoaderResult<Document>> loader, LoaderResult<Document> results)
     {
         if (results.hasException())
         {
@@ -219,7 +220,9 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
         {
             if (results.hasException())
             {
-                onCreateListener.onExeceptionDuringCreation(results.getException());
+                DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
+                onCreateListener.onExeceptionDuringCreation(results.getException(), loaderD.getParentFolder(),
+                        loaderD.getDocumentName(), loaderD.getProperties(), loaderD.getContentFile());
             }
             else
             {

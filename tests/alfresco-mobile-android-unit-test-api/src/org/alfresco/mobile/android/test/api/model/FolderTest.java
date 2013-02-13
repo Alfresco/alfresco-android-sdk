@@ -19,7 +19,9 @@ package org.alfresco.mobile.android.test.api.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -187,6 +190,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         // Create a folder that already exist
         try
         {
+            //32F4
             docfolderservice.createFolder(folder, SAMPLE_FOLDER_NAME, properties);
             Assert.fail();
         }
@@ -219,10 +223,85 @@ public class FolderTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(childFolder);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
+        
+        
+        //17S4
+        //Public Site user is member
+        //We retrieve the folder (site) object
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        
+        Node node = docfolderservice.getChildByPath(getSitePath(session));
+        Node siteNode = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(node.getIdentifier());
+        
+        Assert.assertEquals(siteNode.getIdentifier(), node.getIdentifier());
+        Assert.assertEquals(siteNode.getName(), node.getName());
+        Assert.assertFalse(ContentModel.TYPE_FOLDER.equals(siteNode.getType()));
+        Assert.assertFalse("cm:site".equals(siteNode.getType()));
+        Assert.assertTrue(siteNode.isFolder());
+        Assert.assertFalse(siteNode.isDocument());
+        
+        //Moderated Site user is not member
+        siteNode = session.getServiceRegistry().getDocumentFolderService().getChildByPath(getSitePath(MODERATED_SITE));
+        Assert.assertFalse(ContentModel.TYPE_FOLDER.equals(siteNode.getType()));
+        Assert.assertFalse("cm:site".equals(siteNode.getType()));
+        Assert.assertTrue(siteNode.isFolder());
+        Assert.assertFalse(siteNode.isDocument());
+        
+        //Private site, user is not member
+        //Returns you don't have right
+        try
+        {
+            node = session.getServiceRegistry().getDocumentFolderService().getChildByPath(getSitePath(PRIVATE_SITE));
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
+        }
+        
+        //32F14
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(new Date());
+        HashMap<String, Serializable> props = new HashMap<String, Serializable>();
+        props.clear();
+        props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
+        Folder folderUp = docfolderservice.createFolder(folder, "Hello", props);
+        GregorianCalendar gc2 = folderUp.getPropertyValue(PropertyIds.CREATION_DATE);
+        // 32F14 read only properties!! (chemistry remove read only
+        // properties before creation)
+        Assert.assertFalse(gc.get(Calendar.DAY_OF_YEAR) != gc2.get(Calendar.DAY_OF_YEAR));
+        Assert.assertEquals("Hello", folderUp.getName());
+
+        // 32S3
+        AlfrescoSession sessionCollaborator = createSession(COLLABORATOR, COLLABORATOR_PASSWORD, null);
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER, props);
+        Assert.assertNotNull(folderUp);
+        Assert.assertEquals(FOREIGN_CHARACTER, folderUp.getName());
+        Assert.assertTrue(siteNode.isFolder());
+        Assert.assertFalse(siteNode.isDocument());
+        sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
+        
+        // 32S4
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, props);
+        Assert.assertNotNull(folderUp);
+        Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, folderUp.getName());
+        Assert.assertTrue(siteNode.isFolder());
+        Assert.assertFalse(siteNode.isDocument());
+        sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
+        
+        // 32S9
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, null);
+        Assert.assertNotNull(folderUp);
+        Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, folderUp.getName());
+        Assert.assertTrue(siteNode.isFolder());
+        Assert.assertFalse(siteNode.isDocument());
+        sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
+        
     }
 
     /**
      * Check permissions depending on user right.
+     * @Requirement 25S1, 25S2, 25S3, 25S4
      */
     public void testPermissions()
     {

@@ -22,6 +22,7 @@ import static org.alfresco.mobile.android.api.constants.OAuthConstant.PUBLIC_API
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,14 +84,20 @@ public class CloudSessionImpl extends CloudSession
      */
     public CloudSessionImpl(OAuthData oauthData, Map<String, Serializable> parameters)
     {
-        // Add user identifier if it's not previously added
-        // By default for cloud don't use a specific username but -me-
-        if (oauthData != null && !parameters.containsKey(USER))
+        Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
+        if (parameters != null)
         {
-            parameters.put(USER, USER_ME);
+            tmpProperties.putAll(parameters);
         }
 
-        initSettings(PUBLIC_API_HOSTNAME, parameters);
+        // Add user identifier if it's not previously added
+        // By default for cloud don't use a specific username but -me-
+        if (oauthData != null && !tmpProperties.containsKey(USER))
+        {
+            tmpProperties.put(USER, USER_ME);
+        }
+
+        initSettings(PUBLIC_API_HOSTNAME, tmpProperties);
 
         // Normal case : With OAuth data.
         if (oauthData != null)
@@ -141,9 +148,15 @@ public class CloudSessionImpl extends CloudSession
             }
 
             List<CloudNetwork> listNetworks = networks.getList();
+
+            // Support GMail case where a user has a disabled homeNetwork
+            // cf. MOBSDK-506.
+            // In this case it's the latest enabled network which is going to be
+            // available as default Network for the session.
             for (CloudNetwork cloudNetwork : listNetworks)
             {
-                if (cloudNetwork.isHomeNetwork() && networkIdentifier == null)
+                if (cloudNetwork.isHomeNetwork() && ((CloudNetworkImpl) cloudNetwork).isEnabled()
+                        && networkIdentifier == null)
                 {
                     currentNetwork = cloudNetwork;
                     break;
@@ -152,6 +165,10 @@ public class CloudSessionImpl extends CloudSession
                 {
                     currentNetwork = cloudNetwork;
                     break;
+                }
+                else if (!cloudNetwork.isHomeNetwork() && ((CloudNetworkImpl) cloudNetwork).isEnabled())
+                {
+                    currentNetwork = cloudNetwork;
                 }
             }
 
@@ -173,8 +190,9 @@ public class CloudSessionImpl extends CloudSession
             throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
         }
     }
-    
-    private void create(){
+
+    private void create()
+    {
         // Extension Point to implement and manage services
         if (hasParameter(AlfrescoSession.CLOUD_SERVICES_CLASSNAME))
         {
@@ -227,7 +245,7 @@ public class CloudSessionImpl extends CloudSession
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
                 authenticator.getHTTPHeaders());
-        
+
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
@@ -272,14 +290,16 @@ public class CloudSessionImpl extends CloudSession
             ((OAuthAuthenticationProvider) authenticator).setOAuthData((OAuthData) data);
         }
     }
-    
+
     @Override
     public OAuthData getOAuthData()
     {
         if (authenticator != null && authenticator instanceof OAuthAuthenticationProvider)
         {
             return ((OAuthAuthenticationProvider) authenticator).getOAuthData();
-        } else {
+        }
+        else
+        {
             return null;
         }
     }

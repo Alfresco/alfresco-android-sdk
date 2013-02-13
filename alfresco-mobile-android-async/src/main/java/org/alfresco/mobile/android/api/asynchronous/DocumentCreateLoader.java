@@ -141,4 +141,30 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
 
         return result;
     }
+    
+    public Folder getParentFolder()
+    {
+        return parentFolder;
+    }
+
+    public void setParentFolder(Folder parentFolder)
+    {
+        this.parentFolder = parentFolder;
+    }
+
+    public String getDocumentName()
+    {
+        return documentName;
+    }
+
+    public Map<String, Serializable> getProperties()
+    {
+        return properties;
+    }
+
+    public ContentFile getContentFile()
+    {
+        return contentFile;
+    }
+
 }

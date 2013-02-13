@@ -31,5 +31,6 @@ public interface OnNodeCreateListener
 
     void afterContentCreation(Node node);
     
-    void onExeceptionDuringCreation(Exception e);
+    void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name, Map<String, Serializable> props,
+            ContentFile contentFile);
 }

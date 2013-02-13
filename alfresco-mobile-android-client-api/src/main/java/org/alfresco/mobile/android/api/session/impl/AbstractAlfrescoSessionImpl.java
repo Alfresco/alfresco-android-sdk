@@ -113,10 +113,10 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         if (url == null) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "url")); }
 
-        Map<String, Serializable> tmpSettings = settings;
-        if (tmpSettings == null)
+        Map<String, Serializable> tmpSettings = new HashMap<String, Serializable>();
+        if (settings != null)
         {
-            tmpSettings = new HashMap<String, Serializable>(1);
+            tmpSettings.putAll(settings);
         }
 
         if (username != null && username.length() > 0)

@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 
 /**
  * Provides static methods to have more information about
@@ -94,14 +95,17 @@ public final class RepositoryVersionHelper
      */
     public static boolean isAlfrescoProduct(AlfrescoSession repoSession)
     {
+        if (repoSession == null) { return false; }
+
         if (repoSession instanceof CloudSession)
         {
             return true;
         }
-        else
+        else if (repoSession instanceof RepositorySession && repoSession.getRepositoryInfo() != null)
         {
             return (((OnPremiseRepositoryInfoImpl) repoSession.getRepositoryInfo()).isAlfrescoProduct());
         }
+        return false;
     }
 
 }

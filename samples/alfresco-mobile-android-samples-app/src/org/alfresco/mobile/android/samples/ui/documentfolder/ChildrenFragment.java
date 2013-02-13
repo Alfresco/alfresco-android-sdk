@@ -282,7 +282,8 @@ public class ChildrenFragment extends NavigationFragment
             }
 
             @Override
-            public void onExeceptionDuringCreation(Exception arg0)
+            public void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name, Map<String, Serializable> props,
+                    ContentFile contentFile)
             {
                 mProgressDialog.dismiss();
             }
@@ -345,7 +346,8 @@ public class ChildrenFragment extends NavigationFragment
             }
 
             @Override
-            public void onExeceptionDuringCreation(Exception arg0)
+            public void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name, Map<String, Serializable> props,
+                    ContentFile contentFile)
             {
                 mProgressDialog.dismiss();
             }
