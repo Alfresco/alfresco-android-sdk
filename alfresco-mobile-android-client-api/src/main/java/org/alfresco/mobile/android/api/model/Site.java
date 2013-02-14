@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -29,24 +29,40 @@ import java.io.Serializable;
  */
 public interface Site extends Serializable
 {
-    
+
     /**
      * Returns the short name of the site.
-     *
+     * 
+     * @since 1.1.0
+     * @return the short name
+     */
+    String getIdentifier();
+
+    /**
+     * Returns a globally unique identifier for the site.
+     * 
+     * @since 1.1.0
+     * @return GUID of the site
+     */
+    String getGUID();
+
+    /**
+     * Returns the short name of the site.
+     * 
      * @return the short name
      */
     String getShortName();
 
     /**
      * Returns the unique identifier of the site.
-     *
+     * 
      * @return the title
      */
     String getTitle();
 
     /**
      * Returns the description of the site.
-     *
+     * 
      * @return the description
      */
     String getDescription();
@@ -54,9 +70,28 @@ public interface Site extends Serializable
     /**
      * Returns the visibility of the site i.e. “public”, “moderated” or
      * “private”, represented by an enum.
-     *
+     * 
      * @return the visibility
      */
     SiteVisibility getVisibility();
+
+    /**
+     * @since 1.1.0
+     * @return true if the current user is a member of the site.
+     */
+    boolean isMember();
+
+    /**
+     * @since 1.1.0
+     * @return true if the current user has requested to join the site. If the
+     *         site is not moderated this will return false.
+     */
+    boolean isPendingMember();
+
+    /**
+     * @since 1.1.0
+     * @return true if the current user has favorited the site.
+     */
+    boolean isFavorite();
 
 }

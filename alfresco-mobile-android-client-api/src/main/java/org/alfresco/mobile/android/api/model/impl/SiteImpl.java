@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -19,13 +19,13 @@ package org.alfresco.mobile.android.api.model.impl;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-// TODO: Auto-generated Javadoc
 /**
  * Provides informations about Alfresco Share site. </br> A site is a project
  * area where you can share content and collaborate with other site
@@ -36,7 +36,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class SiteImpl implements Site
 {
-    
+
     /**
      * Instantiates a new site impl.
      */
@@ -48,7 +48,7 @@ public class SiteImpl implements Site
     private static final long serialVersionUID = 1L;
 
     /** The name. */
-    private String name;
+    private String identifier;
 
     /** The title. */
     private String title;
@@ -60,11 +60,20 @@ public class SiteImpl implements Site
     private String visibility;
 
     /** The node. */
-    private String node;
+    private String nodeIdentifier;
+
+    /** Indicates if the user is member of this site. */
+    private Boolean isMember = false;
+
+    /** Indicates if the user has a pending request to join this site. */
+    private Boolean isPendingMember = false;
+
+    /** Indicates if the user has favorite this site. */
+    private Boolean isFavorite = false;
 
     /**
      * Parse Json Response from Alfresco REST API to create a Site.
-     *
+     * 
      * @param json : json response that contains data from the repository
      * @return Site object that contains essential information about it.
      */
@@ -72,7 +81,7 @@ public class SiteImpl implements Site
     {
         SiteImpl site = new SiteImpl();
 
-        site.name = JSONConverter.getString(json, OnPremiseConstant.SHORTNAME_VALUE);
+        site.identifier = JSONConverter.getString(json, OnPremiseConstant.SHORTNAME_VALUE);
         site.title = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
         site.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
         if (site.description.length() == 0)
@@ -80,18 +89,26 @@ public class SiteImpl implements Site
             site.description = null;
         }
 
-        site.node = JSONConverter.getString(json, OnPremiseConstant.NODE_VALUE);
-        int lastForwardSlash = site.node.lastIndexOf('/');
-        site.node = NodeRefUtils.createNodeRefByIdentifier(site.node.substring(lastForwardSlash));
+        site.nodeIdentifier = JSONConverter.getString(json, OnPremiseConstant.NODE_VALUE);
+        int lastForwardSlash = site.nodeIdentifier.lastIndexOf('/');
+        site.nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(site.nodeIdentifier.substring(lastForwardSlash));
 
         site.visibility = JSONConverter.getString(json, OnPremiseConstant.VISIBILITY_VALUE);
+
+        // Extra properties
+        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 
         return site;
     }
 
     /**
      * Parse Json Response from Alfresco Public API to create a Site.
-     *
+     * 
      * @param json : json response that contains data from the repository
      * @return Site object that contains essential information about it.
      */
@@ -99,13 +116,51 @@ public class SiteImpl implements Site
     {
         SiteImpl site = new SiteImpl();
 
-        site.name = JSONConverter.getString(json, OnPremiseConstant.ID_VALUE);
-        site.title = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
-        site.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
-        site.visibility = JSONConverter.getString(json, OnPremiseConstant.VISIBILITY_VALUE);
-        // miss site-preset
+        site.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
+        site.title = JSONConverter.getString(json, CloudConstant.TITLE_VALUE);
+        site.description = JSONConverter.getString(json, CloudConstant.DESCRIPTION_VALUE);
+        site.visibility = JSONConverter.getString(json, CloudConstant.VISIBILITY_VALUE);
+
+        site.nodeIdentifier = JSONConverter.getString(json, CloudConstant.GUID_VALUE);
+
+        // Extra properties
+        site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
+                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+        ;
 
         return site;
+    }
+
+    /**
+     * Allow to create a new Site based on information from previous state of
+     * the site and extra properties cache. </br> This method is commonly use by
+     * {@link org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl#refresh(Site)
+     * Refresh(site)}
+     * 
+     * @param site : site to update.
+     * @param isPendingMember : new value of pending member.
+     * @param isMember : new value of pending member.
+     * @param isFavorite : new value of pending member.
+     * @return a newly created Site object with updated values.
+     */
+    public static Site updateSite(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
+    {
+        SiteImpl newSite = new SiteImpl();
+
+        newSite.identifier = site.getShortName();
+        newSite.title = site.getTitle();
+        newSite.description = site.getDescription();
+        newSite.visibility = site.getVisibility().value();
+        newSite.nodeIdentifier = site.getIdentifier();
+        newSite.isPendingMember = isPendingMember;
+        newSite.isMember = isMember;
+        newSite.isFavorite = isFavorite;
+
+        return newSite;
     }
 
     /** {@inheritDoc} */
@@ -117,8 +172,9 @@ public class SiteImpl implements Site
     /** {@inheritDoc} */
     public String getShortName()
     {
-        return name;
+        return identifier;
     }
+
     /** {@inheritDoc} */
     public SiteVisibility getVisibility()
     {
@@ -129,5 +185,42 @@ public class SiteImpl implements Site
     public String getTitle()
     {
         return title;
+    }
+
+    /** {@inheritDoc} */
+    public String getIdentifier()
+    {
+        return identifier;
+    }
+
+    /** {@inheritDoc} */
+    public String getGUID()
+    {
+        return nodeIdentifier;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Site) { return getIdentifier().equals(((Site) obj).getIdentifier()); }
+        return super.equals(obj);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isMember()
+    {
+        return isMember;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isPendingMember()
+    {
+        return isPendingMember;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isFavorite()
+    {
+        return isFavorite;
     }
 }

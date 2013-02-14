@@ -56,10 +56,11 @@ import org.apache.http.HttpStatus;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
- * RepositorySession represents a connection to an on-premise repository as a
- * specific user.
+ * RepositorySession represents a connection to a cloud repository as a specific
+ * user.
  * 
  * @author Jean Marie Pascal
  */
@@ -67,6 +68,8 @@ public class CloudSessionImpl extends CloudSession
 {
     /** Internal : Activate Basic Authentication. */
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
+
+    private static final String TAG = "CloudSessionImpl";
 
     /** Network associated to this Cloud session. */
     private CloudNetwork currentNetwork;
@@ -180,7 +183,19 @@ public class CloudSessionImpl extends CloudSession
             cmisSession = createSession(SessionFactoryImpl.newInstance(), authenticator, param);
 
             // Init Services + Object
-            rootNode = new FolderImpl(cmisSession.getRootFolder());
+            try
+            {
+                if (cmisSession.getRootFolder() != null)
+                {
+                    rootNode = new FolderImpl(cmisSession.getRootFolder());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.e(TAG, "Unable to retrieve rootNode folder");
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+
             repositoryInfo = new CloudRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
             create();

@@ -26,10 +26,11 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
  */
 public final class OnPremiseUrlRegistry
 {
-    private OnPremiseUrlRegistry(){
-        
+    private OnPremiseUrlRegistry()
+    {
+
     }
-    
+
     public static final String BINDING_CMISATOM = "/cmisatom";
 
     public static final String BINDING_CMIS = "/service/cmis";
@@ -57,9 +58,13 @@ public final class OnPremiseUrlRegistry
     public static final String VARIABLE_USERNAME = "{username}";
 
     public static final String VARIABLE_SCHEME = "{scheme}";
+    
+    public static final String VARIABLE_INVITEID = "{inviteid}";
 
-    public static final String URL_USER_PREFERENCES = "api/people/{userid}/preferences?pf={preferencefilter}";
+    public static final String URL_USER_PREFERENCE = "api/people/{userid}/preferences";
 
+    public static final String URL_USER_PREFERENCES = URL_USER_PREFERENCE + "?pf={preferencefilter}";
+    
     // ///////////////////////////////////////////////////////////////////////////////
     // TICKET
     // //////////////////////////////////////////////////////////////////////////////
@@ -72,6 +77,19 @@ public final class OnPremiseUrlRegistry
     public static String getTicketLoginUrl(String baseAlfrescoUrl)
     {
         return baseAlfrescoUrl.concat(PREFIX_SERVICE).concat(URL_LOGIN);
+    }
+    
+    // ///////////////////////////////////////////////////////////////////////////////
+    // PREFERENCES
+    // //////////////////////////////////////////////////////////////////////////////
+        /** @since 1.1.0 */
+    
+    public static String getUserPreferenceUrl(AlfrescoSession session, String username)
+    {
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_USER_PREFERENCE.replace(VARIABLE_USER, username));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -88,6 +106,24 @@ public final class OnPremiseUrlRegistry
     public static final String FAVOURITES = "favourites";
 
     public static final String URL_DOCLIB = "slingshot/doclib/containers/{site}";
+
+    /** @since 1.1.0 */
+    public static final String URL_MEMBEROF = "api/sites/{shortname}/memberships/{userid}";
+    
+    /** @since 1.1.0 */
+    public static final String URL_JOIN_PUBLIC_SITE = "api/sites/{shortname}/memberships";
+
+    /** @since 1.1.0 */
+    public static final String URL_JOIN_MODERATED_SITE = "api/sites/{shortname}/invitations";
+
+    /** @since 1.1.0 */
+    public static final String URL_LEAVE_SITE = "api/sites/{shortname}/memberships/{userid}";
+    
+    /** @since 1.1.0 */
+    public static final String URL_JOIN_SITE_REQUEST = "api/invitations?inviteeUserName={userid}";
+    
+    /** @since 1.1.0 */
+    public static final String URL_CANCEL_JOIN_SITE_REQUEST = "api/sites/{shortname}/invitations/{inviteid}";
 
     /**
      * @param session
@@ -125,6 +161,48 @@ public final class OnPremiseUrlRegistry
     public static String getDocContainerSiteUrl(AlfrescoSession session, String siteId)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_DOCLIB.replace(VARIABLE_SITE, siteId));
+    }
+
+    /** @since 1.1.0 */
+    public static String getJoinPublicSiteUrl(AlfrescoSession session, String siteShortName)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_JOIN_PUBLIC_SITE.replace(VARIABLE_SHORTNAME, siteShortName));
+    }
+
+    /** @since 1.1.0 */
+    public static String getJoinModeratedSiteUrl(AlfrescoSession session, String siteShortName)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_JOIN_MODERATED_SITE.replace(VARIABLE_SHORTNAME, siteShortName));
+    }
+
+    /** @since 1.1.0 */
+    public static String getLeaveSiteUrl(AlfrescoSession session, String siteShortName, String username)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_LEAVE_SITE.replace(VARIABLE_SHORTNAME, siteShortName).replace(VARIABLE_USER, username));
+    }
+    
+    /** @since 1.1.0 */
+    public static String getJoinRequestSiteUrl(AlfrescoSession session, String username)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_JOIN_SITE_REQUEST.replace(VARIABLE_USER, username));
+    }
+    
+    /** @since 1.1.0 */
+    public static String getCancelJoinSiteRequestUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_INVITEID, inviteId));
+    }
+    
+    /** @since 1.1.0 */
+    public static String getMemberOfSiteUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_MEMBEROF.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_USER, inviteId));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

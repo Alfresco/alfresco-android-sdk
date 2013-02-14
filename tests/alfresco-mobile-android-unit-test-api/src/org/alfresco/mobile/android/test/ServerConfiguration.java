@@ -96,4 +96,8 @@ public interface ServerConfiguration
     String COLLABORATOR = "user_collaborator";
 
     String COLLABORATOR_PASSWORD = "user_collaborator_password";
+    
+    String INVITED = "user_invited";
+
+    String INVITED_PASSWORD = "user_invited_password";
 }

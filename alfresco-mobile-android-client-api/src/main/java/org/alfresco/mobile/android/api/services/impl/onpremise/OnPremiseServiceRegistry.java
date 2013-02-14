@@ -25,8 +25,6 @@ import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
-import org.alfresco.mobile.android.api.services.impl.SearchServiceImpl;
-import org.alfresco.mobile.android.api.services.impl.VersionServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;

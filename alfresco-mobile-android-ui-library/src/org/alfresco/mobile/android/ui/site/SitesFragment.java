@@ -86,7 +86,7 @@ public abstract class SitesFragment extends BaseListFragment implements
         {
             st = new SitesLoader(getActivity(), alfSession);
         }
-        calculateSkipCount(lc);
+        calculateSkipCount(lc); 
         st.setListingContext(lc);
         return st;
     }

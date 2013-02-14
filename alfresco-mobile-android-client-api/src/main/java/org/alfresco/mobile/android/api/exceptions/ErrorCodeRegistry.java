@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -117,6 +117,48 @@ public interface ErrorCodeRegistry
 
     /** The site could not be found. */
     int SITE_NOTFOUND = 402;
+
+    /**
+     * Failed to add favorite site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_NOT_FAVORITED = 403;
+
+    /**
+     * Failed to remove favorite site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_NOT_UNFAVORITED = 404;
+
+    /**
+     * User is already a member or requested to be a member of the site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_ALREADY_MEMBER = 405;
+
+    /**
+     * Failed to join site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_NOT_JOINED = 406;
+
+    /**
+     * Failed to cancel request to join site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_CANCEL_JOINED = 407;
+
+    /**
+     * Failed to leave site.
+     * 
+     * @since 1.1.0
+     */
+    int SITE_NOT_LEFT = 408;
 
     // ///////////////////////////////////
     // ACTIVITI STREAM ERRORS

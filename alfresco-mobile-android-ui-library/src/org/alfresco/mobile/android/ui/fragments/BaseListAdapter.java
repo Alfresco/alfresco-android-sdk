@@ -17,11 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.fragments;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;

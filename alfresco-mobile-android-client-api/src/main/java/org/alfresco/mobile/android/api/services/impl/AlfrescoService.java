@@ -269,7 +269,7 @@ public abstract class AlfrescoService implements Parcelable
     {
         ExceptionHelper.convertException(t);
     }
-    
+
     /**
      * Try to convert error response from repository into high level
      * ErrorContent object. This object allow developper to retrieve information
@@ -331,7 +331,7 @@ public abstract class AlfrescoService implements Parcelable
         }
         return null;
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
@@ -340,7 +340,7 @@ public abstract class AlfrescoService implements Parcelable
     {
         return 0;
     }
-    
+
     @Override
     public void writeToParcel(Parcel dest, int arg1)
     {
