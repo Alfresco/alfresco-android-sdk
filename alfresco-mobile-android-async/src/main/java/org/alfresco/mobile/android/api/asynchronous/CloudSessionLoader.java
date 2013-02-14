@@ -84,10 +84,10 @@ public class CloudSessionLoader extends AbstractBaseLoader<LoaderResult<Alfresco
                 }
                 oauthData = helper.refreshToken(oauthData);
             }
-
+            
             cloudSession = CloudSession.connect(oauthData, settings);
 
-            if (settings.containsKey(USER) && settings.get(USER) == CloudSession.USER_ME)
+            if (cloudSession.getParameter(USER) != null && cloudSession.getParameter(USER) == CloudSession.USER_ME)
             {
                 userPerson = cloudSession.getServiceRegistry().getPersonService().getPerson(CloudSession.USER_ME);
             }
