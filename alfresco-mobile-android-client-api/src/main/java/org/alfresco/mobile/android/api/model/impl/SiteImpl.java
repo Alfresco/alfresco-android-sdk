@@ -147,7 +147,7 @@ public class SiteImpl implements Site
      * @param isFavorite : new value of pending member.
      * @return a newly created Site object with updated values.
      */
-    public static Site updateSite(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
+    public static Site newInstance(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
     {
         SiteImpl newSite = new SiteImpl();
 

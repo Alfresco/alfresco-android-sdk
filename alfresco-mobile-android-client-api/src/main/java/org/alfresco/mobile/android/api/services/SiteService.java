@@ -27,9 +27,6 @@ import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.services.cache.CachedService;
-
-import android.os.Parcelable;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -43,7 +40,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface SiteService extends Parcelable, CachedService
+public interface SiteService extends Service
 {
 
     /**
@@ -178,7 +175,7 @@ public interface SiteService extends Parcelable, CachedService
      *             SITE_ALREADY_MEMBER}. <br/>
      *             If the request fails for any other reason an exception is
      *             thrown with error code
-     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_ALREADY_MEMBER
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_JOINED
      *             SITE_NOT_JOINED}.
      */
     public JoinSiteRequest joinSite(Site site, String message);
@@ -203,7 +200,7 @@ public interface SiteService extends Parcelable, CachedService
      * @param site : site object
      * @throws AlfrescoServiceException : If the request can not be completed
      *             successfully an exception is thrown with error code
-     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_ALREADY_MEMBER
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_CANCEL_JOINED
      *             SITE_CANCEL_JOINED}.
      */
     public void cancelJoinSiteRequest(JoinSiteRequest joinSiteRequest);

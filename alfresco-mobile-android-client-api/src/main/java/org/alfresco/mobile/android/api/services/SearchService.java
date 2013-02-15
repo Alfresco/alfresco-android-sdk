@@ -27,15 +27,13 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 
-import android.os.Parcelable;
-
 /**
  * The Search service provides methods for querying the repository and returning
  * a filtered collection of nodes based on a user’s permission
  * 
  * @author Jean Marie Pascal
  */
-public interface SearchService extends Parcelable
+public interface SearchService extends Service
 {
     
     /**

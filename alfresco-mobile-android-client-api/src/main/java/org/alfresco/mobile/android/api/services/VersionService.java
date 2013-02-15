@@ -24,14 +24,12 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 
-import android.os.Parcelable;
-
 /**
  * The Versioning service manages versions of individual document.
  * 
  * @author Jean Marie Pascal
  */
-public interface VersionService extends Parcelable
+public interface VersionService extends Service
 {
     
     /**

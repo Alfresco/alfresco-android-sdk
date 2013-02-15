@@ -235,7 +235,10 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
 
             // prepare json data
             jo = new JSONObject();
-            jo.put(CloudConstant.MESSAGE_VALUE, "test");
+            if (!isStringNull(message))
+            {
+                jo.put(CloudConstant.MESSAGE_VALUE, message);
+            }
             jo.put(CloudConstant.ID_VALUE, site.getIdentifier());
 
             final JsonDataWriter formDataM = new JsonDataWriter(jo);
@@ -255,20 +258,20 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                     if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST) { throw new AlfrescoServiceException(
                             ErrorCodeRegistry.SITE_ALREADY_MEMBER,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
-                    
+
                     updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
-                    
+
                     break;
                 case MODERATED:
                     if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST) { throw new AlfrescoServiceException(
                             ErrorCodeRegistry.SITE_ALREADY_MEMBER,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
-                    
+
                     Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
                     Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
                             .get(CloudConstant.ENTRY_VALUE);
                     request = JoinSiteRequestImpl.parsePublicAPIJson(data);
-                    
+
                     updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
                     break;
                 case PRIVATE:

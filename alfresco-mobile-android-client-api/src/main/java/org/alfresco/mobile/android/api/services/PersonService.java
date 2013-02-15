@@ -21,8 +21,6 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Person;
 
-import android.os.Parcelable;
-
 /**
  * The PersonService can be used to get informations about people.</br> The
  * PersonService is responsible for all of the following:
@@ -32,7 +30,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface PersonService extends Parcelable
+public interface PersonService extends Service
 {
     /**
      * @param personIdentifier : unique identifier of a person

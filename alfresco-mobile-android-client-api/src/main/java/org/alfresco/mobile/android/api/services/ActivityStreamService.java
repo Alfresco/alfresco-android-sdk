@@ -24,8 +24,6 @@ import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 
-import android.os.Parcelable;
-
 /**
  * Alfresco provides support for a news/activity feed in the context of an
  * enterprise generating and acting upon content.</br> Activities track a range
@@ -34,7 +32,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface ActivityStreamService extends Parcelable
+public interface ActivityStreamService extends Service
 {
 
     /**

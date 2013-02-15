@@ -15,20 +15,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.services.cache;
+package org.alfresco.mobile.android.api.services;
+
+import android.os.Parcelable;
 
 /**
- * Interface for services which needs some cache information.
+ * Common base interface of all SDK Services.
  * 
  * @since 1.1.0
  * @author Jean Marie Pascal
  */
-public interface CachedService
+public interface Service extends Parcelable
 {
 
     /**
      * Clear all caches informations used by the service.
      */
     void clear();
-
 }

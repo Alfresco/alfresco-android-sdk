@@ -31,10 +31,10 @@ public interface Site extends Serializable
 {
 
     /**
-     * Returns the short name of the site.
+     * Returns the unique identifier of the site.
      * 
      * @since 1.1.0
-     * @return the short name
+     * @return the identifier
      */
     String getIdentifier();
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
@@ -30,8 +31,6 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
-
-import android.os.Parcelable;
 
 /**
  * DocumentFolderService manages Folders and Documents in an Alfresco
@@ -49,7 +48,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface DocumentFolderService extends Parcelable
+public interface DocumentFolderService extends Service
 {
 
     /**
