@@ -212,7 +212,7 @@ public interface SiteService extends Service
      * @param site : site object
      * @throws AlfrescoServiceException : If the request can not be completed
      *             successfully an exception is thrown with error code
-     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_ALREADY_MEMBER
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_LEFT
      *             SITE_NOT_LEFT}.
      */
     public void leaveSite(Site site);
