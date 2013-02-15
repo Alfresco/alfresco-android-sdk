@@ -437,7 +437,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     public Site refresh(Site site)
     {
         CacheSiteExtraProperties cacheProperty = extraPropertiesCache.get(site.getIdentifier());
-        return (cacheProperty == null) ? site : SiteImpl.newInstance(site, cacheProperty.isPendingMember,
+        return (cacheProperty == null) ? site : new SiteImpl(site, cacheProperty.isPendingMember,
                 cacheProperty.isMember, cacheProperty.isFavorite);
     }
 

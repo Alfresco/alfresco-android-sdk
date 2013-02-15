@@ -36,14 +36,6 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  */
 public class SiteImpl implements Site
 {
-
-    /**
-     * Instantiates a new site impl.
-     */
-    public SiteImpl()
-    {
-    }
-
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
@@ -71,6 +63,36 @@ public class SiteImpl implements Site
     /** Indicates if the user has favorite this site. */
     private Boolean isFavorite = false;
 
+    
+
+    /**
+     * Default constructor.
+     */
+    public SiteImpl()
+    {
+    }
+
+    /**
+     * Constructor of SiteImpl. </br>
+     * 
+     * @param site : site to update.
+     * @param isPendingMember : value of pending member.
+     * @param isMember : if user is member of
+     * @param isFavorite : if user has favorite the site
+     * @return a newly Site object with updated values.
+     */
+    public SiteImpl(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
+    {
+        this.identifier = site.getShortName();
+        this.title = site.getTitle();
+        this.description = site.getDescription();
+        this.visibility = site.getVisibility().value();
+        this.nodeIdentifier = site.getIdentifier();
+        this.isPendingMember = isPendingMember;
+        this.isMember = isMember;
+        this.isFavorite = isFavorite;
+    }
+    
     /**
      * Parse Json Response from Alfresco REST API to create a Site.
      * 
@@ -133,34 +155,6 @@ public class SiteImpl implements Site
         ;
 
         return site;
-    }
-
-    /**
-     * Allow to create a new Site based on information from previous state of
-     * the site and extra properties cache. </br> This method is commonly use by
-     * {@link org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl#refresh(Site)
-     * Refresh(site)}
-     * 
-     * @param site : site to update.
-     * @param isPendingMember : new value of pending member.
-     * @param isMember : new value of pending member.
-     * @param isFavorite : new value of pending member.
-     * @return a newly created Site object with updated values.
-     */
-    public static Site newInstance(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
-    {
-        SiteImpl newSite = new SiteImpl();
-
-        newSite.identifier = site.getShortName();
-        newSite.title = site.getTitle();
-        newSite.description = site.getDescription();
-        newSite.visibility = site.getVisibility().value();
-        newSite.nodeIdentifier = site.getIdentifier();
-        newSite.isPendingMember = isPendingMember;
-        newSite.isMember = isMember;
-        newSite.isFavorite = isFavorite;
-
-        return newSite;
     }
 
     /** {@inheritDoc} */
