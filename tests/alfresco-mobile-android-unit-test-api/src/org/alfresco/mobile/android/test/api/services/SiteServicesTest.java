@@ -17,11 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -667,6 +671,313 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals(description, s.getDescription());
         Assert.assertEquals(siteShortname, s.getTitle().toLowerCase());
         Assert.assertEquals(visibility, s.getVisibility());
+    }
+
+    /**
+     * Tests related to memberships. Join + Leave
+     * 
+     * @since 1.1.0
+     */
+    public void testSiteMembership()
+    {
+        //TODO Activate when cloud test env is ready.
+        if (!isOnPremise()) return;
+        
+        // Check List sites
+        Assert.assertNotNull(siteService.getSites());
+        Site publicSite = siteService.getSite(PUBLIC_SITE);
+        Site privateSite = siteService.getSite(PRIVATE_SITE);
+        Site moderatedSite = siteService.getSite(MODERATED_SITE);
+
+        // Prepare consumer session + Check there's no existing membership
+        AlfrescoSession session = createSession(INVITED, INVITED_PASSWORD, null);
+        SiteService consumerSiteService = session.getServiceRegistry().getSiteService();
+        List<Site> consumerSites = consumerSiteService.getSites();
+        Assert.assertFalse("User has already a membership!", consumerSites.contains(publicSite));
+        List<JoinSiteRequest> requestedSites = consumerSiteService.getJoinSiteRequests();
+        Assert.assertTrue("User has already a join request!", requestedSites.isEmpty());
+
+        // Join PUBLIC Site + Check
+        JoinSiteRequest request = consumerSiteService.joinSite(publicSite, null);
+        Assert.assertNull("Request object is not null", request);
+        wait(3000);
+        consumerSites = consumerSiteService.getSites();
+        Assert.assertTrue("User doesn't have a membership!", consumerSites.contains(publicSite));
+
+        // Leave PUBLIC Site + Check
+        consumerSiteService.leaveSite(publicSite);
+        consumerSites = consumerSiteService.getSites();
+        Assert.assertFalse("User still has a membership!", consumerSites.contains(publicSite));
+
+        // Join MODERATED Site + Check
+        String message = "This is a message";
+        request = consumerSiteService.joinSite(moderatedSite, message);
+        Assert.assertNotNull("Request object is null", request);
+        wait(3000);
+        requestedSites = consumerSiteService.getJoinSiteRequests();
+        Assert.assertFalse("User has no join request!", requestedSites.isEmpty());
+        Assert.assertEquals("User has no join request!", 1, requestedSites.size());
+        Assert.assertEquals("Wrong Request identifier", request.getIdentifier(), requestedSites.get(0).getIdentifier());
+        Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getSiteShortName());
+        Assert.assertEquals("Wrong Request Message Value", message, request.getMessage());
+
+        // Leave MODERATED Site + Check
+        consumerSiteService.cancelJoinSiteRequest(requestedSites.get(0));
+        wait(3000);
+        requestedSites = consumerSiteService.getJoinSiteRequests();
+        Assert.assertTrue("User has still a join request!", requestedSites.isEmpty());
+
+        // ///////////////////////
+        // ERROR CASE
+        // ///////////////////////
+        // Join a site where user has already membership
+        try
+        {
+            consumerSiteService.joinSite(publicSite, null);
+            consumerSiteService.joinSite(publicSite, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_ALREADY_MEMBER);
+            Assert.assertTrue(true);
+        }
+        finally
+        {
+            consumerSiteService.leaveSite(publicSite);
+        }
+
+        // Check it's not possible to join a null site
+        try
+        {
+            consumerSiteService.joinSite(null, null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        // It's not possible to join a private site
+        try
+        {
+            consumerSiteService.joinSite(privateSite, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_JOINED);
+        }
+
+        // It's not possible to join a moderated site where user has already a
+        // join request.
+        try
+        {
+            request = consumerSiteService.joinSite(moderatedSite, null);
+            consumerSiteService.joinSite(moderatedSite, null);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_ALREADY_MEMBER);
+        }
+        finally
+        {
+            consumerSiteService.cancelJoinSiteRequest(request);
+        }
+
+        // Cancel null join request
+        try
+        {
+            consumerSiteService.cancelJoinSiteRequest(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        // Cancel wrong join request
+        try
+        {
+            consumerSiteService.cancelJoinSiteRequest(request);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_CANCEL_JOINED);
+        }
+
+        // It's not possible to leave a fake site
+        try
+        {
+            consumerSiteService.leaveSite(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        // It's not possible to leave a site where you are not member
+        try
+        {
+            consumerSiteService.leaveSite(publicSite);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_LEFT);
+        }
+
+        // It's not possible to leave a private site where you are not member
+        try
+        {
+            consumerSiteService.leaveSite(privateSite);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_LEFT);
+        }
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public void testSiteExtraProperties()
+    {
+        //TODO Activate when cloud test env is ready.
+        if (!isOnPremise()) return;
+        
+        List<Site> userSites = siteService.getSites();
+        List<Site> favoriteSites = siteService.getFavoriteSites();
+        List<Site> allSites = siteService.getAllSites();
+        List<JoinSiteRequest> request = siteService.getJoinSiteRequests();
+        List<String> requestedSite = new ArrayList<String>(request.size());
+        for (JoinSiteRequest joinSiteRequest : request)
+        {
+            requestedSite.add(joinSiteRequest.getSiteShortName());
+        }
+
+        for (Site site : userSites)
+        {
+            Assert.assertFalse(site.isPendingMember());
+            Assert.assertTrue(site.isMember());
+            if (favoriteSites.contains(site))
+            {
+                Assert.assertTrue(site.isFavorite());
+            }
+            else
+            {
+                Assert.assertFalse(site.isFavorite());
+            }
+        }
+
+        for (Site site : favoriteSites)
+        {
+            Assert.assertFalse(site.isPendingMember());
+            Assert.assertTrue(site.isMember());
+            Assert.assertTrue(site.isFavorite());
+        }
+
+        for (Site site : allSites)
+        {
+            if (site.isFavorite())
+            {
+                Assert.assertTrue(favoriteSites.contains(site));
+            }
+            else
+            {
+                Assert.assertFalse(favoriteSites.contains(site));
+            }
+
+            if (site.isMember())
+            {
+                Assert.assertTrue(userSites.contains(site));
+            }
+            else
+            {
+                Assert.assertFalse(userSites.contains(site));
+            }
+            
+            if (site.isPendingMember())
+            {
+                Assert.assertTrue(requestedSite.contains(site.getIdentifier()));
+            }
+            else
+            {
+                Assert.assertFalse(requestedSite.contains(site.getIdentifier()));
+            }
+        }
+    }
+    
+
+    /**
+     * Tests related to favorite site.
+     * 
+     * @since 1.1.0
+     */
+    public void testSiteFavorite()
+    {
+        // Check List sites
+        Assert.assertNotNull(siteService.getSites());
+        Site publicSite = siteService.getSite(PUBLIC_SITE);
+
+        // Prepare consumer session + Check there's no existing membership
+        AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        SiteService consumerSiteService = session.getServiceRegistry().getSiteService();
+        List<Site> consumerSites = consumerSiteService.getSites();
+        Assert.assertFalse("User has already a membership!", consumerSites.contains(publicSite));
+        List<Site> favoritedSites = consumerSiteService.getFavoriteSites();
+        Assert.assertTrue("User has already favorited sites!", favoritedSites.isEmpty());
+
+        // Join PUBLIC Site + Check
+        JoinSiteRequest request = consumerSiteService.joinSite(publicSite, null);
+        Assert.assertNull("Request object is not null", request);
+        wait(3000);
+        consumerSites = consumerSiteService.getSites();
+        Assert.assertTrue("User doesn't have a membership!", consumerSites.contains(publicSite));
+
+        // ADD FAVORITE
+        consumerSiteService.addFavoriteSite(publicSite);
+        wait(3000);
+        favoritedSites = consumerSiteService.getFavoriteSites();
+        Assert.assertFalse("User has no favorited sites!", favoritedSites.isEmpty());
+
+        // REMOVE FAVORITE
+        consumerSiteService.removeFavoriteSite(publicSite);
+        wait(3000);
+        favoritedSites = consumerSiteService.getFavoriteSites();
+        Assert.assertTrue("User has no favorited sites!", favoritedSites.isEmpty());
+
+        // Clean Data
+        consumerSiteService.leaveSite(publicSite);
+
+        // ///////////////////////
+        // ERROR CASE
+        // ///////////////////////
+        // Favorite a null site
+        try
+        {
+            consumerSiteService.addFavoriteSite(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
+
+        // Remove Favorite a null site.
+        try
+        {
+            consumerSiteService.removeFavoriteSite(null);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            Assert.assertTrue(true);
+        }
     }
 
     /**

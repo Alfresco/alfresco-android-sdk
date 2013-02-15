@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -63,6 +63,8 @@ public interface OnPremiseConstant
 
     String NODE_VALUE = "node";
 
+    String GUID_VALUE = "guid";
+
     String TAGSCOPE_VALUE = "tagScope";
 
     String IS_VALUE = "is";
@@ -70,6 +72,26 @@ public interface OnPremiseConstant
     String VISIBILITY_VALUE = "visibility";
 
     String MANAGERS_VALUE = "siteManagers";
+
+    String INVITEID_VALUE = "inviteId";
+
+    String RESOURCENAME_VALUE = "resourceName";
+
+    String PERSON_VALUE = "person";
+
+    String INVITATIONTYPE_VALUE = "invitationType";
+
+    String INVITEEUSERNAME_VALUE = "inviteeUserName";
+
+    String INVITEECOMMENTS_VALUE = "inviteeComments";
+
+    String INVITEEROLENAME_VALUE = "inviteeRoleName";
+    
+    String ISPENDINGMEMBER_VALUE = "isPendingMember";
+    
+    String ISMEMBER_VALUE = "isMember";
+
+    String ISFAVORITE_VALUE = "isFavorite";
 
     // COMMENTS
     String NODEREF_VALUE = "nodeRef";
@@ -135,19 +157,18 @@ public interface OnPremiseConstant
     String MEMEBERUSERNAME_VALUE = "memberUserName";
 
     String MEMEBERFIRSTNAME_VALUE = "memberFirstName";
-    
+
     String FOLLOWERUSERNAME_VALUE = "followerUserName";
-    
+
     String SUBSCRIBERFIRSTNAME_VALUE = "subscriberFirstName";
-    
+
     String SUBSCRIBERLASTNAME_VALUE = "subscriberLastName";
 
     String USERFIRSTNAME_VALUE = "userFirstName";
-    
+
     String USERUSERNAME_VALUE = "userUserName";
 
     String USERLASTNAME_VALUE = "userLastName";
-
 
     // CONTAINERS
     String CONTAINER_VALUE = "containers";
@@ -225,18 +246,14 @@ public interface OnPremiseConstant
     String PARAM_PAGESIZE = "pageSize";
 
     String PARAM_REVERSE = "reverse";
-    
+
     // ERROR
     String CODE_VALUE = "code";
+
     String MESSAGE_VALUE = "message";
+
     String EXCEPTION_VALUE = "exception";
+
     String CALLSTACK_VALUE = "callstack";
-
-
-
-
-
-
-
 
 }

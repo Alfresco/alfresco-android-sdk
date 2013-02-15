@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -23,11 +23,10 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
-
-import android.os.Parcelable;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -41,9 +40,9 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface SiteService extends Parcelable
+public interface SiteService extends Service
 {
-    
+
     /**
      * Allowable sorting property : Name of the document or folder.
      */
@@ -132,5 +131,90 @@ public interface SiteService extends Parcelable
      *             during the process.
      */
     Folder getDocumentLibrary(Site site);
+
+    /**
+     * Adds the given site to the current users list of favorite sites. <br/>
+     * It's possible to favorite a site independently of its visibility.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @throws AlfrescoServiceException : if the request can not be completed
+     *             successfully an exception is thrown with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_FAVORITED
+     *             SITE_NOT_FAVORITED}
+     */
+    void addFavoriteSite(Site site);
+
+    /**
+     * Removes the given site from the current users list of favorite sites. <br/>
+     * It's possible to favorite a site independently of its visibility.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @throws AlfrescoServiceException : if the request can not be completed
+     *             successfully an exception is thrown with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_UNFAVORITED
+     *             SITE_NOT_UNFAVORITED}.
+     */
+    public void removeFavoriteSite(Site site);
+
+    /**
+     * Adds the current user as a member of the given site with an optional
+     * message explaining why they wish to join the site.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @param message : user message to join the site.
+     * @return If the site is moderated, a JoinSiteRequest object is returned. <br/>
+     *         If the site is public null is returned.
+     * @throws AlfrescoServiceException : <br/>
+     *             If the current user is already a member of the site or there
+     *             is a pending join request for the user an exception is thrown
+     *             with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_ALREADY_MEMBER
+     *             SITE_ALREADY_MEMBER}. <br/>
+     *             If the request fails for any other reason an exception is
+     *             thrown with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_JOINED
+     *             SITE_NOT_JOINED}.
+     */
+    public JoinSiteRequest joinSite(Site site, String message);
+
+    /**
+     * Returns a list of join site requests from the current user that have yet
+     * to be actioned. An empty list is returned if there are no outstanding
+     * requests.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @return : List of JoinSiteRequest object. Empty list if there's no
+     *         request.
+     * @throws AlfrescoServiceException
+     */
+    public List<JoinSiteRequest> getJoinSiteRequests();
+
+    /**
+     * Cancels a previous request to join a site made by the current user.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @throws AlfrescoServiceException : If the request can not be completed
+     *             successfully an exception is thrown with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_CANCEL_JOINED
+     *             SITE_CANCEL_JOINED}.
+     */
+    public void cancelJoinSiteRequest(JoinSiteRequest joinSiteRequest);
+
+    /**
+     * Removes the current user from the given site.
+     * 
+     * @since 1.1.0
+     * @param site : site object
+     * @throws AlfrescoServiceException : If the request can not be completed
+     *             successfully an exception is thrown with error code
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_LEFT
+     *             SITE_NOT_LEFT}.
+     */
+    public void leaveSite(Site site);
 
 }

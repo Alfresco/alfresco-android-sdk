@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.os.Bundle;
@@ -133,6 +135,31 @@ public abstract class BaseListFragment extends BaseFragment
         init(v, emptyListMessageId);
 
         return v;
+    }
+    
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState)
+    {
+        setRetainInstance(true);
+        checkSession(checkSession);
+        if (initLoader)
+        {
+            continueLoading(loaderId, callback);
+        }
+        
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View v = inflater.inflate(R.layout.sdk_list, null);
+
+        init(v, emptyListMessageId);
+        
+        setRetainInstance(true);
+        checkSession(checkSession);
+        if (initLoader)
+        {
+            continueLoading(loaderId, callback);
+        }
+        
+        return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
     }
 
     @Override
@@ -250,7 +277,6 @@ public abstract class BaseListFragment extends BaseFragment
         {
             selectedPosition = lv.getFirstVisiblePosition();
         }
-        Log.d("selectedPosition", selectedPosition + "");
     }
 
     @Override
@@ -468,6 +494,15 @@ public abstract class BaseListFragment extends BaseFragment
         if (selectedPosition != 0)
         {
             lv.setSelection(selectedPosition);
+        }
+    }
+    
+    protected void displayEmptyView(){
+        lv.setEmptyView(ev);
+        isFullLoad = Boolean.TRUE;
+        if (adapter != null)
+        {
+            lv.setAdapter(null);
         }
     }
 

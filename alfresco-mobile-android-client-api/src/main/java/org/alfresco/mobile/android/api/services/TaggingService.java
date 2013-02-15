@@ -25,8 +25,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 
-import android.os.Parcelable;
-
 /**
  * Tags are keywords or terms assigned to a piece of information including
  * documents, folders... </br> There are various methods and properties relating
@@ -39,7 +37,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public interface TaggingService extends Parcelable
+public interface TaggingService extends Service
 {
     /**
      * @return Returns a list of all tags currently available in the repository.

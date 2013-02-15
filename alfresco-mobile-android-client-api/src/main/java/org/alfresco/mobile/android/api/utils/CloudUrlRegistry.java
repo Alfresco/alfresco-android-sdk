@@ -50,6 +50,27 @@ public final class CloudUrlRegistry
     public static final String BINDING_NETWORK_CMISATOM = "/{networkId}/public/cmis/versions/1.0/atom/";
 
     // ///////////////////////////////////////////////////////////////////////////////
+    // PREFERENCES
+    // //////////////////////////////////////////////////////////////////////////////
+    /** @since 1.1.0 */
+    public static final String URL_USER_PREFERENCE = "people/{personId}/favorites";
+    
+    /** @since 1.1.0 */
+    public static final String URL_USER_PREFERENCE_REMOVE = "people/{personId}/favorites/{siteId}";
+
+
+    /** @since 1.1.0 */
+    public static String getUserPreferenceUrl(CloudSession session, String username)
+    {
+        return createPrefix(session).append(URL_USER_PREFERENCE.replace(VARIABLE_PERSONID, username)).toString();
+    }
+    
+    /** @since 1.1.0 */
+    public static String getRemoveUserPreferenceUrl(CloudSession session, String username, String siteGUID)
+    {
+        return createPrefix(session).append(URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, username).replace(VARIABLE_SITEID, siteGUID)).toString();
+    }
+    // ///////////////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////////////
     public static final String URL_ALL_SITES = "sites";
@@ -61,6 +82,15 @@ public final class CloudUrlRegistry
     public static final String URL_DOCLIB = "sites/{siteId}/containers";
 
     public static final String URL_SITE = "sites/{siteId}";
+    
+    /** @since 1.1.0 */
+    public static final String URL_JOIN_SITE = "people/{personId}/site-membership-requests";
+    
+    /** @since 1.1.0 */
+    public static final String URL_CANCEL_JOIN_SITE_REQUEST = URL_JOIN_SITE + "/{siteId}";
+    
+    /** @since 1.1.0 */
+    public static final String URL_LEAVE_SITE = "sites/{siteId}/members/{personId}";
 
     /**
      * @param session
@@ -90,7 +120,34 @@ public final class CloudUrlRegistry
     {
         return createPrefix(session).append(URL_DOCLIB.replace(VARIABLE_SITEID, siteId)).toString();
     }
-
+    
+    /** @since 1.1.0 */
+    public static String getJoinSiteUrl(CloudSession session, String username)
+    {
+        return createPrefix(session).append(URL_JOIN_SITE.replace(VARIABLE_PERSONID, username)).toString();
+    }
+    
+    /** @since 1.1.0 */
+    public static String getLeaveSiteUrl(CloudSession session, String siteShortName, String username)
+    {
+        return createPrefix(session).append(
+                URL_LEAVE_SITE.replace(VARIABLE_PERSONID, session.getPersonIdentifier()).replace(VARIABLE_SITEID,
+                        siteShortName)).toString();
+    }
+    
+    /** @since 1.1.0 */
+    public static String getJoinRequestSiteUrl(CloudSession session, String username)
+    {
+        return getJoinSiteUrl(session, username);
+    }
+    
+    /** @since 1.1.0 */
+    public static String getCancelJoinSiteRequestUrl(CloudSession session, String siteIdentifier, String username)
+    {
+        return createPrefix(session).append(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, username).replace(VARIABLE_SITEID,
+                siteIdentifier)).toString();
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////////
     // NETWORKS
     // //////////////////////////////////////////////////////////////////////////////

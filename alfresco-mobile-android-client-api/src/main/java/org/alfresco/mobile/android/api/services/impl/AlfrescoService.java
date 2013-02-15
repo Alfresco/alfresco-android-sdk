@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
+import org.alfresco.mobile.android.api.services.Service;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -46,7 +47,6 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -57,7 +57,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public abstract class AlfrescoService implements Parcelable
+public abstract class AlfrescoService implements Service
 {
     /** Repository Session. */
     protected AlfrescoSession session;
@@ -269,7 +269,7 @@ public abstract class AlfrescoService implements Parcelable
     {
         ExceptionHelper.convertException(t);
     }
-    
+
     /**
      * Try to convert error response from repository into high level
      * ErrorContent object. This object allow developper to retrieve information
@@ -333,6 +333,13 @@ public abstract class AlfrescoService implements Parcelable
     }
     
     // ////////////////////////////////////////////////////
+    // CACHING
+    // ////////////////////////////////////////////////////
+    public void clear(){
+        //Must be implemented in subclass.
+    }
+
+    // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
     @Override
@@ -340,7 +347,7 @@ public abstract class AlfrescoService implements Parcelable
     {
         return 0;
     }
-    
+
     @Override
     public void writeToParcel(Parcel dest, int arg1)
     {
