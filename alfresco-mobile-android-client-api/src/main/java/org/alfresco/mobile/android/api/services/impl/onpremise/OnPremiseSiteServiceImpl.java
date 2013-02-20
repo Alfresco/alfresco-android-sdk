@@ -118,9 +118,14 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             }
 
             // Retrieve site user has favorite but user is not member of.
+            Site tmpSite = null;
             for (String siteIdentifier : favoriteSites)
             {
-                finalList.add(getSite(siteIdentifier));
+                tmpSite = getSite(siteIdentifier);
+                if (tmpSite != null)
+                {
+                    finalList.add(tmpSite);
+                }
             }
 
             return finalList;
