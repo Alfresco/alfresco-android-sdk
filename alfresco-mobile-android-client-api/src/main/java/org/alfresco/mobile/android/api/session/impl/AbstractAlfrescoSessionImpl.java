@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
-import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -46,7 +45,6 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
@@ -551,5 +549,15 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
             throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_SERVICEREGISTRY, e);
         }
         return s;
+    }
+
+    @Override
+    public void clear()
+    {
+        // Only the siteService has cache feature enable.
+        if (services != null && services.getSiteService() != null)
+        {
+            services.getSiteService().clear();
+        }
     }
 }

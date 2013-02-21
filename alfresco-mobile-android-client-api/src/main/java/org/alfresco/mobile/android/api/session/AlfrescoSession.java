@@ -175,5 +175,9 @@ public interface AlfrescoSession extends Parcelable
      * Returns a list of all the parameter names stored in the sesssion.
      */
     List<String> getParameterKeys();
-
+    
+    /**
+     * Clears any cached data the session is storing.
+     */
+    void clear();
 }
