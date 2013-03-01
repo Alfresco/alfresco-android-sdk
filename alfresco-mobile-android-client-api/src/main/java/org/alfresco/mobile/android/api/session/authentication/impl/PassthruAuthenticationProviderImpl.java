@@ -18,11 +18,14 @@
 package org.alfresco.mobile.android.api.session.authentication.impl;
 
 import java.lang.reflect.Constructor;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -33,32 +36,40 @@ import org.apache.chemistry.opencmis.client.bindings.spi.AbstractAuthenticationP
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.w3c.dom.Element;
 
+import android.util.Log;
+
 /**
  * Abstract base class for all AuthenticationProvider.
  * 
  * @author Jean Marie Pascal
  */
-public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationProvider implements PassthruAuthenticationProvider
+public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationProvider implements
+        PassthruAuthenticationProvider
 {
+    private String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
 
     private static final long serialVersionUID = 1L;
 
     private AuthenticationProvider alfrescoAuthenticationProvider;
-    
-    
+
+    private SSLSocketFactory factory;
+
+    private boolean hasCheckedSSLFactory = false;
+
     public PassthruAuthenticationProviderImpl()
     {
-        // TODO Auto-generated constructor stub
     }
-    
-    public PassthruAuthenticationProviderImpl(AuthenticationProvider alfrescoAuthenticationProvider){
+
+    public PassthruAuthenticationProviderImpl(AuthenticationProvider alfrescoAuthenticationProvider)
+    {
         this.alfrescoAuthenticationProvider = alfrescoAuthenticationProvider;
     }
 
     @Override
     public Map<String, List<String>> getHTTPHeaders(String url)
     {
-        if (alfrescoAuthenticationProvider == null){
+        if (alfrescoAuthenticationProvider == null)
+        {
             alfrescoAuthenticationProvider = create(getAuthenticationProviderClassName());
         }
         return alfrescoAuthenticationProvider.getHTTPHeaders();
@@ -73,7 +84,31 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
     @Override
     public SSLSocketFactory getSSLSocketFactory()
     {
-        return null;
+        if (hasCheckedSSLFactory) { return factory; }
+
+        if (getTrustManagerClassName() == null)
+        {
+            hasCheckedSSLFactory = true;
+            return null;
+        }
+
+        try
+        {
+            SSLContext context = null;
+            X509TrustManager customManager = createTrustManager(getTrustManagerClassName());
+
+            context = SSLContext.getInstance("TLS");
+            context.init(null, new X509TrustManager[] { customManager }, new SecureRandom());
+            factory = context.getSocketFactory();
+        }
+        catch (Exception e)
+        {
+            // We don't stop a session creation due to a wrong ssl creation.
+            // The default secure one will be used instead.
+            Log.d("TrustManager", "Unable to instantiate CustomTrustManager");
+        }
+        hasCheckedSSLFactory = true;
+        return factory;
     }
 
     @Override
@@ -87,16 +122,22 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
     {
 
     }
-    
-    private String getAuthenticationProviderClassName() {
+
+    private String getAuthenticationProviderClassName()
+    {
         Object userObject = getSession().get(AlfrescoSession.AUTHENTICATOR_CLASSNAME);
-        if (userObject instanceof String) {
-            return (String) userObject;
-        }
+        if (userObject instanceof String) { return (String) userObject; }
 
         return null;
     }
-    
+
+    private String getTrustManagerClassName()
+    {
+        Object userObject = getSession().get(ONPREMISE_TRUSTMANAGER_CLASSNAME);
+        if (userObject instanceof String) { return (String) userObject; }
+        return null;
+    }
+
     private AuthenticationProvider create(String className)
     {
         AuthenticationProvider s = null;
@@ -112,7 +153,23 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
         }
         return s;
     }
-    
+
+    private X509TrustManager createTrustManager(String className)
+    {
+        X509TrustManager s = null;
+        try
+        {
+            Class<?> c = Class.forName(className);
+            Constructor<?> t = c.getDeclaredConstructor();
+            s = (X509TrustManager) t.newInstance();
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_GENERIC, e);
+        }
+        return s;
+    }
+
     public AuthenticationProvider getAlfrescoAuthenticationProvider()
     {
         return alfrescoAuthenticationProvider;

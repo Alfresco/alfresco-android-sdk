@@ -27,12 +27,12 @@ import org.alfresco.mobile.android.api.session.CloudSession;
  */
 public final class CloudUrlRegistry
 {
-    
+
     private CloudUrlRegistry()
     {
-        
+
     }
-    
+
     public static final String VARIABLE_PERSONID = "{personId}";
 
     public static final String VARIABLE_SITEID = "{siteId}";
@@ -54,22 +54,25 @@ public final class CloudUrlRegistry
     // //////////////////////////////////////////////////////////////////////////////
     /** @since 1.1.0 */
     public static final String URL_USER_PREFERENCE = "people/{personId}/favorites";
-    
+
     /** @since 1.1.0 */
     public static final String URL_USER_PREFERENCE_REMOVE = "people/{personId}/favorites/{siteId}";
-
 
     /** @since 1.1.0 */
     public static String getUserPreferenceUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_USER_PREFERENCE.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_USER_PREFERENCE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
-    
+
     /** @since 1.1.0 */
     public static String getRemoveUserPreferenceUrl(CloudSession session, String username, String siteGUID)
     {
-        return createPrefix(session).append(URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, username).replace(VARIABLE_SITEID, siteGUID)).toString();
+        return createPrefix(session).append(
+                URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_SITEID, siteGUID)).toString();
     }
+
     // ///////////////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////////////
@@ -82,13 +85,13 @@ public final class CloudUrlRegistry
     public static final String URL_DOCLIB = "sites/{siteId}/containers";
 
     public static final String URL_SITE = "sites/{siteId}";
-    
+
     /** @since 1.1.0 */
     public static final String URL_JOIN_SITE = "people/{personId}/site-membership-requests";
-    
+
     /** @since 1.1.0 */
     public static final String URL_CANCEL_JOIN_SITE_REQUEST = URL_JOIN_SITE + "/{siteId}";
-    
+
     /** @since 1.1.0 */
     public static final String URL_LEAVE_SITE = "sites/{siteId}/members/{personId}";
 
@@ -103,12 +106,14 @@ public final class CloudUrlRegistry
 
     public static String getUserSitesUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_USER_SITES.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_USER_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     public static String getUserFavoriteSitesUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_USER_FAVORITES_SITES.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_USER_FAVORITES_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     public static String getSiteUrl(CloudSession session, String siteShortName)
@@ -120,34 +125,36 @@ public final class CloudUrlRegistry
     {
         return createPrefix(session).append(URL_DOCLIB.replace(VARIABLE_SITEID, siteId)).toString();
     }
-    
+
     /** @since 1.1.0 */
     public static String getJoinSiteUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_JOIN_SITE.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_JOIN_SITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
-    
+
     /** @since 1.1.0 */
     public static String getLeaveSiteUrl(CloudSession session, String siteShortName, String username)
     {
         return createPrefix(session).append(
-                URL_LEAVE_SITE.replace(VARIABLE_PERSONID, session.getPersonIdentifier()).replace(VARIABLE_SITEID,
-                        siteShortName)).toString();
+                URL_LEAVE_SITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier()))
+                        .replace(VARIABLE_SITEID, siteShortName)).toString();
     }
-    
+
     /** @since 1.1.0 */
     public static String getJoinRequestSiteUrl(CloudSession session, String username)
     {
         return getJoinSiteUrl(session, username);
     }
-    
+
     /** @since 1.1.0 */
     public static String getCancelJoinSiteRequestUrl(CloudSession session, String siteIdentifier, String username)
     {
-        return createPrefix(session).append(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, username).replace(VARIABLE_SITEID,
-                siteIdentifier)).toString();
+        return createPrefix(session).append(
+                URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_SITEID, siteIdentifier)).toString();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////////
     // NETWORKS
     // //////////////////////////////////////////////////////////////////////////////
@@ -162,14 +169,15 @@ public final class CloudUrlRegistry
 
     public static String getUserNetworks(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_NETWORKS.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_NETWORKS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     public static String getNetwork(CloudSession session, String username, String networkIdentifier)
     {
         return createPrefix(session, networkIdentifier).append(
-                URL_NETWORK.replace(VARIABLE_PERSONID, username).replace(VARIABLE_NETWORKID, networkIdentifier))
-                .toString();
+                URL_NETWORK.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_NETWORKID, networkIdentifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -186,8 +194,7 @@ public final class CloudUrlRegistry
 
     public static String getTagsUrl(CloudSession session, String nodeRef)
     {
-        return createPrefix(session)
-                .append(URL_TAGS.replace(VARIABLE_NODEID,nodeRef)).toString();
+        return createPrefix(session).append(URL_TAGS.replace(VARIABLE_NODEID, nodeRef)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -204,7 +211,8 @@ public final class CloudUrlRegistry
      */
     public static String getUserActivitiesUrl(CloudSession session)
     {
-        return createPrefix(session).append(URL_ACTIVITIES.replace(VARIABLE_PERSONID, session.getPersonIdentifier()))
+        return createPrefix(session).append(
+                URL_ACTIVITIES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier())))
                 .toString();
     }
 
@@ -215,7 +223,8 @@ public final class CloudUrlRegistry
      */
     public static String getUserActivitiesUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_ACTIVITIES.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_ACTIVITIES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     /**
@@ -226,7 +235,8 @@ public final class CloudUrlRegistry
     public static String getSiteActivitiesUrl(CloudSession session, String siteShortName)
     {
         return createPrefix(session).append(
-                URL_SITE_ACTIVITIES.replace(VARIABLE_PERSONID, session.getPersonIdentifier()).replace(VARIABLE_SITEID,
+                URL_SITE_ACTIVITIES.replace(VARIABLE_PERSONID,
+                        getEncodingPersonIdentifier(session.getPersonIdentifier())).replace(VARIABLE_SITEID,
                         siteShortName)).toString();
     }
 
@@ -239,15 +249,14 @@ public final class CloudUrlRegistry
 
     public static String getCommentsUrl(CloudSession session, String nodeIdentifier)
     {
-        return createPrefix(session).append(
-                URL_COMMENTS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
+        return createPrefix(session).append(URL_COMMENTS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getCommentUrl(CloudSession session, String nodeIdentifier, String commentIdentifier)
     {
         return createPrefix(session).append(
-                URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_COMMENTID,
-                        commentIdentifier)).toString();
+                URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_COMMENTID, commentIdentifier))
+                .toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -257,15 +266,13 @@ public final class CloudUrlRegistry
 
     public static String getRatingsUrl(CloudSession session, String nodeIdentifier)
     {
-        return createPrefix(session).append(
-                URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
+        return createPrefix(session).append(URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier)).toString();
     }
 
     public static String getUnlikeUrl(CloudSession session, String nodeIdentifier)
     {
-        return createPrefix(session)
-                .append(URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier))
-                .append("/").append(CloudConstant.LIKES_VALUE).toString();
+        return createPrefix(session).append(URL_RATINGS.replace(VARIABLE_NODEID, nodeIdentifier)).append("/")
+                .append(CloudConstant.LIKES_VALUE).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -279,7 +286,8 @@ public final class CloudUrlRegistry
      */
     public static String getPersonDetailssUrl(CloudSession session, String username)
     {
-        return createPrefix(session).append(URL_PERSON_DETAILS.replace(VARIABLE_PERSONID, username)).toString();
+        return createPrefix(session).append(
+                URL_PERSON_DETAILS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -320,5 +328,18 @@ public final class CloudUrlRegistry
         sb.append(PREFIX_PUBLIC_API);
         sb.append("/");
         return sb;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////////////
+    private static String getEncodingPersonIdentifier(String identifier)
+    {
+        String personIdentifier = null;
+        if (identifier != null)
+        {
+            personIdentifier = identifier.replace(" ", "%20");
+        }
+        return personIdentifier;
     }
 }

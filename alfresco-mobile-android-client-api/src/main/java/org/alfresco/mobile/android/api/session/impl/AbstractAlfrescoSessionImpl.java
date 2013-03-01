@@ -309,6 +309,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
                 SessionParameter.AUTHENTICATION_PROVIDER_CLASS);
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
         addParameterIfExist(SessionParameter.COMPRESSION, SessionParameter.COMPRESSION);
+        addParameterIfExist(ONPREMISE_TRUSTMANAGER_CLASSNAME, ONPREMISE_TRUSTMANAGER_CLASSNAME);
+
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)
@@ -447,6 +449,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
 
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
+    private static final String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
+    
     // ////////////////////////
     // SHORTCUTS
     // ///////////////////////
