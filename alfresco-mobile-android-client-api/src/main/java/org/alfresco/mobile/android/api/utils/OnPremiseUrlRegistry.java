@@ -58,13 +58,13 @@ public final class OnPremiseUrlRegistry
     public static final String VARIABLE_USERNAME = "{username}";
 
     public static final String VARIABLE_SCHEME = "{scheme}";
-    
+
     public static final String VARIABLE_INVITEID = "{inviteid}";
 
     public static final String URL_USER_PREFERENCE = "api/people/{userid}/preferences";
 
     public static final String URL_USER_PREFERENCES = URL_USER_PREFERENCE + "?pf={preferencefilter}";
-    
+
     // ///////////////////////////////////////////////////////////////////////////////
     // TICKET
     // //////////////////////////////////////////////////////////////////////////////
@@ -78,18 +78,15 @@ public final class OnPremiseUrlRegistry
     {
         return baseAlfrescoUrl.concat(PREFIX_SERVICE).concat(URL_LOGIN);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////////
     // PREFERENCES
     // //////////////////////////////////////////////////////////////////////////////
-        /** @since 1.1.0 */
-    
+    /** @since 1.1.0 */
+
     public static String getUserPreferenceUrl(AlfrescoSession session, String username)
     {
-        return session
-                .getBaseUrl()
-                .concat(PREFIX_SERVICE)
-                .concat(URL_USER_PREFERENCE.replace(VARIABLE_USER, username));
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_USER_PREFERENCE.replace(VARIABLE_USER,  getEncodingPersonIdentifier(username)));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -109,7 +106,7 @@ public final class OnPremiseUrlRegistry
 
     /** @since 1.1.0 */
     public static final String URL_MEMBEROF = "api/sites/{shortname}/memberships/{userid}";
-    
+
     /** @since 1.1.0 */
     public static final String URL_JOIN_PUBLIC_SITE = "api/sites/{shortname}/memberships";
 
@@ -118,10 +115,10 @@ public final class OnPremiseUrlRegistry
 
     /** @since 1.1.0 */
     public static final String URL_LEAVE_SITE = "api/sites/{shortname}/memberships/{userid}";
-    
+
     /** @since 1.1.0 */
     public static final String URL_JOIN_SITE_REQUEST = "api/invitations?inviteeUserName={userid}";
-    
+
     /** @since 1.1.0 */
     public static final String URL_CANCEL_JOIN_SITE_REQUEST = "api/sites/{shortname}/invitations/{inviteid}";
 
@@ -141,7 +138,8 @@ public final class OnPremiseUrlRegistry
      */
     public static String getUserSitesUrl(AlfrescoSession session, String username)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_USER_SITES.replace(VARIABLE_USER, username));
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_USER_SITES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)));
     }
 
     public static String getSiteUrl(AlfrescoSession session, String siteShortName)
@@ -154,8 +152,8 @@ public final class OnPremiseUrlRegistry
         return session
                 .getBaseUrl()
                 .concat(PREFIX_SERVICE)
-                .concat(URL_USER_PREFERENCES.replace(VARIABLE_USER, username).replace(VARIABLE_PREFERENCE,
-                        PREFERENCE_SITES));
+                .concat(URL_USER_PREFERENCES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_PREFERENCE, PREFERENCE_SITES));
     }
 
     public static String getDocContainerSiteUrl(AlfrescoSession session, String siteId)
@@ -180,29 +178,38 @@ public final class OnPremiseUrlRegistry
     /** @since 1.1.0 */
     public static String getLeaveSiteUrl(AlfrescoSession session, String siteShortName, String username)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE)
-                .concat(URL_LEAVE_SITE.replace(VARIABLE_SHORTNAME, siteShortName).replace(VARIABLE_USER, username));
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_LEAVE_SITE.replace(VARIABLE_SHORTNAME, siteShortName).replace(VARIABLE_USER,
+                        getEncodingPersonIdentifier(username)));
     }
-    
+
     /** @since 1.1.0 */
     public static String getJoinRequestSiteUrl(AlfrescoSession session, String username)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE)
-                .concat(URL_JOIN_SITE_REQUEST.replace(VARIABLE_USER, username));
+                .concat(URL_JOIN_SITE_REQUEST.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)));
     }
-    
+
     /** @since 1.1.0 */
     public static String getCancelJoinSiteRequestUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE)
-                .concat(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_INVITEID, inviteId));
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(
+                        VARIABLE_INVITEID, getEncodingPersonIdentifier(inviteId)));
     }
-    
+
     /** @since 1.1.0 */
     public static String getMemberOfSiteUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE)
-                .concat(URL_MEMBEROF.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_USER, inviteId));
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_MEMBEROF.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_USER,
+                        getEncodingPersonIdentifier(inviteId)));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -295,7 +302,8 @@ public final class OnPremiseUrlRegistry
      */
     public static String getUserActivitiesUrl(AlfrescoSession session, String username)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_USER_ACTIVITIES.replace(VARIABLE_USER, username));
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_USER_ACTIVITIES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)));
     }
 
     /**
@@ -320,7 +328,8 @@ public final class OnPremiseUrlRegistry
 
     public static String getAvatarUrl(AlfrescoSession session, String username)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_AVATAR.replace(VARIABLE_USERNAME, username));
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_AVATAR.replace(VARIABLE_USERNAME, getEncodingPersonIdentifier(username)));
     }
 
     public static String getThumbnailsUrl(AlfrescoSession session, String nodeRef, String thumbnailName)
@@ -386,7 +395,7 @@ public final class OnPremiseUrlRegistry
     public static String getPersonDetailssUrl(AlfrescoSession session, String username)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE)
-                .concat(URL_PERSON_DETAILS.replace(VARIABLE_USERNAME, username));
+                .concat(URL_PERSON_DETAILS.replace(VARIABLE_USERNAME, getEncodingPersonIdentifier(username)));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -397,5 +406,18 @@ public final class OnPremiseUrlRegistry
     public static String getActionQueue(AlfrescoSession session)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_ACTION_QUEUE);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////////////
+    private static String getEncodingPersonIdentifier(String identifier)
+    {
+        String personIdentifier = null;
+        if (identifier != null)
+        {
+            personIdentifier = identifier.replace(" ", "%20");
+        }
+        return personIdentifier;
     }
 }
