@@ -680,9 +680,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteMembership()
     {
-        //TODO Activate when cloud test env is ready.
+        // TODO Activate when cloud test env is ready.
         if (!isOnPremise()) return;
-        
+
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);
@@ -690,7 +690,15 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Site moderatedSite = siteService.getSite(MODERATED_SITE);
 
         // Prepare consumer session + Check there's no existing membership
-        AlfrescoSession session = createSession(INVITED, INVITED_PASSWORD, null);
+        AlfrescoSession session = null;
+        if (isAlfrescoV4())
+        {
+            session = createSession(INVITED, INVITED_PASSWORD, null);
+        }
+        else
+        {
+            session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
+        }
         SiteService consumerSiteService = session.getServiceRegistry().getSiteService();
         List<Site> consumerSites = consumerSiteService.getSites();
         Assert.assertFalse("User has already a membership!", consumerSites.contains(publicSite));
@@ -847,9 +855,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteExtraProperties()
     {
-        //TODO Activate when cloud test env is ready.
+        // TODO Activate when cloud test env is ready.
         if (!isOnPremise()) return;
-        
+
         List<Site> userSites = siteService.getSites();
         List<Site> favoriteSites = siteService.getFavoriteSites();
         List<Site> allSites = siteService.getAllSites();
@@ -900,7 +908,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             {
                 Assert.assertFalse(userSites.contains(site));
             }
-            
+
             if (site.isPendingMember())
             {
                 Assert.assertTrue(requestedSite.contains(site.getIdentifier()));
@@ -911,7 +919,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             }
         }
     }
-    
 
     /**
      * Tests related to favorite site.
