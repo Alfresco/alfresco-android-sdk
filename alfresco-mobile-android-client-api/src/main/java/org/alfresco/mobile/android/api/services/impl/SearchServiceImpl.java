@@ -55,7 +55,7 @@ import android.util.Log;
  */
 public class SearchServiceImpl extends AlfrescoService implements SearchService
 {
-    
+
     /** Tag for Logging purpose. */
     private static final String TAG = "SearchService";
 
@@ -98,20 +98,20 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
     {
         String statement = createQuery(keywords, options.doesIncludeContent(), options.isExactMatch(),
-                options.getFolder(), options.doesIncludeDescendants());
+                options.getFolder(), options.doesIncludeDescendants(), listingContext);
         return search(statement, SearchLanguage.CMIS, listingContext);
     }
 
     /** {@inheritDoc} */
     public PagingResult<Node> search(String statement, SearchLanguage language, ListingContext listingContext)
     {
-        
+
         if (isStringNull(statement)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "statement")); }
 
         if (isObjectNull(language)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "language")); }
-        
+
         try
         {
             DiscoveryService discoveryService = cmisSession.getBinding().getDiscoveryService();
@@ -167,19 +167,22 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     // /////////////////////////////////////////////////////////////////////////////////
     // Internal
     // /////////////////////////////////////////////////////////////////////////////////
-    private static final String QUERY_DOCUMENT = "SELECT d.* FROM cmis:document as d JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE ";
+
+    private static final String QUERY_DOCUMENT_TITLED = "SELECT d.* FROM cmis:document as d JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE ";
+
+    private static final String QUERY_DOCUMENT = "SELECT * FROM cmis:document WHERE ";
 
     private static final String PARAM_NODEREF = "{noderef}";
 
-    private static final String QUERY_INFOLDER = " IN_FOLDER(d,'" + PARAM_NODEREF + "')";
+    private static final String QUERY_INFOLDER = " IN_FOLDER('" + PARAM_NODEREF + "')";
 
-    private static final String QUERY_DESCENDANTS = " IN_TREE(d,'" + PARAM_NODEREF + "')";
+    private static final String QUERY_DESCENDANTS = " IN_TREE('" + PARAM_NODEREF + "')";
 
-    private static final String PARAM_NAME = " d.cmis:name ";
+    private static final String PARAM_NAME = "cmis:name";
 
-    private static final String PARAM_CREATED_AT = " d.cmis:creationDate ";
+    private static final String PARAM_CREATED_AT = " cmis:creationDate ";
 
-    private static final String PARAM_MODIFIED_AT = " d.cmis:lastModificationDate ";
+    private static final String PARAM_MODIFIED_AT = " cmis:lastModificationDate ";
 
     private static final String PARAM_TITLE = " t.cm:title ";
 
@@ -194,8 +197,10 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     {
         {
             add(PARAM_NAME);
-            add(PARAM_TITLE);
-            add(PARAM_DESCRIPTION);
+            // Uncomment here to activate search on apsects cm:titled
+            // Requires QUERY_DOCUMENT on cm:titled
+            // add(PARAM_TITLE);
+            // add(PARAM_DESCRIPTION);
         }
     };
 
@@ -207,11 +212,24 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      *            document. (fulltext search)
      * @param isExact : Define if the keyword must match exactly with keywords.
      * @return Cmis query based on parameters
+     * @since 1.1 the query has been simplified. it doesn't cover anymore
+     *        cm:titled
      */
-    private static String createQuery(String query, boolean fulltext, boolean isExact, Folder f, boolean descendants)
+    private static String createQuery(String query, boolean fulltext, boolean isExact, Folder f, boolean descendants,
+            ListingContext listingContext)
     {
         List<String> keywords = Arrays.asList(TextUtils.split(query.trim(), "\\s+"));
-        StringBuilder sb = new StringBuilder(QUERY_DOCUMENT);
+
+        String startStatement = QUERY_DOCUMENT;
+        if (listingContext != null
+                && listingContext.getSortProperty() != null
+                && (SORT_PROPERTY_TITLE.equals(listingContext.getSortProperty()) || SORT_PROPERTY_DESCRIPTION
+                        .equals(listingContext.getSortProperty())))
+        {
+            startStatement = QUERY_DOCUMENT_TITLED;
+        }
+
+        StringBuilder sb = new StringBuilder(startStatement);
         String[] fullText = new String[0];
         if (fulltext)
         {
@@ -234,33 +252,37 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             sb.append("(");
         }
 
-        // Request name, title and description with each keyword.
+        // Create keywords
+        String keywordsValue = "";
+        for (String word : keywords)
+        {
+            if (word != null && !word.isEmpty())
+            {
+                keywordsValue += " " + word;
+            }
+        }
+        keywordsValue = keywordsValue.trim();
+
+        // Request name with each keyword.
         Boolean fulltextComplete = false;
         for (String propertyQuery : QUERYPROPERTIESLIST)
         {
-            for (int i = 0; i < keywords.size(); i++)
+            if (keywordsValue != null && keywordsValue.length() > 0)
             {
-                if (keywords.get(i) != null && keywords.get(i).length() > 0)
+                if (isExact)
                 {
-                    if (isExact)
-                    {
-                        words[i] = propertyQuery + "= '" + keywords.get(i) + "'" + OPERTATOR_OR + " UPPER("
-                                + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + " CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
-                                + ":\\\'" + keywords.get(i) + "\\\'')";
-                    }
-                    else
-                    {
-                        words[i] = propertyQuery + "LIKE '%" + keywords.get(i) + "%'" + OPERTATOR_OR + "UPPER("
-                                + propertyQuery + ") = '" + keywords.get(i).toUpperCase() + "'" + OPERTATOR_OR
-                                + "CONTAINS(" + propertyQuery.substring(1, 2) + ",'" + propertyQuery.substring(3)
-                                + ":\\\'\\*" + keywords.get(i) + "\\*\\\'')";
-                    }
+                    words[0] = propertyQuery + "= '" +keywordsValue + "'" + OPERTATOR_OR + " UPPER(" + propertyQuery
+                            + ") = '" + keywordsValue.toUpperCase() + "'" + OPERTATOR_OR + " CONTAINS('"
+                            + propertyQuery + ":\\\'" + keywordsValue + "\\\'')";
+                }
+                else
+                {
+                    words[0] = "CONTAINS('~" + propertyQuery + ":\\\'\\*" + keywordsValue + "\\*\\\'')";
+                }
 
-                    if (fulltext && !fulltextComplete)
-                    {
-                        fullText[i] = "contains (d,'" + keywords.get(i) + "')";
-                    }
+                if (fulltext && !fulltextComplete)
+                {
+                    fullText[0] = "contains ('" + keywordsValue + "')";
                 }
             }
             if (fulltextComplete)
@@ -312,7 +334,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         }
     }
 
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial" })
     private static Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
@@ -368,5 +390,5 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     {
         super((AlfrescoSession) o.readParcelable(AlfrescoSession.class.getClassLoader()));
     }
-    
+
 }

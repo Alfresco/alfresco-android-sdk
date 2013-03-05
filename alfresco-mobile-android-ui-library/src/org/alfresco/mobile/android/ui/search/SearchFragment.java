@@ -148,17 +148,6 @@ public abstract class SearchFragment extends BaseListFragment implements
         b.putString(KEYWORDS, keywords);
         b.putBoolean(INCLUDE_CONTENT, fullText);
         b.putBoolean(EXACTMATCH, isExact);
-
-        Log.d(TAG, keywords + " " + fullText + " " + isExact);
-
-       /* getLoaderManager().restartLoader(SearchLoader.ID, b, this);
-        getLoaderManager().getLoader(SearchLoader.ID).forceLoad();
-
-        isFullLoad = false;
-        if (adapter != null)
-        {
-            ((NodeAdapter) adapter).clear();
-        }*/
         reload(b, SearchLoader.ID, this);
     }
 

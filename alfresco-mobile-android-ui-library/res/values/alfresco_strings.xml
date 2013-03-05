@@ -14,7 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources>
 
@@ -116,6 +116,7 @@
     <string name="metadata">Properties</string>
     <string name="thumbnail">Thumbnail</string>
     <string name="metadata_prop_name">Name</string>
+    <string name="metadata_prop_path">Path</string>
     <string name="metadata_prop_type">Type</string>
     <string name="metadata_prop_content_mimetype">Mimetype</string>
     <string name="metadata_prop_content_size">Size</string>
