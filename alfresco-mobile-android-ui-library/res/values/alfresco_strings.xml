@@ -14,7 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources>
 
@@ -194,16 +194,16 @@
     <!-- Download -->
     <string name="download">Download</string>
     <string name="download_complete">Download complete</string>
-    <string name="download_error">An error occurs during download operation.</string>
+    <string name="download_error">An error occurred during download operation.</string>
     <string name="download_progress">Downloading in progress &#8230;</string>
     <!-- Empty -->
     <string name="empty_child">No document found</string>
     <string name="empty_site">No sites available</string>
     <string name="empty_version">No version history available</string>
-    <string name="empty_session">No Session available</string>
+    <string name="empty_session">No session available</string>
     <string name="empty_actvity">No activity found</string>
     <string name="empty_tag">No tag found</string>
-    <string name="empty_comment">No comment found</string>
+    <string name="empty_comment">No comments found</string>
     <string name="empty_search">No document found</string>
     <!-- Size -->
     <string name="file_size_empty">0 byte</string>
@@ -223,9 +223,9 @@
     <string name="like">Like</string>
     <string name="open_in">Open in</string>
     <string name="take_photo">Take photo</string>
-    <string name="make_video">Make video</string>
+    <string name="make_video">Record video</string>
     <string name="record_audio">Record audio</string>
-    <string name="version_history">Version History</string>
+    <string name="version_history">Version history</string>
     <string name="tags">Tags</string>
     <string name="share">Share</string>
     <string name="refresh">Refresh</string>
