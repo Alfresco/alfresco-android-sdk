@@ -96,7 +96,7 @@ public class RepositorySessionImpl extends RepositorySession
 
         RepositoryInfo tmpRepositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
-        if (isAlfresco && version != null && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
+        if (isAlfresco && !hasForceBinding() && version != null && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
             param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
             Session cmisSession2 = null;
