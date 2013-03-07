@@ -22,8 +22,8 @@ package org.alfresco.mobile.android.api;
  * 
  * @author Jean Marie Pascal
  */
-public class Version
+public interface Version
 {
     // Current Version of SDK
-    public static final String SDK = "1.1.0";
+    String SDK = "1.1.0";
 }
