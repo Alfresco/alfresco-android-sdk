@@ -17,15 +17,25 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api;
 
-/**
- * Informations relatives to the SDK.
- * 
- * @author Jean Marie Pascal
- */
-public class Version
+import java.io.IOException;
+import java.util.Properties;
+
+public final class SDKProperties
 {
-    /**
-     * The user-visible version string.  E.g., "1.0" or "3.4b5".
-     */
-    public static String SDK = SDKProperties.getString("build.version.sdk");
+
+    public static final String getString(String key)
+    {
+        try
+        {
+            Properties properties = new Properties();
+            properties.load(SDKProperties.class
+                    .getResourceAsStream("/org/alfresco/mobile/android/api/version.properties"));
+            return (String) properties.get(key);
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+    }
+
 }
