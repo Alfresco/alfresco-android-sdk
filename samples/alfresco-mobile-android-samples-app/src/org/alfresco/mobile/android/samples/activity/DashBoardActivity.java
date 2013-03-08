@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.activity;
 
+import org.alfresco.mobile.android.api.Version;
 import org.alfresco.mobile.android.samples.R;
 
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,6 +35,8 @@ import android.widget.TextView;
  */
 public class DashBoardActivity extends CommonActivity
 {
+
+    private static final String TAG = DashBoardActivity.class.getSimpleName();
 
     /** Called when the activity is first created. */
     @Override
@@ -51,6 +55,8 @@ public class DashBoardActivity extends CommonActivity
         {
             tv.setText("vX.X.X");
         }
+        
+        Log.i(TAG, "SDK " + Version.SDK);
     }
 
     /**

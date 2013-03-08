@@ -25,24 +25,27 @@ import java.util.ResourceBundle;
  * Provides utils to internationalize error exception messages.
  * 
  * @author Jean Marie Pascal
- *
  */
 public final class Messagesl18n
 {
-    private Messagesl18n(){
+    private Messagesl18n()
+    {
     }
-    
+
     private static final String BUNDLE_NAME = "org.alfresco.mobile.android.api.utils.messages.messages";
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, new Locale("en","US"));
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, new Locale("en", "US"));
 
     public static String getString(String key)
     {
         try
         {
-            if (key != null && key.length() > 0){
+            if (key != null && key.length() > 0)
+            {
                 return RESOURCE_BUNDLE.getString(key);
-            } else {
+            }
+            else
+            {
                 return "";
             }
         }

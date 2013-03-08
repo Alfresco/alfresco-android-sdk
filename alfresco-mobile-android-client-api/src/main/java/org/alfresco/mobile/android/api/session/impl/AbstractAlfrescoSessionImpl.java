@@ -167,6 +167,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
 
     private ListingContext lc;
 
+    private boolean forceBinding = false;
+
     /** {@inheritDoc} */
     public void addParameter(String key, Serializable value)
     {
@@ -325,12 +327,20 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
     {
         createCmisSettings();
 
+        String tmpBindingUrl = (String) getParameter(BASE_URL);
         // Binding with Alfresco Webscript CMIS implementation
-        if (hasParameter(BASE_URL) && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
+        if (tmpBindingUrl != null && !tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS)
+                && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
         {
-            sessionParameters.put(SessionParameter.ATOMPUB_URL,
-                    ((String) getParameter(BASE_URL)).concat(OnPremiseUrlRegistry.BINDING_CMIS));
+            tmpBindingUrl = tmpBindingUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS);
         }
+        else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS))
+        {
+            forceBinding = true;
+            this.baseUrl = tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, "");
+            sessionParameters.put(BASE_URL, tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, ""));
+        }
+        sessionParameters.put(SessionParameter.ATOMPUB_URL, tmpBindingUrl);
 
         // Object Factory
         sessionParameters.put(SessionParameter.OBJECT_FACTORY_CLASS,
@@ -563,5 +573,10 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         {
             services.getSiteService().clear();
         }
+    }
+
+    public boolean hasForceBinding()
+    {
+        return forceBinding;
     }
 }

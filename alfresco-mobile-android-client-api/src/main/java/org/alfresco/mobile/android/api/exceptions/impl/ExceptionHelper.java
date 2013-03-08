@@ -148,8 +148,14 @@ public final class ExceptionHelper
             {
                 er = OAuthErrorContent.parseJson(resp.getErrorContent());
             }
-            else if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST && session == null) { throw new AlfrescoSessionException(
-                    serviceErrorCode, OAuthErrorContent.parseJson(resp.getErrorContent())); }
+            else if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST && session == null)
+            {
+                throw new AlfrescoSessionException(serviceErrorCode,
+                        OAuthErrorContent.parseJson(resp.getErrorContent()));
+            }
+            else if (resp.getResponseCode() == HttpStatus.SC_SERVICE_UNAVAILABLE && session == null) { throw new AlfrescoSessionException(
+                    ErrorCodeRegistry.GENERAL_HTTP_RESP, HttpStatus.SC_SERVICE_UNAVAILABLE + " " + resp.getErrorContent()); }
+
             if (er == null)
             {
                 try
