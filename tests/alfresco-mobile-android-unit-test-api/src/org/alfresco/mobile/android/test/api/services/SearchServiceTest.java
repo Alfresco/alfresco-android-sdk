@@ -185,15 +185,16 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
 
         String keywords = "documentTestSearch";
-        List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
-        Assert.assertEquals(1, result.size());
+        //@since 1.1 we disable SORT_PROPERTY_TITLE & SORT_PROPERTY_DESCRIPTION
+        /*List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());*/
+        
+        /*lc.setSortProperty(SearchService.SORT_PROPERTY_DESCRIPTION);
+        result = searchService.keywordSearch(keywords, options, lc).getList();
+        Assert.assertEquals(1, result.size());*/
 
         lc.setSortProperty(SearchService.SORT_PROPERTY_NAME);
-        result = searchService.keywordSearch(keywords, options, lc).getList();
-        Assert.assertEquals(1, result.size());
-
-        lc.setSortProperty(SearchService.SORT_PROPERTY_DESCRIPTION);
-        result = searchService.keywordSearch(keywords, options, lc).getList();
+        List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
 
         lc.setSortProperty(SearchService.SORT_PROPERTY_MODIFIED_AT);
