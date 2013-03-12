@@ -927,6 +927,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteFavorite()
     {
+        if (!isOnPremise()) return;
+        
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);
