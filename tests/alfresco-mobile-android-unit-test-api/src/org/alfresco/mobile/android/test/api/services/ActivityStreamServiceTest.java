@@ -339,19 +339,20 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 if (!isOnPremise()){
                     try
                     {
-                        session.getServiceRegistry().getActivityStreamService()
-                        .getSiteActivityStream("privatesite");
+                        Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("privatesite").isEmpty());
                     }
                     catch (AlfrescoServiceException e)
                     {
                         // TODO: handle exception
                     }
                 } else {
-                    Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                    //@since site service management it's not null.
+                    Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
                             .getSiteActivityStream("privatesite").isEmpty());
                 }
-               
-                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                //@since site service management it's not null.
+                Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
                         .getSiteActivityStream("moderatedsite").isEmpty());
             }
             checkSession(session);

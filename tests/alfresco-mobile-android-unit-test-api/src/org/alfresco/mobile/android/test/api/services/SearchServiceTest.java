@@ -182,7 +182,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         options.setDoesIncludeContent(false);
 
         ListingContext lc = new ListingContext();
-        lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
+        //lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
 
         String keywords = "documentTestSearch";
         //@since 1.1 we disable SORT_PROPERTY_TITLE & SORT_PROPERTY_DESCRIPTION
