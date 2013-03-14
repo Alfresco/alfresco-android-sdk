@@ -142,7 +142,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         }
         else
         {
-            for (Entry<String, Integer> icon : eventIcon.entrySet())
+            for (Entry<String, Integer> icon : EVENT_ICON.entrySet())
             {
                 if (s.startsWith(icon.getKey()))
                 {
@@ -180,7 +180,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
     // TODO Constant Manager ?
     @SuppressWarnings("serial")
-    private static Map<String, Integer> eventIcon = new HashMap<String, Integer>()
+    private static final Map<String, Integer> EVENT_ICON = new HashMap<String, Integer>()
     {
         {
             put(PREFIX_LINK, R.drawable.ic_menu_share);
@@ -213,9 +213,9 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private String getActivityTypeMessage(ActivityEntry item)
     {
         String s = item.getType();
-        if (map.get(s) != null)
+        if (MAP_ACTIVITY_TYPE.get(s) != null)
         {
-            s = getContext().getResources().getString(map.get(item.getType()));
+            s = getContext().getResources().getString(MAP_ACTIVITY_TYPE.get(item.getType()));
 
             if (s.contains(PARAM_CUSTOM))
             {
@@ -268,7 +268,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
     // TODO Constant Manager ?
     @SuppressWarnings("serial")
-    private static Map<String, Integer> map = new HashMap<String, Integer>()
+    private static final Map<String, Integer> MAP_ACTIVITY_TYPE = new HashMap<String, Integer>()
     {
         {
             put("org.alfresco.blog.post-created", R.string.org_alfresco_blog_post_created);
