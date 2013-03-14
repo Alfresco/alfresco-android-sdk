@@ -17,20 +17,20 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * Implementation of JoinSiteRequest
+ * Representation of a request to join moderated sites.
  * 
  * @since 1.1.0
  * @author Jean Marie Pascal
  */
-public class JoinSiteRequestImpl implements JoinSiteRequest
+public class JoinSiteRequestImpl implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
@@ -79,19 +79,31 @@ public class JoinSiteRequestImpl implements JoinSiteRequest
         return request;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns the unique identifier for the join request.
+     * 
+     * @return the identifier
+     */
     public String getIdentifier()
     {
         return identifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns the short name of the site the join request was for.
+     * 
+     * @return the site short name
+     */
     public String getSiteShortName()
     {
         return siteShortName;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns the message the user provided with their join request.
+     * 
+     * @return the message.
+     */
     public String getMessage()
     {
         return message;

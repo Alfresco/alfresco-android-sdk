@@ -87,7 +87,7 @@ public class SiteImpl implements Site
         this.title = site.getTitle();
         this.description = site.getDescription();
         this.visibility = site.getVisibility().value();
-        this.nodeIdentifier = site.getIdentifier();
+        this.nodeIdentifier = site.getGUID();
         this.isPendingMember = isPendingMember;
         this.isMember = isMember;
         this.isFavorite = isFavorite;

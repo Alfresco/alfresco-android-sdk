@@ -27,7 +27,7 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class SiteFavoriteLoader extends AbstractBaseLoader<LoaderResult<Boolean>>
+public class SiteFavoriteLoader extends AbstractBaseLoader<LoaderResult<Site>>
 {
     /** Unique SiteFavoriteLoader identifier. */
     public static final int ID = SiteFavoriteLoader.class.hashCode();
@@ -50,23 +50,20 @@ public class SiteFavoriteLoader extends AbstractBaseLoader<LoaderResult<Boolean>
     }
 
     @Override
-    public LoaderResult<Boolean> loadInBackground()
+    public LoaderResult<Site> loadInBackground()
     {
 
-        LoaderResult<Boolean> result = new LoaderResult<Boolean>();
-        Boolean isFavorited = null;
+        LoaderResult<Site> result = new LoaderResult<Site>();
 
         try
         {
             if (site.isFavorite())
             {
-                session.getServiceRegistry().getSiteService().removeFavoriteSite(site);
-                isFavorited = false;
+                result.setData(session.getServiceRegistry().getSiteService().removeFavoriteSite(site));
             }
             else
             {
-                session.getServiceRegistry().getSiteService().addFavoriteSite(site);
-                isFavorited = true;
+                result.setData(session.getServiceRegistry().getSiteService().addFavoriteSite(site));
             }
         }
         catch (Exception e)
@@ -74,12 +71,10 @@ public class SiteFavoriteLoader extends AbstractBaseLoader<LoaderResult<Boolean>
             result.setException(e);
         }
 
-        result.setData(isFavorited);
-
         return result;
     }
-    
-    public Site getSite()
+
+    public Site getOldSite()
     {
         return site;
     }

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
@@ -27,27 +27,27 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class JoinSiteRequestCancelLoader extends AbstractBaseLoader<LoaderResult<Void>>
+public class JoinSiteRequestCancelLoader extends AbstractBaseLoader<LoaderResult<Site>>
 {
     /** Unique SiteMembershipLoader identifier. */
     public static final int ID = JoinSiteRequestCancelLoader.class.hashCode();
-    
-    private JoinSiteRequest joinSiteRequest;
-    
-    public JoinSiteRequestCancelLoader(Context context, AlfrescoSession session, JoinSiteRequest joinSiteRequest)
+
+    private Site site;
+
+    public JoinSiteRequestCancelLoader(Context context, AlfrescoSession session, Site site)
     {
         super(context);
         this.session = session;
-        this.joinSiteRequest = joinSiteRequest; 
+        this.site = site;
     }
 
     @Override
-    public LoaderResult<Void> loadInBackground()
+    public LoaderResult<Site> loadInBackground()
     {
-        LoaderResult<Void> result = new LoaderResult<Void>();
+        LoaderResult<Site> result = new LoaderResult<Site>();
         try
         {
-            session.getServiceRegistry().getSiteService().cancelJoinSiteRequest(joinSiteRequest);
+            result.setData(session.getServiceRegistry().getSiteService().cancelRequestToJoinSite(site));
         }
         catch (Exception e)
         {
@@ -56,10 +56,10 @@ public class JoinSiteRequestCancelLoader extends AbstractBaseLoader<LoaderResult
 
         return result;
     }
-    
-    public JoinSiteRequest getJoinSiteRequest()
+
+    public Site getJoinSiteRequest()
     {
-        return joinSiteRequest;
+        return site;
     }
-    
+
 }

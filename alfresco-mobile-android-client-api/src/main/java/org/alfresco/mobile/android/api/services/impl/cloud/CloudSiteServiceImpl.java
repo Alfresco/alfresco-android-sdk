@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -152,10 +151,12 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     // FAVORITES
     // ////////////////////////////////////////////////////
     /** {@inheritDoc} */
-    public void addFavoriteSite(Site site)
+    public Site addFavoriteSite(Site site)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        Site updatedSite = null;
 
         try
         {
@@ -187,29 +188,39 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                 }
             }, ErrorCodeRegistry.SITE_NOT_FAVORITED);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), true);
+            updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), true);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_FAVORITED);
         }
         catch (Exception e)
         {
             convertException(e);
         }
+
+        return updatedSite;
+
     }
 
     /** {@inheritDoc} */
-    public void removeFavoriteSite(Site site)
+    public Site removeFavoriteSite(Site site)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        Site updatedSite = null;
         try
         {
             String link = CloudUrlRegistry.getRemoveUserPreferenceUrl((CloudSession) session,
                     session.getPersonIdentifier(), site.getGUID());
             delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_NOT_UNFAVORITED);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), false);
+            updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), false);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_UNFAVORITED);
         }
         catch (Exception e)
         {
             convertException(e);
         }
+        return updatedSite;
     }
 
     // ////////////////////////////////////////////////////
@@ -217,12 +228,13 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    public JoinSiteRequest joinSite(Site site, String message)
+    public Site joinSite(Site site)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
-        JoinSiteRequest request = null;
+        Site updatedSite = null;
+
         try
         {
             String link = null;
@@ -235,10 +247,6 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
 
             // prepare json data
             jo = new JSONObject();
-            if (!isStringNull(message))
-            {
-                jo.put(CloudConstant.MESSAGE_VALUE, message);
-            }
             jo.put(CloudConstant.ID_VALUE, site.getIdentifier());
 
             final JsonDataWriter formDataM = new JsonDataWriter(jo);
@@ -260,6 +268,8 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
 
                     updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
+                    updatedSite = new SiteImpl(site, false, true, site.isFavorite());
+                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
 
                     break;
                 case MODERATED:
@@ -270,9 +280,20 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                     Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
                     Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
                             .get(CloudConstant.ENTRY_VALUE);
-                    request = JoinSiteRequestImpl.parsePublicAPIJson(data);
+                    JoinSiteRequestImpl request = JoinSiteRequestImpl.parsePublicAPIJson(data);
 
-                    updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
+                    if (request != null)
+                    {
+                        updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
+                        updatedSite = new SiteImpl(site, true, false, site.isFavorite());
+                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
+                    }
+                    else
+                    {
+                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
+                                Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing"));
+                    }
+
                     break;
                 case PRIVATE:
                     throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
@@ -290,14 +311,14 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         {
             convertException(e);
         }
-        return request;
+        return updatedSite;
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    public List<JoinSiteRequest> getJoinSiteRequests()
+    protected List<JoinSiteRequestImpl> getJoinSiteRequests()
     {
-        List<JoinSiteRequest> requestList = new ArrayList<JoinSiteRequest>();
+        List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
         try
         {
             // build URL
@@ -323,7 +344,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     }
 
     @Override
-    protected String getCancelJoinSiteRequestUrl(JoinSiteRequest joinSiteRequest)
+    protected String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest)
     {
         return CloudUrlRegistry.getCancelJoinSiteRequestUrl((CloudSession) session, joinSiteRequest.getSiteShortName(),
                 session.getPersonIdentifier());
@@ -435,7 +456,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     {
         try
         {
-            List<JoinSiteRequest> joinSiteRequestList = new ArrayList<JoinSiteRequest>();
+            List<JoinSiteRequestImpl> joinSiteRequestList = new ArrayList<JoinSiteRequestImpl>();
             try
             {
                 joinSiteRequestList = getJoinSiteRequests();

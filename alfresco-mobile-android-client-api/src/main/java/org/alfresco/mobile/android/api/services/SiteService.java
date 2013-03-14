@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -143,7 +142,7 @@ public interface SiteService extends Service
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_FAVORITED
      *             SITE_NOT_FAVORITED}
      */
-    void addFavoriteSite(Site site);
+    Site addFavoriteSite(Site site);
 
     /**
      * Removes the given site from the current users list of favorite sites. <br/>
@@ -156,7 +155,7 @@ public interface SiteService extends Service
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_UNFAVORITED
      *             SITE_NOT_UNFAVORITED}.
      */
-    public void removeFavoriteSite(Site site);
+    Site removeFavoriteSite(Site site);
 
     /**
      * Adds the current user as a member of the given site with an optional
@@ -164,7 +163,6 @@ public interface SiteService extends Service
      * 
      * @since 1.1.0
      * @param site : site object
-     * @param message : user message to join the site.
      * @return If the site is moderated, a JoinSiteRequest object is returned. <br/>
      *         If the site is public null is returned.
      * @throws AlfrescoServiceException : <br/>
@@ -178,7 +176,7 @@ public interface SiteService extends Service
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_JOINED
      *             SITE_NOT_JOINED}.
      */
-    public JoinSiteRequest joinSite(Site site, String message);
+    Site joinSite(Site site);
 
     /**
      * Returns a list of join site requests from the current user that have yet
@@ -191,7 +189,7 @@ public interface SiteService extends Service
      *         request.
      * @throws AlfrescoServiceException
      */
-    public List<JoinSiteRequest> getJoinSiteRequests();
+    List<Site> getPendingSites();
 
     /**
      * Cancels a previous request to join a site made by the current user.
@@ -203,7 +201,7 @@ public interface SiteService extends Service
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_CANCEL_JOINED
      *             SITE_CANCEL_JOINED}.
      */
-    public void cancelJoinSiteRequest(JoinSiteRequest joinSiteRequest);
+    Site cancelRequestToJoinSite(Site site);
 
     /**
      * Removes the current user from the given site.
@@ -215,6 +213,6 @@ public interface SiteService extends Service
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_LEFT
      *             SITE_NOT_LEFT}.
      */
-    public void leaveSite(Site site);
+    Site leaveSite(Site site);
 
 }
