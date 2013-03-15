@@ -20,10 +20,18 @@ package org.alfresco.mobile.android.api;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Responsible to retrieves informations about SDK.
+ * 
+ * @author Jean Marie Pascal
+ */
 public final class SDKProperties
 {
+    private SDKProperties()
+    {
+    }
 
-    public static final String getString(String key)
+    public static String getString(String key)
     {
         try
         {

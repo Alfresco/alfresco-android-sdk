@@ -25,7 +25,6 @@ import junit.framework.Assert;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -702,12 +701,12 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         SiteService consumerSiteService = session.getServiceRegistry().getSiteService();
         List<Site> consumerSites = consumerSiteService.getSites();
         Assert.assertFalse("User has already a membership!", consumerSites.contains(publicSite));
-        List<JoinSiteRequest> requestedSites = consumerSiteService.getJoinSiteRequests();
+        List<Site> requestedSites = consumerSiteService.getPendingSites();
         Assert.assertTrue("User has already a join request!", requestedSites.isEmpty());
 
         // Join PUBLIC Site + Check
-        JoinSiteRequest request = consumerSiteService.joinSite(publicSite, null);
-        Assert.assertNull("Request object is not null", request);
+        Site request = consumerSiteService.joinSite(publicSite);
+        Assert.assertNotNull("Request object is null", request);
         wait(3000);
         consumerSites = consumerSiteService.getSites();
         Assert.assertTrue("User doesn't have a membership!", consumerSites.contains(publicSite));
@@ -718,21 +717,20 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertFalse("User still has a membership!", consumerSites.contains(publicSite));
 
         // Join MODERATED Site + Check
-        String message = "This is a message";
-        request = consumerSiteService.joinSite(moderatedSite, message);
+        request = consumerSiteService.joinSite(moderatedSite);
         Assert.assertNotNull("Request object is null", request);
         wait(3000);
-        requestedSites = consumerSiteService.getJoinSiteRequests();
+        requestedSites = consumerSiteService.getPendingSites();
         Assert.assertFalse("User has no join request!", requestedSites.isEmpty());
         Assert.assertEquals("User has no join request!", 1, requestedSites.size());
         Assert.assertEquals("Wrong Request identifier", request.getIdentifier(), requestedSites.get(0).getIdentifier());
-        Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getSiteShortName());
-        Assert.assertEquals("Wrong Request Message Value", message, request.getMessage());
+        Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getShortName());
 
         // Leave MODERATED Site + Check
-        consumerSiteService.cancelJoinSiteRequest(requestedSites.get(0));
+        Assert.assertNotNull("User request", requestedSites.get(0));
+        consumerSiteService.cancelRequestToJoinSite(requestedSites.get(0));
         wait(3000);
-        requestedSites = consumerSiteService.getJoinSiteRequests();
+        requestedSites = consumerSiteService.getPendingSites();
         Assert.assertTrue("User has still a join request!", requestedSites.isEmpty());
 
         // ///////////////////////
@@ -741,8 +739,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // Join a site where user has already membership
         try
         {
-            consumerSiteService.joinSite(publicSite, null);
-            consumerSiteService.joinSite(publicSite, null);
+            consumerSiteService.joinSite(publicSite);
+            consumerSiteService.joinSite(publicSite);
             Assert.fail();
         }
         catch (AlfrescoServiceException e)
@@ -758,7 +756,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // Check it's not possible to join a null site
         try
         {
-            consumerSiteService.joinSite(null, null);
+            consumerSiteService.joinSite(null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)
@@ -769,7 +767,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // It's not possible to join a private site
         try
         {
-            consumerSiteService.joinSite(privateSite, null);
+            consumerSiteService.joinSite(privateSite);
             Assert.fail();
         }
         catch (AlfrescoServiceException e)
@@ -781,8 +779,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // join request.
         try
         {
-            request = consumerSiteService.joinSite(moderatedSite, null);
-            consumerSiteService.joinSite(moderatedSite, null);
+            request = consumerSiteService.joinSite(moderatedSite);
+            consumerSiteService.joinSite(moderatedSite);
             Assert.fail();
         }
         catch (AlfrescoServiceException e)
@@ -791,13 +789,13 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
         finally
         {
-            consumerSiteService.cancelJoinSiteRequest(request);
+            consumerSiteService.cancelRequestToJoinSite(moderatedSite);
         }
 
         // Cancel null join request
         try
         {
-            consumerSiteService.cancelJoinSiteRequest(null);
+            consumerSiteService.cancelRequestToJoinSite(null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)
@@ -808,7 +806,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // Cancel wrong join request
         try
         {
-            consumerSiteService.cancelJoinSiteRequest(request);
+            consumerSiteService.cancelRequestToJoinSite(request);
             Assert.fail();
         }
         catch (AlfrescoServiceException e)
@@ -861,11 +859,11 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         List<Site> userSites = siteService.getSites();
         List<Site> favoriteSites = siteService.getFavoriteSites();
         List<Site> allSites = siteService.getAllSites();
-        List<JoinSiteRequest> request = siteService.getJoinSiteRequests();
+        List<Site> request = siteService.getPendingSites();
         List<String> requestedSite = new ArrayList<String>(request.size());
-        for (JoinSiteRequest joinSiteRequest : request)
+        for (Site joinSiteRequest : request)
         {
-            requestedSite.add(joinSiteRequest.getSiteShortName());
+            requestedSite.add(joinSiteRequest.getShortName());
         }
 
         for (Site site : userSites)
@@ -928,7 +926,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
     public void testSiteFavorite()
     {
         if (!isOnPremise()) return;
-        
+
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);
@@ -942,8 +940,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertTrue("User has already favorited sites!", favoritedSites.isEmpty());
 
         // Join PUBLIC Site + Check
-        JoinSiteRequest request = consumerSiteService.joinSite(publicSite, null);
-        Assert.assertNull("Request object is not null", request);
+        Site request = consumerSiteService.joinSite(publicSite);
+        Assert.assertNotNull("Request object is null", request);
         wait(3000);
         consumerSites = consumerSiteService.getSites();
         Assert.assertTrue("User doesn't have a membership!", consumerSites.contains(publicSite));

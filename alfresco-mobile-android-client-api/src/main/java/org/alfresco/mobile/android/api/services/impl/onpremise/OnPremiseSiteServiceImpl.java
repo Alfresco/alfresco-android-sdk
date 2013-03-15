@@ -27,7 +27,6 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -36,7 +35,6 @@ import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
-import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -210,10 +208,13 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
      * @param site : Site object to manage
      * @param addSite : true to favorite the site. False to unfavorite the site.
      */
-    private void favoriteSite(Site site, boolean addSite)
+    private Site favoriteSite(Site site, boolean addSite)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        
+        Site updatedSite = null;
+
         try
         {
             String link = OnPremiseUrlRegistry.getUserPreferenceUrl(session, session.getPersonIdentifier());
@@ -244,23 +245,27 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 }
             }, ErrorCodeRegistry.SITE_NOT_FAVORITED);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), addSite);
+            updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), addSite);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_FAVORITED);
         }
         catch (Exception e)
         {
             convertException(e);
         }
+        
+        return updatedSite;
     }
 
     /** {@inheritDoc} */
-    public void addFavoriteSite(Site site)
+    public Site addFavoriteSite(Site site)
     {
-        favoriteSite(site, true);
+        return favoriteSite(site, true);
     }
 
     /** {@inheritDoc} */
-    public void removeFavoriteSite(Site site)
+    public Site removeFavoriteSite(Site site)
     {
-        favoriteSite(site, false);
+        return favoriteSite(site, false);
     }
 
     // ////////////////////////////////////////////////////
@@ -306,8 +311,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
     private boolean hasJoinRequest(Site site)
     {
-        List<JoinSiteRequest> requestedSites = getJoinSiteRequests();
-        for (JoinSiteRequest joinSiteRequest : requestedSites)
+        List<JoinSiteRequestImpl> requestedSites = getJoinSiteRequests();
+        for (JoinSiteRequestImpl joinSiteRequest : requestedSites)
         {
             if (site.getIdentifier().equals(joinSiteRequest.getSiteShortName())) { return true; }
         }
@@ -316,12 +321,13 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    public JoinSiteRequest joinSite(Site site, String message)
+    public Site joinSite(Site site)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
-        JoinSiteRequest request = null;
+        Site updatedSite = null;
+        
         try
         {
             String link = null;
@@ -364,11 +370,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     // membership
                     json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-                    if (json != null)
-                    {
-                        request = null;
-                    }
                     updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
+                    updatedSite = new SiteImpl(site, false, true, site.isFavorite());
+                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
                     break;
 
                 case MODERATED:
@@ -384,7 +388,6 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     jo = new JSONObject();
                     jo.put(OnPremiseConstant.INVITATIONTYPE_VALUE, SiteVisibility.MODERATED.value());
                     jo.put(OnPremiseConstant.INVITEEUSERNAME_VALUE, session.getPersonIdentifier());
-                    jo.put(OnPremiseConstant.INVITEECOMMENTS_VALUE, message);
                     jo.put(OnPremiseConstant.INVITEEROLENAME_VALUE, DEFAULT_ROLE);
 
                     final JsonDataWriter formDataM = new JsonDataWriter(jo);
@@ -401,8 +404,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     Map<String, Object> jmo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
                     if (jmo != null)
                     {
-                        request = JoinSiteRequestImpl.parseJson(jmo);
                         updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
+                        updatedSite = new SiteImpl(site, true, false, site.isFavorite());
+                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
                     }
                     else
                     {
@@ -422,14 +426,15 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             convertException(e);
         }
-        return request;
+        
+        return updatedSite;
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    public List<JoinSiteRequest> getJoinSiteRequests()
+    protected List<JoinSiteRequestImpl> getJoinSiteRequests()
     {
-        List<JoinSiteRequest> requestList = new ArrayList<JoinSiteRequest>();
+        List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
         try
         {
             // build URL
@@ -455,7 +460,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     }
 
     /** {@inheritDoc} */
-    protected String getCancelJoinSiteRequestUrl(JoinSiteRequest joinSiteRequest)
+    protected String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest)
     {
         return OnPremiseUrlRegistry.getCancelJoinSiteRequestUrl(session, joinSiteRequest.getSiteShortName(),
                 joinSiteRequest.getIdentifier());
@@ -629,7 +634,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     {
         try
         {
-            List<JoinSiteRequest> joinSiteRequestList = new ArrayList<JoinSiteRequest>();
+            List<JoinSiteRequestImpl> joinSiteRequestList = new ArrayList<JoinSiteRequestImpl>();
             try
             {
                 joinSiteRequestList = getJoinSiteRequests();

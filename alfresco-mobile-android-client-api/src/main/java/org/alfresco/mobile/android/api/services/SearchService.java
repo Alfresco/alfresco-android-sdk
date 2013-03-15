@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.api.services;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;

@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.services.SearchService;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -192,18 +191,6 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
     private static final String OPERTATOR_AND = " AND ";
 
-    @SuppressWarnings("serial")
-    private static final List<String> QUERYPROPERTIESLIST = new ArrayList<String>(3)
-    {
-        {
-            add(PARAM_NAME);
-            // Uncomment here to activate search on apsects cm:titled
-            // Requires QUERY_DOCUMENT on cm:titled
-            // add(PARAM_TITLE);
-            // add(PARAM_DESCRIPTION);
-        }
-    };
-
     /**
      * Internal utility method to create a cmis query based on keywords.
      * 
@@ -230,12 +217,6 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         }
 
         StringBuilder sb = new StringBuilder(startStatement);
-        String[] fullText = new String[0];
-        if (fulltext)
-        {
-            fullText = new String[keywords.size()];
-        }
-        String[] words = new String[keywords.size()];
 
         // First IN_FOLDER or IN_DESCENDANTS
         if (f != null)
@@ -264,42 +245,25 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
         keywordsValue = keywordsValue.trim();
 
         // Request name with each keyword.
-        Boolean fulltextComplete = false;
-        for (String propertyQuery : QUERYPROPERTIESLIST)
+        if (keywordsValue != null && keywordsValue.length() > 0)
         {
-            if (keywordsValue != null && keywordsValue.length() > 0)
+            if (isExact)
             {
-                if (isExact)
-                {
-                    words[0] = propertyQuery + "= '" +keywordsValue + "'" + OPERTATOR_OR + " UPPER(" + propertyQuery
-                            + ") = '" + keywordsValue.toUpperCase() + "'" + OPERTATOR_OR + " CONTAINS('"
-                            + propertyQuery + ":\\\'" + keywordsValue + "\\\'')";
-                }
-                else
-                {
-                    words[0] = "CONTAINS('~" + propertyQuery + ":\\\'\\*" + keywordsValue + "\\*\\\'')";
-                }
-
-                if (fulltext && !fulltextComplete)
-                {
-                    fullText[0] = "contains ('" + keywordsValue + "')";
-                }
+                sb.append(PARAM_NAME + "= '" + keywordsValue + "'" + OPERTATOR_OR + " UPPER(" + PARAM_NAME + ") = '"
+                        + keywordsValue.toUpperCase() + "'" + OPERTATOR_OR + " CONTAINS('" + PARAM_NAME + ":\\\'"
+                        + keywordsValue + "\\\'')");
             }
-            if (fulltextComplete)
+            else
+            {
+                sb.append("CONTAINS('~" + PARAM_NAME + ":\\\'\\*" + keywordsValue + "\\*\\\'')");
+            }
+
+            if (fulltext)
             {
                 sb.append(OPERTATOR_OR);
+                sb.append("contains ('" + keywordsValue + "')");
             }
-
-            join(sb, OPERTATOR_OR, words);
-            fulltextComplete = true;
         }
-
-        // Add the fulltext
-        if (fulltext)
-        {
-            sb.append(OPERTATOR_OR);
-        }
-        join(sb, OPERTATOR_OR, fullText);
 
         if (f != null)
         {
@@ -308,30 +272,6 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
 
         Log.d(TAG, "Query :" + sb.toString());
         return sb.toString();
-    }
-
-    /**
-     * Utility method to help creating a default cmis query.
-     * 
-     * @param sb
-     * @param delimiter
-     * @param tokens
-     */
-    private static void join(StringBuilder sb, CharSequence delimiter, Object[] tokens)
-    {
-        boolean firstTime = true;
-        for (Object token : tokens)
-        {
-            if (firstTime)
-            {
-                firstTime = false;
-            }
-            else
-            {
-                sb.append(delimiter);
-            }
-            sb.append(token);
-        }
     }
 
     @SuppressWarnings({ "serial" })

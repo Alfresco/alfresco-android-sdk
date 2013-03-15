@@ -46,7 +46,7 @@ import android.util.Log;
 public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationProvider implements
         PassthruAuthenticationProvider
 {
-    private String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
+    private static final String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
 
     private static final long serialVersionUID = 1L;
 

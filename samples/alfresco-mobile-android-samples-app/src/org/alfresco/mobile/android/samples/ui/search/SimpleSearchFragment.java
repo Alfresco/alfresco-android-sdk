@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.ui.search;
 
+import org.alfresco.mobile.android.api.asynchronous.SearchLoader;
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.samples.R;
 import org.alfresco.mobile.android.samples.activity.MainActivity;
 import org.alfresco.mobile.android.samples.utils.SessionUtils;
@@ -38,6 +41,8 @@ public class SimpleSearchFragment extends SearchFragment
 {
 
     public static final String TAG = "SimpleSearchFragment";
+    
+    private static final int MAX_RESULT_ITEMS = 30;
 
     public SimpleSearchFragment()
     {
@@ -79,7 +84,17 @@ public class SimpleSearchFragment extends SearchFragment
             {
                 if (query.getText().length() > 0)
                 {
-                   search(query.getText().toString(), cbFulltext.isChecked(), cbIsExact.isChecked());
+                    Bundle b = new Bundle();
+                    b.putString(KEYWORDS, query.getText().toString());
+                    b.putBoolean(INCLUDE_CONTENT, cbFulltext.isChecked());
+                    b.putBoolean(EXACTMATCH, cbIsExact.isChecked());
+
+                    // Reduce voluntary result list for cloud.
+                    if (alfSession instanceof CloudSession)
+                    {
+                        b.putSerializable(ARGUMENT_LISTING, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+                    }
+                    reload(b, SearchLoader.ID, SimpleSearchFragment.this);
                 }
             }
         });

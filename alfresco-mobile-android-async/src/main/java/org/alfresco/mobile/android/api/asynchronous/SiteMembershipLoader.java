@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
@@ -28,7 +27,7 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class SiteMembershipLoader extends AbstractBaseLoader<LoaderResult<JoinSiteRequest>>
+public class SiteMembershipLoader extends AbstractBaseLoader<LoaderResult<Site>>
 {
     /** Unique SiteMembershipLoader identifier. */
     public static final int ID = SiteMembershipLoader.class.hashCode();
@@ -42,36 +41,35 @@ public class SiteMembershipLoader extends AbstractBaseLoader<LoaderResult<JoinSi
     /** Determine if user wants to join sites or not. */
     private Boolean isJoining;
 
-    public static SiteMembershipLoader joinSite(Context context, AlfrescoSession session, Site site, String message)
+    public static SiteMembershipLoader joinSite(Context context, AlfrescoSession session, Site site)
     {
-        return new SiteMembershipLoader(context, session, site, true, message);
+        return new SiteMembershipLoader(context, session, site, true);
     }
 
     public static SiteMembershipLoader leaveSite(Context context, AlfrescoSession session, Site site)
     {
-        return new SiteMembershipLoader(context, session, site, true, null);
+        return new SiteMembershipLoader(context, session, site, true);
     }
 
-    public SiteMembershipLoader(Context context, AlfrescoSession session, Site site, Boolean isJoining, String message)
+    public SiteMembershipLoader(Context context, AlfrescoSession session, Site site, Boolean isJoining)
     {
         super(context);
         this.session = session;
         this.site = site;
         this.isJoining = isJoining;
-        this.message = message;
     }
 
     @Override
-    public LoaderResult<JoinSiteRequest> loadInBackground()
+    public LoaderResult<Site> loadInBackground()
     {
-        LoaderResult<JoinSiteRequest> result = new LoaderResult<JoinSiteRequest>();
+        LoaderResult<Site> result = new LoaderResult<Site>();
         try
         {
             result.setData(null);
 
             if (site != null && isJoining)
             {
-                result.setData(session.getServiceRegistry().getSiteService().joinSite(site, message));
+                result.setData(session.getServiceRegistry().getSiteService().joinSite(site));
             }
             else if (site != null && !isJoining)
             {
@@ -86,7 +84,7 @@ public class SiteMembershipLoader extends AbstractBaseLoader<LoaderResult<JoinSi
         return result;
     }
 
-    public Site getSite()
+    public Site getOldSite()
     {
         return site;
     }

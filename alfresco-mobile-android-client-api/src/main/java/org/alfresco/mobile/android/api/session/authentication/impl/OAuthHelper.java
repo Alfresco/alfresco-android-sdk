@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -116,13 +115,13 @@ public final class OAuthHelper implements OAuthConstant
     {
         if (isStringNull(apiKey)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "apiKey")); }
-        
+
         if (isStringNull(scope)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "scope")); }
-        
+
         if (isStringNull(callback)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "callback")); }
-        
+
         UrlBuilder builder = new UrlBuilder(baseUrl + PUBLIC_API_OAUTH_AUTHORIZE_PATH);
         builder.addParameter(PARAM_CLIENT_ID, apiKey);
         builder.addParameter(PARAM_REDIRECT_ID, callback);
@@ -168,19 +167,19 @@ public final class OAuthHelper implements OAuthConstant
     public OAuthData getAccessToken(String apiKey, String apiSecret, String callback, String code)
     {
         OAuth2DataImpl data = null;
-        
+
         if (isStringNull(apiKey)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "apiKey")); }
-        
+
         if (isStringNull(apiSecret)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "apiSecret")); }
-        
+
         if (isStringNull(callback)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "callback")); }
-        
+
         if (isStringNull(code)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "code")); }
-        
+
         try
         {
             UrlBuilder builder = new UrlBuilder(baseUrl + PUBLIC_API_OAUTH_TOKEN_PATH);
@@ -204,22 +203,20 @@ public final class OAuthHelper implements OAuthConstant
             data = new OAuth2DataImpl(apiKey, apiSecret);
             data.parseTokenResponse(json);
         }
+        catch (CmisConnectionException e)
+        {
+            if (e.getCause() instanceof IOException
+                    && e.getCause().getMessage().contains("Received authentication challenge is null")) { throw new AlfrescoSessionException(
+                    ErrorCodeRegistry.SESSION_API_KEYS_INVALID, e); }
+        }
+        catch (AlfrescoSessionException e)
+        {
+            throw (AlfrescoSessionException) e;
+
+        }
         catch (Exception e)
         {
-            if (e instanceof CmisConnectionException && e.getCause() instanceof IOException
-                    && e.getCause().getMessage().contains("Received authentication challenge is null"))
-            {
-                throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_API_KEYS_INVALID, e);
-            }
-            else if (e instanceof AlfrescoSessionException)
-            {
-                throw (AlfrescoSessionException) e;
-            }
-            else
-            {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
-
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return data;
     }
@@ -278,25 +275,24 @@ public final class OAuthHelper implements OAuthConstant
             token.parseTokenResponse(json);
             return token;
         }
+        catch (CmisConnectionException e)
+        {
+            if (e.getCause() instanceof IOException
+                    && e.getCause().getMessage().contains("Received authentication challenge is null")) { throw new AlfrescoSessionException(
+                    ErrorCodeRegistry.SESSION_API_KEYS_INVALID, e); }
+        }
+        catch (AlfrescoSessionException e)
+        {
+            throw (AlfrescoSessionException) e;
+
+        }
         catch (Exception e)
         {
-            if (e instanceof CmisConnectionException && e.getCause() instanceof IOException
-                    && e.getCause().getMessage().contains("Received authentication challenge is null"))
-            {
-                throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_API_KEYS_INVALID, e);
-            }
-            else if (e instanceof AlfrescoSessionException)
-            {
-                throw (AlfrescoSessionException) e;
-            }
-            else
-            {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return null;
     }
-    
+
     private boolean isStringNull(String s)
     {
         return (s == null || s.length() == 0 || s.trim().length() == 0);

@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
-import android.util.Log;
 
 public abstract class SearchFragment extends BaseListFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<Node>>>

@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.api.asynchronous;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
@@ -29,11 +29,11 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class JoinSiteRequestsLoader extends AbstractBaseLoader<LoaderResult<List<JoinSiteRequest>>>
+public class JoinSiteRequestsLoader extends AbstractBaseLoader<LoaderResult<List<Site>>>
 {
     /** Unique SiteMembershipLoader identifier. */
     public static final int ID = JoinSiteRequestsLoader.class.hashCode();
-    
+
     public JoinSiteRequestsLoader(Context context, AlfrescoSession session)
     {
         super(context);
@@ -41,12 +41,12 @@ public class JoinSiteRequestsLoader extends AbstractBaseLoader<LoaderResult<List
     }
 
     @Override
-    public LoaderResult<List<JoinSiteRequest>> loadInBackground()
+    public LoaderResult<List<Site>> loadInBackground()
     {
-        LoaderResult<List<JoinSiteRequest>> result = new LoaderResult<List<JoinSiteRequest>>();
+        LoaderResult<List<Site>> result = new LoaderResult<List<Site>>();
         try
         {
-            List<JoinSiteRequest> requests = session.getServiceRegistry().getSiteService().getJoinSiteRequests();
+            List<Site> requests = session.getServiceRegistry().getSiteService().getPendingSites();
             result.setData(requests);
         }
         catch (Exception e)
@@ -56,5 +56,5 @@ public class JoinSiteRequestsLoader extends AbstractBaseLoader<LoaderResult<List
 
         return result;
     }
-    
+
 }

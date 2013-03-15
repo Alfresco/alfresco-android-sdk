@@ -24,10 +24,10 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
@@ -244,10 +244,10 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * @param site : Site
      * @return URl to cancel a join request.
      */
-    protected abstract String getCancelJoinSiteRequestUrl(JoinSiteRequest joinSiteRequest);
+    protected abstract String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest);
 
     /** {@inheritDoc} */
-    public void cancelJoinSiteRequest(JoinSiteRequest joinSiteRequest)
+    public void cancelJoinSiteRequest(JoinSiteRequestImpl joinSiteRequest)
     {
         if (isObjectNull(joinSiteRequest)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
@@ -262,6 +262,44 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
     }
 
+    public Site cancelRequestToJoinSite(Site site)
+    {
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        Site updatedSite = null;
+
+        try
+        {
+            List<JoinSiteRequestImpl> requests = getJoinSiteRequests();
+
+            JoinSiteRequestImpl joinSiteRequest = null;
+            for (JoinSiteRequestImpl request : requests)
+            {
+                if (site.getShortName().equals(request.getSiteShortName()))
+                {
+                    joinSiteRequest = request;
+                    break;
+                }
+            }
+
+            if (isObjectNull(joinSiteRequest)) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.SITE_CANCEL_JOINED,
+                    Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing")); }
+
+            String link = getCancelJoinSiteRequestUrl(joinSiteRequest);
+            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_CANCEL_JOINED);
+            updatedSite = new SiteImpl(site, false, false, site.isFavorite());
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_CANCEL_JOINED);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return updatedSite;
+    }
+
     /**
      * Retrieve specific leave site url.
      * 
@@ -271,20 +309,54 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     protected abstract String getLeaveSiteUrl(Site site);
 
     /** {@inheritDoc} */
-    public void leaveSite(Site site)
+    public Site leaveSite(Site site)
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        Site updatedSite = null;
+
         try
         {
             String link = getLeaveSiteUrl(site);
             delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_NOT_LEFT);
             updateExtraPropertyCache(site.getShortName(), false, false, site.isFavorite());
+            updatedSite = new SiteImpl(site, false, false, site.isFavorite());
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_LEFT);
         }
         catch (Exception e)
         {
             convertException(e);
         }
+
+        return updatedSite;
+    }
+
+    protected abstract List<JoinSiteRequestImpl> getJoinSiteRequests();
+
+    /** {@inheritDoc} */
+    public List<Site> getPendingSites()
+    {
+        List<Site> pendingList = new ArrayList<Site>();
+        try
+        {
+            List<JoinSiteRequestImpl> requestList = getJoinSiteRequests();
+            for (JoinSiteRequestImpl request : requestList)
+            {
+                pendingList.add(getSite(request.getSiteShortName()));
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return pendingList;
+    }
+
+    protected void validateUpdateSite(Site updatedSite, int errorCode)
+    {
+        if (isObjectNull(updatedSite)) { throw new AlfrescoServiceException(errorCode,
+                Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing")); }
     }
 
     // ////////////////////////////////////////////////////
@@ -387,7 +459,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
      * @param request : List of user request.
      */
     protected void retrieveExtraProperties(List<String> favoriteSites, List<String> userSites,
-            List<JoinSiteRequest> request)
+            List<JoinSiteRequestImpl> request)
     {
         // Retrieve list of all favorites
         boolean isFavorite = false;
@@ -396,7 +468,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         tmpFavoriteSite.addAll(favoriteSites);
 
         // Retrieve list of all join site request.
-        for (JoinSiteRequest joinSiteRequest : request)
+        for (JoinSiteRequestImpl joinSiteRequest : request)
         {
             isFavorite = favoriteSites.contains(joinSiteRequest.getIdentifier());
             extraPropertiesCache.put(joinSiteRequest.getSiteShortName(), new CacheSiteExtraProperties(true, false,

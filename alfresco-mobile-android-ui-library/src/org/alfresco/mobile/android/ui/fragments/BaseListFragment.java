@@ -427,14 +427,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     protected boolean checkException(LoaderResult<?> result)
     {
-        if (result.getException() != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (result.getException() != null);
     }
 
     /**
