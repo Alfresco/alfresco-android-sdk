@@ -388,6 +388,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     jo = new JSONObject();
                     jo.put(OnPremiseConstant.INVITATIONTYPE_VALUE, SiteVisibility.MODERATED.value());
                     jo.put(OnPremiseConstant.INVITEEUSERNAME_VALUE, session.getPersonIdentifier());
+                    jo.put(OnPremiseConstant.INVITEECOMMENTS_VALUE, null);
                     jo.put(OnPremiseConstant.INVITEEROLENAME_VALUE, DEFAULT_ROLE);
 
                     final JsonDataWriter formDataM = new JsonDataWriter(jo);
