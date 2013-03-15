@@ -53,7 +53,7 @@ public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAut
     public static final int OPERATION_ACCESS_TOKEN = 1;
 
     @SuppressWarnings("serial")
-    private static final List<String> keys = new ArrayList<String>(4)
+    private static final List<String> KEYS = new ArrayList<String>(4)
     {
         {
             add(PARAM_CODE);
@@ -125,7 +125,7 @@ public class OAuthAccessTokenLoader extends AbstractBaseLoader<LoaderResult<OAut
 
     private static void checkValues(Bundle b)
     {
-        for (String key : keys)
+        for (String key : KEYS)
         {
             if (!b.containsKey(key) || b.getString(key) == null || b.getString(key).isEmpty()) { throw new IllegalArgumentException(
                     String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), key)); }

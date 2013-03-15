@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
-import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;

@@ -152,7 +152,6 @@ public class SiteImpl implements Site
                 .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
         site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
                 .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
-        ;
 
         return site;
     }

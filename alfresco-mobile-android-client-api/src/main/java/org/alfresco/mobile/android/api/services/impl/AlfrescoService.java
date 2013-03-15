@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.services.Service;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;

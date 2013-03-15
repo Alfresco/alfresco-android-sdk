@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
 
 /**

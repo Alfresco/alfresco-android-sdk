@@ -30,8 +30,6 @@ import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.model.ContentFile;
 
-import android.util.Log;
-
 /**
  * List of static methods to manage I/O operations.
  * 

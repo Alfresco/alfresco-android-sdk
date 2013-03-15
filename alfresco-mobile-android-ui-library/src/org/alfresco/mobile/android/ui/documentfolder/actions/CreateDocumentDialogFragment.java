@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
-import org.alfresco.mobile.android.api.asynchronous.FolderCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
