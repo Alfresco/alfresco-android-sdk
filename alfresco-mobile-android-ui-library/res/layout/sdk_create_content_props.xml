@@ -33,9 +33,9 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_dialog"
             android:shrinkColumns="1"
-            android:stretchColumns="1"
-            android:layout_margin="@dimen/padding_dialog" >
+            android:stretchColumns="1" >
 
             <TableRow
                 android:layout_width="wrap_content"
@@ -51,6 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/content_name_hint"
+                    android:imeOptions="actionNext"
                     android:inputType="text" >
                 </EditText>
             </TableRow>
@@ -76,14 +77,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/content_description_hint"
-                    android:inputType="textMultiLine" >
+                    android:imeOptions="actionNext"
+                    android:inputType="text" >
                 </EditText>
             </TableRow>
 
             <TableRow
+                android:id="@+id/tags_line"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tags_line" >
+                android:layout_height="wrap_content" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -94,11 +96,11 @@
                     android:id="@+id/content_tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/content_tags_hint" />
+                    android:hint="@string/content_tags_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
             </TableRow>
         </TableLayout>
-
-      
     </LinearLayout>
 
     <LinearLayout

@@ -32,14 +32,17 @@ import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public abstract class UpdateNodeDialogFragment extends BaseFragment
 {
@@ -92,6 +95,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
 
         v.findViewById(R.id.tags_line).setVisibility(View.GONE);
+        desc.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         Button button = (Button) v.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
@@ -108,16 +112,22 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         {
             public void onClick(View v)
             {
-                Map<String, Serializable> props = new HashMap<String, Serializable>(2);
-                props.put(ContentModel.PROP_NAME, tv.getText().toString());
-                if (desc.getText() != null && desc.getText().length() > 0)
+                updateNode(tv, desc, bcreate);
+            }
+        });
+
+        desc.setOnEditorActionListener(new OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE)
                 {
-                    props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
+                    updateNode(tv, desc, bcreate);
+                    handled = true;
                 }
-                UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), node, props);
-                up.setOnUpdateListener(onUpdateListener);
-                up.start();
-                bcreate.setEnabled(false);
+                return handled;
             }
         });
 
@@ -146,5 +156,19 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         }
 
         return v;
+    }
+
+    private void updateNode(EditText tv, EditText desc, Button bcreate)
+    {
+        Map<String, Serializable> props = new HashMap<String, Serializable>(2);
+        props.put(ContentModel.PROP_NAME, tv.getText().toString());
+        if (desc.getText() != null && desc.getText().length() > 0)
+        {
+            props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
+        }
+        UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), node, props);
+        up.setOnUpdateListener(onUpdateListener);
+        up.start();
+        bcreate.setEnabled(false);
     }
 }
