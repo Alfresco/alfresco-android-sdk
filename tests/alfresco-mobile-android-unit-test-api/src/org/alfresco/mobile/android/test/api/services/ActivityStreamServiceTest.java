@@ -219,8 +219,6 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             Assert.assertNotNull(entry.getSiteShortName());
             Assert.assertNotNull(entry.getData());
 
-            Assert.assertEquals(alfsession.getPersonIdentifier(), entry.getCreatedBy());
-
             // ///////////////////////////////////////////////////////////////////////////
             // Paging User Activity Entry
             // ///////////////////////////////////////////////////////////////////////////
@@ -292,8 +290,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             {
                 Assert.assertTrue(true);
             }
-            
-            if (!isOnPremise()){
+
+            if (!isOnPremise())
+            {
                 try
                 {
                     activityStreamService.getSiteActivityStream("adm1n");
@@ -302,7 +301,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 {
                     // TODO: handle exception
                 }
-            } else {
+            }
+            else
+            {
                 Assert.assertTrue(activityStreamService.getSiteActivityStream("adm1n").isEmpty());
             }
 
@@ -320,7 +321,8 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             }
 
             // Check Error activity
-            if (!isOnPremise()){
+            if (!isOnPremise())
+            {
                 try
                 {
                     activityStreamService.getSiteActivityStream("bestsite").isEmpty();
@@ -329,31 +331,44 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 {
                     // TODO: handle exception
                 }
-            } else {
+            }
+            else
+            {
                 Assert.assertTrue(activityStreamService.getSiteActivityStream("bestsite").isEmpty());
             }
-            
+
             AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
             if (session != null)
             {
-                if (!isOnPremise()){
+                if (!isOnPremise())
+                {
                     try
                     {
                         Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
-                        .getSiteActivityStream("privatesite").isEmpty());
+                                .getSiteActivityStream("privatesite").isEmpty());
                     }
                     catch (AlfrescoServiceException e)
                     {
                         // TODO: handle exception
                     }
-                } else {
-                    //@since site service management it's not null.
-                    Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
+                }
+                else
+                {
+                    // @since site service management it's not null.
+                    Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
                             .getSiteActivityStream("privatesite").isEmpty());
                 }
-                //@since site service management it's not null.
-                Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
-                        .getSiteActivityStream("moderatedsite").isEmpty());
+                
+                if (isOnPremise() && isAlfrescoV4())
+                {
+                    Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
+                            .getSiteActivityStream("moderatedsite").isEmpty());
+                }
+                else
+                {
+                    Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                            .getSiteActivityStream("moderatedsite").isEmpty());
+                }
             }
             checkSession(session);
         }
