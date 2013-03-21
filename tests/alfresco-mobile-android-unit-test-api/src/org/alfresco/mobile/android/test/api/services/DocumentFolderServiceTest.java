@@ -307,9 +307,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
                 .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
 
-        if (isAlfrescoV4())
-        { // Error on 3.4
-          // TODO This assert is wrong ! Wrong order !!!
+        if (isOnPremise() && !isAlfrescoV4())
+        {
             lc.setIsSortAscending(false);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
@@ -317,11 +316,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
             Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
                     + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                    .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
-            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+                    .getCreatedAt().getTimeInMillis() > pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
+
+            if (pagingResult.getList().get(0).isFolder())
+            {
+                Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+            }
 
             // Sorting with MODIFIED AT and invert sort ascending
             lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_MODIFIED_AT);
+            lc.setIsSortAscending(true);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
             Assert.assertEquals(10, pagingResult.getList().size());
@@ -331,16 +335,19 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                     .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
                     .getTimeInMillis());
 
-            // TODO This assert is wrong ! Wrong order !!!
             lc.setIsSortAscending(false);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
             Assert.assertEquals(10, pagingResult.getList().size());
             Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
                     + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                    .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
+                    .getModifiedAt().getTimeInMillis() > pagingResult.getList().get(9).getModifiedAt()
                     .getTimeInMillis());
-            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+
+            if (pagingResult.getList().get(0).isFolder())
+            {
+                Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+            }
         }
         // ////////////////////////////////////////////////////
         // LIST FOLDERS
