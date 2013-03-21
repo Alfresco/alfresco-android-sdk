@@ -11,7 +11,6 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.GZIPOutputStream;
 
 import org.apache.chemistry.opencmis.client.bindings.impl.ClientVersion;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Output;
@@ -170,8 +169,7 @@ public final class HttpUtils
             {
                 //conn.setChunkedStreamingMode((64 * 1024) - 1);
                 OutputStream connOut = null;
-                conn.setRequestProperty("Content-Encoding", "gzip");
-                connOut = new GZIPOutputStream(conn.getOutputStream(), 4096);
+                connOut = conn.getOutputStream();
                 OutputStream out = new BufferedOutputStream(connOut, BUFFER_SIZE);
                 writer.write(out);
                 out.flush();
