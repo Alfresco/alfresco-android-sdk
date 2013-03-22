@@ -121,7 +121,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertNotNull(result);
         Assert.assertTrue(result.size() > 0);
-        Log.d(TAG, "Result Size :" + result.size());
+        //Log.d(TAG, "Result Size :" + result.size());
 
         // Simple Query to search documents by keywords with fulltext mode
         // activated
@@ -129,7 +129,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result2 = searchService.keywordSearch(keywords, options);
         Assert.assertNotNull(result2);
         Assert.assertTrue(result2.size() > 0);
-        Log.d(TAG, "Result2 Size :" + result2.size());
+        //Log.d(TAG, "Result2 Size :" + result2.size());
 
         // Simple Query to search documents by keywords with Exact search mode
         // activated
@@ -138,7 +138,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result3 = searchService.keywordSearch(keywords, options);
         Assert.assertNotNull(result3);
         Assert.assertTrue(result3.size() >= 0);
-        Log.d(TAG, "Result3 Size :" + result3.size());
+        //Log.d(TAG, "Result3 Size :" + result3.size());
 
         // Simple Query to search documents by keywords with fulltext and Exact
         // search parameter activated
@@ -146,7 +146,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result4 = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertNotNull(result4);
         Assert.assertTrue(result4.size() >= 0);
-        Log.d(TAG, "Result4 Size :" + result3.size());
+        //Log.d(TAG, "Result4 Size :" + result3.size());
 
         // Very light assert to determine with full text there are more results
         // in return.

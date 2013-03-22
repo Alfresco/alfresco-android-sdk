@@ -115,7 +115,6 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
     /** {@inheritDoc} */
     protected Person computePerson(UrlBuilder url)
     {
-        Log.d("URL", url.toString());
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
 
         // check response code

@@ -63,7 +63,7 @@ public final class HttpUtils
             Map<String, String> params){
         try
         {
-            Log.d("URL", url.toString());
+            //Log.d("URL", url.toString());
 
             // connect
             HttpURLConnection conn = (HttpURLConnection) (new URL(url.toString())).openConnection();

@@ -368,7 +368,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         lc.setMaxItems(FOLDERS_NUMBER - 2);
         PagingResult<Folder> pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         Assert.assertNotNull(pagingFolders);
-        Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
+        //Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
         pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         // Assert.assertEquals(FOLDERS_NUMBER - 1,
         // pagingFolders.getTotalItems());
@@ -393,7 +393,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         listDocs = docfolderservice.getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
         Assert.assertEquals(DOCS_NUMBER, listDocs.size());
-        Log.d(TAG, "listDocs : " + listDocs);
+        //Log.d(TAG, "listDocs : " + listDocs);
 
         session.getServiceRegistry().getDocumentFolderService().getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
@@ -919,8 +919,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             // Extracation Metadata
             if (doc.hasAspect(ContentModel.ASPECT_GEOGRAPHIC) || doc.hasAspect(ContentModel.ASPECT_EXIF))
             {
-                Log.d(TAG, "Metadata extraction available");
-                Log.d(TAG, doc.getProperties().toString());
+                //Log.d(TAG, "Metadata extraction available");
+                //Log.d(TAG, doc.getProperties().toString());
 
                 Assert.assertEquals("2560", doc.getPropertyValue(ContentModel.PROP_PIXELY_DIMENSION).toString());
                 Assert.assertEquals("1920", doc.getPropertyValue(ContentModel.PROP_PIXELX_DIMENSION).toString());
@@ -1625,7 +1625,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
-                Log.d(TAG, folder.getName() + " : " + character);
+                //Log.d(TAG, folder.getName() + " : " + character);
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
@@ -1637,7 +1637,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             }
             catch (IllegalArgumentException e)
             {
-                Log.d(TAG, Log.getStackTraceString(e));
+                //Log.d(TAG, Log.getStackTraceString(e));
                 Assert.assertTrue(true);
             }
         }

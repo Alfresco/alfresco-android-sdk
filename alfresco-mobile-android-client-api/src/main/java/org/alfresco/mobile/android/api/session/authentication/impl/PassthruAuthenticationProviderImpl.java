@@ -105,7 +105,7 @@ public class PassthruAuthenticationProviderImpl extends AbstractAuthenticationPr
         {
             // We don't stop a session creation due to a wrong ssl creation.
             // The default secure one will be used instead.
-            Log.d("TrustManager", "Unable to instantiate CustomTrustManager");
+            //Log.d("TrustManager", "Unable to instantiate CustomTrustManager");
         }
         hasCheckedSSLFactory = true;
         return factory;

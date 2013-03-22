@@ -112,7 +112,7 @@ public class RenditionManager
         }
         catch (IOException e)
         {
-            Log.d(TAG, e.getMessage());
+            //Log.d(TAG, e.getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ public class RenditionManager
         if (getBitmapFromMemCache(hashKey) == null)
         {
             mMemoryCache.put(hashKey, bitmap);
-            Log.d(TAG, "Add MemoryCache : " + key);
+            //Log.d(TAG, "Add MemoryCache : " + key);
         }
     }
 
@@ -140,7 +140,7 @@ public class RenditionManager
                 IOUtils.copyStream(cf.getInputStream(), editor.newOutputStream(0));
                 editor.commit();
             }
-            Log.d(TAG, "Add DiskCache : " + key);
+            //Log.d(TAG, "Add DiskCache : " + key);
         }
         catch (Exception e)
         {
@@ -170,7 +170,7 @@ public class RenditionManager
             snapshot = mDiskCache.get(hashKey);
             if (snapshot != null)
             {
-                Log.d(TAG, "GET DiskCache : " + key);
+                //Log.d(TAG, "GET DiskCache : " + key);
                 if (preview != null)
                 {
                     return decodeStream(mDiskCache, hashKey, preview, dm);
@@ -227,7 +227,7 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
-            Log.d(TAG, "Cache : " + identifier);
+            //Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
         {
@@ -256,7 +256,7 @@ public class RenditionManager
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
 
-        Log.d(TAG, "height:" + height + "width" + width);
+        //Log.d(TAG, "height:" + height + "width" + width);
 
         return inSampleSize;
     }
@@ -316,7 +316,7 @@ public class RenditionManager
             // Find the correct scale value. It should be the power of 2.
             int requiredSizePx = getDPI(dm, requiredSize);
             int scale = calculateInSampleSize(o, requiredSizePx, requiredSizePx);
-            Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
+            //Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
 
             // decode with inSampleSize
             fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));

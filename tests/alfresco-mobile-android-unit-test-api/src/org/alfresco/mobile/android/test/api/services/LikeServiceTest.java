@@ -79,8 +79,8 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         if (!alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
             Assert.assertNull(likeService);
-            Log.d(TAG, alfsession.getRepositoryInfo().getVersion());
-            Log.d(TAG, "No support for Like operation. Test aborted");
+            //Log.d(TAG, alfsession.getRepositoryInfo().getVersion());
+            //Log.d(TAG, "No support for Like operation. Test aborted");
             return;
         }
 
@@ -171,8 +171,8 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         if (!alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
             Assert.assertNull(likeService);
-            Log.d(TAG, alfsession.getRepositoryInfo().getVersion());
-            Log.d(TAG, "No support for Like operation. Test aborted");
+            //Log.d(TAG, alfsession.getRepositoryInfo().getVersion());
+            //Log.d(TAG, "No support for Like operation. Test aborted");
             return;
         }
 
