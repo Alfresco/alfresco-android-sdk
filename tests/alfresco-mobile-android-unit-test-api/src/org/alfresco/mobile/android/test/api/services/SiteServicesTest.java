@@ -680,7 +680,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
     public void testSiteMembership()
     {
         // TODO Activate when cloud test env is ready.
-        if (!isOnPremise()) return;
 
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
@@ -853,9 +852,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteExtraProperties()
     {
-        // TODO Activate when cloud test env is ready.
-        if (!isOnPremise()) return;
-
         List<Site> userSites = siteService.getSites();
         List<Site> favoriteSites = siteService.getFavoriteSites();
         List<Site> allSites = siteService.getAllSites();
@@ -925,8 +921,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteFavorite()
     {
-        if (!isOnPremise()) return;
-
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);
