@@ -674,6 +674,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
         }
+        else
+        {
+            doc2 = (Document) docfolderservice
+                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
+        }
         Assert.assertFalse(doc + " != " + doc2.getName(), doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
 
@@ -707,8 +712,14 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         doc2 = (Document) sessionCollaborator.getServiceRegistry().getDocumentFolderService()
                 .updateProperties(doc2, properties);
         Assert.assertNotNull(doc2);
-        if (isOnPremise()){
+        if (isOnPremise())
+        {
             Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
+        else
+        {
+            doc2 = (Document) sessionCollaborator.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
         }
         Assert.assertFalse(doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
@@ -726,6 +737,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
         }
+        else
+        {
+            doc2 = (Document) docfolderservice
+                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
+        }
+
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
@@ -888,6 +905,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     public void checkRendition(Document doc, boolean validateRendition, boolean validateExtraction)
     {
+        Document docRendition = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
+
         // Rendition
         ContentFile rendition = null;
         int i = 0;
@@ -895,7 +915,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
-                rendition = docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
+                rendition = docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL);
                 if (rendition != null)
                 {
                     break;
@@ -911,21 +931,31 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         if (validateRendition)
         {
             wait(10000);
-            Assert.assertNotNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-            Assert.assertNotNull(docfolderservice.getRenditionStream(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-
+            if (docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL) != null)
+            {
+                Assert.assertNotNull(docfolderservice.getRendition(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+                Assert.assertNotNull(docfolderservice.getRenditionStream(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+            }
         }
         else
         {
             wait(10000);
-            Assert.assertNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-            Assert.assertNull(docfolderservice.getRenditionStream(doc, DocumentFolderService.RENDITION_THUMBNAIL));
+            if (docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL) == null)
+            {
+                Assert.assertNull(docfolderservice
+                        .getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL));
+                Assert.assertNull(docfolderservice.getRenditionStream(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+            }
         }
 
         if (validateExtraction)
         {
             // Extracation Metadata
-            if (doc.hasAspect(ContentModel.ASPECT_GEOGRAPHIC) || doc.hasAspect(ContentModel.ASPECT_EXIF))
+            if (docRendition.hasAspect(ContentModel.ASPECT_GEOGRAPHIC)
+                    || docRendition.hasAspect(ContentModel.ASPECT_EXIF))
             {
                 // Log.d(TAG, "Metadata extraction available");
                 // Log.d(TAG, doc.getProperties().toString());

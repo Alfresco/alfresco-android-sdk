@@ -218,6 +218,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
             wait(5000);
             docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
         }
+        
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
+        
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
