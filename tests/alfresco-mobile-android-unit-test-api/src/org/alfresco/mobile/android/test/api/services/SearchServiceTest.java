@@ -121,7 +121,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertNotNull(result);
         Assert.assertTrue(result.size() > 0);
-        //Log.d(TAG, "Result Size :" + result.size());
+        // Log.d(TAG, "Result Size :" + result.size());
 
         // Simple Query to search documents by keywords with fulltext mode
         // activated
@@ -129,7 +129,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result2 = searchService.keywordSearch(keywords, options);
         Assert.assertNotNull(result2);
         Assert.assertTrue(result2.size() > 0);
-        //Log.d(TAG, "Result2 Size :" + result2.size());
+        // Log.d(TAG, "Result2 Size :" + result2.size());
 
         // Simple Query to search documents by keywords with Exact search mode
         // activated
@@ -138,7 +138,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result3 = searchService.keywordSearch(keywords, options);
         Assert.assertNotNull(result3);
         Assert.assertTrue(result3.size() >= 0);
-        //Log.d(TAG, "Result3 Size :" + result3.size());
+        // Log.d(TAG, "Result3 Size :" + result3.size());
 
         // Simple Query to search documents by keywords with fulltext and Exact
         // search parameter activated
@@ -146,7 +146,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         List<Node> result4 = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertNotNull(result4);
         Assert.assertTrue(result4.size() >= 0);
-        //Log.d(TAG, "Result4 Size :" + result3.size());
+        // Log.d(TAG, "Result4 Size :" + result3.size());
 
         // Very light assert to determine with full text there are more results
         // in return.
@@ -164,7 +164,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
             List<Node> result5 = searchService.keywordSearch(keywords, options, null).getList();
             Assert.assertNotNull(result5);
             Assert.assertTrue(result5.size() >= 0);
-            //Assert.assertTrue(result5.size()+ " : " + result.size(), result5.size() >= result.size());
+            // Assert.assertTrue(result5.size()+ " : " + result.size(),
+            // result5.size() >= result.size());
         }
         catch (Exception e)
         {
@@ -182,7 +183,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         options.setDoesIncludeContent(false);
 
         ListingContext lc = new ListingContext();
-        //lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
+        // lc.setSortProperty(SearchService.SORT_PROPERTY_TITLE);
 
         String keywords = "DOCUMENTTESTSEARCH";
         //@since 1.1 we disable SORT_PROPERTY_TITLE & SORT_PROPERTY_DESCRIPTION
@@ -309,8 +310,11 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
             PagingResult<Node> pagingResult2 = searchService.search(LARGE_QUERY, SearchLanguage.CMIS, lc);
             Assert.assertNotNull(pagingResult2);
             Assert.assertEquals(5, pagingResult2.getList().size());
-            Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(), pagingResult2.getList().get(0)
-                    .getIdentifier());
+            if (isOnPremise())
+            {
+                Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(), pagingResult2.getList().get(0)
+                        .getIdentifier());
+            }
         }
         catch (Exception e)
         {
@@ -365,7 +369,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         // ////////////////////////////////////////////////////
         // Error on keywordsearch()
         // ////////////////////////////////////////////////////

@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -667,12 +668,13 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         Document doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         Assert.assertNotNull(doc2);
         if (isOnPremise())
         {
             Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
         }
-        Assert.assertFalse(doc.getName().equals(doc2.getName()));
+        Assert.assertFalse(doc + " != " + doc2.getName(), doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
 
         // 30F3

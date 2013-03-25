@@ -194,6 +194,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
             wait(5000);
             docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
         }
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
+        
         //docUpdated = readContent(docfolderservice.getContentStream(((Document) docfolderservice.getNodeByIdentifier(docUpdated.getIdentifier()))))
         Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
@@ -667,6 +669,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document customDoc2 = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customDoc, propertiesM);
+            
+            customDoc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(customDoc2.getIdentifier()));
 
             // Check Aspects
             Assert.assertNotNull(customDoc2.getAspects());
