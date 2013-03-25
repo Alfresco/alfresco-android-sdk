@@ -43,8 +43,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.util.Log;
-
 /**
  * Test class for DocumentFolderService.
  * 
@@ -368,7 +366,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         lc.setMaxItems(FOLDERS_NUMBER - 2);
         PagingResult<Folder> pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         Assert.assertNotNull(pagingFolders);
-        //Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
+        // Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
         pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         // Assert.assertEquals(FOLDERS_NUMBER - 1,
         // pagingFolders.getTotalItems());
@@ -393,7 +391,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         listDocs = docfolderservice.getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
         Assert.assertEquals(DOCS_NUMBER, listDocs.size());
-        //Log.d(TAG, "listDocs : " + listDocs);
+        // Log.d(TAG, "listDocs : " + listDocs);
 
         session.getServiceRegistry().getDocumentFolderService().getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
@@ -670,7 +668,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         Document doc2 = (Document) docfolderservice.updateProperties(doc, properties);
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        if (isOnPremise())
+        {
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
         Assert.assertFalse(doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
 
@@ -702,9 +703,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         doc2 = (Document) sessionCollaborator.getServiceRegistry().getDocumentFolderService()
-                .updateProperties(doc, properties);
+                .updateProperties(doc2, properties);
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        if (isOnPremise()){
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
         Assert.assertFalse(doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
         sessionCollaborator = null;
@@ -715,9 +718,12 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_TITLE, ROOT_TEST_FOLDER_NAME);
         properties.put(ContentModel.PROP_DESCRIPTION, ROOT_TEST_FOLDER_NAME);
 
-        doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        if (isOnPremise())
+        {
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
@@ -725,7 +731,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // 31S4 : CMIS prevents the update of mimetype (ignored)
         properties = new HashMap<String, Serializable>();
         properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, "doc/folder");
-        doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
         Assert.assertEquals(doc.getContentStreamMimeType(), doc2.getContentStreamMimeType());
 
         // 31S5 : CMIS prevents the update of tags (error)
@@ -733,7 +739,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_TAGS, "tag1");
         try
         {
-            doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+            doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
             Assert.fail();
         }
         catch (Exception e)
@@ -919,8 +925,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             // Extracation Metadata
             if (doc.hasAspect(ContentModel.ASPECT_GEOGRAPHIC) || doc.hasAspect(ContentModel.ASPECT_EXIF))
             {
-                //Log.d(TAG, "Metadata extraction available");
-                //Log.d(TAG, doc.getProperties().toString());
+                // Log.d(TAG, "Metadata extraction available");
+                // Log.d(TAG, doc.getProperties().toString());
 
                 Assert.assertEquals("2560", doc.getPropertyValue(ContentModel.PROP_PIXELY_DIMENSION).toString());
                 Assert.assertEquals("1920", doc.getPropertyValue(ContentModel.PROP_PIXELX_DIMENSION).toString());
@@ -1625,7 +1631,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
-                //Log.d(TAG, folder.getName() + " : " + character);
+                // Log.d(TAG, folder.getName() + " : " + character);
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
@@ -1637,7 +1643,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             }
             catch (IllegalArgumentException e)
             {
-                //Log.d(TAG, Log.getStackTraceString(e));
+                // Log.d(TAG, Log.getStackTraceString(e));
                 Assert.assertTrue(true);
             }
         }

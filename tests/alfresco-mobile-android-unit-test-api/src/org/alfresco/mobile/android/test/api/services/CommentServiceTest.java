@@ -533,7 +533,21 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
         if (session != null)
         {
-            session.getServiceRegistry().getCommentService().getComments(doc);
+            if (isOnPremise())
+            {
+                session.getServiceRegistry().getCommentService().getComments(doc);
+            }
+            else
+            {
+                try
+                {
+                    session.getServiceRegistry().getCommentService().getComments(doc);
+                }
+                catch (AlfrescoServiceException e)
+                {
+                    Assert.assertEquals(ErrorCodeRegistry.COMMENT_GENERIC, e.getErrorCode());
+                }
+            }
         }
         checkSession(session);
 

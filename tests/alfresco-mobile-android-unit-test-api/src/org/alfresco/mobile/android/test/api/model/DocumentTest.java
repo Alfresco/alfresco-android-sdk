@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -193,41 +194,51 @@ public class DocumentTest extends AlfrescoSDKTestCase
             wait(5000);
             docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
         }
-
+        //docUpdated = readContent(docfolderservice.getContentStream(((Document) docfolderservice.getNodeByIdentifier(docUpdated.getIdentifier()))))
+        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
-        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         if (isAlfrescoV4())
         {
             Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         }
+        
+        Document currentNodeVersion = docUpdated;
 
         // 27S6
         try
         {
-            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+            docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
         }
         catch (Exception e)
         {
             wait(5000);
-            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+            docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
         }
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, readContent(docfolderservice.getContentStream(docUpdated)));
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile("This is a long text"));
+        currentNodeVersion = docUpdated;
+        
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
         Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals("This is a long text", readContent(docfolderservice.getContentStream(docUpdated)));
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile("This is text"));
+        currentNodeVersion = docUpdated;
+        
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is text"));
         Assert.assertEquals("This is text", readContent(docfolderservice.getContentStream(docUpdated)));
+        
+        currentNodeVersion = docUpdated;
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile(""));
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(""));
         Assert.assertNull(docfolderservice.getContentStream(docUpdated));
+        
+        currentNodeVersion = docUpdated;
 
         // UpdateProperties
         GregorianCalendar gc = doc.getPropertyValue(PropertyIds.CREATION_DATE);
@@ -595,7 +606,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
             wait(2000);
-            modifiedDoc = (Document) docfolderservice.getNodeByIdentifier(modifiedDoc.getIdentifier());
+            modifiedDoc = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(modifiedDoc.getIdentifier()));
 
             Assert.assertEquals("This is textb.", modifiedDoc.getProperty("fdk:text").getValue());
             Assert.assertTrue(modifiedDoc.getProperty("fdk:textMultiple").isMultiValued());
