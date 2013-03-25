@@ -229,6 +229,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         currentNodeVersion = docUpdated;
         
         docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
+
         Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals("This is a long text", readContent(docfolderservice.getContentStream(docUpdated)));
@@ -236,11 +238,13 @@ public class DocumentTest extends AlfrescoSDKTestCase
         currentNodeVersion = docUpdated;
         
         docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is text"));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
         Assert.assertEquals("This is text", readContent(docfolderservice.getContentStream(docUpdated)));
         
         currentNodeVersion = docUpdated;
 
         docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(""));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
         Assert.assertNull(docfolderservice.getContentStream(docUpdated));
         
         currentNodeVersion = docUpdated;
@@ -253,6 +257,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         props.put(PropertyIds.NAME, "Hello");
         props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
         docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
         GregorianCalendar gc2 = docUpdated.getPropertyValue(PropertyIds.CREATION_DATE);
         // 31F5 Equals because read only properties!! (chemistry remove read
         // only
