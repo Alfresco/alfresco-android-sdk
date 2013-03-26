@@ -744,8 +744,11 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
-        Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
-        Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
+        //TODO Check
+        if (isOnPremise()){
+            Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
+            Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
+        }
 
         // 31S4 : CMIS prevents the update of mimetype (ignored)
         properties = new HashMap<String, Serializable>();
