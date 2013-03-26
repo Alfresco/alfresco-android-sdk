@@ -209,7 +209,7 @@ public class ActionManager
         {
             s = uri.getPath();
         }
-        Log.d("ActionManager", "URI:" + uri + " - S:" + s);
+        //Log.d("ActionManager", "URI:" + uri + " - S:" + s);
         return s;
     }
 

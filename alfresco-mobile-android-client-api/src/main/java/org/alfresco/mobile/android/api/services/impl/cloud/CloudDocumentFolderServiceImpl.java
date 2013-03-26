@@ -128,7 +128,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
         OperationContext context = cmisSession.createOperationContext();
         context.setRenditionFilterString(RENDITION_ALL);
         CmisObject object = cmisSession.getObject(identifier, context);
-        if (object != null)
+        if (object != null && kind != null)
         {
             List<Rendition> renditions = object.getRenditions();
             for (Rendition rendition : renditions)

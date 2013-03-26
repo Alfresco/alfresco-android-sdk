@@ -93,7 +93,7 @@ public abstract class AlfrescoService implements Service
      */
     protected HttpUtils.Response read(UrlBuilder url, int errorCode)
     {
-        Log.d("URL", url.toString());
+        //Log.d("URL", url.toString());
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
 
         // check response code

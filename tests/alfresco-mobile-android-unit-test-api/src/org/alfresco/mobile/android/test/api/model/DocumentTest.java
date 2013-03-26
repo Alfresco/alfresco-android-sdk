@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -127,7 +128,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
-        Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
+        Assert.assertTrue(doc.getCreatedAt().getTimeInMillis() + " " + doc.getModifiedAt().getTimeInMillis(), doc.getCreatedAt().getTimeInMillis() - doc.getModifiedAt().getTimeInMillis() <= 4000);
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
         Assert.assertTrue(doc.isDocument());
@@ -193,41 +194,69 @@ public class DocumentTest extends AlfrescoSDKTestCase
             wait(5000);
             docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER));
         }
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
 
+        // docUpdated =
+        // readContent(docfolderservice.getContentStream(((Document)
+        // docfolderservice.getNodeByIdentifier(docUpdated.getIdentifier()))))
+        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
-        Assert.assertEquals(FOREIGN_CHARACTER, readContent(docfolderservice.getContentStream(docUpdated)));
         if (isAlfrescoV4())
         {
             Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         }
 
+        Document currentNodeVersion = docUpdated;
+
         // 27S6
         try
         {
-            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+            docUpdated = docfolderservice.updateContent(currentNodeVersion,
+                    createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
         }
         catch (Exception e)
         {
             wait(5000);
-            docUpdated = docfolderservice.updateContent(doc, createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
+            docUpdated = docfolderservice.updateContent(currentNodeVersion,
+                    createContentFile(FOREIGN_CHARACTER_DOUBLE_BYTE));
         }
+
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
+
         Assert.assertTrue(doc.getContentStreamLength() + " > " + docUpdated.getContentStreamLength(),
                 doc.getContentStreamLength() > docUpdated.getContentStreamLength());
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, readContent(docfolderservice.getContentStream(docUpdated)));
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile("This is a long text"));
+        currentNodeVersion = docUpdated;
+
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
+
         Assert.assertFalse(docUpdated.getCreatedAt().equals(docUpdated.getModifiedAt()));
         Assert.assertEquals(MimeTypes.getMIMEType("txt"), doc.getContentStreamMimeType());
         Assert.assertEquals("This is a long text", readContent(docfolderservice.getContentStream(docUpdated)));
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile("This is text"));
+        currentNodeVersion = docUpdated;
+
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is text"));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
         Assert.assertEquals("This is text", readContent(docfolderservice.getContentStream(docUpdated)));
 
-        docUpdated = docfolderservice.updateContent(doc, createContentFile(""));
+        currentNodeVersion = docUpdated;
+
+        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile(""));
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
         Assert.assertNull(docfolderservice.getContentStream(docUpdated));
+
+        currentNodeVersion = docUpdated;
 
         // UpdateProperties
         GregorianCalendar gc = doc.getPropertyValue(PropertyIds.CREATION_DATE);
@@ -237,6 +266,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         props.put(PropertyIds.NAME, "Hello");
         props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
         docUpdated = (Document) docfolderservice.updateProperties(docUpdated, props);
+        docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
         GregorianCalendar gc2 = docUpdated.getPropertyValue(PropertyIds.CREATION_DATE);
         // 31F5 Equals because read only properties!! (chemistry remove read
         // only
@@ -595,7 +626,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
             wait(2000);
-            modifiedDoc = (Document) docfolderservice.getNodeByIdentifier(modifiedDoc.getIdentifier());
+            modifiedDoc = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(modifiedDoc
+                    .getIdentifier()));
 
             Assert.assertEquals("This is textb.", modifiedDoc.getProperty("fdk:text").getValue());
             Assert.assertTrue(modifiedDoc.getProperty("fdk:textMultiple").isMultiValued());
@@ -656,6 +688,11 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document customDoc2 = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customDoc, propertiesM);
+            
+            wait(3000);
+
+            customDoc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(customDoc2
+                    .getIdentifier()));
 
             // Check Aspects
             Assert.assertNotNull(customDoc2.getAspects());
@@ -738,7 +775,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ContentModel.TYPE_FOLDER, customFolder.getType());
             Assert.assertEquals("Alfresco", customFolder.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
-            
+
             // Update Properties
             HashMap<String, Serializable> propertiesM = new HashMap<String, Serializable>();
             propertiesM.put(ContentModel.PROP_TITLE, SAMPLE_DOC_NAME + "M");
@@ -773,8 +810,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("fdk:customfolder", customFolder.getType());
             Assert.assertEquals("Alfresco", customFolder.getProperty("fdk:manufacturer").getValue());
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
-            
-            //UpdateProperties
+
+            // UpdateProperties
             customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
 

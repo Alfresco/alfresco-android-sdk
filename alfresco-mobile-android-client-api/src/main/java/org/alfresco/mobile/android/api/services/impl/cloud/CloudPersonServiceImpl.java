@@ -94,11 +94,10 @@ public class CloudPersonServiceImpl extends AbstractPersonService
     /** {@inheritDoc} */
     protected Person computePerson(UrlBuilder url)
     {
-        Log.d("URL", url.toString());
         HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR)
+        if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR || resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
         {
             throw new AlfrescoServiceException(ErrorCodeRegistry.PERSON_NOT_FOUND, resp.getErrorContent());
         }

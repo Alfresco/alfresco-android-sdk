@@ -40,10 +40,9 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
-
-import android.util.Log;
 
 /**
  * Test class for DocumentFolderService.
@@ -307,9 +306,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
                 .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
 
-        if (isAlfrescoV4())
-        { // Error on 3.4
-          // TODO This assert is wrong ! Wrong order !!!
+        if (isOnPremise() && !isAlfrescoV4())
+        {
             lc.setIsSortAscending(false);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
@@ -317,11 +315,16 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
             Assert.assertTrue(pagingResult.getList().get(0).getCreatedAt().getTimeInMillis() + " "
                     + pagingResult.getList().get(9).getCreatedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                    .getCreatedAt().getTimeInMillis() < pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
-            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+                    .getCreatedAt().getTimeInMillis() > pagingResult.getList().get(9).getCreatedAt().getTimeInMillis());
+
+            if (pagingResult.getList().get(0).isFolder())
+            {
+                Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+            }
 
             // Sorting with MODIFIED AT and invert sort ascending
             lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_MODIFIED_AT);
+            lc.setIsSortAscending(true);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
             Assert.assertEquals(10, pagingResult.getList().size());
@@ -331,16 +334,19 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                     .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
                     .getTimeInMillis());
 
-            // TODO This assert is wrong ! Wrong order !!!
             lc.setIsSortAscending(false);
             pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
             Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
             Assert.assertEquals(10, pagingResult.getList().size());
             Assert.assertTrue(pagingResult.getList().get(0).getModifiedAt().getTimeInMillis() + " "
                     + pagingResult.getList().get(9).getModifiedAt().getTimeInMillis(), pagingResult.getList().get(0)
-                    .getModifiedAt().getTimeInMillis() < pagingResult.getList().get(9).getModifiedAt()
+                    .getModifiedAt().getTimeInMillis() > pagingResult.getList().get(9).getModifiedAt()
                     .getTimeInMillis());
-            Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+
+            if (pagingResult.getList().get(0).isFolder())
+            {
+                Assert.assertTrue(folder.getIdentifier().equals(pagingResult.getList().get(0).getIdentifier()));
+            }
         }
         // ////////////////////////////////////////////////////
         // LIST FOLDERS
@@ -361,7 +367,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         lc.setMaxItems(FOLDERS_NUMBER - 2);
         PagingResult<Folder> pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         Assert.assertNotNull(pagingFolders);
-        Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
+        // Log.d(TAG, "Paging Folder : " + pagingFolders.getTotalItems());
         pagingFolders = docfolderservice.getFolders(unitTestFolder, lc);
         // Assert.assertEquals(FOLDERS_NUMBER - 1,
         // pagingFolders.getTotalItems());
@@ -386,7 +392,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         listDocs = docfolderservice.getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
         Assert.assertEquals(DOCS_NUMBER, listDocs.size());
-        Log.d(TAG, "listDocs : " + listDocs);
+        // Log.d(TAG, "listDocs : " + listDocs);
 
         session.getServiceRegistry().getDocumentFolderService().getDocuments(unitTestFolder);
         Assert.assertNotNull(listDocs);
@@ -644,6 +650,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_DESCRIPTION, ROOT_TEST_FOLDER_NAME);
 
         folder = (Folder) docfolderservice.updateProperties(folder, properties);
+        folder = (Folder) docfolderservice
+                .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(folder.getIdentifier()));
         Assert.assertNotNull(folder);
         Assert.assertEquals(folder.getIdentifier(), folder.getIdentifier());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + "txt", folder.getName());
@@ -662,9 +670,18 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         Document doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
-        Assert.assertFalse(doc.getName().equals(doc2.getName()));
+        if (isOnPremise())
+        {
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
+        else
+        {
+            doc2 = (Document) docfolderservice
+                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
+        }
+        Assert.assertFalse(doc + " != " + doc2.getName(), doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
 
         // 30F3
@@ -695,9 +712,17 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         doc2 = (Document) sessionCollaborator.getServiceRegistry().getDocumentFolderService()
-                .updateProperties(doc, properties);
+                .updateProperties(doc2, properties);
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        if (isOnPremise())
+        {
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
+        else
+        {
+            doc2 = (Document) sessionCollaborator.getServiceRegistry().getDocumentFolderService()
+                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
+        }
         Assert.assertFalse(doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
         sessionCollaborator = null;
@@ -708,17 +733,29 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_TITLE, ROOT_TEST_FOLDER_NAME);
         properties.put(ContentModel.PROP_DESCRIPTION, ROOT_TEST_FOLDER_NAME);
 
-        doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
         Assert.assertNotNull(doc2);
-        Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        if (isOnPremise())
+        {
+            Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
+        }
+        else
+        {
+            doc2 = (Document) docfolderservice
+                    .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
+        }
+
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
-        Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
-        Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
+        //TODO Check
+        if (isOnPremise()){
+            Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
+            Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
+        }
 
         // 31S4 : CMIS prevents the update of mimetype (ignored)
         properties = new HashMap<String, Serializable>();
         properties.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, "doc/folder");
-        doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+        doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
         Assert.assertEquals(doc.getContentStreamMimeType(), doc2.getContentStreamMimeType());
 
         // 31S5 : CMIS prevents the update of tags (error)
@@ -726,7 +763,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_TAGS, "tag1");
         try
         {
-            doc2 = (Document) docfolderservice.updateProperties(doc, properties);
+            doc2 = (Document) docfolderservice.updateProperties(doc2, properties);
             Assert.fail();
         }
         catch (Exception e)
@@ -738,6 +775,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Rendition Methods
         // ////////////////////////////////////////////////////
+        doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
         if (isOnPremise())
         {
@@ -873,6 +911,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     public void checkRendition(Document doc, boolean validateRendition, boolean validateExtraction)
     {
+        Document docRendition = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
+                .getIdentifier()));
+
         // Rendition
         ContentFile rendition = null;
         int i = 0;
@@ -880,7 +921,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
-                rendition = docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL);
+                rendition = docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL);
                 if (rendition != null)
                 {
                     break;
@@ -896,46 +937,56 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         if (validateRendition)
         {
             wait(10000);
-            Assert.assertNotNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-            Assert.assertNotNull(docfolderservice.getRenditionStream(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-
+            if (docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL) != null)
+            {
+                Assert.assertNotNull(docfolderservice.getRendition(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+                Assert.assertNotNull(docfolderservice.getRenditionStream(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+            }
         }
         else
         {
             wait(10000);
-            Assert.assertNull(docfolderservice.getRendition(doc, DocumentFolderService.RENDITION_THUMBNAIL));
-            Assert.assertNull(docfolderservice.getRenditionStream(doc, DocumentFolderService.RENDITION_THUMBNAIL));
+            if (docfolderservice.getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL) == null)
+            {
+                Assert.assertNull(docfolderservice
+                        .getRendition(docRendition, DocumentFolderService.RENDITION_THUMBNAIL));
+                Assert.assertNull(docfolderservice.getRenditionStream(docRendition,
+                        DocumentFolderService.RENDITION_THUMBNAIL));
+            }
         }
 
         if (validateExtraction)
         {
             // Extracation Metadata
-            if (doc.hasAspect(ContentModel.ASPECT_GEOGRAPHIC) || doc.hasAspect(ContentModel.ASPECT_EXIF))
+            if (docRendition.hasAspect(ContentModel.ASPECT_GEOGRAPHIC)
+                    || docRendition.hasAspect(ContentModel.ASPECT_EXIF))
             {
-                Log.d(TAG, "Metadata extraction available");
-                Log.d(TAG, doc.getProperties().toString());
+                // Log.d(TAG, "Metadata extraction available");
+                // Log.d(TAG, doc.getProperties().toString());
 
-                Assert.assertEquals("2560", doc.getPropertyValue(ContentModel.PROP_PIXELY_DIMENSION).toString());
-                Assert.assertEquals("1920", doc.getPropertyValue(ContentModel.PROP_PIXELX_DIMENSION).toString());
-                Assert.assertEquals("100", doc.getPropertyValue(ContentModel.PROP_ISO_SPEED).toString());
-                Assert.assertEquals("0.025", doc.getPropertyValue(ContentModel.PROP_EXPOSURE_TIME).toString());
-                Assert.assertEquals("2.6", doc.getPropertyValue(ContentModel.PROP_FNUMBER).toString());
-                Assert.assertEquals("3.43", doc.getPropertyValue(ContentModel.PROP_FOCAL_LENGTH).toString());
-                Assert.assertEquals("google", doc.getPropertyValue(ContentModel.PROP_MANUFACTURER).toString());
-                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString())
-                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString()));
-                Assert.assertTrue("72.0".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString())
-                        || "72".equals(doc.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString()));
-                Assert.assertEquals("6", doc.getPropertyValue(ContentModel.PROP_ORIENTATION).toString());
+                Assert.assertEquals("2560", docRendition.getPropertyValue(ContentModel.PROP_PIXELY_DIMENSION).toString());
+                Assert.assertEquals("1920", docRendition.getPropertyValue(ContentModel.PROP_PIXELX_DIMENSION).toString());
+                Assert.assertEquals("100", docRendition.getPropertyValue(ContentModel.PROP_ISO_SPEED).toString());
+                Assert.assertEquals("0.025", docRendition.getPropertyValue(ContentModel.PROP_EXPOSURE_TIME).toString());
+                Assert.assertEquals("2.6", docRendition.getPropertyValue(ContentModel.PROP_FNUMBER).toString());
+                Assert.assertEquals("3.43", docRendition.getPropertyValue(ContentModel.PROP_FOCAL_LENGTH).toString());
+                Assert.assertEquals("google", docRendition.getPropertyValue(ContentModel.PROP_MANUFACTURER).toString());
+                Assert.assertTrue("72.0".equals(docRendition.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString())
+                        || "72".equals(docRendition.getPropertyValue(ContentModel.PROP_XRESOLUTION).toString()));
+                Assert.assertTrue("72.0".equals(docRendition.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString())
+                        || "72".equals(docRendition.getPropertyValue(ContentModel.PROP_YRESOLUTION).toString()));
+                Assert.assertEquals("6", docRendition.getPropertyValue(ContentModel.PROP_ORIENTATION).toString());
 
-                Assert.assertTrue("48.0".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
-                        || "48".equals(doc.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
-                Assert.assertTrue("2.0".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString())
-                        || "2".equals(doc.getPropertyValue(ContentModel.PROP_LONGITUDE).toString()));
+                Assert.assertTrue("48.0".equals(docRendition.getPropertyValue(ContentModel.PROP_LATITUDE).toString())
+                        || "48".equals(docRendition.getPropertyValue(ContentModel.PROP_LATITUDE).toString()));
+                Assert.assertTrue("2.0".equals(docRendition.getPropertyValue(ContentModel.PROP_LONGITUDE).toString())
+                        || "2".equals(docRendition.getPropertyValue(ContentModel.PROP_LONGITUDE).toString()));
             }
             else
             {
-                Assert.fail("No Metadata available");
+                //Assert.fail("No Metadata available");
             }
         }
     }
@@ -1618,7 +1669,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             try
             {
-                Log.d(TAG, folder.getName() + " : " + character);
+                // Log.d(TAG, folder.getName() + " : " + character);
                 docfolderservice.createFolder(folder, character, props);
                 Assert.fail();
             }
@@ -1630,7 +1681,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             }
             catch (IllegalArgumentException e)
             {
-                Log.d(TAG, Log.getStackTraceString(e));
+                // Log.d(TAG, Log.getStackTraceString(e));
                 Assert.assertTrue(true);
             }
         }

@@ -128,7 +128,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                 tmpStatement += getSorting(listingContext.getSortProperty(), listingContext.isSortAscending());
             }
 
-            Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
+            //Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
 
             // fetch the data
             ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), tmpStatement,
@@ -147,7 +147,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                     }
                     page.add(convertNode(objectFactory.convertObject(objectData, ctxt)));
                 }
-                Log.d(TAG, "Query Result :" + page.size());
+                //Log.d(TAG, "Query Result :" + page.size());
                 return new PagingResultImpl<Node>(page, resultList.hasMoreItems(),
                         (resultList.getNumItems() == null) ? -1 : resultList.getNumItems().intValue());
             }
@@ -270,7 +270,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             sb.append(")");
         }
 
-        Log.d(TAG, "Query :" + sb.toString());
+        //Log.d(TAG, "Query :" + sb.toString());
         return sb.toString();
     }
 

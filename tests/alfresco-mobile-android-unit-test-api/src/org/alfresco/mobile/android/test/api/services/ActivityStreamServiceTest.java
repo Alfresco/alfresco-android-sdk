@@ -101,7 +101,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             List<ActivityEntry> feed = activityStreamService.getActivityStream();
             if (feed == null || feed.isEmpty())
             {
-                Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
+                //Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
                 return;
             }
             int totalItems = feed.size();
@@ -463,7 +463,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {
-                Log.d(TAG, "Execute script : ok");
+                //Log.d(TAG, "Execute script : ok");
             }
         }
         catch (Exception e)

@@ -102,8 +102,8 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
             // Extracation Metadata
             if (doc.hasAspect(ContentModel.ASPECT_GEOGRAPHIC) || doc.hasAspect(ContentModel.ASPECT_EXIF))
             {
-                Log.d(TAG, "Metadata extraction available");
-                Log.d(TAG, doc.getProperties().toString());
+                //Log.d(TAG, "Metadata extraction available");
+                //Log.d(TAG, doc.getProperties().toString());
 
                 Assert.assertEquals("2560", doc.getPropertyValue(ContentModel.PROP_PIXELY_DIMENSION).toString());
                 Assert.assertEquals("1920", doc.getPropertyValue(ContentModel.PROP_PIXELX_DIMENSION).toString());

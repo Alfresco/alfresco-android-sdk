@@ -151,7 +151,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (childObjects != null)
             {
-                Log.d(TAG, "childObjects : " + childObjects.size());
+                ////Log.d(TAG, "childObjects : " + childObjects.size());
                 for (ObjectInFolderData objectData : childObjects)
                 {
                     if (objectData.getObject() != null)
@@ -537,7 +537,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            Log.d(TAG, Log.getStackTraceString(e));
+            //Log.d(TAG, Log.getStackTraceString(e));
             convertException(e);
         }
         return null;
@@ -559,7 +559,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getActionQueue(session));
             url.addParameter(OnPremiseConstant.PARAM_ASYNC, true);
-            Log.d("URL", url.toString());
+            //Log.d("URL", url.toString());
 
             // prepare json data
             JSONObject jo = new JSONObject();
@@ -579,7 +579,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {
-                Log.d(TAG, "Metadata extraction : ok");
+                //Log.d(TAG, "Metadata extraction : ok");
             }
         }
         catch (Exception e)
@@ -603,7 +603,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailUrl(session, identifier));
             url.addParameter(OnPremiseConstant.PARAM_AS, true);
-            Log.d("URL", url.toString());
+            //Log.d("URL", url.toString());
 
             // prepare json data
             JSONObject jo = new JSONObject();
@@ -774,7 +774,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            Log.d(TAG, Log.getStackTraceString(e));
+            //Log.d(TAG, Log.getStackTraceString(e));
             // In case where a null value is provided (definition type property
             // is not null)
             if (e.getMessage() != null && e.getMessage().contains("cannot be null or empty."))
@@ -1073,7 +1073,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
         }
 
-        Log.d(TAG, objectId);
+        //Log.d(TAG, objectId);
 
         tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
 

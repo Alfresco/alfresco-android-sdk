@@ -185,7 +185,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         });
 
         OAuthHelper helper = new OAuthHelper(baseOAuthUrl);
-        Log.d("OAUTH URL", helper.getAuthorizationUrl(apiKey, callback, scope));
+        //Log.d("OAUTH URL", helper.getAuthorizationUrl(apiKey, callback, scope));
         // send user to authorization page
         webview.loadUrl(helper.getAuthorizationUrl(apiKey, callback, scope));
 

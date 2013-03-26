@@ -104,7 +104,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         createDocumentFromAsset(unitTestFolder, "android.jpg");
         Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
         // Retrieve Content
-        Log.d(TAG, "Download Content");
+        //Log.d(TAG, "Download Content");
         cf = docfolderservice.getContent(doc);
         Assert.assertNotNull(cf);
         Assert.assertTrue(cf.getMimeType().contains(doc.getContentStreamMimeType()));
@@ -191,7 +191,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
+        //Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
         File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
     }
@@ -199,7 +199,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     @Override
     protected void tearDown() throws Exception
     {
-        Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
+        //Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
         File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
         super.tearDown();

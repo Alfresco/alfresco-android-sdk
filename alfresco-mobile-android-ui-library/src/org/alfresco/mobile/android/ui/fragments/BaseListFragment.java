@@ -454,7 +454,7 @@ public abstract class BaseListFragment extends BaseFragment
                 {
                     lv.setAdapter(null);
                 }
-                Log.d("BaseListFragment", "ITEMS : Empty !");
+                //Log.d("BaseListFragment", "ITEMS : Empty !");
             }
             else
             {
@@ -472,8 +472,8 @@ public abstract class BaseListFragment extends BaseFragment
                         }
                     }
                     hasmore = data.hasMoreItems();
-                    Log.d("BrowserFragment", hasmore + " - Total Items : " + data.getTotalItems() + " Results : "
-                            + data.getList().size() + " Adapter " + ((ArrayAdapter<Object>) adapter).getCount());
+                    //Log.d("BrowserFragment", hasmore + " - Total Items : " + data.getTotalItems() + " Results : "
+                    //        + data.getList().size() + " Adapter " + ((ArrayAdapter<Object>) adapter).getCount());
                     if (doesLoadMore())
                     {
                         loadMore();
