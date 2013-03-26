@@ -128,7 +128,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
-        Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
+        Assert.assertTrue(doc.getCreatedAt().getTimeInMillis() + " " + doc.getModifiedAt().getTimeInMillis(), doc.getCreatedAt().getTimeInMillis() - doc.getModifiedAt().getTimeInMillis() <= 4000);
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
         Assert.assertTrue(doc.isDocument());
@@ -688,6 +688,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document customDoc2 = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customDoc, propertiesM);
+            
+            wait(3000);
 
             customDoc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(customDoc2
                     .getIdentifier()));
