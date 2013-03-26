@@ -650,6 +650,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         properties.put(ContentModel.PROP_DESCRIPTION, ROOT_TEST_FOLDER_NAME);
 
         folder = (Folder) docfolderservice.updateProperties(folder, properties);
+        folder = (Folder) docfolderservice
+                .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(folder.getIdentifier()));
         Assert.assertNotNull(folder);
         Assert.assertEquals(folder.getIdentifier(), folder.getIdentifier());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + "txt", folder.getName());
@@ -740,7 +742,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         else
         {
             doc2 = (Document) docfolderservice
-                    .getNodeByIdentifier(NodeRefUtils.getNodeIdentifier(doc2.getIdentifier()));
+                    .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         }
 
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
@@ -773,6 +775,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Rendition Methods
         // ////////////////////////////////////////////////////
+        doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
         if (isOnPremise())
         {
