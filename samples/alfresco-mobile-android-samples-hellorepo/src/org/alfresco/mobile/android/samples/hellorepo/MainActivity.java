@@ -27,9 +27,9 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         // Modify to suit your Alfresco server installation
-        String url = "http://localhost:8080/alfresco";
+        String url = "http://127.0.0.1:8080/alfresco";
         String username = "admin";
-        String password = "password";
+        String password = "admin";
 
         new ConnectToRepo().execute(url, username, password);
 
