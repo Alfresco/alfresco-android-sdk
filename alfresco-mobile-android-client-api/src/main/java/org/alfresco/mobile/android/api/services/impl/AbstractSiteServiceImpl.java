@@ -254,7 +254,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         try
         {
             String link = getCancelJoinSiteRequestUrl(joinSiteRequest);
-            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_CANCEL_JOINED);
+            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
@@ -284,13 +284,13 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
             }
 
             if (isObjectNull(joinSiteRequest)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.SITE_CANCEL_JOINED,
+                    ErrorCodeRegistry.SITE_GENERIC,
                     Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing")); }
 
             String link = getCancelJoinSiteRequestUrl(joinSiteRequest);
-            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_CANCEL_JOINED);
+            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
             updatedSite = new SiteImpl(site, false, false, site.isFavorite());
-            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_CANCEL_JOINED);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
@@ -319,10 +319,10 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         try
         {
             String link = getLeaveSiteUrl(site);
-            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_NOT_LEFT);
+            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
             updateExtraPropertyCache(site.getShortName(), false, false, site.isFavorite());
             updatedSite = new SiteImpl(site, false, false, site.isFavorite());
-            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_LEFT);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
