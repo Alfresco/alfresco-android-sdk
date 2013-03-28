@@ -125,4 +125,11 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
             }
         }
     }
+    
+    @Override
+    public void testCRUDNode()
+    {
+        super.testCRUDNode();
+    }
+    
 }

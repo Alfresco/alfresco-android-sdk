@@ -771,7 +771,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_JOINED);
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_GENERIC);
         }
 
         // It's not possible to join a moderated site where user has already a
@@ -810,7 +810,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_CANCEL_JOINED);
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_GENERIC);
         }
 
         // It's not possible to leave a fake site
@@ -832,7 +832,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_LEFT);
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_GENERIC);
         }
 
         // It's not possible to leave a private site where you are not member
@@ -843,7 +843,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         }
         catch (AlfrescoServiceException e)
         {
-            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_NOT_LEFT);
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_GENERIC);
         }
     }
 

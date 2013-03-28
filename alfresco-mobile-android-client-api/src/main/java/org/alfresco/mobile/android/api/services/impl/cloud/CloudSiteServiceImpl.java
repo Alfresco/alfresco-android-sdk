@@ -185,10 +185,10 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                 {
                     formDataM.write(out);
                 }
-            }, ErrorCodeRegistry.SITE_NOT_FAVORITED);
+            }, ErrorCodeRegistry.SITE_GENERIC);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), true);
             updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), true);
-            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_FAVORITED);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
@@ -210,10 +210,10 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         {
             String link = CloudUrlRegistry.getRemoveUserPreferenceUrl((CloudSession) session,
                     session.getPersonIdentifier(), site.getGUID());
-            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_NOT_UNFAVORITED);
+            delete(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), false);
             updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), false);
-            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_UNFAVORITED);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
@@ -268,7 +268,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
 
                     updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
                     updatedSite = new SiteImpl(site, false, true, site.isFavorite());
-                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
+                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
 
                     break;
                 case MODERATED:
@@ -285,22 +285,22 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
                     {
                         updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
                         updatedSite = new SiteImpl(site, true, false, site.isFavorite());
-                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
+                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
                     }
                     else
                     {
-                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
+                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
                                 Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing"));
                     }
 
                     break;
                 case PRIVATE:
-                    throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
+                    throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.private"));
                 default:
                     if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
                     {
-                        convertStatusCode(resp, ErrorCodeRegistry.SITE_NOT_JOINED);
+                        convertStatusCode(resp, ErrorCodeRegistry.SITE_GENERIC);
                     }
                     throw new IllegalArgumentException(String.format(
                             Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "visibility"));

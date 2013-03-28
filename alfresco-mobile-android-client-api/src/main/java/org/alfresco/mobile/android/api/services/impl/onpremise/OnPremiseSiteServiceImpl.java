@@ -243,10 +243,10 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 {
                     formDataM.write(out);
                 }
-            }, ErrorCodeRegistry.SITE_NOT_FAVORITED);
+            }, ErrorCodeRegistry.SITE_GENERIC);
             updateExtraPropertyCache(site.getIdentifier(), site.isPendingMember(), site.isMember(), addSite);
             updatedSite = new SiteImpl(site, site.isPendingMember(), site.isMember(), addSite);
-            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_FAVORITED);
+            validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
         }
         catch (Exception e)
         {
@@ -364,7 +364,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                         {
                             formData.write(out);
                         }
-                    }, ErrorCodeRegistry.SITE_NOT_JOINED);
+                    }, ErrorCodeRegistry.SITE_GENERIC);
 
                     // By default Contains informations about authority &
                     // membership
@@ -372,7 +372,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
                     updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
                     updatedSite = new SiteImpl(site, false, true, site.isFavorite());
-                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
+                    validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
                     break;
 
                 case MODERATED:
@@ -400,23 +400,23 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                         {
                             formDataM.write(out);
                         }
-                    }, ErrorCodeRegistry.SITE_NOT_JOINED);
+                    }, ErrorCodeRegistry.SITE_GENERIC);
                     json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
                     Map<String, Object> jmo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
                     if (jmo != null)
                     {
                         updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
                         updatedSite = new SiteImpl(site, true, false, site.isFavorite());
-                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_NOT_JOINED);
+                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
                     }
                     else
                     {
-                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
+                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
                                 Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing"));
                     }
                     break;
                 case PRIVATE:
-                    throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_NOT_JOINED,
+                    throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.private"));
                 default:
                     throw new IllegalArgumentException(String.format(
