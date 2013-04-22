@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -1205,5 +1205,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             tmpName = ALFRESCO_TO_CMIS.get(tmpName);
         }
         return tmpName;
+    }
+    
+    @Override
+    public Node refreshNode(Node node)
+    {
+        cmisSession.removeObjectFromCache(node.getIdentifier());
+        return getNodeByIdentifier(node.getIdentifier());
     }
 }

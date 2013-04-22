@@ -22,41 +22,44 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
 
-/**
- * Provides an asynchronous loader to like a node.
- * 
- * @author Jean Marie Pascal
- */
-public class LikeLoader extends AbstractBooleanLoader
+public abstract class AbstractBooleanLoader extends AbstractBaseLoader<LoaderResult<Boolean>>
 {
-    /** Unique LikeLoader identifier. */
-    public static final int ID = LikeLoader.class.hashCode();
+    /** Node object (Folder or Document). */
+    protected Node node;
 
     /**
-     * Increases or decrease the like count for the specified node. </br> If
-     * node already liked, it unlike the node and vice-versa.
+     * Determine if the user has been liked this node.
      * 
      * @param context : Android Context
      * @param session : Repository Session
      * @param node : Node object (Folder or Document)
      */
-    public LikeLoader(Context context, AlfrescoSession session, Node node)
+    public AbstractBooleanLoader(Context context, AlfrescoSession session, Node node)
     {
-        super(context, session, node);
+        super(context);
+        this.session = session;
+        this.node = node;
     }
 
     @Override
-    protected boolean retrieveBoolean()
+    public LoaderResult<Boolean> loadInBackground()
     {
-        if (session.getServiceRegistry().getRatingService().isLiked(node))
+        LoaderResult<Boolean> result = new LoaderResult<Boolean>();
+        Boolean booleanValue = null;
+
+        try
         {
-            session.getServiceRegistry().getRatingService().unlike(node);
-            return false;
+            booleanValue = retrieveBoolean();
         }
-        else
+        catch (Exception e)
         {
-            session.getServiceRegistry().getRatingService().like(node);
-            return true;
+            result.setException(e);
         }
+
+        result.setData(booleanValue);
+
+        return result;
     }
+    
+    protected abstract boolean retrieveBoolean();
 }

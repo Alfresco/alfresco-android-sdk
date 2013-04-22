@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -27,13 +27,10 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class IsLikedLoader extends AbstractBaseLoader<LoaderResult<Boolean>>
+public class IsLikedLoader extends AbstractBooleanLoader
 {
     /** Unique IsLikedLoader identifier. */
     public static final int ID = IsLikedLoader.class.hashCode();
-
-    /** Node object (Folder or Document). */
-    private Node node;
 
     /**
      * Determine if the user has been liked this node.
@@ -44,29 +41,12 @@ public class IsLikedLoader extends AbstractBaseLoader<LoaderResult<Boolean>>
      */
     public IsLikedLoader(Context context, AlfrescoSession session, Node node)
     {
-        super(context);
-        this.session = session;
-        this.node = node;
+        super(context, session, node);
     }
 
     @Override
-    public LoaderResult<Boolean> loadInBackground()
+    protected boolean retrieveBoolean()
     {
-        LoaderResult<Boolean> result = new LoaderResult<Boolean>();
-        Boolean isLiked = null;
-
-        try
-        {
-            isLiked = session.getServiceRegistry().getRatingService().isLiked(node);
-        }
-        catch (Exception e)
-        {
-            result.setException(e);
-        }
-
-        result.setData(isLiked);
-
-        return result;
+        return session.getServiceRegistry().getRatingService().isLiked(node);
     }
-
 }

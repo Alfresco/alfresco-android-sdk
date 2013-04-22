@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -1799,6 +1799,161 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Map<String, Serializable> copy = new HashMap<String, Serializable>(properties);
         docfolderservice.createFolder(unitTestFolder, SAMPLE_FOLDER_DESCRIPTION, copy);
         Assert.assertTrue(copy.equals(properties));
-
     }
+    
+    /**
+     * @since 1.2
+     */
+    public void testFavorite(){
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Assert.assertTrue(unitTestFolder.hasAllProperties());
+        
+        //CHECK EMPTY FAVORITE LIST
+        List<Document> listDocuments = docfolderservice.getFavoriteDocuments();
+        Assert.assertNotNull(listDocuments);
+        Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
+        
+        List<Folder> listFolders = docfolderservice.getFavoriteFolders();
+        Assert.assertNotNull(listFolders);
+        Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
+        
+        Assert.assertFalse(docfolderservice.isFavorite(unitTestFolder));
+        
+        //ADD FAVORITE
+        docfolderservice.addFavorite(unitTestFolder);
+        
+        listFolders = docfolderservice.getFavoriteFolders();
+        Assert.assertNotNull(listFolders);
+        Assert.assertEquals(listFolders.size() + "", 1, listFolders.size());
+        Folder folder = listFolders.get(0);
+        Assert.assertEquals(unitTestFolder.getIdentifier(), folder.getIdentifier());
+        Assert.assertFalse(folder.hasAllProperties());
+
+        Folder refreshFolder = (Folder) docfolderservice.refreshNode(folder);
+        Assert.assertEquals(unitTestFolder.getIdentifier(), refreshFolder.getIdentifier());
+        Assert.assertTrue(docfolderservice.isFavorite(refreshFolder));
+        Assert.assertTrue(refreshFolder.hasAllProperties());
+
+        Assert.assertNotNull(listDocuments);
+        Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
+        
+        //REMOVE FAVORITE
+        docfolderservice.removeFavorite(unitTestFolder);
+        
+        listFolders = docfolderservice.getFavoriteFolders();
+        Assert.assertNotNull(listFolders);
+        Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
+        
+        Assert.assertNotNull(listDocuments);
+        Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
+        
+        
+        // Create sample document
+        Document doc = createDocument(unitTestFolder, "Doc1.txt");
+        Document doc2 = createDocument(unitTestFolder, "Doc2.txt");
+        Document doc3 = createDocument(unitTestFolder, "Doc3.txt");
+        
+        //ADD FAVORITE
+        docfolderservice.addFavorite(doc);
+        
+        listDocuments = docfolderservice.getFavoriteDocuments();
+        Assert.assertNotNull(listDocuments);
+        Assert.assertEquals(listDocuments.size() + "", 1, listDocuments.size());
+        Document document = listDocuments.get(0);
+        Assert.assertEquals(doc.getIdentifier(), document.getIdentifier());
+        Assert.assertFalse(document.hasAllProperties());
+
+        Document refreshDocument= (Document) docfolderservice.refreshNode(doc);
+        Assert.assertEquals(doc.getIdentifier(), refreshDocument.getIdentifier());
+        Assert.assertTrue(docfolderservice.isFavorite(refreshDocument));
+        Assert.assertTrue(refreshDocument.hasAllProperties());
+
+        Assert.assertNotNull(listFolders);
+        Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
+        
+        //ADD MULTIPLE FAVORITES
+        docfolderservice.addFavorite(doc2);
+        docfolderservice.addFavorite(doc3);
+        listDocuments = docfolderservice.getFavoriteDocuments();
+        for (Document d : listDocuments)
+        {
+            Assert.assertFalse(d.hasAllProperties());
+        }
+        
+        Assert.assertNotNull(listDocuments);
+        Assert.assertEquals(listDocuments.size() + "", 3, listDocuments.size());
+        
+        
+        //REMOVE 1 FAVORITE
+        docfolderservice.removeFavorite(refreshDocument);
+        
+        listDocuments = docfolderservice.getFavoriteDocuments();
+        for (Document d : listDocuments)
+        {
+            Assert.assertFalse(d.hasAllProperties());
+        }
+        
+        Assert.assertNotNull(listDocuments);
+        Assert.assertEquals(listDocuments.size() + "", 2, listDocuments.size());
+        Assert.assertFalse(docfolderservice.isFavorite(refreshDocument));
+
+        
+        //REMOVE 1 FAVORITES
+        docfolderservice.removeFavorite(doc2);
+        listDocuments = docfolderservice.getFavoriteDocuments();
+        for (Document d : listDocuments)
+        {
+            Assert.assertFalse(d.hasAllProperties());
+        }
+        Assert.assertFalse(docfolderservice.isFavorite(doc2));
+
+        
+        Assert.assertNotNull(listDocuments);
+        Assert.assertEquals(listDocuments.size() + "", 1, listDocuments.size());
+        
+        //REMOVE LAST FAVORITES
+        docfolderservice.removeFavorite(doc3);
+        
+        listDocuments = docfolderservice.getFavoriteDocuments();
+        Assert.assertNotNull(listFolders);
+        Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
+        
+        Assert.assertNotNull(listDocuments);
+        Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
+    }
+    
+    public void testFavoriteErrors(){
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+        Assert.assertTrue(unitTestFolder.hasAllProperties());
+        
+        //CHECK EMPTY FAVORITE LIST
+        List<Document> listDocuments = docfolderservice.getFavoriteDocuments();
+        Assert.assertNotNull(listDocuments);
+        Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
+        
+        List<Folder> listFolders = docfolderservice.getFavoriteFolders();
+        Assert.assertNotNull(listFolders);
+        Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
+        
+        Assert.assertFalse(docfolderservice.isFavorite(unitTestFolder));
+        
+        //ADD FAVORITE
+        docfolderservice.addFavorite(unitTestFolder);
+        docfolderservice.addFavorite(unitTestFolder);
+        docfolderservice.addFavorite(unitTestFolder);
+        
+        listFolders = docfolderservice.getFavoriteFolders();
+        Assert.assertNotNull(listFolders);
+        Assert.assertEquals(listFolders.size() + "", 1, listFolders.size());
+        Folder folder = listFolders.get(0);
+        Assert.assertEquals(unitTestFolder.getIdentifier(), folder.getIdentifier());
+        Assert.assertFalse(folder.hasAllProperties());
+        Assert.assertTrue(docfolderservice.isFavorite(folder));
+
+        
+        //TODO Continue implementing
+    }
+    
 }

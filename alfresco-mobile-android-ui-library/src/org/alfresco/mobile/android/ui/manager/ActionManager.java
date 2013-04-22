@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -192,15 +192,14 @@ public class ActionManager
      * @param uri
      * @return
      */
-    public static String getPath(Activity activity, Uri uri)
+    public static String getPath(Context context, Uri uri)
     {
         String scheme = uri.getScheme();
         String s = null;
         if (scheme.equals("content"))
         {
             String[] projection = { MediaStore.Files.FileColumns.DATA };
-            Cursor cursor = activity.managedQuery(uri, projection, null, null, null);
-            activity.startManagingCursor(cursor);
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
             cursor.moveToFirst();
             s = cursor.getString(columnIndex);

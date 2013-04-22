@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -453,5 +453,91 @@ public interface DocumentFolderService extends Service
      *             during the process.
      */
     ContentStream getRenditionStream(Node node, String type);
+
+    /**
+     * Returns a list of the current users favorite documents.
+     * 
+     * @return
+     * @since 1.2
+     */
+    List<Document> getFavoriteDocuments();
+
+    /**
+     * Returns a paged list of the current users favorite documents.
+     * 
+     * @param listingContext
+     * @return
+     * @since 1.2
+     */
+    PagingResult<Document> getFavoriteDocuments(ListingContext listingContext);
+
+    /**
+     * Returns a list of the current users favorite folders.
+     * 
+     * @return
+     * @since 1.2
+     */
+    List<Folder> getFavoriteFolders();
+
+    /**
+     * Returns a paged list of the current users favorite folders.
+     * 
+     * @param listingContext
+     * @return
+     * @since 1.2
+     */
+    PagingResult<Folder> getFavoriteFolders(ListingContext listingContext);
+
+    /**
+     * Returns a list of the current users favorite nodes.
+     * 
+     * @return
+     * @since 1.2
+     */
+    List<Node> getFavoriteNodes();
+
+    /**
+     * Returns a paged list of the current users favorite nodes.
+     * 
+     * @param listingContext
+     * @return
+     * @since 1.2
+     */
+    PagingResult<Node> getFavoriteNodes(ListingContext listingContext);
+
+    /**
+     * Determines whether the given node has been marked as a favorite by the
+     * current user.
+     * 
+     * @param node
+     * @return
+     * @since 1.2
+     */
+    boolean isFavorite(Node node);
+
+    /**
+     * Marks the provided node as a favorite node.
+     * 
+     * @param node
+     * @since 1.2
+     */
+    void addFavorite(Node node);
+
+    /**
+     * Removes the provided node from the current users favorites.
+     * 
+     * @param node
+     * @since 1.2
+     */
+    void removeFavorite(Node node);
+
+    /**
+     * Returns the latest (and complete) metadata for the provided node.
+     * 
+     * @param node
+     * @return
+     * @since 1.2
+     */
+    Node refreshNode(Node node);
 
 }

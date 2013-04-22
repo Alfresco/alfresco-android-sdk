@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -39,6 +39,11 @@ public class DocumentImpl extends NodeImpl implements Document
     public DocumentImpl(CmisObject o)
     {
         super(o);
+    }
+    
+    public DocumentImpl(CmisObject o, boolean hasAllProperties)
+    {
+        super(o, hasAllProperties);
     }
 
     /** {@inheritDoc} */

@@ -17,46 +17,47 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
 
 /**
- * Provides an asynchronous loader to like a node.
+ * Provides an asynchronous Loader to retrieve favorites documents.
  * 
  * @author Jean Marie Pascal
  */
-public class LikeLoader extends AbstractBooleanLoader
+public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Document>>>
 {
-    /** Unique LikeLoader identifier. */
-    public static final int ID = LikeLoader.class.hashCode();
 
-    /**
-     * Increases or decrease the like count for the specified node. </br> If
-     * node already liked, it unlike the node and vice-versa.
-     * 
-     * @param context : Android Context
-     * @param session : Repository Session
-     * @param node : Node object (Folder or Document)
-     */
-    public LikeLoader(Context context, AlfrescoSession session, Node node)
+    /** Unique NodesLoader identifier. */
+    public static final int ID = FavoritesLoader.class.hashCode();
+
+    public FavoritesLoader(Context context, AlfrescoSession session)
     {
-        super(context, session, node);
+        super(context);
+        this.session = session;
     }
 
     @Override
-    protected boolean retrieveBoolean()
+    public LoaderResult<PagingResult<Document>> loadInBackground()
     {
-        if (session.getServiceRegistry().getRatingService().isLiked(node))
+        LoaderResult<PagingResult<Document>> result = new LoaderResult<PagingResult<Document>>();
+        PagingResult<Document> pagingResult = null;
+
+        try
         {
-            session.getServiceRegistry().getRatingService().unlike(node);
-            return false;
+            pagingResult = session.getServiceRegistry().getDocumentFolderService().getFavoriteDocuments(listingContext);
         }
-        else
+        catch (Exception e)
         {
-            session.getServiceRegistry().getRatingService().like(node);
-            return true;
+            result.setException(e);
         }
+
+        result.setData(pagingResult);
+
+        return result;
     }
 }

@@ -23,24 +23,23 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import android.content.Context;
 
 /**
- * Provides an asynchronous loader to like a node.
+ * Provides an asynchronous loader to know if a node has been favorite.
  * 
  * @author Jean Marie Pascal
  */
-public class LikeLoader extends AbstractBooleanLoader
+public class IsFavoriteLoader extends AbstractBooleanLoader
 {
-    /** Unique LikeLoader identifier. */
-    public static final int ID = LikeLoader.class.hashCode();
+    /** Unique IsFavoriteLoader identifier. */
+    public static final int ID = IsFavoriteLoader.class.hashCode();
 
     /**
-     * Increases or decrease the like count for the specified node. </br> If
-     * node already liked, it unlike the node and vice-versa.
+     * Determine if the user has been favorited this node.
      * 
      * @param context : Android Context
      * @param session : Repository Session
      * @param node : Node object (Folder or Document)
      */
-    public LikeLoader(Context context, AlfrescoSession session, Node node)
+    public IsFavoriteLoader(Context context, AlfrescoSession session, Node node)
     {
         super(context, session, node);
     }
@@ -48,15 +47,6 @@ public class LikeLoader extends AbstractBooleanLoader
     @Override
     protected boolean retrieveBoolean()
     {
-        if (session.getServiceRegistry().getRatingService().isLiked(node))
-        {
-            session.getServiceRegistry().getRatingService().unlike(node);
-            return false;
-        }
-        else
-        {
-            session.getServiceRegistry().getRatingService().like(node);
-            return true;
-        }
+        return session.getServiceRegistry().getDocumentFolderService().isFavorite(node);
     }
 }
