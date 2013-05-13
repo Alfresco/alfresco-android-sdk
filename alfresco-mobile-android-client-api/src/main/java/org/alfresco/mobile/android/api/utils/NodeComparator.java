@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -42,6 +42,10 @@ public class NodeComparator implements Serializable, Comparator<Node>
 
     public int compare(Node nodeA, Node nodeB)
     {
+        if (nodeA == null || nodeB == null){
+            return 0;
+        }
+        
         int b = 0;
         if (DocumentFolderService.SORT_PROPERTY_NAME.equals(propertySorting))
         {

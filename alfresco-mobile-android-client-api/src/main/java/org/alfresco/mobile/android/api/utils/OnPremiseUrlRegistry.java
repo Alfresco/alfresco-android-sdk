@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -82,13 +82,40 @@ public final class OnPremiseUrlRegistry
     // ///////////////////////////////////////////////////////////////////////////////
     // PREFERENCES
     // //////////////////////////////////////////////////////////////////////////////
-    /** @since 1.1.0 */
+    /** @since 1.2.0 */
+    public static final String PREFERENCE_FAVOURITES_DOCUMENTS = "org.alfresco.share.documents.favourites";
+    
+    /** @since 1.2.0 */
+    public static final String PREFERENCE_FAVOURITES_FOLDERS = "org.alfresco.share.folders.favourites";
 
+    
+    /** @since 1.1.0 */
     public static String getUserPreferenceUrl(AlfrescoSession session, String username)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_USER_PREFERENCE.replace(VARIABLE_USER,  getEncodingPersonIdentifier(username)));
     }
-
+    
+    /** @since 1.2.0 */
+    public static String getUserFavouriteDocumentsUrl(AlfrescoSession session, String username)
+    {
+        return getPreferencesUrl(session, username, PREFERENCE_FAVOURITES_DOCUMENTS);
+    }
+    
+    /** @since 1.2.0 */
+    public static String getUserFavouriteFoldersUrl(AlfrescoSession session, String username)
+    {
+        return getPreferencesUrl(session, username, PREFERENCE_FAVOURITES_FOLDERS);
+    }
+    
+    /** @since 1.2.0 */
+    public static String getPreferencesUrl(AlfrescoSession session, String username, String preferenceFilter)
+    {
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_USER_PREFERENCES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_PREFERENCE, preferenceFilter));
+    }
     // ///////////////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////////////
@@ -149,11 +176,7 @@ public final class OnPremiseUrlRegistry
 
     public static String getUserFavoriteSitesUrl(AlfrescoSession session, String username)
     {
-        return session
-                .getBaseUrl()
-                .concat(PREFIX_SERVICE)
-                .concat(URL_USER_PREFERENCES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)).replace(
-                        VARIABLE_PREFERENCE, PREFERENCE_SITES));
+        return getPreferencesUrl(session, username, PREFERENCE_SITES);
     }
 
     public static String getDocContainerSiteUrl(AlfrescoSession session, String siteId)

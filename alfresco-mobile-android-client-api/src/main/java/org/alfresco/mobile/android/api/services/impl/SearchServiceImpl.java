@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -145,7 +145,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                     {
                         continue;
                     }
-                    page.add(convertNode(objectFactory.convertObject(objectData, ctxt)));
+                    page.add(convertNode(objectFactory.convertObject(objectData, ctxt), false));
                 }
                 //Log.d(TAG, "Query Result :" + page.size());
                 return new PagingResultImpl<Node>(page, resultList.hasMoreItems(),

@@ -15,10 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.impl;
+package org.alfresco.mobile.android.api.model.impl.cloud;
+
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -28,23 +29,18 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public class FolderImpl extends NodeImpl implements Folder
+public class CloudFolderImpl extends CloudNodeImpl implements Folder
 {
 
     private static final long serialVersionUID = 1L;
 
-    public FolderImpl()
+    public CloudFolderImpl()
     {
     }
 
-    public FolderImpl(CmisObject o)
+    public CloudFolderImpl(Map<String, Object> json)
     {
-        super(o);
-    }
-    
-    public FolderImpl(CmisObject o, boolean hasAllProperties)
-    {
-        super(o, hasAllProperties);
+        super(PublicAPIBaseTypeIds.FOLDER.value(), json);
     }
 
     // ////////////////////////////////////////////////////
@@ -54,20 +50,20 @@ public class FolderImpl extends NodeImpl implements Folder
     /**
      * Internal method to serialize Folder object.
      */
-    public static final Parcelable.Creator<FolderImpl> CREATOR = new Parcelable.Creator<FolderImpl>()
+    public static final Parcelable.Creator<CloudFolderImpl> CREATOR = new Parcelable.Creator<CloudFolderImpl>()
     {
-        public FolderImpl createFromParcel(Parcel in)
+        public CloudFolderImpl createFromParcel(Parcel in)
         {
-            return new FolderImpl(in);
+            return new CloudFolderImpl(in);
         }
 
-        public FolderImpl[] newArray(int size)
+        public CloudFolderImpl[] newArray(int size)
         {
-            return new FolderImpl[size];
+            return new CloudFolderImpl[size];
         }
     };
 
-    public FolderImpl(Parcel o)
+    public CloudFolderImpl(Parcel o)
     {
         super(o);
     }

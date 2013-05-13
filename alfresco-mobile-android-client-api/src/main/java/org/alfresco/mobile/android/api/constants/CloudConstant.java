@@ -171,5 +171,19 @@ public interface CloudConstant extends OnPremiseConstant
     String STACKTRACE_VALUE = "stackTrace";
 
     String DESCRIPTIONURL_VALUE = "descriptionURL";
+    
+    //FAVORITES
+    String TARGET_VALUE = "target";
+    
+    String FILE_VALUE = "file";
+    
+    String FOLDER_VALUE = "folder";
+
+    String VERSIONLABEL_VALUE = "versionLabel";
+    
+    String SIZEINBYTES_VALUE = "sizeInBytes";
+    
+    String MIMETYPE_VALUE = "mimeType";
+
 
 }
