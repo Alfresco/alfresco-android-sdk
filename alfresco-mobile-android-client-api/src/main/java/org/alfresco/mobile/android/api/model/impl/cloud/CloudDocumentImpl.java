@@ -17,13 +17,16 @@
  ******************************************************************************/
  package org.alfresco.mobile.android.api.model.impl.cloud;
 
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.VERSIONLABEL;
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.MIMETYPE;
+import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
+import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.VERSIONLABEL;
 
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Document;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 public class CloudDocumentImpl extends CloudNodeImpl implements Document
 {
@@ -41,7 +44,7 @@ public class CloudDocumentImpl extends CloudNodeImpl implements Document
     @Override
     public long getContentStreamLength()
     {
-        return getPropertyValue(SIZEINBYTES);
+        return (Long) ((getPropertyValue(SIZEINBYTES) == null) ? (long) -1 : getPropertyValue(SIZEINBYTES));
     }
 
     @Override
@@ -67,5 +70,29 @@ public class CloudDocumentImpl extends CloudNodeImpl implements Document
     {
         //it can't be true everytime...
         return true;
+    }
+    
+    // ////////////////////////////////////////////////////
+    // INTERNAL
+    // ////////////////////////////////////////////////////
+    /**
+     * Internal method to serialize Folder object.
+     */
+    public static final Parcelable.Creator<CloudDocumentImpl> CREATOR = new Parcelable.Creator<CloudDocumentImpl>()
+    {
+        public CloudDocumentImpl createFromParcel(Parcel in)
+        {
+            return new CloudDocumentImpl(in);
+        }
+
+        public CloudDocumentImpl[] newArray(int size)
+        {
+            return new CloudDocumentImpl[size];
+        }
+    };
+
+    public CloudDocumentImpl(Parcel o)
+    {
+        super(o);
     }
 }

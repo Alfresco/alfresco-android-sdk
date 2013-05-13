@@ -82,44 +82,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-			<artifactId>alfresco-mobile-android-samples-app</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-			<type>apk</type>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-			<artifactId>alfresco-mobile-android-samples-app</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk</groupId>
-			<artifactId>alfresco-mobile-android-client-api</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-			<artifactId>alfresco-mobile-android-samples-extension</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
-		</dependency>
-	</dependencies>
 </project>
