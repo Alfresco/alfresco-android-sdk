@@ -52,7 +52,7 @@ public class CloudNodeImpl implements Node
     private static final long serialVersionUID = 1L;
 
     /** Map of properties available for this Node. */
-    private Map<String, Property> properties;
+    private Map<String, Property> properties = new HashMap<String, Property>();
 
     private boolean hasAllProperties;
 
@@ -60,6 +60,9 @@ public class CloudNodeImpl implements Node
 
     private GregorianCalendar modificationDate;
 
+    // ////////////////////////////////////////////////////
+    // Constructors
+    // ////////////////////////////////////////////////////
     public CloudNodeImpl()
     {
     }
@@ -72,7 +75,6 @@ public class CloudNodeImpl implements Node
     public CloudNodeImpl(String type, Map<String, Object> json)
     {
         super();
-        properties = new HashMap<String, Property>();
         properties.put(ID, new PropertyImpl(JSONConverter.getString(json, ID)));
         properties.put(GUID, new PropertyImpl(JSONConverter.getString(json, GUID)));
         properties.put(NAME, new PropertyImpl(JSONConverter.getString(json, NAME)));
@@ -89,9 +91,10 @@ public class CloudNodeImpl implements Node
         properties.put(TYPE, new PropertyImpl(type));
         this.hasAllProperties = false;
     }
-    
 
-
+    // ////////////////////////////////////////////////////
+    // Shortcut and common methods
+    // ////////////////////////////////////////////////////
     @Override
     public String getIdentifier()
     {
@@ -168,6 +171,9 @@ public class CloudNodeImpl implements Node
         return modificationDate;
     }
 
+    // ////////////////////////////////////////////////////
+    // Properties and Aspects
+    // ////////////////////////////////////////////////////
     @Override
     public Property getProperty(String name)
     {
@@ -180,17 +186,23 @@ public class CloudNodeImpl implements Node
         return properties;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
+    /** {@inheritDoc} */
     public <T> T getPropertyValue(String name)
     {
-        if (getProp(name) != null) { return (T) getProp(name).getValue(); }
+        if (getProp(name) != null) { return getProp(name).getValue(); }
         return null;
     }
 
-    private Property getProp(String name)
+    private PropertyImpl getProp(String name)
     {
-        return (properties != null) ? properties.get(name) : null;
+        if (properties != null)
+        {
+            return (PropertyImpl) properties.get(name);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     @Override
@@ -223,6 +235,9 @@ public class CloudNodeImpl implements Node
         return PublicAPIBaseTypeIds.DOCUMENT.value().equals(getProp(TYPE));
     }
 
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
     public static final Parcelable.Creator<CloudNodeImpl> CREATOR = new Parcelable.Creator<CloudNodeImpl>()
     {
         public CloudNodeImpl createFromParcel(Parcel in)
