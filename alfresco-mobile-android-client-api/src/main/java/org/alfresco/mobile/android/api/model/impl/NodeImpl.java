@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -63,6 +63,9 @@ public class NodeImpl implements Node
     /** CMIS Object associated to a Node. */
     private transient CmisObject object;
 
+    /** Indicates whether the node has all it’s metadata populated. */
+    private boolean hasAllProperties = true;
+
     // ////////////////////////////////////////////////////
     // Constructors
     // ////////////////////////////////////////////////////
@@ -78,6 +81,17 @@ public class NodeImpl implements Node
     public NodeImpl(CmisObject o)
     {
         this.object = o;
+        this.hasAllProperties = true;
+    }
+
+    /**
+     * @param o
+     * @since 1.2
+     */
+    public NodeImpl(CmisObject o, boolean hasAllProperties)
+    {
+        this.object = o;
+        this.hasAllProperties = hasAllProperties;
     }
 
     // ////////////////////////////////////////////////////
@@ -263,6 +277,12 @@ public class NodeImpl implements Node
         return list;
     }
 
+    @Override
+    public boolean hasAllProperties()
+    {
+         return hasAllProperties; 
+    }
+
     // ////////////////////////////////////////////////////
     // Types
     // ////////////////////////////////////////////////////
@@ -401,6 +421,7 @@ public class NodeImpl implements Node
         dest.writeMap(properties);
         dest.writeList(aspects);
         dest.writeList(allowableActions);
+        dest.writeString(Boolean.toString(hasAllProperties));
     }
 
     /**
@@ -444,5 +465,6 @@ public class NodeImpl implements Node
         o.readList(this.aspects, getClass().getClassLoader());
         this.allowableActions = new ArrayList<String>();
         o.readList(this.allowableActions, getClass().getClassLoader());
+        this.hasAllProperties = Boolean.parseBoolean(o.readString());
     }
 }

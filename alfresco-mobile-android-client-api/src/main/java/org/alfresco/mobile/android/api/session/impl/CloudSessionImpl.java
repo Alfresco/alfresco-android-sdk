@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -173,6 +173,11 @@ public class CloudSessionImpl extends CloudSession
                 {
                     currentNetwork = cloudNetwork;
                 }
+            }
+            
+            if (currentNetwork == null){
+                throw new AlfrescoSessionException(
+                        ErrorCodeRegistry.SESSION_NO_NETWORK_FOUND, Messagesl18n.getString("SESSION_NO_NETWORK_FOUND"));
             }
 
             // Create OpenCMIS Session Parameters

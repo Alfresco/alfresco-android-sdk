@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -181,6 +181,10 @@ public abstract class AlfrescoService implements Service
      */
     protected Node convertNode(CmisObject object)
     {
+        return convertNode(object, true);
+    }
+    
+    protected Node convertNode(CmisObject object, boolean hasAllProperties){
         if (isObjectNull(object)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
 
@@ -188,9 +192,9 @@ public abstract class AlfrescoService implements Service
         switch (object.getBaseTypeId())
         {
             case CMIS_DOCUMENT:
-                return new DocumentImpl(object);
+                return new DocumentImpl(object, hasAllProperties);
             case CMIS_FOLDER:
-                return new FolderImpl(object);
+                return new FolderImpl(object, hasAllProperties);
             default:
                 throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
                         Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());

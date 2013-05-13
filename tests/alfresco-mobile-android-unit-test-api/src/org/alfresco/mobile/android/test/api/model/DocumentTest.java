@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -128,7 +128,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
-        Assert.assertTrue(doc.getCreatedAt().getTimeInMillis() + " " + doc.getModifiedAt().getTimeInMillis(), doc.getCreatedAt().getTimeInMillis() - doc.getModifiedAt().getTimeInMillis() <= 4000);
+        Assert.assertTrue(doc.getCreatedAt().getTimeInMillis() + " " + doc.getModifiedAt().getTimeInMillis(), doc
+                .getCreatedAt().getTimeInMillis() - doc.getModifiedAt().getTimeInMillis() <= 4000);
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
         Assert.assertTrue(doc.isDocument());
@@ -647,6 +648,37 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
     }
 
+    public void testCreateDocumentEverything()
+    {
+        // No Custom model on Cloud Instance.
+        if (isOnPremise())
+        {
+            Folder folder = createUnitTestFolder(alfsession);
+            Assert.assertNotNull(folder);
+
+            // Add one document
+            HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
+
+            List<String> aspects = new ArrayList<String>(1);
+            aspects.add(ContentModel.ASPECT_TITLED);
+            
+            // CUSTOM TYPE
+            properties.put(PropertyIds.OBJECT_TYPE_ID, "D:fdk:everything");
+            
+            Document customDoc = null;
+            try
+            {
+                customDoc = docfolderservice.createDocument(folder, "fdkCompany.txt", properties,
+                        createContentFile(SAMPLE_DOC_NAME), aspects);
+            }
+            catch (Exception e)
+            {
+                Assert.fail();
+            }
+            Assert.assertTrue(customDoc.hasAspect(ContentModel.ASPECT_TITLED));
+        }
+    }
+
     public void testCreateDocumentBasedOnCustomModel()
     {
         // No Custom model on Cloud Instance.
@@ -688,7 +720,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             Document customDoc2 = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customDoc, propertiesM);
-            
+
             wait(3000);
 
             customDoc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(customDoc2

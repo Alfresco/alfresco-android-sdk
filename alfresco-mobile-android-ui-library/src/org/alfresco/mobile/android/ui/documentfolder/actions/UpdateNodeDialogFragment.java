@@ -58,7 +58,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
 
     protected OnNodeUpdateListener onUpdateListener;
 
-    private Node node;
+    protected Node node;
 
     public UpdateNodeDialogFragment()
     {
@@ -76,7 +76,11 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     {
         if (node != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+            int iconId = R.drawable.mime_folder;
+            if (node.isDocument()){
+                iconId = MimeTypeManager.getIcon(node.getName());
+            }
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, iconId);
         }
         super.onStart();
     }
@@ -158,7 +162,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         return v;
     }
 
-    private void updateNode(EditText tv, EditText desc, Button bcreate)
+    protected void updateNode(EditText tv, EditText desc, Button bcreate)
     {
         Map<String, Serializable> props = new HashMap<String, Serializable>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 
 /**
@@ -55,6 +56,19 @@ public final class CloudUrlRegistry
     /** @since 1.1.0 */
     public static final String URL_USER_PREFERENCE = "people/{personId}/favorites";
 
+    /** @since 1.2.0 */
+    public static final String PREFERENCE_FAVOURITES_DOCUMENTS = URL_USER_PREFERENCE + "?where=(EXISTS(target/file))";
+
+    /** @since 1.2.0 */
+    public static final String PREFERENCE_FAVOURITES_FOLDERS = URL_USER_PREFERENCE + "?where=(EXISTS(target/folder))";
+
+    /** @since 1.2.0 */
+    public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
+            + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
+
+    /** @since 1.1.0 */
+    public static final String PREFERENCE_FAVOURITE = URL_USER_PREFERENCE + "/{nodeId}";
+
     /** @since 1.1.0 */
     public static final String URL_USER_PREFERENCE_REMOVE = "people/{personId}/favorites/{siteId}";
 
@@ -71,6 +85,30 @@ public final class CloudUrlRegistry
         return createPrefix(session).append(
                 URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
                         VARIABLE_SITEID, siteGUID)).toString();
+    }
+
+    /** @since 1.2.0 */
+    public static String getUserFavouriteDocumentsUrl(CloudSession session, String username)
+    {
+        return createPrefix(session).append(
+                PREFERENCE_FAVOURITES_DOCUMENTS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
+    }
+
+    /** @since 1.2.0 */
+    public static String getUserFavouriteFoldersUrl(CloudSession session, String username)
+    {
+        return createPrefix(session).append(
+                PREFERENCE_FAVOURITES_FOLDERS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
+    }
+
+    /** @since 1.2.0 */
+    public static String getUserFavouriteUrl(CloudSession session, String username, String identifier)
+    {
+        return createPrefix(session).append(
+                PREFERENCE_FAVOURITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
+                        VARIABLE_NODEID, identifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

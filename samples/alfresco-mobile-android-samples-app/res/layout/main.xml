@@ -30,6 +30,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:id="@+id/menu_samples"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_block_border"
