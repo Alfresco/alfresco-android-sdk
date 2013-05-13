@@ -29,27 +29,55 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Document>>>
+public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingResult>>
 {
+
+    public static final int MODE_DOCUMENTS = 1;
+
+    public static final int MODE_FOLDERS = 2;
+
+    public static final int MODE_BOTH = 4;
+
+    private int mode = MODE_DOCUMENTS;
 
     /** Unique NodesLoader identifier. */
     public static final int ID = FavoritesLoader.class.hashCode();
 
-    public FavoritesLoader(Context context, AlfrescoSession session)
+    public FavoritesLoader(Context context, AlfrescoSession session, int mode)
     {
         super(context);
         this.session = session;
+        this.mode = mode;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public LoaderResult<PagingResult<Document>> loadInBackground()
+    public LoaderResult<PagingResult> loadInBackground()
     {
-        LoaderResult<PagingResult<Document>> result = new LoaderResult<PagingResult<Document>>();
-        PagingResult<Document> pagingResult = null;
+        LoaderResult<PagingResult> result = new LoaderResult<PagingResult>();
+        PagingResult pagingResult = null;
 
         try
         {
-            pagingResult = session.getServiceRegistry().getDocumentFolderService().getFavoriteDocuments(listingContext);
+            switch (mode)
+            {
+                case MODE_DOCUMENTS:
+                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                            .getFavoriteDocuments(listingContext);
+                    break;
+                case MODE_FOLDERS:
+                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                            .getFavoriteFolders(listingContext);
+                    break;
+                case MODE_BOTH:
+                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                            .getFavoriteNodes(listingContext);
+                    break;
+
+                default:
+                    break;
+            }
+
         }
         catch (Exception e)
         {

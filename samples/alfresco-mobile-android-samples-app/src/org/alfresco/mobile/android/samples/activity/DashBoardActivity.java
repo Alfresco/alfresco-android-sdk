@@ -56,7 +56,7 @@ public class DashBoardActivity extends CommonActivity
             tv.setText("vX.X.X");
         }
         
-        Log.i(TAG, "SDK " + Version.SDK);
+        //Log.i(TAG, "SDK " + Version.SDK);
     }
 
     /**

@@ -76,7 +76,11 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     {
         if (node != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+            int iconId = R.drawable.mime_folder;
+            if (node.isDocument()){
+                iconId = MimeTypeManager.getIcon(node.getName());
+            }
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, iconId);
         }
         super.onStart();
     }
