@@ -1,5 +1,5 @@
-Welcome to the Alfresco Android SDK 1.2
-===================================
+Welcome to the Alfresco Android SDK v1.1
+========================================
 
 The Alfresco Android SDK includes a set of APIs and samples that allows developers to quickly build Alfresco-enabled applications. 
 
@@ -8,7 +8,7 @@ This SDK provides functionality to connect to both on-premise and Cloud-based se
 Documentation
 -------------
 
-Full documentation, including getting started instructions can be found [here](https://developer.alfresco.com/resources/alfresco/pdf/Android-SDK-1.0.pdf). 
+Full documentation, including getting started instructions can be found [here](https://www.alfresco.com/cmis/browser?id=workspace://SpacesStore/76fdddfc-74ad-49e1-8a72-a742083e30fe). 
 
 More information can be found on our [developer portal](http://developer.alfresco.com/mobile) and on our [website](http://www.alfresco.com/products/mobile).
 
@@ -17,7 +17,7 @@ Releases
 --------
 
 The master branch is used for development of new features so it's stability can not be guaranteed, for the current stable release 
-[download the pre-built binaries](https://developer.alfresco.com/resources/alfresco/downloads/alfresco-android-sdk-1.0.1.zip) from the developer portal. 
+[download the pre-built binaries](https://www.alfresco.com/cmis/browser?id=workspace://SpacesStore/8e1284fb-26ab-4f91-9666-c24ef915adaf) from the developer portal. 
 Alternatively, use one of the [tags](https://github.com/Alfresco/alfresco-android-sdk/tags) to build from source.
 
 

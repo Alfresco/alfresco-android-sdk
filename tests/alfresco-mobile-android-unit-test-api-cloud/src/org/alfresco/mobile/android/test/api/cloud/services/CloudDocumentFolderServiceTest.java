@@ -148,11 +148,4 @@ public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
     {
         super.testCRUDNode();
     }
-    
-    @Override
-    public void testFavorite()
-    {
-        super.testFavorite();
-    }
-    
 }
