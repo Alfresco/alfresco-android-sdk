@@ -53,7 +53,11 @@ public abstract class NavigationFragment extends BaseListFragment implements
 
     // Browser Parameters
     protected Folder parentFolder;
-
+    
+    protected Site currentSiteParameter = null;
+    protected String pathParameter = null;
+    protected Folder folderParameter = null;
+    
     private Boolean activateThumbnail = Boolean.FALSE;
 
     protected List<Node> selectedItems = new ArrayList<Node>(1);
@@ -63,11 +67,6 @@ public abstract class NavigationFragment extends BaseListFragment implements
         loaderId = NodeChildrenLoader.ID;
         callback = this;
         emptyListMessageId = R.string.empty_child;
-    }
-
-    public Folder getParent()
-    {
-        return parentFolder;
     }
 
     public static Bundle createBundleArgs(Folder folder)
@@ -105,45 +104,35 @@ public abstract class NavigationFragment extends BaseListFragment implements
         // Case Init & case Reload
         bundle = (ba == null) ? getArguments() : ba;
 
-        Folder f = null;
-        String path = null;
-        Site s = null;
         ListingContext lc = null, lcorigin = null;
 
         if (bundle != null)
         {
-            f = (Folder) bundle.getSerializable(ARGUMENT_FOLDER);
-            path = bundle.getString(ARGUMENT_FOLDERPATH);
-            s = (Site) bundle.getSerializable(ARGUMENT_SITE);
+            folderParameter = (Folder) bundle.getSerializable(ARGUMENT_FOLDER);
+            pathParameter = bundle.getString(ARGUMENT_FOLDERPATH);
+            currentSiteParameter = (Site) bundle.getSerializable(ARGUMENT_SITE);
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
             loadState = bundle.getInt(LOAD_STATE);
         }
-        
-        if (f == null){
-            f = (Folder) alfSession.getRootFolder();
-        }
-        
-        //f = (f != null) ? f : (Folder) alfSession.getRootFolder();
-        parentFolder = f;
 
         calculateSkipCount(lc);
 
         NodeChildrenLoader loader = null;
-        if (path != null)
+        if (pathParameter != null)
         {
-            title = (path.equals("/") ? "/" : path.substring(path.lastIndexOf("/") + 1, path.length()));
-            loader = new NodeChildrenLoader(getActivity(), alfSession, path);
+            title = (pathParameter.equals("/") ? "/" : pathParameter.substring(pathParameter.lastIndexOf("/") + 1, pathParameter.length()));
+            loader = new NodeChildrenLoader(getActivity(), alfSession, pathParameter);
         }
-        else if (s != null)
+        else if (currentSiteParameter != null && folderParameter == null)
         {
-            title = s.getTitle();
-            loader = new NodeChildrenLoader(getActivity(), alfSession, s);
+            title = currentSiteParameter.getTitle();
+            loader = new NodeChildrenLoader(getActivity(), alfSession, currentSiteParameter);
         }
-        else if (f != null)
+        else if (folderParameter != null)
         {
-            title = f.getName();
-            loader = new NodeChildrenLoader(getActivity(), alfSession, f);
+            title = folderParameter.getName();
+            loader = new NodeChildrenLoader(getActivity(), alfSession, folderParameter);
         }
 
         if (loader != null)
@@ -177,7 +166,7 @@ public abstract class NavigationFragment extends BaseListFragment implements
             adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems);
         }
-        
+
         if (results.hasException())
         {
             onLoaderException(results.getException());
@@ -203,6 +192,11 @@ public abstract class NavigationFragment extends BaseListFragment implements
     public void setActivateThumbnail(Boolean activateThumbnail)
     {
         this.activateThumbnail = activateThumbnail;
+    }
+    
+    public Folder getParent()
+    {
+        return parentFolder;
     }
 
 }
