@@ -35,7 +35,7 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
@@ -101,7 +101,7 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
         try
         {
             // read and parse
-            HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
+            Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
             List<Object> jo = (List<Object>) json.get(OnPremiseConstant.ITEMS_VALUE);

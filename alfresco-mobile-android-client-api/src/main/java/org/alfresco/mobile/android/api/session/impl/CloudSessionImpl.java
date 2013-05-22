@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudRepositoryInfoImpl;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
@@ -48,7 +49,7 @@ import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
@@ -263,7 +264,7 @@ public class CloudSessionImpl extends CloudSession
     {
         UrlBuilder builder = new UrlBuilder(CloudUrlRegistry.getUserNetworks(baseUrl));
 
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(builder,
+        Response resp = NetworkHttpInvoker.invokeGET(builder,
                 authenticator.getHTTPHeaders());
 
         // check response code

@@ -64,6 +64,15 @@ public interface AlfrescoSession extends Parcelable
      * <b>This parameter can't be changed after the session creation</b>.
      */
     String AUTHENTICATOR_CLASSNAME = "org.alfresco.mobile.api.authenticator.classname";
+    
+    /**
+     * Define the specific implementation of HTTP layer for the session. Must
+     * be a full qualified classname. This class must extend
+     * {@link org.apache.chemistry.opencmis.client.bindings.spi.http.HttpInvoker}
+     * <br/>
+     * <b>This parameter can't be changed after the session creation</b>.
+     */
+    String HTTP_INVOKER_CLASSNAME = "org.alfresco.mobile.api.httpinvoker.classname";
 
     /**
      * <b>OnPremise ONLY</b> : Allow metadata extraction during file import.

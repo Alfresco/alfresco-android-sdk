@@ -130,6 +130,10 @@ public class RepositorySessionImpl extends RepositorySession
 
     private void create()
     {
+        passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
+        authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
+                .getAlfrescoAuthenticationProvider();
+        
         // Extension Point to implement and manage services
         if (hasParameter(ONPREMISE_SERVICES_CLASSNAME))
         {
@@ -139,10 +143,6 @@ public class RepositorySessionImpl extends RepositorySession
         {
             services = new OnPremiseServiceRegistry(this);
         }
-
-        passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
-        authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
-                .getAlfrescoAuthenticationProvider();
     }
 
     // ////////////////////////////////////////////////////

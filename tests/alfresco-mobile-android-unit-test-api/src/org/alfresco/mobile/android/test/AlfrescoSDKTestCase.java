@@ -347,7 +347,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             {
                 wait(3000);
                 folder = (Folder) docfolderservice.getChildByPath(parentFolder, folderName);
-                docfolderservice.deleteNode(folder);
+                if (folder != null){
+                    docfolderservice.deleteNode(folder);
+                }
                 wait(3000);
                 folder = docfolderservice.createFolder(parentFolder, folderName, properties);
             }

@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseRatingsServiceImpl;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
@@ -33,7 +35,8 @@ import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.extension.api.constant.CustomConstant;
 import org.alfresco.mobile.android.extension.api.model.StarRating;
 import org.alfresco.mobile.android.extension.api.services.CustomRatingsService;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -85,7 +88,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            post(url, formData.getContentType(), new HttpUtils.Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -153,7 +156,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
     // ////////////////////////////////////////////////////////////////////////////////////
     private StarRating computeRating(UrlBuilder url)
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         if (json == null) { return null; }
@@ -165,7 +168,7 @@ public class CustomRatingsServiceImpl extends OnPremiseRatingsServiceImpl implem
     private float computeMyRating(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         if (json == null) { return -1; }

@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
@@ -76,7 +76,7 @@ public abstract class AbstractRatingsService extends AlfrescoService implements 
             UrlBuilder url = getRatingsUrl(node);
             final JsonDataWriter formData = new JsonDataWriter(getRatingsObject());
             // send and parse
-            post(url, formData.getContentType(), new HttpUtils.Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {

@@ -34,14 +34,16 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.utils.HttpUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
@@ -451,9 +453,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response response = HttpUtils.invokePOST(
+            Response response = NetworkHttpInvoker.invokePOST(
                     url, formData.getContentType(),
-                    new org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Output()
+                    new Output()
                     {
                         public void write(OutputStream out) throws IOException
                         {

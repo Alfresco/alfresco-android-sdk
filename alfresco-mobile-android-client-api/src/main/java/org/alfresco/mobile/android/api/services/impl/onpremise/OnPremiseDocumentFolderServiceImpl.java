@@ -43,7 +43,8 @@ import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
@@ -78,7 +79,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, identifier, type));
             url.addParameter("format", "json");
-            HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+            Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
             org.alfresco.mobile.android.api.model.ContentStream cf;
             if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
             {
@@ -314,7 +315,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 
             // send
-            post(url, formDataM.getContentType(), new HttpUtils.Output()
+            post(url, formDataM.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -336,7 +337,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
         UrlBuilder url = new UrlBuilder(link);
 
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 

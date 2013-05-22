@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 import android.os.Parcel;
@@ -94,7 +94,7 @@ public class OnPremiseActivityStreamServiceImpl extends AbstractActivityStreamSe
         try
         {
             // read and parse
-            HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
+            Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
 
             List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
             int size = json.size();

@@ -94,10 +94,7 @@
     <string name="load_more">Load more...</string>
     <string name="document_general_nodata">No data.</string>
     <!-- Account -->
-    <string name="account_username">Username</string>
-    <string name="account_password">Password</string>
     <string name="account_url">Hostname</string>
-    <string name="error_login">Failed to log in. Please check your settings.</string>
 
     <!-- EXTRA -->
     <string name="account_username">Username</string>

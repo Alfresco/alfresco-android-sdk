@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -85,7 +85,7 @@ public class CloudRatingsServiceImpl extends AbstractRatingsService
     protected int computeRatingsCount(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         Map<String, Object> data = null;
@@ -109,7 +109,7 @@ public class CloudRatingsServiceImpl extends AbstractRatingsService
     protected boolean computeIsRated(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         Map<String, Object> data = null;

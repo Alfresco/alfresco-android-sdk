@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -40,7 +41,8 @@ import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -146,7 +148,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
             final JsonDataWriter formData = new JsonDataWriter(ja);
 
             // send
-            post(url, formData.getContentType(), new HttpUtils.Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -166,7 +168,7 @@ public class CloudTaggingServiceImpl extends AlfrescoService implements TaggingS
     @SuppressWarnings("unchecked")
     private PagingResult<Tag> computeTag(UrlBuilder url)
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Tag> result = new ArrayList<Tag>();
