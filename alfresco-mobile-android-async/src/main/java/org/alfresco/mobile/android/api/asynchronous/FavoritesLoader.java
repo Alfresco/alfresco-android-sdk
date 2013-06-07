@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
