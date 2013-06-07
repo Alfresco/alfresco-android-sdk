@@ -36,7 +36,8 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
@@ -119,7 +120,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            HttpUtils.Response resp = post(url, formData.getContentType(), new HttpUtils.Output()
+            Response resp = post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -168,7 +169,7 @@ public abstract class AbstractCommentService extends AlfrescoService implements 
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send
-            HttpUtils.Response resp = put(url, formData.getContentType(), null, new HttpUtils.Output()
+            Response resp = put(url, formData.getContentType(), null, new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {

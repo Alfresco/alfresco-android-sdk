@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 public class PublicAPIResponse implements Serializable
@@ -39,7 +39,7 @@ public class PublicAPIResponse implements Serializable
     private List<Object> entries;
 
     @SuppressWarnings("unchecked")
-    public PublicAPIResponse(HttpUtils.Response resp)
+    public PublicAPIResponse(Response resp)
     {
         if (resp == null || resp.getStream() == null){
             throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_JSONDATA_EMPTY, Messagesl18n.getString("ErrorCodeRegistry.PARSING_JSONDATA_EMPTY"));

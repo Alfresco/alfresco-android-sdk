@@ -40,4 +40,9 @@ public final class PublicAPIPropertyIds
     public static final String VERSIONLABEL = CloudConstant.VERSIONLABEL_VALUE;
     public static final String SIZEINBYTES = CloudConstant.SIZEINBYTES_VALUE;
     public static final String MIMETYPE = CloudConstant.MIMETYPE_VALUE;
+    
+    // ---- extra ----
+    public static final String REQUEST_STATUS = "request_status";
+    public static final String REQUEST_TYPE = "request_type";
+
 }

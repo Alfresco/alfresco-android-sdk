@@ -245,6 +245,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         assertTrue(doc instanceof AlfrescoDocument);
         AlfrescoDocument alfDoc = (AlfrescoDocument) doc;
+        assertFalse(alfDoc.hasAspect("P:cm:titled"));
 
         // add aspect
         Map<String, Object> aspectProperties = new HashMap<String, Object>();
@@ -252,6 +253,8 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         alfDoc.addAspect("P:cm:titled", aspectProperties);
 
+        alfDoc.refresh();
+        
         assertTrue(alfDoc.hasAspect("P:cm:titled"));
         assertEquals(descriptionValue1, (String) alfDoc.getPropertyValue("cm:description"));
 

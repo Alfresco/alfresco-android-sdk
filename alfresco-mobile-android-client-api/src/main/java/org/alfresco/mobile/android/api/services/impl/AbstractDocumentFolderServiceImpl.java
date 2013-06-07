@@ -58,8 +58,8 @@ import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AtomPubParser;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -431,7 +431,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             String newId = objectService.createFolder(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), null, null, null, null);
 
             if (newId == null) { return null; }
@@ -508,7 +508,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
 
             String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
 
             // EXTRACT METADATA + Generate Thumbnails
@@ -569,7 +569,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            Response response = post(url, formData.getContentType(), new HttpUtils.Output()
+            Response response = post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -612,7 +612,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            post(url, formData.getContentType(), new HttpUtils.Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -751,10 +751,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
             // tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, nodeType);
 
+            //Retrieve Cmis Object to retrieve second type
+            //TODO !
+            
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
                     changeTokenHolder, objectFactory.convertProperties(tmpProperties,
-                            cmisSession.getTypeDefinition(nodeType), updatebility), null);
+                            cmisSession.getTypeDefinition(nodeType), null, updatebility), null);
 
             return getChildById(objectId);
         }

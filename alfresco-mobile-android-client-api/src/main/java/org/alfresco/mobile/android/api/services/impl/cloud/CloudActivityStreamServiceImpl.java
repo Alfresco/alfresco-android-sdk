@@ -34,7 +34,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 import android.os.Parcel;
@@ -112,7 +112,7 @@ public class CloudActivityStreamServiceImpl extends AbstractActivityStreamServic
     protected PagingResult<ActivityEntry> computeActivities(UrlBuilder url, ListingContext listingContext)
     {
         // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.ACTIVITISTREAM_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<ActivityEntry> result = new ArrayList<ActivityEntry>();

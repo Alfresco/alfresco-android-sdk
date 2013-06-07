@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisBaseException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConstraintException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
@@ -127,7 +127,7 @@ public final class ExceptionHelper
      * @param resp the HTTP response from the server.
      * @param serviceErrorCode the service error code associated.
      */
-    public static void convertStatusCode(AlfrescoSession session, HttpUtils.Response resp, int serviceErrorCode)
+    public static void convertStatusCode(AlfrescoSession session, Response resp, int serviceErrorCode)
     {
         AlfrescoErrorContent er = null;
         if (session instanceof RepositorySession)

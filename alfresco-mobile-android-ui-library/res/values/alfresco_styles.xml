@@ -16,7 +16,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
@@ -33,6 +33,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:paddingRight">1dip</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textStyle">bold</item>
@@ -43,6 +44,7 @@
         <item name="android:gravity">bottom</item>
         <item name="android:layout_gravity">bottom|center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:paddingRight">1dip</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>

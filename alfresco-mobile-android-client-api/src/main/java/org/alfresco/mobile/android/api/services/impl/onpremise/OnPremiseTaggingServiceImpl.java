@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -39,7 +40,8 @@ import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -149,7 +151,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send
-            post(url, formData.getContentType(), new HttpUtils.Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -168,7 +170,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     // ////////////////////////////////////////////////////////////////////////////////////
     private PagingResult<Tag> computeTag(UrlBuilder url, ListingContext listingContext) throws JSONException
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
 
         String resultsString = JsonUtils.convertStreamToString(resp.getStream());
         List<Tag> tags = new ArrayList<Tag>();
@@ -207,7 +209,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
 
     private PagingResult<Tag> computeSimpleTag(UrlBuilder url, ListingContext listingContext)
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.TAGGING_GENERIC);
         String resultsString = JsonUtils.convertStreamToString(resp.getStream());
         List<Tag> tags = new ArrayList<Tag>();
 

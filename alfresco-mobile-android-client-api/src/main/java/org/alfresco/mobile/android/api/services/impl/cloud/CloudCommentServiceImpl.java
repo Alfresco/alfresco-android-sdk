@@ -36,7 +36,7 @@ import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 import android.os.Parcel;
@@ -97,7 +97,7 @@ public class CloudCommentServiceImpl extends AbstractCommentService
     protected PagingResult<Comment> computeComment(UrlBuilder url)
     {
         // read and parse
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Comment> result = new ArrayList<Comment>();

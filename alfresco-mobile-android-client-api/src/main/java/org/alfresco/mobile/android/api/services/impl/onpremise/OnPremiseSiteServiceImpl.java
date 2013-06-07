@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
+import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -44,7 +45,8 @@ import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -237,7 +239,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 
             // send
-            post(url, formDataM.getContentType(), new HttpUtils.Output()
+            post(url, formDataM.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -288,7 +290,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse
-            HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+            Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             if (json != null)
             {
@@ -332,7 +334,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             String link = null;
             UrlBuilder url = null;
-            HttpUtils.Response resp = null;
+            Response resp = null;
             JSONObject jo = null;
             Map<String, Object> json = null;
 
@@ -358,7 +360,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     final JsonDataWriter formData = new JsonDataWriter(jo);
 
                     // send and parse
-                    resp = post(url, formData.getContentType(), new HttpUtils.Output()
+                    resp = post(url, formData.getContentType(), new Output()
                     {
                         public void write(OutputStream out) throws IOException
                         {
@@ -394,7 +396,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                     final JsonDataWriter formDataM = new JsonDataWriter(jo);
 
                     // send and parse
-                    resp = post(url, formDataM.getContentType(), new HttpUtils.Output()
+                    resp = post(url, formDataM.getContentType(), new Output()
                     {
                         public void write(OutputStream out) throws IOException
                         {
@@ -443,7 +445,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse
-            HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+            Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             List<Object> jo = (List<Object>) json.get(OnPremiseConstant.DATA_VALUE);
 
@@ -480,7 +482,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     protected PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
 
         List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
         int size = json.size();
@@ -540,7 +542,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     private List<String> getUserSite(String personIdentifier)
     {
-        HttpUtils.Response resp = read(getUserSitesUrl(personIdentifier, null), ErrorCodeRegistry.SITE_GENERIC);
+        Response resp = read(getUserSitesUrl(personIdentifier, null), ErrorCodeRegistry.SITE_GENERIC);
         List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
         int size = json.size();
         List<String> userSites = new ArrayList<String>(size);
@@ -559,7 +561,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         String n = null;
 
         UrlBuilder url = new UrlBuilder(link);
-        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+        Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
@@ -592,7 +594,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
         UrlBuilder url = new UrlBuilder(link);
 
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 

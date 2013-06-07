@@ -41,6 +41,7 @@
 	<dependencySets>
 		<dependencySet>
 			<includes>
+			    <include>com.squareup.okhttp:okhttp:jar:1.0.2</include>
 			    <include>org.slf4j:slf4j-android:jar:1.6.1-RC1</include>
 				<include>org.apache.chemistry.opencmis:chemistry-opencmis-android-client:jar:${chemistry.opencmis.version}</include>
 				<include>org.alfresco.cmis.client:alfresco-opencmis-extension:jar:${alfresco.opencmis.version}</include>

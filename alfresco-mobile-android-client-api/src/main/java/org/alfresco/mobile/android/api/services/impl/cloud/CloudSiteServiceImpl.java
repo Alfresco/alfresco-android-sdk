@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
+import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -43,7 +44,8 @@ import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -179,7 +181,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 
             // send
-            post(url, formDataM.getContentType(), new HttpUtils.Output()
+            post(url, formDataM.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -238,7 +240,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         {
             String link = null;
             UrlBuilder url = null;
-            HttpUtils.Response resp = null;
+            Response resp = null;
             JSONObject jo = null;
 
             link = CloudUrlRegistry.getJoinSiteUrl((CloudSession) session, session.getPersonIdentifier());
@@ -251,7 +253,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
             final JsonDataWriter formDataM = new JsonDataWriter(jo);
 
             // send and parse
-            resp = HttpUtils.invokePOST(url, formDataM.getContentType(), new HttpUtils.Output()
+            resp = getHttpInvoker().invokePOST(url, formDataM.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -325,7 +327,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse
-            HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+            Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
             PublicAPIResponse response = new PublicAPIResponse(resp);
 
             Map<String, Object> data = null;
@@ -363,7 +365,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     protected PagingResult<Site> computeSites(UrlBuilder url, boolean isAllSite)
     {
 
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Site> result = new ArrayList<Site>();
@@ -395,7 +397,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     {
         try
         {
-            HttpUtils.Response resp = read(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
+            Response resp = read(new UrlBuilder(link), ErrorCodeRegistry.SITE_GENERIC);
             PublicAPIResponse response = new PublicAPIResponse(resp);
 
             Map<String, Object> data = null;
@@ -437,7 +439,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
      */
     private List<String> getSiteIdentifier(UrlBuilder url)
     {
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<String> result = new ArrayList<String>();

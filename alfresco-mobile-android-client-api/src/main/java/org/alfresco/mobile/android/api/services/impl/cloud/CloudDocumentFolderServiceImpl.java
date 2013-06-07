@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.net.ssl.HttpsURLConnection;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -32,10 +31,8 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudDocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
@@ -45,13 +42,13 @@ import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Rendition;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -102,7 +99,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             // Second getData
             UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
                     renditionIdentifier));
-            HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+            Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
             if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
             {
                 cf = null;
@@ -243,7 +240,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
         String link = CloudUrlRegistry.getUserFavouriteUrl((CloudSession) session, session.getPersonIdentifier(),
                 NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
         UrlBuilder url = new UrlBuilder(link);
-        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+        Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
         if (resp.getResponseCode() == HttpStatus.SC_OK)
         {
             return true;
@@ -284,7 +281,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 
             // send
-            post(url, formDataM.getContentType(), new HttpUtils.Output()
+            post(url, formDataM.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -323,7 +320,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     protected PagingResult<Document> computeDocumentFavorites(UrlBuilder url)
     {
 
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Document> result = new ArrayList<Document>();
@@ -342,7 +339,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     protected PagingResult<Folder> computeFolderFavorites(UrlBuilder url)
     {
 
-        HttpUtils.Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
+        Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Folder> result = new ArrayList<Folder>();

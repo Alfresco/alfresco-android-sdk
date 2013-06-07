@@ -29,11 +29,13 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
+import org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
@@ -146,8 +148,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
 
         if (!tmpSettings.containsKey(AUTHENTICATOR_CLASSNAME))
         {
-            tmpSettings.put(AUTHENTICATOR_CLASSNAME,
-                    "org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenticationProviderImpl");
+            tmpSettings.put(AUTHENTICATOR_CLASSNAME, BasicAuthenticationProviderImpl.class.getName());
+        }
+
+        if (!tmpSettings.containsKey(HTTP_INVOKER_CLASSNAME))
+        {
+            tmpSettings.put(HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
         }
 
         if (!tmpSettings.containsKey(SessionParameter.COMPRESSION))
@@ -312,6 +318,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
         addParameterIfExist(SessionParameter.COMPRESSION, SessionParameter.COMPRESSION);
         addParameterIfExist(ONPREMISE_TRUSTMANAGER_CLASSNAME, ONPREMISE_TRUSTMANAGER_CLASSNAME);
+        addParameterIfExist(HTTP_INVOKER_CLASSNAME, SessionParameter.HTTP_INVOKER_CLASS);
 
     }
 
@@ -460,7 +467,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     private static final String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
-    
+
     // ////////////////////////
     // SHORTCUTS
     // ///////////////////////

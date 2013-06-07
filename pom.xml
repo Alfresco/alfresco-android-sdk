@@ -136,8 +136,8 @@
 
 		<!-- Alfresco Configuration -->
 		<alfresco.sdk.version>1.2.0-SNAPSHOT</alfresco.sdk.version>
-		<chemistry.opencmis.version>0.8.0-alfresco-patched</chemistry.opencmis.version>
-		<alfresco.opencmis.version>0.4-ANDROID-2</alfresco.opencmis.version>
+		<chemistry.opencmis.version>0.9.0-SNAPSHOT</chemistry.opencmis.version>
+		<alfresco.opencmis.version>0.5-ANDROID</alfresco.opencmis.version>
 
 		<!-- Plugins -->
 		<site.basedir>${project.parent.basedir}</site.basedir>
@@ -463,55 +463,6 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.robolectric</groupId>
-				<artifactId>robolectric</artifactId>
-				<version>${robolectric.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-core</artifactId>
-				<version>${hamcrest-core.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-
-	<profiles>
-		<profile>
-			<id>jira</id>
-			<properties>
-				<jira.username>${env.USER}</jira.username>
-				<jira.password>your-jira-password</jira.password>
-			</properties>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-changes-plugin</artifactId>
-						<version>2.7.1</version>
-						<configuration>
-							<aggregated>true</aggregated>
-							<filter>project=MOBSDK&amp;component=Android</filter>
-							<columnNames>Type,Key,Summary,Assignee,Status,Resolution,Fix
-								Version</columnNames>
-							<sortColumnNames>Type,Key DESC</sortColumnNames>
-							<jiraUser>${jira.username}</jiraUser>
-							<jiraPassword>${jira.password}</jiraPassword>
-							<configuration>
-								<reportSets>
-									<reportSet>
-										<reports>
-											<report>jira-report</report>
-										</reports>
-									</reportSet>
-								</reportSets>
-							</configuration>
-						</configuration>
-					</plugin>
-				</plugins>
-
-			</reporting>
-		</profile>
-	</profiles>
 </project>

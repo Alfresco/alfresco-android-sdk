@@ -25,10 +25,12 @@ import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
@@ -191,7 +193,7 @@ public final class OAuthHelper implements OAuthConstant
             params.put(PARAM_REDIRECT_ID, callback);
             params.put(PARAM_GRANT_TYPE, GRANT_TYPE_AUTH_CODE);
 
-            Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+            Response resp = NetworkHttpInvoker.invokePOST(builder, FORMAT, params);
 
             if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
@@ -264,7 +266,7 @@ public final class OAuthHelper implements OAuthConstant
             params.put(PARAM_CLIENT_SECRET, data.getApiSecret());
             params.put(PARAM_GRANT_TYPE, GRANT_TYPE_REFRESH_TOKEN);
 
-            Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(builder, FORMAT, params);
+            Response resp = NetworkHttpInvoker.invokePOST(builder, FORMAT, params);
             if (resp.getResponseCode() != HttpStatus.SC_OK)
             {
                 ExceptionHelper.convertStatusCode(null, resp, ErrorCodeRegistry.SESSION_REFRESH_TOKEN_EXPIRED);

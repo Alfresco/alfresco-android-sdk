@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
 import org.alfresco.mobile.android.api.services.Service;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -41,12 +42,14 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.impl.SessionImpl;
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpInvoker;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
-import android.util.Log;
 
 /**
  * Abstract base class for all public Alfresco SDK Services. Contains all
@@ -60,6 +63,8 @@ public abstract class AlfrescoService implements Service
 {
     /** Repository Session. */
     protected AlfrescoSession session;
+
+    private BindingSession bindingSession;
 
     /**
      * Default empty Constructor.
@@ -78,6 +83,11 @@ public abstract class AlfrescoService implements Service
     public AlfrescoService(AlfrescoSession repositorySession)
     {
         this.session = repositorySession;
+        this.bindingSession = new SessionImpl();
+        bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
+                ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
+        bindingSession.put(SessionParameter.HTTP_INVOKER_CLASS,
+                repositorySession.getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -91,10 +101,10 @@ public abstract class AlfrescoService implements Service
      * @param url : requested URL. @ : if network or internal problems occur
      *            during the process.
      */
-    protected HttpUtils.Response read(UrlBuilder url, int errorCode)
+    protected Response read(UrlBuilder url, int errorCode)
     {
-        //Log.d("URL", url.toString());
-        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+        // Log.d("URL", url.toString());
+        Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK)
@@ -109,10 +119,10 @@ public abstract class AlfrescoService implements Service
      * Performs a POST on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected HttpUtils.Response post(UrlBuilder url, String contentType, HttpUtils.Output writer, int errorCode)
+    protected Response post(UrlBuilder url, String contentType, Output writer, int errorCode)
     {
         // make the call
-        HttpUtils.Response resp = HttpUtils.invokePOST(url, contentType, writer, getSessionHttp());
+        Response resp = getHttpInvoker().invokePOST(url, contentType, writer, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
@@ -130,7 +140,7 @@ public abstract class AlfrescoService implements Service
     protected void delete(UrlBuilder url, int errorCode)
     {
         // make the call
-        HttpUtils.Response resp = HttpUtils.invokeDELETE(url, getSessionHttp());
+        Response resp = getHttpInvoker().invokeDELETE(url, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_NO_CONTENT && resp.getResponseCode() != HttpStatus.SC_OK)
@@ -144,10 +154,9 @@ public abstract class AlfrescoService implements Service
      * Performs a PUT on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected HttpUtils.Response put(UrlBuilder url, String contentType, Map<String, String> headers,
-            HttpUtils.Output writer, int errorCode)
+    protected Response put(UrlBuilder url, String contentType, Map<String, String> headers, Output writer, int errorCode)
     {
-        HttpUtils.Response resp = HttpUtils.invokePUT(url, contentType, headers, writer, getSessionHttp());
+        Response resp = getHttpInvoker().invokePUT(url, contentType, headers, writer, getSessionHttp());
 
         // check response code
         if ((resp.getResponseCode() < HttpStatus.SC_OK) || (resp.getResponseCode() > 299))
@@ -164,10 +173,21 @@ public abstract class AlfrescoService implements Service
      */
     protected BindingSession getSessionHttp()
     {
-        BindingSession s = new SessionImpl();
-        s.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
-                ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
-        return s;
+        if (bindingSession == null)
+        {
+            bindingSession = new SessionImpl();
+            bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
+                    ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
+        }
+        return bindingSession;
+    }
+
+    /**
+     * Gets the HTTP Invoker object.
+     */
+    protected HttpInvoker getHttpInvoker()
+    {
+        return CmisBindingsHelper.getHttpInvoker(bindingSession);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +203,9 @@ public abstract class AlfrescoService implements Service
     {
         return convertNode(object, true);
     }
-    
-    protected Node convertNode(CmisObject object, boolean hasAllProperties){
+
+    protected Node convertNode(CmisObject object, boolean hasAllProperties)
+    {
         if (isObjectNull(object)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
 
@@ -234,7 +255,7 @@ public abstract class AlfrescoService implements Service
     {
         return (l == null || l.isEmpty());
     }
-    
+
     /**
      * Utils method to check if a map is null/empty.
      * 
@@ -281,7 +302,7 @@ public abstract class AlfrescoService implements Service
      * @param resp : http response.
      * @param serviceErrorCode : service from which the error occurs.
      */
-    public void convertStatusCode(HttpUtils.Response resp, int serviceErrorCode)
+    public void convertStatusCode(Response resp, int serviceErrorCode)
     {
         ExceptionHelper.convertStatusCode(session, resp, serviceErrorCode);
     }
@@ -334,12 +355,13 @@ public abstract class AlfrescoService implements Service
         }
         return null;
     }
-    
+
     // ////////////////////////////////////////////////////
     // CACHING
     // ////////////////////////////////////////////////////
-    public void clear(){
-        //Must be implemented in subclass.
+    public void clear()
+    {
+        // Must be implemented in subclass.
     }
 
     // ////////////////////////////////////////////////////

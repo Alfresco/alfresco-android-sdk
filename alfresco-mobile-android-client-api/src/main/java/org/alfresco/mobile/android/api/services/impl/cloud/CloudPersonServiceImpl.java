@@ -33,13 +33,12 @@ import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * The PersonService can be used to get informations about people.
@@ -94,7 +93,7 @@ public class CloudPersonServiceImpl extends AbstractPersonService
     /** {@inheritDoc} */
     protected Person computePerson(UrlBuilder url)
     {
-        HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+        Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
 
         // check response code
         if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR || resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)

@@ -34,7 +34,7 @@ import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraPropert
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
@@ -171,7 +171,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
             initExtraPropertiesCache();
 
             UrlBuilder url = getSiteUrl(siteIdentifier);
-            HttpUtils.Response resp = HttpUtils.invokeGET(url, getSessionHttp());
+            Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
 
             // check response code
             if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
