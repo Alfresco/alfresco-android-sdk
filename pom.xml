@@ -136,7 +136,7 @@
 
 		<!-- Alfresco Configuration -->
 		<alfresco.sdk.version>1.2.0-SNAPSHOT</alfresco.sdk.version>
-		<chemistry.opencmis.version>0.9.0-SNAPSHOT</chemistry.opencmis.version>
+		<chemistry.opencmis.version>0.9.0</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.5-ANDROID</alfresco.opencmis.version>
 
 		<!-- Plugins -->
