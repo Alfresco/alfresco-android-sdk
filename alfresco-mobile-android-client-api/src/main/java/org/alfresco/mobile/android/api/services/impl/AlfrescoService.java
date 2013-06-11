@@ -178,6 +178,14 @@ public abstract class AlfrescoService implements Service
             bindingSession = new SessionImpl();
             bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
                     ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
+            bindingSession.put(SessionParameter.HTTP_INVOKER_CLASS,
+                    ((AbstractAlfrescoSessionImpl) session).getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
+        }
+        else if (bindingSession != null
+                && bindingSession.get(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT) == null)
+        {
+            bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
+                    ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
         }
         return bindingSession;
     }
