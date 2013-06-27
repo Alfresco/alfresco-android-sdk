@@ -118,23 +118,23 @@ public final class Formatter
         StringBuilder s = new StringBuilder();
         if (node.getCreatedAt() != null)
         {
-            s.append(Formatter.formatToRelativeDate(context, node.getCreatedAt().getTime()));
+            s.append(formatToRelativeDate(context, node.getCreatedAt().getTime()));
             if (node.isDocument())
             {
                 Document doc = (Document) node;
                 s.append(" - ");
-                s.append(Formatter.formatFileSize(context, doc.getContentStreamLength()));
+                s.append(formatFileSize(context, doc.getContentStreamLength()));
 
                 if (extended)
                 {
                     s.append(" - V:");
-                    if ("0.0".equals(((Document) node).getVersionLabel()))
+                    if ("0.0".equals(doc.getVersionLabel()))
                     {
                         s.append("1.0");
                     }
                     else
                     {
-                        s.append(((Document) node).getVersionLabel());
+                        s.append(doc.getVersionLabel());
                     }
                 }
             }
