@@ -82,6 +82,13 @@ public interface ErrorCodeRegistry
     /** An error happens during the creation of service registry. */
     int SESSION_SERVICEREGISTRY = 109;
 
+    /**
+     * The refresh token is invalid.
+     * 
+     * @since 1.2.0
+     */
+    int SESSION_INVALID_REFRESH_TOKEN = 111;
+
     // ///////////////////////////////////
     // PARSING ERRORS
     // ///////////////////////////////////
@@ -124,6 +131,13 @@ public interface ErrorCodeRegistry
      * @since 1.1.0
      */
     int SITE_ALREADY_MEMBER = 403;
+
+    /**
+     * User is the last manager of the site. A site requires at least one site manager.
+     * 
+     * @since 1.2.0
+     */
+    int SITE_LAST_MANAGER = 404;
 
     // ///////////////////////////////////
     // ACTIVITI STREAM ERRORS

@@ -845,6 +845,19 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_GENERIC);
         }
+        
+        
+        // @since 1.2
+        // It's not possible to leave a site where the user is the last moderator.
+        try
+        {
+            siteService.leaveSite(privateSite);
+            Assert.fail();
+        }
+        catch (AlfrescoServiceException e)
+        {
+            Assert.assertTrue(e.getErrorCode() == ErrorCodeRegistry.SITE_LAST_MANAGER);
+        }
     }
 
     /**

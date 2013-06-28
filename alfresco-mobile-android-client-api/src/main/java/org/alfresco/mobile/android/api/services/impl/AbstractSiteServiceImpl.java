@@ -326,6 +326,11 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
         catch (Exception e)
         {
+            if (e.getMessage().contains("one site manager")){
+                throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_LAST_MANAGER,
+                        Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER"));
+            }
+            
             convertException(e);
         }
 
