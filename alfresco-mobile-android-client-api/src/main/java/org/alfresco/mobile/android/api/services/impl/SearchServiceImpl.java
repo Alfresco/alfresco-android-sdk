@@ -255,7 +255,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             }
             else
             {
-                sb.append("CONTAINS('~" + PARAM_NAME + ":\\\'\\*" + keywordsValue + "\\*\\\'')");
+                sb.append("CONTAINS('~" + PARAM_NAME + ":\\\'" + keywordsValue + "\\\'')");
             }
 
             if (fulltext)

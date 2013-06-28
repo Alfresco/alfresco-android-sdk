@@ -566,7 +566,9 @@ public abstract class BaseListFragment extends BaseFragment
     protected void loadMore()
     {
         getLoaderManager().restartLoader(loaderId, bundle, callback);
-        getLoaderManager().getLoader(loaderId).forceLoad();
+        if (getLoaderManager().getLoader(loaderId) != null){
+            getLoaderManager().getLoader(loaderId).forceLoad();
+        }
     }
 
     protected boolean checkSession()
