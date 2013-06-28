@@ -214,7 +214,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     {
         if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
-        
+
         Site updatedSite = null;
 
         try
@@ -254,7 +254,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             convertException(e);
         }
-        
+
         return updatedSite;
     }
 
@@ -329,7 +329,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
         Site updatedSite = null;
-        
+
         try
         {
             String link = null;
@@ -429,7 +429,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         {
             convertException(e);
         }
-        
+
         return updatedSite;
     }
 
@@ -460,6 +460,59 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             convertException(e);
         }
         return requestList;
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
+    {
+        List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
+        // build URL
+        String link = OnPremiseUrlRegistry.getJoinRequestSiteUrl(session, session.getPersonIdentifier());
+        UrlBuilder url = new UrlBuilder(link);
+
+        // send and parse
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+        List<Object> jo = (List<Object>) json.get(OnPremiseConstant.DATA_VALUE);
+        int size = jo.size();
+
+        List<Site> result = new ArrayList<Site>();
+        int fromIndex = 0, toIndex = size;
+        Boolean hasMoreItems = false;
+
+        // Define Listing Context
+        if (listingContext != null)
+        {
+            fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
+
+            // Case if skipCount > result size
+            if (listingContext.getMaxItems() + fromIndex >= size)
+            {
+                toIndex = size;
+                hasMoreItems = false;
+            }
+            else
+            {
+                toIndex = listingContext.getMaxItems() + fromIndex;
+                hasMoreItems = true;
+            }
+        }
+
+        Map<String, Object> mapProperties = null;
+        for (int i = fromIndex; i < toIndex; i++)
+        {
+            mapProperties = (Map<String, Object>) jo.get(i);
+            requestList.add(JoinSiteRequestImpl.parseJson((Map<String, Object>) mapProperties));
+        }
+
+        if (listingContext != null)
+        {
+            Collections.sort(result,
+                    new AlphaComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
+        }
+
+        return new PagingResultImpl<JoinSiteRequestImpl>(requestList, hasMoreItems, size);
     }
 
     /** {@inheritDoc} */

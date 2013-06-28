@@ -21,7 +21,6 @@ import java.io.File;
 
 import org.alfresco.mobile.android.ui.R;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 public class ActionManager
 {

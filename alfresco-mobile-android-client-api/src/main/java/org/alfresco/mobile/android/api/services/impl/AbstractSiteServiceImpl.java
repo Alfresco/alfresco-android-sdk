@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
@@ -283,8 +284,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
                 }
             }
 
-            if (isObjectNull(joinSiteRequest)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.SITE_GENERIC,
+            if (isObjectNull(joinSiteRequest)) { throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
                     Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing")); }
 
             String link = getCancelJoinSiteRequestUrl(joinSiteRequest);
@@ -326,6 +326,9 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
         catch (Exception e)
         {
+            if (e.getMessage().contains("one site manager")) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
+
             convertException(e);
         }
 
@@ -334,14 +337,26 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     protected abstract List<JoinSiteRequestImpl> getJoinSiteRequests();
 
+    protected abstract PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext);
+
     /** {@inheritDoc} */
     public List<Site> getPendingSites()
     {
+        return getPendingSites(null).getList();
+    }
+
+    /** {@inheritDoc} */
+    public PagingResult<Site> getPendingSites(ListingContext listingContext)
+    {
         List<Site> pendingList = new ArrayList<Site>();
+        int size = 0;
+        boolean hasMoreItem = false;
         try
         {
-            List<JoinSiteRequestImpl> requestList = getJoinSiteRequests();
-            for (JoinSiteRequestImpl request : requestList)
+            PagingResult<JoinSiteRequestImpl> requestList = getJoinSiteRequests(listingContext);
+            hasMoreItem = requestList.hasMoreItems();
+            size = requestList.getTotalItems();
+            for (JoinSiteRequestImpl request : requestList.getList())
             {
                 pendingList.add(getSite(request.getSiteShortName()));
             }
@@ -350,7 +365,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         {
             convertException(e);
         }
-        return pendingList;
+        return new PagingResultImpl<Site>(pendingList, hasMoreItem, size);
     }
 
     protected void validateUpdateSite(Site updatedSite, int errorCode)

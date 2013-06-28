@@ -45,7 +45,6 @@ import org.apache.chemistry.opencmis.commons.spi.DiscoveryService;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Implementation of SearchService.
@@ -54,10 +53,6 @@ import android.util.Log;
  */
 public class SearchServiceImpl extends AlfrescoService implements SearchService
 {
-
-    /** Tag for Logging purpose. */
-    private static final String TAG = "SearchService";
-
     private Session cmisSession;
 
     /**
@@ -255,7 +250,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             }
             else
             {
-                sb.append("CONTAINS('~" + PARAM_NAME + ":\\\'\\*" + keywordsValue + "\\*\\\'')");
+                sb.append("CONTAINS('~" + PARAM_NAME + ":\\\'" + keywordsValue + "\\\'')");
             }
 
             if (fulltext)

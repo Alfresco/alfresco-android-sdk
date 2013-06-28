@@ -183,12 +183,22 @@ public interface SiteService extends Service
      * requests.
      * 
      * @since 1.1.0
-     * @param site : site object
-     * @return : List of JoinSiteRequest object. Empty list if there's no
+     * @return : List of site the user wants to join. Empty list if there's no
      *         request.
      * @throws AlfrescoServiceException
      */
     List<Site> getPendingSites();
+    
+    /**
+     * Returns a list of join site requests from the current user that have yet
+     * to be actioned. An empty list is returned if there are no outstanding
+     * requests.
+     * 
+     * @since 1.2.0
+     * @return Returns a paged list of sites the current user has requested to be a member.
+     * @throws AlfrescoServiceException
+     */
+    PagingResult<Site> getPendingSites(ListingContext listingContext);
 
     /**
      * Cancels a previous request to join a site made by the current user.
@@ -210,7 +220,8 @@ public interface SiteService extends Service
      * @throws AlfrescoServiceException : If the request can not be completed
      *             successfully an exception is thrown with error code
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_LEFT
-     *             SITE_NOT_LEFT}.
+     *             SITE_NOT_LEFT} or {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_LAST_MANAGER
+     *             SITE_LAST_MANAGER} if the user is the last manager of the site.
      */
     Site leaveSite(Site site);
 

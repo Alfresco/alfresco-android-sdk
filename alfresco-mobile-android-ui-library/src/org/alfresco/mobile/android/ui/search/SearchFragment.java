@@ -75,7 +75,11 @@ public abstract class SearchFragment extends BaseListFragment implements
     @Override
     public Loader<LoaderResult<PagingResult<Node>>> onCreateLoader(int id, Bundle b)
     {
-        setListShown(false);
+        if (!hasmore)
+        {
+            setListShown(false);
+        }
+        
         String keywords = null, statement = null, language = null;
         Folder f = null;
         boolean isExact = false, fullText = true, includeDescendants = true;
@@ -97,6 +101,8 @@ public abstract class SearchFragment extends BaseListFragment implements
             lcorigin = (ListingContext) b.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
             loadState = b.getInt(LOAD_STATE);
+            calculateSkipCount(lc);
+            bundle = b;
         }
 
         SearchLoader searchLoader = null;
@@ -144,6 +150,7 @@ public abstract class SearchFragment extends BaseListFragment implements
     protected void search(String keywords, boolean fullText, boolean isExact)
     {
         Bundle b = new Bundle();
+        b.putAll(getArguments());
         b.putString(KEYWORDS, keywords);
         b.putBoolean(INCLUDE_CONTENT, fullText);
         b.putBoolean(EXACTMATCH, isExact);
