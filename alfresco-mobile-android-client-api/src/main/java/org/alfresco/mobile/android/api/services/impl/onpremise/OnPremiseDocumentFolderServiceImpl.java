@@ -52,7 +52,6 @@ import org.apache.http.HttpStatus;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * OnPremise implementation of DocumentFolderService
@@ -120,8 +119,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         }
     };
 
-    private static final String TAG = "OnPremiseDocumentFolderServiceImpl";
-
     public OnPremiseDocumentFolderServiceImpl(Parcel o)
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
@@ -139,8 +136,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             if (favoriteDocumentsIdentifier == null) { return favoriteDocumentsList; }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
             join(builder, " OR cmis:objectId=", favoriteDocumentsIdentifier);
-
-            Log.d(TAG, builder.toString());
 
             List<Node> nodes = session.getServiceRegistry().getSearchService()
                     .search(builder.toString(), SearchLanguage.CMIS);
@@ -177,8 +172,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             if (favoriteFoldersIdentifier == null) { return favoriteFolderList; }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:folder WHERE cmis:objectId=");
             join(builder, " OR cmis:objectId=", favoriteFoldersIdentifier);
-
-            Log.d(TAG, builder.toString());
 
             List<Node> nodes = session.getServiceRegistry().getSearchService()
                     .search(builder.toString(), SearchLanguage.CMIS);
@@ -309,7 +302,6 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
                 jp = jt;
             }
 
-            Log.d(TAG, joined);
             jt.put(OnPremiseUrlRegistry.FAVOURITES, joined);
 
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
