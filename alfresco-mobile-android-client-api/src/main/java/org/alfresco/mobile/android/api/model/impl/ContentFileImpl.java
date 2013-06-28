@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.model.impl;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
@@ -87,9 +88,10 @@ public class ContentFileImpl extends ContentImpl implements ContentFile
      * Callback for receiving progress feedback during transfer of the ContentFile.
      *
      * @param nBytes : Number of bytes read.
+     * @throws IOException 
      */
     @Override
-    public void fileReadCallback(int nBytes)
+    public void fileReadCallback(int nBytes) throws IOException
     {
     }
 

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.model;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * ContentFile represents an abstract way to share file between the client
@@ -31,8 +32,9 @@ public interface ContentFile extends Content
      * Callback for receiving progress feedback during transfer of the ContentFile
      * 
      * @param nBytes : Number of bytes read.
+     * @throws IOException 
      */
-    void fileReadCallback (int nBytes);
+    void fileReadCallback (int nBytes) throws IOException;
 
     /**
      * Callback for receiving progress feedback during transfer of the ContentFile
