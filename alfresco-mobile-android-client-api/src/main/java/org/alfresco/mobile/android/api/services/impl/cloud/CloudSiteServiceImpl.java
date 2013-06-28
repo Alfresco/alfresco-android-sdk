@@ -344,6 +344,31 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         return requestList;
     }
 
+    protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
+    {
+        List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
+        // build URL
+        String link = CloudUrlRegistry.getJoinRequestSiteUrl((CloudSession) session, session.getPersonIdentifier());
+        UrlBuilder url = new UrlBuilder(link);
+        if (listingContext != null)
+        {
+            url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+            url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+        }
+
+        // send and parse
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        PublicAPIResponse response = new PublicAPIResponse(resp);
+
+        Map<String, Object> data = null;
+        for (Object entry : response.getEntries())
+        {
+            data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
+            requestList.add(JoinSiteRequestImpl.parsePublicAPIJson(data));
+        }
+        return new PagingResultImpl<JoinSiteRequestImpl>(requestList, response.getHasMoreItems(), response.getSize());
+    }
+
     @Override
     protected String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest)
     {

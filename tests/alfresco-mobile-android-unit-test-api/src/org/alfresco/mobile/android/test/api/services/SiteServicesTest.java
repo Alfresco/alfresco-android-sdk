@@ -702,6 +702,11 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertFalse("User has already a membership!", consumerSites.contains(publicSite));
         List<Site> requestedSites = consumerSiteService.getPendingSites();
         Assert.assertTrue("User has already a join request!", requestedSites.isEmpty());
+        
+        //Since 1.2
+        PagingResult<Site> requestedSitesPaging = consumerSiteService.getPendingSites(null);
+        Assert.assertTrue("User has already a join request!", requestedSitesPaging.getList().isEmpty());
+        Assert.assertEquals("User has already a join request!", 0, requestedSitesPaging.getTotalItems());
 
         // Join PUBLIC Site + Check
         Site request = consumerSiteService.joinSite(publicSite);
@@ -724,13 +729,26 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals("User has no join request!", 1, requestedSites.size());
         Assert.assertEquals("Wrong Request identifier", request.getIdentifier(), requestedSites.get(0).getIdentifier());
         Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getShortName());
-
+        
+        //Since 1.2
+        requestedSitesPaging = consumerSiteService.getPendingSites(null);
+        List<Site> requestedSitesP = requestedSitesPaging.getList();
+        Assert.assertFalse("User has no join request!", requestedSitesP.isEmpty());
+        Assert.assertEquals("User has no join request!", 1, requestedSitesP.size());
+        Assert.assertEquals("Wrong Request identifier", request.getIdentifier(), requestedSitesP.get(0).getIdentifier());
+        Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getShortName());
+        
         // Leave MODERATED Site + Check
         Assert.assertNotNull("User request", requestedSites.get(0));
         consumerSiteService.cancelRequestToJoinSite(requestedSites.get(0));
         wait(3000);
         requestedSites = consumerSiteService.getPendingSites();
         Assert.assertTrue("User has still a join request!", requestedSites.isEmpty());
+        
+        //Since 1.2
+        requestedSitesPaging = consumerSiteService.getPendingSites(null);
+        requestedSitesP = requestedSitesPaging.getList();
+        Assert.assertTrue("User has still a join request!", requestedSitesP.isEmpty());
 
         // ///////////////////////
         // ERROR CASE
