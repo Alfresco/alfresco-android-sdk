@@ -17,27 +17,28 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl.cloud;
 
-
 public enum PublicAPIBaseTypeIds
 {
-        DOCUMENT("file"), FOLDER("folder");
+    DOCUMENT("file"), FOLDER("folder");
 
-        private final String value;
+    private final String value;
 
-        PublicAPIBaseTypeIds(String v) {
-            value = v;
+    PublicAPIBaseTypeIds(String v)
+    {
+        value = v;
+    }
+
+    public String value()
+    {
+        return value;
+    }
+
+    public static PublicAPIBaseTypeIds fromValue(String v)
+    {
+        for (PublicAPIBaseTypeIds c : PublicAPIBaseTypeIds.values())
+        {
+            if (c.value.equals(v)) { return c; }
         }
-
-        public String value() {
-            return value;
-        }
-
-        public static PublicAPIBaseTypeIds fromValue(String v) {
-            for (PublicAPIBaseTypeIds c : PublicAPIBaseTypeIds.values()) {
-                if (c.value.equals(v)) {
-                    return c;
-                }
-            }
-            throw new IllegalArgumentException(v);
-        }
+        throw new IllegalArgumentException(v);
+    }
 }

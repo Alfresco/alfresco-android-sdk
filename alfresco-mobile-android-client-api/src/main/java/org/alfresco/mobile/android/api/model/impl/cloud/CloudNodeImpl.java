@@ -226,13 +226,13 @@ public class CloudNodeImpl implements Node
     @Override
     public boolean isFolder()
     {
-        return PublicAPIBaseTypeIds.FOLDER.value().equals(getProp(TYPE));
+        return PublicAPIBaseTypeIds.FOLDER.value().equals(getProp(TYPE).getValue());
     }
 
     @Override
     public boolean isDocument()
     {
-        return PublicAPIBaseTypeIds.DOCUMENT.value().equals(getProp(TYPE));
+        return PublicAPIBaseTypeIds.DOCUMENT.value().equals(getProp(TYPE).getValue());
     }
 
     // ////////////////////////////////////////////////////
