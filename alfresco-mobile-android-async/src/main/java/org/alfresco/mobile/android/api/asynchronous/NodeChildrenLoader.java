@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
@@ -130,6 +131,12 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
             }
             else if (parentFolder != null)
             {
+                if (parentFolder instanceof CloudFolderImpl)
+                {
+                    parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(parentFolder.getIdentifier());
+                }
+
                 pagingResult = session.getServiceRegistry().getDocumentFolderService()
                         .getChildren(parentFolder, listingContext);
             }

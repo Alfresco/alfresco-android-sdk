@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
- package org.alfresco.mobile.android.api.model.impl.cloud;
+package org.alfresco.mobile.android.api.model.impl.cloud;
 
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.MIMETYPE;
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
@@ -31,11 +31,11 @@ import android.os.Parcelable;
 public class CloudDocumentImpl extends CloudNodeImpl implements Document
 {
     private static final long serialVersionUID = 1L;
-    
+
     public CloudDocumentImpl()
     {
     }
-    
+
     public CloudDocumentImpl(Map<String, Object> json)
     {
         super(PublicAPIBaseTypeIds.DOCUMENT.value(), json);
@@ -44,7 +44,9 @@ public class CloudDocumentImpl extends CloudNodeImpl implements Document
     @Override
     public long getContentStreamLength()
     {
-        return (Long) ((getPropertyValue(SIZEINBYTES) == null) ? (long) -1 : getPropertyValue(SIZEINBYTES));
+        return (Long) ((getPropertyValue(SIZEINBYTES) == null) ? (long) -1
+                : (getPropertyValue(SIZEINBYTES) instanceof String) ? Long
+                        .parseLong((String) getPropertyValue(SIZEINBYTES)) : getPropertyValue(SIZEINBYTES));
     }
 
     @Override
@@ -68,10 +70,10 @@ public class CloudDocumentImpl extends CloudNodeImpl implements Document
     @Override
     public Boolean isLatestVersion()
     {
-        //it can't be true everytime...
+        // it can't be true everytime...
         return true;
     }
-    
+
     // ////////////////////////////////////////////////////
     // INTERNAL
     // ////////////////////////////////////////////////////
