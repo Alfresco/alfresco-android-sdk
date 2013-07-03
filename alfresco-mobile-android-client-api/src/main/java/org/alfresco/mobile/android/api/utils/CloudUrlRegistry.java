@@ -61,7 +61,7 @@ public final class CloudUrlRegistry
 
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_FOLDERS = URL_USER_PREFERENCE + "?where=(EXISTS(target/folder))";
-
+    
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
             + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
@@ -100,6 +100,14 @@ public final class CloudUrlRegistry
     {
         return createPrefix(session).append(
                 PREFERENCE_FAVOURITES_FOLDERS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
+    }
+    
+    /** @since 1.2.0 */
+    public static String getUserFavouritesUrl(CloudSession session, String username)
+    {
+        return createPrefix(session).append(
+                PREFERENCE_FAVOURITES_ALL.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
                 .toString();
     }
 

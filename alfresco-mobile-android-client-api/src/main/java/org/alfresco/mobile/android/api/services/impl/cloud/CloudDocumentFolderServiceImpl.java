@@ -223,15 +223,20 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
     @Override
     public List<Node> getFavoriteNodes()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getFavoriteNodes(null).getList();
     }
 
     @Override
     public PagingResult<Node> getFavoriteNodes(ListingContext listingContext)
     {
-        // TODO Auto-generated method stub
-        return null;
+        String link = CloudUrlRegistry.getUserFavouritesUrl((CloudSession) session, session.getPersonIdentifier());
+        UrlBuilder url = new UrlBuilder(link);
+        if (listingContext != null)
+        {
+            url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+            url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+        }
+        return computeFavorites(url);
     }
 
     @Override
@@ -241,10 +246,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
                 NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
         UrlBuilder url = new UrlBuilder(link);
         Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
-        if (resp.getResponseCode() == HttpStatus.SC_OK)
-        {
-            return true;
-        }
+        if (resp.getResponseCode() == HttpStatus.SC_OK) { return true; }
         return false;
     }
 
@@ -264,9 +266,9 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             {
                 preferenceFilter = "target.folder";
             }
-            
+
             String[] filter = preferenceFilter.split("\\.");
-            
+
             JSONObject jroot = new JSONObject();
             JSONObject jt = null;
             JSONObject jp = jroot;
@@ -294,7 +296,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             convertException(e);
         }
     }
-    
+
     @Override
     public void removeFavorite(Node node)
     {
@@ -303,8 +305,8 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
 
         try
         {
-            String link = CloudUrlRegistry.getUserFavouriteUrl((CloudSession) session,
-                    session.getPersonIdentifier(), node.getIdentifier());
+            String link = CloudUrlRegistry.getUserFavouriteUrl((CloudSession) session, session.getPersonIdentifier(),
+                    node.getIdentifier());
             delete(new UrlBuilder(link), ErrorCodeRegistry.DOCFOLDER_GENERIC);
         }
         catch (Exception e)
@@ -313,6 +315,7 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
         }
 
     }
+
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -349,11 +352,46 @@ public class CloudDocumentFolderServiceImpl extends AbstractDocumentFolderServic
             entryData = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
             targetData = (Map<String, Object>) ((Map<String, Object>) entryData).get(CloudConstant.TARGET_VALUE);
             fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(CloudConstant.FOLDER_VALUE);
-            if (fileData != null){
+            if (fileData != null)
+            {
                 result.add(new CloudFolderImpl(fileData));
             }
         }
         return new PagingResultImpl<Folder>(result, response.getHasMoreItems(), response.getSize());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected PagingResult<Node> computeFavorites(UrlBuilder url)
+    {
+        Response resp = read(url, ErrorCodeRegistry.DOCFOLDER_GENERIC);
+        PublicAPIResponse response = new PublicAPIResponse(resp);
+
+        List<Node> result = new ArrayList<Node>();
+        Map<String, Object> entryData = null, targetData = null, fileData = null;
+        boolean isDocument = true;
+        for (Object entry : response.getEntries())
+        {
+            entryData = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
+            targetData = (Map<String, Object>) ((Map<String, Object>) entryData).get(CloudConstant.TARGET_VALUE);
+
+            isDocument = true;
+            if (((Map<String, Object>) targetData).containsKey(CloudConstant.FOLDER_VALUE))
+            {
+                isDocument = false;
+            }
+
+            if (isDocument)
+            {
+                fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(CloudConstant.FILE_VALUE);
+                result.add(new CloudDocumentImpl(fileData));
+            }
+            else
+            {
+                fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(CloudConstant.FOLDER_VALUE);
+                result.add(new CloudFolderImpl(fileData));
+            }
+        }
+        return new PagingResultImpl<Node>(result, response.getHasMoreItems(), response.getSize());
     }
 
 }
