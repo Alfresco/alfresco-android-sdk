@@ -45,4 +45,11 @@ public class CloudSiteServicesTest extends SiteServicesTest
     {
         return -1;
     }
+    
+    @Override
+    public void testSiteMembership()
+    {
+        // TODO Auto-generated method stub
+        super.testSiteMembership();
+    }
 }

@@ -339,7 +339,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         // Empty content
         Assert.assertEquals(0, doc.getContentStreamLength());
         // Text plain in case of Alfresco 3.4
-        Assert.assertTrue((doc.getContentStreamMimeType() == null)
+        Assert.assertTrue((doc.getContentStreamMimeType().isEmpty())
                 || (doc.getContentStreamMimeType().equals("text/plain")));
 
         // ContentStream
