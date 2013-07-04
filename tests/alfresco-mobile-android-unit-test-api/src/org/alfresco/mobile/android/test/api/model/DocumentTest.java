@@ -818,6 +818,8 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Folder customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
 
+            customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customDoc2);
+            
             // Check Aspects
             Assert.assertNotNull(customDoc2.getAspects());
             Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
