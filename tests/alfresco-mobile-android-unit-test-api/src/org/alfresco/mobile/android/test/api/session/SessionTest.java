@@ -203,7 +203,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(alfsession.getRepositoryInfo());
 
         Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getName());
-        if (alfsession.getRepositoryInfo().getDescription() != null)
+        if (alfsession.getRepositoryInfo().getDescription() != null && !alfsession.getRepositoryInfo().getDescription().isEmpty())
         {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
         }

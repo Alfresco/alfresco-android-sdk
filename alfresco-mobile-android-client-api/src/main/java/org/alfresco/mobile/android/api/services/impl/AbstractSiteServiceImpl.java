@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
@@ -326,9 +327,13 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
         catch (Exception e)
         {
-            if (e.getMessage().contains("one site manager")) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
-
+            if(session instanceof CloudSession){
+                if (e.getMessage().contains("Permission was denied")) { throw new AlfrescoServiceException(
+                        ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
+            } else {
+                if (e.getMessage().contains("one site manager")) { throw new AlfrescoServiceException(
+                        ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
+            }
             convertException(e);
         }
 

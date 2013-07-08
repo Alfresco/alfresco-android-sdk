@@ -103,7 +103,8 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             List<ActivityEntry> feed = activityStreamService.getActivityStream();
             if (feed == null || feed.isEmpty())
             {
-                //Log.d("ActivityStreamService", "No stream activities available. Test aborted.");
+                // Log.d("ActivityStreamService",
+                // "No stream activities available. Test aborted.");
                 return;
             }
             int totalItems = feed.size();
@@ -360,17 +361,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                     Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
                             .getSiteActivityStream("privatesite").isEmpty());
                 }
-                
-                if (isOnPremise() && isAlfrescoV4())
-                {
-                    Assert.assertFalse(session.getServiceRegistry().getActivityStreamService()
-                            .getSiteActivityStream("moderatedsite").isEmpty());
-                }
-                else
-                {
-                    Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                            .getSiteActivityStream("moderatedsite").isEmpty());
-                }
+
+                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
+                        .getSiteActivityStream("moderatedsite").isEmpty());
             }
             checkSession(session);
         }
@@ -453,19 +446,17 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            Response response = NetworkHttpInvoker.invokePOST(
-                    url, formData.getContentType(),
-                    new Output()
-                    {
-                        public void write(OutputStream out) throws IOException
-                        {
-                            formData.write(out);
-                        }
-                    }, getAuthenticationProvider().getHTTPHeaders());
+            Response response = NetworkHttpInvoker.invokePOST(url, formData.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    formData.write(out);
+                }
+            }, getAuthenticationProvider().getHTTPHeaders());
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {
-                //Log.d(TAG, "Execute script : ok");
+                // Log.d(TAG, "Execute script : ok");
             }
         }
         catch (Exception e)

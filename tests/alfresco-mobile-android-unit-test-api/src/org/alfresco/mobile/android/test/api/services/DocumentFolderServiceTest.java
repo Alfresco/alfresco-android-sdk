@@ -1861,7 +1861,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(listDocuments);
         Assert.assertEquals(listDocuments.size() + "", 1, listDocuments.size());
         Document document = listDocuments.get(0);
-        Assert.assertEquals(doc.getIdentifier(), document.getIdentifier());
+        Assert.assertEquals(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()), NodeRefUtils.getCleanIdentifier(document.getIdentifier()));
         Assert.assertFalse(document.hasAllProperties());
 
         Document refreshDocument= (Document) docfolderservice.refreshNode(doc);
