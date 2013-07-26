@@ -47,4 +47,10 @@ public class CloudPersonServiceTest extends PersonServiceTest
             Assert.assertEquals(ErrorCodeRegistry.PERSON_NOT_FOUND, e.getErrorCode());
         }
     }
+    
+    @Override
+    public void testFullPropertiesPerson()
+    {
+        super.testFullPropertiesPerson();
+    }
 }

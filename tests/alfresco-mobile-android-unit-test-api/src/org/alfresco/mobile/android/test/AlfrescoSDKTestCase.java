@@ -195,6 +195,19 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////
     // CREATE CLOUD SESSION
     // //////////////////////////////////////////////////////////////////////
+    public String getUsername(String username)
+    {
+        String tmpusername = username;
+        if (ENABLE_CONFIG_FILE)
+        {
+            if (config.getExtraProperties().containsKey(username))
+            {
+                tmpusername = config.getExtraProperties().getProperty(username);
+            }
+        }
+        return tmpusername;
+    }
+    
     public AlfrescoSession createSession(String username, String password, Map<String, Serializable> parameters)
     {
         String tmpusername = username, tmppassword = password;

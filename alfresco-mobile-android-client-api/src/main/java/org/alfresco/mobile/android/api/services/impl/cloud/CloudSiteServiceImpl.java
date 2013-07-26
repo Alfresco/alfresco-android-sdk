@@ -29,9 +29,11 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
@@ -344,6 +346,7 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         return requestList;
     }
 
+    @SuppressWarnings("unchecked")
     protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
     {
         List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
@@ -382,6 +385,39 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         return CloudUrlRegistry.getLeaveSiteUrl((CloudSession) session, site.getIdentifier(),
                 session.getPersonIdentifier());
     }
+    
+    @Override
+    public List<Person> getAllMembers(Site site)
+    {
+        return getAllMembers(site, null).getList();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public PagingResult<Person> getAllMembers(Site site, ListingContext listingContext)
+    {
+        List<Person> personList = new ArrayList<Person>();
+        // build URL
+        String link = CloudUrlRegistry.getAllMembersSiteUrl((CloudSession) session, site.getIdentifier());
+        UrlBuilder url = new UrlBuilder(link);
+        if (listingContext != null)
+        {
+            url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+            url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+        }
+
+        // send and parse
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+        PublicAPIResponse response = new PublicAPIResponse(resp);
+
+        Map<String, Object> data = null;
+        for (Object entry : response.getEntries())
+        {
+            data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
+            personList.add(PersonImpl.parsePublicAPIJson((Map<String, Object>) data.get(CloudConstant.PERSON_VALUE)));
+        }
+        return new PagingResultImpl<Person>(personList, response.getHasMoreItems(), response.getSize());
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
@@ -389,7 +425,6 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     protected PagingResult<Site> computeSites(UrlBuilder url, boolean isAllSite)
     {
-
         Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
@@ -452,7 +487,6 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
     {
         return computeSites(url, true);
     }
-
     // ////////////////////////////////////////////////////
     // CACHING
     // ////////////////////////////////////////////////////

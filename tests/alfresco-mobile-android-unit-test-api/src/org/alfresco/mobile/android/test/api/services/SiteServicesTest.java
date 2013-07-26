@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
@@ -1069,4 +1070,43 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         return value;
     }
 
+    /**
+     * Success Test for getMembers
+     * 
+     * @since 1.3.0
+     */
+    public void testMemberships()
+    {
+        // Check List sites
+        Assert.assertNotNull(siteService.getSites());
+        Site publicSite = siteService.getSite(PUBLIC_SITE);
+        Person user = alfsession.getServiceRegistry().getPersonService().getPerson(alfsession.getPersonIdentifier());
+        
+        List<Person> members = siteService.getAllMembers(publicSite);
+        Assert.assertNotNull(members);
+        Assert.assertEquals(1, members.size());
+        Person member = members.get(0);
+        Assert.assertEquals(member.getIdentifier(), user.getIdentifier());
+        Assert.assertEquals(member.getFirstName(), user.getFirstName());
+        Assert.assertEquals(member.getLastName(), user.getLastName());
+        Assert.assertEquals(member.getJobTitle(), user.getJobTitle());
+        Assert.assertEquals(member.getCompany().getName(), user.getCompany().getName());
+        
+        
+        //Test multiple users
+        ArrayList<String> referentialMembers = new ArrayList<String>(4); 
+        referentialMembers.add(getUsername(CONSUMER));
+        referentialMembers.add(getUsername(COLLABORATOR));
+        referentialMembers.add(getUsername(CONTRIBUTOR));
+        referentialMembers.add(user.getIdentifier());
+
+        Site mobileTestSite = siteService.getSite(getSiteName(alfsession));
+        members = siteService.getAllMembers(mobileTestSite);
+        Assert.assertNotNull(members);
+        Assert.assertEquals(4, members.size());
+        for (Person person : members)
+        {
+            Assert.assertTrue(person.getIdentifier(), referentialMembers.contains(person.getIdentifier()));
+        }
+    }
 }

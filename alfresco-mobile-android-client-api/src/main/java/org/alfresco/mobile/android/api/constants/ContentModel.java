@@ -232,4 +232,35 @@ public interface ContentModel
      * name, created at, created by, version number...
      */
     String ASPECT_GENERAL = "general";
+    
+    //
+    // PEOPLE
+    // @Since 1.3
+    //
+    String TYPE_PERSON = CONTENT_MODEL_PREFIX.concat(":person");
+    String PROP_USERNAME = CONTENT_MODEL_PREFIX.concat(":userName");
+    String PROP_FIRSTNAME = CONTENT_MODEL_PREFIX.concat(":firstName");
+    String PROP_LASTNAME = CONTENT_MODEL_PREFIX.concat(":lastName");
+    String PROP_EMAIL = CONTENT_MODEL_PREFIX.concat(":email");
+    String PROP_ORGID = CONTENT_MODEL_PREFIX.concat(":organizationId");
+    String PROP_PRESENCEPROVIDER = CONTENT_MODEL_PREFIX.concat(":presenceProvider");
+    String PROP_PRESENCEUSERNAME = CONTENT_MODEL_PREFIX.concat(":presenceUsername");
+    String PROP_ORGANIZATION = CONTENT_MODEL_PREFIX.concat(":organization");
+    String PROP_JOBTITLE = CONTENT_MODEL_PREFIX.concat(":jobtitle");
+    String PROP_LOCATION = CONTENT_MODEL_PREFIX.concat(":location");
+    String PROP_PERSONDESC = CONTENT_MODEL_PREFIX.concat(":persondescription");
+    String PROP_TELEPHONE = CONTENT_MODEL_PREFIX.concat(":telephone");
+    String PROP_MOBILE = CONTENT_MODEL_PREFIX.concat(":mobile");
+    String PROP_COMPANYADDRESS1 = CONTENT_MODEL_PREFIX.concat(":companyaddress1");
+    String PROP_COMPANYADDRESS2 = CONTENT_MODEL_PREFIX.concat(":companyaddress2");
+    String PROP_COMPANYADDRESS3 = CONTENT_MODEL_PREFIX.concat(":companyaddress3");
+    String PROP_COMPANYPOSTCODE = CONTENT_MODEL_PREFIX.concat(":companypostcode");
+    String PROP_COMPANYTELEPHONE = CONTENT_MODEL_PREFIX.concat(":companytelephone");
+    String PROP_COMPANYFAX = CONTENT_MODEL_PREFIX.concat(":companyfax");
+    String PROP_COMPANYEMAIL = CONTENT_MODEL_PREFIX.concat(":companyemail");
+    String PROP_SKYPE = CONTENT_MODEL_PREFIX.concat(":skypeId");
+    String PROP_GOOGLEUSERNAME = CONTENT_MODEL_PREFIX.concat(":googleId");
+    String PROP_INSTANTMSG = CONTENT_MODEL_PREFIX.concat(":instantmsg");
+    String PROP_USER_STATUS = CONTENT_MODEL_PREFIX.concat(":userStatus");
+    String PROP_USER_STATUS_TIME = CONTENT_MODEL_PREFIX.concat(":userStatusTime");
 }

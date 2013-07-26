@@ -86,9 +86,9 @@ public interface OnPremiseConstant
     String INVITEECOMMENTS_VALUE = "inviteeComments";
 
     String INVITEEROLENAME_VALUE = "inviteeRoleName";
-    
+
     String ISPENDINGMEMBER_VALUE = "isPendingMember";
-    
+
     String ISMEMBER_VALUE = "isMember";
 
     String ISFAVORITE_VALUE = "isFavorite";
@@ -128,6 +128,47 @@ public interface OnPremiseConstant
     String AVATAR_REF_VALUE = "avatarRef";
 
     String AVATAR_VALUE = "avatar";
+
+    String JOBTITLE_VALUE = "jobtitle";
+
+    String LOCATION_VALUE = "location";
+
+    String PERSON_DESCRIPTION_VALUE = "persondescription";
+
+    String TELEPHONE_VALUE = "telephone";
+
+    String MOBILE_VALUE = "mobile";
+
+    String EMAIL_VALUE = "email";
+
+    String SKYPEID_VALUE = "skype";
+
+    String INSTANTMESSAGEID_VALUE = "instantmsg";
+
+    String GOOGLEID_VALUE = "googleusername";
+    
+    String COMPANY_VALUE = "company";
+    
+    String AUTHORITY_VALUE = "authority";
+
+    // COMPANY
+
+    String ORGANIZATION_VALUE = "organization";
+
+    String COMPANYADDRESS1_VALUE = "companyaddress1";
+
+    String COMPANYADDRESS2_VALUE = "companyaddress2";
+
+    String COMPANYADDRESS3_VALUE = "companyaddress3";
+
+    String COMPANYPOSTCODE_VALUE = "companypostcode";
+
+    String COMPANYTELEPHONE_VALUE = "companytelephone";
+    
+    String COMPANYFAX_VALUE = "companyfax";
+
+    String COMPANYEMAIL_VALUE = "companyemail";
+
 
     // ACTIVITY EVENT
     String ID_VALUE = "id";

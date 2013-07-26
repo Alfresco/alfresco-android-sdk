@@ -148,6 +148,9 @@ public final class OnPremiseUrlRegistry
 
     /** @since 1.1.0 */
     public static final String URL_CANCEL_JOIN_SITE_REQUEST = "api/sites/{shortname}/invitations/{inviteid}";
+    
+    /** @since 1.3.0 */
+    public static final String URL_ALLMEMBERSOF = "api/sites/{shortname}/memberships";
 
     /**
      * @param session
@@ -233,6 +236,15 @@ public final class OnPremiseUrlRegistry
                 .concat(PREFIX_SERVICE)
                 .concat(URL_MEMBEROF.replace(VARIABLE_SHORTNAME, siteIdentifier).replace(VARIABLE_USER,
                         getEncodingPersonIdentifier(inviteId)));
+    }
+    
+    /** @since 1.3.0 */
+    public static String getAllSiteMembers(AlfrescoSession session, String siteIdentifier)
+    {
+        return session
+                .getBaseUrl()
+                .concat(PREFIX_SERVICE)
+                .concat(URL_ALLMEMBERSOF.replace(VARIABLE_SHORTNAME, siteIdentifier));
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

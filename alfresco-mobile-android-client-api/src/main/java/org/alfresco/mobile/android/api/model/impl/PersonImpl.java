@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -17,23 +17,20 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.Company;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * Provides informations (very few for the moment) available about a specific
- * person. </br> This person is generally known inside the repository and has a
- * role. </br> Informations available for the moment are :
- * <ul>
- * <li>Full Name, first Name, Last Name</li>
- * <li>Username</li>
- * <li>avater reference</li>
- * </ul>
+ * Provides informations available about a specific person. </br> This person is
+ * generally known inside the repository and has a role. </br>
  * 
  * @author Jean Marie Pascal
  */
@@ -53,6 +50,44 @@ public class PersonImpl implements Person
 
     /** the last name of this person. */
     private String lastName;
+
+    private boolean isCloud = false;
+
+    private Map<String, String> properties;
+
+    private Company company;
+
+    private static final ArrayList<String> ONPREMISE = new ArrayList<String>(9)
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            add(OnPremiseConstant.JOBTITLE_VALUE);
+            add(OnPremiseConstant.LOCATION_VALUE);
+            add(OnPremiseConstant.PERSON_DESCRIPTION_VALUE);
+            add(OnPremiseConstant.TELEPHONE_VALUE);
+            add(OnPremiseConstant.MOBILE_VALUE);
+            add(OnPremiseConstant.EMAIL_VALUE);
+            add(OnPremiseConstant.SKYPEID_VALUE);
+            add(OnPremiseConstant.INSTANTMESSAGEID_VALUE);
+            add(OnPremiseConstant.GOOGLEID_VALUE);
+        }
+    };
+
+    private static final ArrayList<String> CLOUD = new ArrayList<String>(9)
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            add(CloudConstant.JOBTITLE_VALUE);
+            add(CloudConstant.LOCATION_VALUE);
+            add(CloudConstant.DESCRIPTION_VALUE);
+            add(CloudConstant.TELEPHONE_VALUE);
+            add(CloudConstant.MOBILE_VALUE);
+            add(CloudConstant.EMAIL_VALUE);
+            add(CloudConstant.SKYPEID_VALUE);
+            add(CloudConstant.INSTANTMESSAGEID_VALUE);
+            add(CloudConstant.GOOGLEID_VALUE);
+        }
+    };
 
     /**
      * Parse Json Response from Alfresco REST API to create a Person.
@@ -89,6 +124,16 @@ public class PersonImpl implements Person
         }
         person.firstName = JSONConverter.getString(json, OnPremiseConstant.FIRSTNAME_VALUE);
         person.lastName = JSONConverter.getString(json, OnPremiseConstant.LASTNAME_VALUE);
+
+        HashMap<String, String> props = new HashMap<String, String>(9);
+        for (String key : ONPREMISE)
+        {
+            props.put(key, JSONConverter.getString(json, key));
+        }
+        person.properties = props;
+
+        person.company = CompanyImpl.parseJson(json, props.get(OnPremiseConstant.LOCATION_VALUE));
+
         return person;
     }
 
@@ -98,6 +143,7 @@ public class PersonImpl implements Person
      * @param json : json response that contains data from the repository
      * @return Person object that contains essential information about it.
      */
+    @SuppressWarnings("unchecked")
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json)
     {
         PersonImpl person = new PersonImpl();
@@ -108,6 +154,20 @@ public class PersonImpl implements Person
         person.username = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         person.firstName = JSONConverter.getString(json, CloudConstant.FIRSTNAME_VALUE);
         person.lastName = JSONConverter.getString(json, CloudConstant.LASTNAME_VALUE);
+
+        person.isCloud = true;
+
+        HashMap<String, String> props = new HashMap<String, String>(9);
+        for (String key : CLOUD)
+        {
+            props.put(key, JSONConverter.getString(json, key));
+        }
+        props.put(CloudConstant.EMAIL_VALUE, person.username);
+        person.properties = props;
+
+        person.company = CompanyImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.COMPANY_VALUE),
+                props.get(CloudConstant.LOCATION_VALUE));
+
         return person;
     }
 
@@ -141,6 +201,72 @@ public class PersonImpl implements Person
         if ((firstName != null && firstName.length() != 0) || (lastName != null && lastName.length() != 0)) { return firstName
                 + " " + lastName; }
         return username;
+    }
+
+    /** {@inheritDoc} */
+    public String getJobTitle()
+    {
+        if (isCloud) { return properties.get(CloudConstant.JOBTITLE_VALUE); }
+        return properties.get(OnPremiseConstant.JOBTITLE_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getLocation()
+    {
+        return properties.get(OnPremiseConstant.LOCATION_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getSummary()
+    {
+        if (isCloud) { return properties.get(CloudConstant.DESCRIPTION_VALUE); }
+        return properties.get(OnPremiseConstant.PERSON_DESCRIPTION_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getTelephoneNumber()
+    {
+        return properties.get(OnPremiseConstant.TELEPHONE_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getMobileNumber()
+    {
+        return properties.get(OnPremiseConstant.MOBILE_VALUE);
+    }
+
+    /** {@inheritDoc} */
+
+    public String getEmail()
+    {
+        return properties.get(OnPremiseConstant.EMAIL_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getSkypeId()
+    {
+        if (isCloud) { return properties.get(CloudConstant.SKYPEID_VALUE); }
+        return properties.get(OnPremiseConstant.SKYPEID_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getInstantMessageId()
+    {
+        if (isCloud) { return properties.get(CloudConstant.INSTANTMESSAGEID_VALUE); }
+        return properties.get(OnPremiseConstant.INSTANTMESSAGEID_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public String getGoogleId()
+    {
+        if (isCloud) { return properties.get(CloudConstant.GOOGLEID_VALUE); }
+        return properties.get(OnPremiseConstant.GOOGLEID_VALUE);
+    }
+
+    /** {@inheritDoc} */
+    public Company getCompany()
+    {
+        return company;
     }
 
 }

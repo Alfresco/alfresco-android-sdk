@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 
 /**
@@ -131,7 +130,7 @@ public final class CloudUrlRegistry
     public static final String URL_DOCLIB = "sites/{siteId}/containers";
 
     public static final String URL_SITE = "sites/{siteId}";
-
+    
     /** @since 1.1.0 */
     public static final String URL_JOIN_SITE = "people/{personId}/site-membership-requests";
 
@@ -140,6 +139,9 @@ public final class CloudUrlRegistry
 
     /** @since 1.1.0 */
     public static final String URL_LEAVE_SITE = "sites/{siteId}/members/{personId}";
+    
+    /** @since 1.3.0 */
+    public static final String URL_ALLMEMBERSOF = "sites/{siteId}/members";
 
     /**
      * @param session
@@ -201,6 +203,12 @@ public final class CloudUrlRegistry
                         VARIABLE_SITEID, siteIdentifier)).toString();
     }
 
+    /** @since 1.3.0 */
+    public static String getAllMembersSiteUrl(CloudSession session, String siteShortName)
+    {
+        return createPrefix(session).append(URL_ALLMEMBERSOF.replace(VARIABLE_SITEID, siteShortName)).toString();
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////////
     // NETWORKS
     // //////////////////////////////////////////////////////////////////////////////
