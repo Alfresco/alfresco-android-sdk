@@ -135,7 +135,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(pagingTags.hasMoreItems());
         List<Tag> tagging = pagingTags.getList();
         Tag previousTag = tagging.get(0);
-        if (isAlfrescoV4())
+        if (isAlfrescoV4() && !hasPublicAPI())
         { // No sorting in Alfresco V3.4
             for (Tag tagg : tagging)
             {
@@ -387,7 +387,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull("Comment file is null", doc);
         // User does not have access / privileges to the specified node
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        if (!isOnPremise(session))
+        if (!isOnPremise(session) || hasPublicAPI())
         {
             try
             {

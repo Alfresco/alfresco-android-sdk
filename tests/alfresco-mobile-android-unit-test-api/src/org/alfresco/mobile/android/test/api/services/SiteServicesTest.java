@@ -141,7 +141,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             // Sort Order : Only available onPremise
             // ////////////////////////////////////////////////////
             Site previousSite = null;
-            if (isOnPremise())
+            if (isOnPremise() && !hasPublicAPI())
             {
                 lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
                 lc.setIsSortAscending(true);
@@ -346,7 +346,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             // Sort Order : Only Onpremise
             // ////////////////////////////////////////////////////
             Site previousSite = null;
-            if (isOnPremise())
+            if (isOnPremise() && !hasPublicAPI())
             {
                 lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
                 lc.setIsSortAscending(true);
@@ -468,7 +468,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Sort Order
         // ////////////////////////////////////////////////////
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
             lc.setIsSortAscending(true);
@@ -563,7 +563,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         lc.setMaxItems(2);
         pagingSites = siteService.getFavoriteSites(lc);
         Assert.assertNotNull(pagingSites);
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertEquals(getTotalItems(2), pagingSites.getTotalItems());
         }
@@ -690,7 +690,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
         // Prepare consumer session + Check there's no existing membership
         AlfrescoSession session = null;
-        if (isAlfrescoV4())
+        if (isAlfrescoV4() && !hasPublicAPI())
         {
             session = createSession(INVITED, INVITED_PASSWORD, null);
         }

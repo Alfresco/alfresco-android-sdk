@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -72,7 +73,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
     @Override
     /** {@inheritDoc} */
-    public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type)
+    public ContentStream getRenditionStream(String identifier, String type)
     {
         try
         {

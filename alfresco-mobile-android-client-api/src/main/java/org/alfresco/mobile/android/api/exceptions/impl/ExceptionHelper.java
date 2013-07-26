@@ -33,6 +33,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisInvalidArgumentExcep
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 import org.apache.http.HttpStatus;
 
 /**
@@ -66,6 +67,10 @@ public final class ExceptionHelper
         catch (AlfrescoException e)
         {
             throw (AlfrescoException) e;
+        }
+        catch (CmisUnauthorizedException e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e);
         }
         catch (CmisRuntimeException e)
         {
@@ -154,7 +159,8 @@ public final class ExceptionHelper
                         OAuthErrorContent.parseJson(resp.getErrorContent()));
             }
             else if (resp.getResponseCode() == HttpStatus.SC_SERVICE_UNAVAILABLE && session == null) { throw new AlfrescoSessionException(
-                    ErrorCodeRegistry.GENERAL_HTTP_RESP, HttpStatus.SC_SERVICE_UNAVAILABLE + " " + resp.getErrorContent()); }
+                    ErrorCodeRegistry.GENERAL_HTTP_RESP, HttpStatus.SC_SERVICE_UNAVAILABLE + " "
+                            + resp.getErrorContent()); }
 
             if (er == null)
             {

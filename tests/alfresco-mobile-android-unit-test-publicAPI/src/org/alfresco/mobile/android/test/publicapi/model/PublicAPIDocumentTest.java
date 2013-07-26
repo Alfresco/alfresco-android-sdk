@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -15,30 +15,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.impl.cloud;
+package org.alfresco.mobile.android.test.publicapi.model;
 
-public enum PublicAPIBaseTypeIds
+import org.alfresco.mobile.android.test.api.model.DocumentTest;
+
+/**
+ * Test class for Document Object.
+ * 
+ * @author Jean Marie Pascal
+ */
+public class PublicAPIDocumentTest extends DocumentTest
 {
-    DOCUMENT("file"), FOLDER("folder");
 
-    private final String value;
-
-    PublicAPIBaseTypeIds(String v)
-    {
-        value = v;
-    }
-
-    public String value()
-    {
-        return value;
-    }
-
-    public static PublicAPIBaseTypeIds fromValue(String v)
-    {
-        for (PublicAPIBaseTypeIds c : PublicAPIBaseTypeIds.values())
-        {
-            if (c.value.equals(v)) { return c; }
-        }
-        throw new IllegalArgumentException(v);
-    }
 }

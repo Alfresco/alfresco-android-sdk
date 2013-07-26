@@ -78,7 +78,7 @@ public class FolderTest extends AlfrescoSDKTestCase
 
         // NodeRef
         Assert.assertNotNull(folder.getIdentifier());
-        if (isOnPremise(alfsession))
+        if (isOnPremise(alfsession) && !hasPublicAPI())
         {
             Assert.assertTrue(NodeRefUtils.isNodeRef(folder.getIdentifier()));
         }

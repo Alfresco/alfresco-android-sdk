@@ -46,6 +46,8 @@ public interface OnPremiseConstant
     String THIRD_CMIS_EDITION = "thirdcmis";
 
     // VERSION NUMBER
+    int ALFRESCO_VERSION_4_2 = 2;
+    
     int ALFRESCO_VERSION_4 = 4;
 
     int ALFRESCO_VERSION_3 = 3;
@@ -296,5 +298,17 @@ public interface OnPremiseConstant
     String EXCEPTION_VALUE = "exception";
 
     String CALLSTACK_VALUE = "callstack";
+    
+    // WORKFLOW
+    String VERSION_VALUE = "version";
 
+    String DEFINITIONURL_VALUE = "definitionUrl";
+
+    String STARTDATE_VALUE = "startDate";
+
+    String PRIORITY_VALUE = "priority";
+
+    String OWNER_VALUE = "owner";
+
+    Object WORKFLOWINSTANCE_VALUE = "workflowInstance";
 }

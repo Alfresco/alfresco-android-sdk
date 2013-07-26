@@ -17,25 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.cloud;
 
-import java.util.Map;
-
-import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.ContentStream;
-import org.alfresco.mobile.android.api.model.Person;
-import org.alfresco.mobile.android.api.model.impl.PersonImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIPersonServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
-import org.alfresco.mobile.android.api.utils.JsonUtils;
-import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
-import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
-import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -45,7 +29,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudPersonServiceImpl extends AbstractPersonService
+public class CloudPersonServiceImpl extends PublicAPIPersonServiceImpl
 {
 
     /**
@@ -58,58 +42,6 @@ public class CloudPersonServiceImpl extends AbstractPersonService
         super(repositorySession);
     }
 
-    /** {@inheritDoc} */
-    protected UrlBuilder getPersonDetailssUrl(String personIdentifier)
-    {
-        return new UrlBuilder(CloudUrlRegistry.getPersonDetailssUrl((CloudSession) session, personIdentifier));
-    }
-
-    /** {@inheritDoc} */
-    public ContentStream getAvatarStream(String personIdentifier)
-    {
-        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
-        try
-        {
-            Person person = getPerson(personIdentifier);
-            if (person.getAvatarIdentifier() == null){
-                return null;
-            }
-            ContentStream st = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
-                    .getDocumentFolderService()).downloadContentStream(person.getAvatarIdentifier());
-            return st;
-        }
-        catch (Exception e)
-        {
-            convertException(e);
-        }
-        return null;
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////
-    // / INTERNAL
-    // ////////////////////////////////////////////////////////////////////////////////////
-    @SuppressWarnings("unchecked")
-    /** {@inheritDoc} */
-    protected Person computePerson(UrlBuilder url)
-    {
-        Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
-
-        // check response code
-        if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR || resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
-        {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.PERSON_NOT_FOUND, resp.getErrorContent());
-        }
-        else if (resp.getResponseCode() != HttpStatus.SC_OK)
-        {
-            convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
-        }
-
-        Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-        Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json).get(CloudConstant.ENTRY_VALUE);
-        return PersonImpl.parsePublicAPIJson(data);
-    }
-    
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////

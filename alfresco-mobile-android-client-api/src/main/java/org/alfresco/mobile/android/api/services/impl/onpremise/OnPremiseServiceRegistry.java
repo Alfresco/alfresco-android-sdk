@@ -24,7 +24,16 @@ import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
+import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIActivityStreamServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIDocumentFolderServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIPersonServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIRatingsServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPISiteServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPITaggingServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
@@ -44,10 +53,23 @@ import android.os.Parcelable;
  */
 public class OnPremiseServiceRegistry extends AbstractServiceRegistry
 {
+    private boolean hasPublicAPI = false;
+
     public OnPremiseServiceRegistry(AlfrescoSession session)
     {
         super(session);
-        this.documentFolderService = new OnPremiseDocumentFolderServiceImpl(session);
+        if (session instanceof RepositorySessionImpl)
+        {
+            hasPublicAPI = ((RepositorySessionImpl) session).hasPublicAPI();
+            if (hasPublicAPI)
+            {
+                this.documentFolderService = new PublicAPIDocumentFolderServiceImpl(session);
+            }
+            else
+            {
+                this.documentFolderService = new OnPremiseDocumentFolderServiceImpl(session);
+            }
+        }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +79,14 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (siteService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
         {
-            this.siteService = new OnPremiseSiteServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.siteService = new PublicAPISiteServiceImpl(session);
+            }
+            else
+            {
+                this.siteService = new OnPremiseSiteServiceImpl((RepositorySession) session);
+            }
         }
         return siteService;
     }
@@ -66,7 +95,14 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (commentService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
         {
-            this.commentService = new OnPremiseCommentServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.commentService = new PublicAPICommentServiceImpl(session);
+            }
+            else
+            {
+                this.commentService = new OnPremiseCommentServiceImpl((RepositorySession) session);
+            }
         }
         return commentService;
     }
@@ -75,7 +111,14 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (taggingService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
         {
-            this.taggingService = new OnPremiseTaggingServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.taggingService = new PublicAPITaggingServiceImpl(session);
+            }
+            else
+            {
+                this.taggingService = new OnPremiseTaggingServiceImpl((RepositorySession) session);
+            }
         }
         return taggingService;
     }
@@ -84,7 +127,14 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (activityStreamService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
         {
-            this.activityStreamService = new OnPremiseActivityStreamServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.activityStreamService = new PublicAPIActivityStreamServiceImpl(session);
+            }
+            else
+            {
+                this.activityStreamService = new OnPremiseActivityStreamServiceImpl((RepositorySession) session);
+            }
         }
         return activityStreamService;
     }
@@ -94,7 +144,14 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
         if (ratingsService == null && RepositoryVersionHelper.isAlfrescoProduct(session)
                 && session.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
-            this.ratingsService = new OnPremiseRatingsServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.ratingsService = new PublicAPIRatingsServiceImpl(session);
+            }
+            else
+            {
+                this.ratingsService = new OnPremiseRatingsServiceImpl((RepositorySession) session);
+            }
         }
         return ratingsService;
     }
@@ -103,11 +160,34 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
     {
         if (personService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
         {
-            this.personService = new OnPremisePersonServiceImpl((RepositorySession) session);
+            if (hasPublicAPI)
+            {
+                this.personService = new PublicAPIPersonServiceImpl(session);
+            }
+            else
+            {
+                this.personService = new OnPremisePersonServiceImpl((RepositorySession) session);
+            }
         }
         return personService;
     }
-    
+
+    public WorkflowService getWorkflowService()
+    {
+        if (workflowService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            if (hasPublicAPI)
+            {
+                this.workflowService = new PublicAPIWorkflowServiceImpl(session);
+            }
+            else
+            {
+                this.workflowService = new OnPremiseWorkflowServiceImpl(session);
+            }
+        }
+        return workflowService;
+    }
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////

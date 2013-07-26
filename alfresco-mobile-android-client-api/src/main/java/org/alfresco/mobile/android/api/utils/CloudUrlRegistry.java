@@ -25,12 +25,11 @@ import org.alfresco.mobile.android.api.session.CloudSession;
  * 
  * @author Jean Marie Pascal
  */
-public final class CloudUrlRegistry
+public final class CloudUrlRegistry extends PublicAPIUrlRegistry
 {
-
     private CloudUrlRegistry()
     {
-
+        super();
     }
 
     public static final String VARIABLE_PERSONID = "{personId}";
@@ -60,7 +59,7 @@ public final class CloudUrlRegistry
 
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_FOLDERS = URL_USER_PREFERENCE + "?where=(EXISTS(target/folder))";
-    
+
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
             + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
@@ -101,13 +100,12 @@ public final class CloudUrlRegistry
                 PREFERENCE_FAVOURITES_FOLDERS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
                 .toString();
     }
-    
+
     /** @since 1.2.0 */
     public static String getUserFavouritesUrl(CloudSession session, String username)
     {
         return createPrefix(session).append(
-                PREFERENCE_FAVOURITES_ALL.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
-                .toString();
+                PREFERENCE_FAVOURITES_ALL.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     /** @since 1.2.0 */
@@ -362,7 +360,7 @@ public final class CloudUrlRegistry
     // ///////////////////////////////////////////////////////////////////////////////
     // TOOLS
     // //////////////////////////////////////////////////////////////////////////////
-    private static StringBuilder createPrefix(CloudSession session)
+    protected static StringBuilder createPrefix(CloudSession session)
     {
         return createPrefix(session, null);
     }
@@ -387,6 +385,11 @@ public final class CloudUrlRegistry
     // ///////////////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////////////
+    protected static String getPublicApiPrefix()
+    {
+        return PREFIX_PUBLIC_API;
+    }
+
     private static String getEncodingPersonIdentifier(String identifier)
     {
         String personIdentifier = null;

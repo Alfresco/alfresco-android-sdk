@@ -17,18 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl.cloud;
 
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.MIMETYPE;
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.VERSIONLABEL;
-
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIDocumentImpl;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class CloudDocumentImpl extends CloudNodeImpl implements Document
+public class CloudDocumentImpl extends PublicAPIDocumentImpl
 {
     private static final long serialVersionUID = 1L;
 
@@ -38,40 +34,7 @@ public class CloudDocumentImpl extends CloudNodeImpl implements Document
 
     public CloudDocumentImpl(Map<String, Object> json)
     {
-        super(PublicAPIBaseTypeIds.DOCUMENT.value(), json);
-    }
-
-    @Override
-    public long getContentStreamLength()
-    {
-        return (Long) ((getPropertyValue(SIZEINBYTES) == null) ? (long) -1
-                : (getPropertyValue(SIZEINBYTES) instanceof String) ? Long
-                        .parseLong((String) getPropertyValue(SIZEINBYTES)) : getPropertyValue(SIZEINBYTES));
-    }
-
-    @Override
-    public String getContentStreamMimeType()
-    {
-        return getPropertyValue(MIMETYPE);
-    }
-
-    @Override
-    public String getVersionLabel()
-    {
-        return getPropertyValue(VERSIONLABEL);
-    }
-
-    @Override
-    public String getVersionComment()
-    {
-        return null;
-    }
-
-    @Override
-    public Boolean isLatestVersion()
-    {
-        // it can't be true everytime...
-        return true;
+        super(json);
     }
 
     // ////////////////////////////////////////////////////

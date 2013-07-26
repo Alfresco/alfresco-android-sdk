@@ -77,4 +77,11 @@ public interface ServiceRegistry extends Parcelable
      */
     VersionService getVersionService();
 
+    /**
+     * Returns the WorkflowService instance for the session.
+     * 
+     * @since 1.3
+     */
+    WorkflowService getWorkflowService();
+
 }

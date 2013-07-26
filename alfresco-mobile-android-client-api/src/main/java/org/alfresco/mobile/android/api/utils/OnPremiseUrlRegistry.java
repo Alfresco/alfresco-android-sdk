@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 
 /**
  * List of all alfresco specific url used inside the SDK.
@@ -34,6 +35,8 @@ public final class OnPremiseUrlRegistry
     public static final String BINDING_CMISATOM = "/cmisatom";
 
     public static final String BINDING_CMIS = "/service/cmis";
+
+    public static final String BINDING_PUBLIC_API = "/service/cmis";
 
     public static final String PREFIX_SERVICE = "/service/";
 
@@ -84,29 +87,29 @@ public final class OnPremiseUrlRegistry
     // //////////////////////////////////////////////////////////////////////////////
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_DOCUMENTS = "org.alfresco.share.documents.favourites";
-    
+
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_FOLDERS = "org.alfresco.share.folders.favourites";
 
-    
     /** @since 1.1.0 */
     public static String getUserPreferenceUrl(AlfrescoSession session, String username)
     {
-        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_USER_PREFERENCE.replace(VARIABLE_USER,  getEncodingPersonIdentifier(username)));
+        return session.getBaseUrl().concat(PREFIX_SERVICE)
+                .concat(URL_USER_PREFERENCE.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)));
     }
-    
+
     /** @since 1.2.0 */
     public static String getUserFavouriteDocumentsUrl(AlfrescoSession session, String username)
     {
         return getPreferencesUrl(session, username, PREFERENCE_FAVOURITES_DOCUMENTS);
     }
-    
+
     /** @since 1.2.0 */
     public static String getUserFavouriteFoldersUrl(AlfrescoSession session, String username)
     {
         return getPreferencesUrl(session, username, PREFERENCE_FAVOURITES_FOLDERS);
     }
-    
+
     /** @since 1.2.0 */
     public static String getPreferencesUrl(AlfrescoSession session, String username, String preferenceFilter)
     {
@@ -116,6 +119,7 @@ public final class OnPremiseUrlRegistry
                 .concat(URL_USER_PREFERENCES.replace(VARIABLE_USER, getEncodingPersonIdentifier(username)).replace(
                         VARIABLE_PREFERENCE, preferenceFilter));
     }
+
     // ///////////////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////////////
@@ -441,6 +445,62 @@ public final class OnPremiseUrlRegistry
     public static String getActionQueue(AlfrescoSession session)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_ACTION_QUEUE);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////////
+    // WORKFLOWS / TASKS
+    // //////////////////////////////////////////////////////////////////////////////
+    /** @since 1.3.0 */
+    public static final String VARIABLE_PROCESSDEFINITIONID = "{processDefinitionId}";
+
+    /** @since 1.3.0 */
+    public static final String VARIABLE_PROCESSID = "{processId}";
+
+    /** @since 1.3.0 */
+    public static final String URL_PROCESS_DEFINITIONS = "api/workflow-definitions";
+
+    /** @since 1.3.0 */
+    public static final String URL_PROCESS_DEFINITION = URL_PROCESS_DEFINITIONS + "/" + VARIABLE_PROCESSDEFINITIONID;
+
+    /** @since 1.3.0 */
+    public static final String URL_PROCESSES = "api/workflow-instances";
+
+    /** @since 1.3.0 */
+    public static final String URL_PROCESS = URL_PROCESSES + "/" + VARIABLE_PROCESSID;
+    
+    /** @since 1.3.0 */
+    // TODO Replace with
+    public static final String URL_TASK_FOR_PROCESS = URL_PROCESS + "/task-instances";
+
+    /** @since 1.3.0 */
+    public static String getProcessDefinitionsUrl(AlfrescoSession session)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESS_DEFINITIONS);
+    }
+
+    /** @since 1.3.0 */
+    public static String getProcessDefinitionUrl(AlfrescoSession session, String workflowDefinitionId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESS_DEFINITION)
+                .replace(VARIABLE_PROCESSDEFINITIONID, workflowDefinitionId);
+    }
+
+    /** @since 1.3.0 */
+    public static String getProcessesUrl(AlfrescoSession session)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESSES);
+    }
+
+    /** @since 1.3.0 */
+    public static String getProcessUrl(AlfrescoSession session, String processId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESS).replace(VARIABLE_PROCESSID, processId);
+    }
+    
+    /** @since 1.3.0 */
+    public static String getTasksForProcessIdUrl(AlfrescoSession session, String processId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASK_FOR_PROCESS).replace(VARIABLE_PROCESSID, processId);
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

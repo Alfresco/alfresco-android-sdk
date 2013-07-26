@@ -37,6 +37,8 @@ import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
@@ -533,7 +535,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
         Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
         if (session != null)
         {
-            if (isOnPremise())
+            if (isOnPremise() && !((RepositorySessionImpl)session).hasPublicAPI())
             {
                 session.getServiceRegistry().getCommentService().getComments(doc);
             }

@@ -54,7 +54,7 @@ public class OnPremiseCommentServiceImpl extends AbstractCommentService
      * 
      * @param repositorySession : Repository Session.
      */
-    public OnPremiseCommentServiceImpl(RepositorySession repositorySession)
+    public OnPremiseCommentServiceImpl(AlfrescoSession repositorySession)
     {
         super(repositorySession);
     }

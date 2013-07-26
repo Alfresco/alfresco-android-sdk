@@ -49,6 +49,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
@@ -692,6 +693,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     protected boolean isOnPremise()
     {
         return isOnPremise(alfsession);
+    }
+    
+    protected boolean hasPublicAPI()
+    {
+       return isOnPremise() && ((RepositorySessionImpl) alfsession).hasPublicAPI();
     }
 
     protected AuthenticationProvider getAuthenticationProvider()
