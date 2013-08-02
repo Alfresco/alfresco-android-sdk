@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
+import java.util.Map;
+
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -346,11 +348,13 @@ public class PublicAPIUrlRegistry
     /** @since 1.3.0 */
     public static final String URL_TASKS = "tasks";
 
+    /** @since 1.3.0 */
+    public static final String URL_TASK = URL_TASKS + "/" + VARIABLE_TASKID;
 
     /** @since 1.3.0 */
     // TODO Replace with
     // public static final String URL_PROCESS = URL_PROCESS + "/tasks";
-    public static final String URL_TASK_FOR_PROCESS = "tasks?where=(processInstanceId={processId})";
+    public static final String URL_TASK_FOR_PROCESS = "tasks";
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionsUrl(AlfrescoSession session)
@@ -393,6 +397,12 @@ public class PublicAPIUrlRegistry
     public static String getTasksUrl(AlfrescoSession session)
     {
         return createPrefix(session).append(URL_TASKS).toString();
+    }
+    
+    /** @since 1.3.0 */
+    public static String getTaskUrl(AlfrescoSession session, String taskId)
+    {
+        return createPrefix(session).append(URL_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -454,10 +464,7 @@ public class PublicAPIUrlRegistry
         }
         return personIdentifier;
     }
-
-    // ///////////////////////////////////////////////////////////////////////////////
-    // PUBLIC API
-    // //////////////////////////////////////////////////////////////////////////////
+    
     public static String getPublicAPIUrl(String baseUrl)
     {
         StringBuilder sb = new StringBuilder(baseUrl);

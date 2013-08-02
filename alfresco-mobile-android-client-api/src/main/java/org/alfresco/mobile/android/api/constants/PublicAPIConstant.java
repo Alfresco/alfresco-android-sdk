@@ -39,10 +39,6 @@ public interface PublicAPIConstant extends OnPremiseConstant
 
     String TOTAL_ITEMS_VALUE = "totalItems";
 
-    String SKIP_COUNT_VALUE = "skipCount";
-
-    String MAX_ITEMS_VALUE = "maxItems";
-
     String ENTRIES_VALUE = "entries";
 
     String ENTRY_VALUE = "entry";
@@ -231,5 +227,28 @@ public interface PublicAPIConstant extends OnPremiseConstant
     String PRIORITY_VALUE = "priority";
 
     String ASSIGNEE_VALUE = "assignee";
+
+    String WHERE_VALUE = "where";
     
+    String COMPLETED_VALUE = "completed";
+
+    String ANY_VALUE = "any";
+
+    String PROCESSINSTANCEID_VALUE = "processInstanceId";
+
+    String ENDEDAT_VALUE = "endedAt";
+
+    String VARIABLES_VALUE = "variables";
+
+    String ACTIVE_VALUE = "active";
+
+    String SELECT_VALUE = "select";
+
+    String RESOLVED_VALUE = "resolved";
+
+    String TRANSITIONS_VALUE = "transitions";
+
+    String ACTIVITYDEFINITIONID_VALUE = "activityDefinitionId";
+
+    String FORMRESOURCEKEY_VALUE = "formResourceKey";
 }

@@ -47,7 +47,7 @@ public interface OnPremiseConstant
 
     // VERSION NUMBER
     int ALFRESCO_VERSION_4_2 = 2;
-    
+
     int ALFRESCO_VERSION_4 = 4;
 
     int ALFRESCO_VERSION_3 = 3;
@@ -148,9 +148,9 @@ public interface OnPremiseConstant
     String INSTANTMESSAGEID_VALUE = "instantmsg";
 
     String GOOGLEID_VALUE = "googleusername";
-    
+
     String COMPANY_VALUE = "company";
-    
+
     String AUTHORITY_VALUE = "authority";
 
     // COMPANY
@@ -166,11 +166,10 @@ public interface OnPremiseConstant
     String COMPANYPOSTCODE_VALUE = "companypostcode";
 
     String COMPANYTELEPHONE_VALUE = "companytelephone";
-    
+
     String COMPANYFAX_VALUE = "companyfax";
 
     String COMPANYEMAIL_VALUE = "companyemail";
-
 
     // ACTIVITY EVENT
     String ID_VALUE = "id";
@@ -299,6 +298,11 @@ public interface OnPremiseConstant
 
     String CALLSTACK_VALUE = "callstack";
     
+    // Paging
+    String SKIP_COUNT_VALUE = "skipCount";
+
+    String MAX_ITEMS_VALUE = "maxItems";
+
     // WORKFLOW
     String VERSION_VALUE = "version";
 
@@ -310,5 +314,73 @@ public interface OnPremiseConstant
 
     String OWNER_VALUE = "owner";
 
-    Object WORKFLOWINSTANCE_VALUE = "workflowInstance";
+    String WORKFLOWINSTANCE_VALUE = "workflowInstance";
+
+    String BPM_DESCRIPTION_VALUE = "bpm_description";
+    
+    String BPM_STARTDATE_VALUE = "bpm_startDate";
+    
+    String BPM_PRIORITY_VALUE = "bpm_priority";
+    
+    String BPM_COMPLETIONDATE_VALUE = "bpm_completionDate";
+    
+    String BPM_DUEDATE_VALUE = "bpm_dueDate";
+
+    String PROPERTIES_VALUE = "properties";
+    
+    String POOLEDTASKS_VALUE = "pooledTasks";
+    
+    String STATE_VALUE = "state";
+    
+    String COMPLETED_UPPERCASE_VALUE = "COMPLETED";
+    
+    String IN_PROGRESS_UPPERCASE_VALUE = "IN_PROGRESS";
+    
+    String DUEAFTER_VALUE = "dueAfter";
+    
+    String DUEBEFORE_VALUE = "dueBefore";
+
+
+    // Form Definition
+    String ITEMKIND_VALUE = "itemKind";
+
+    String ITEMID_VALUE = "itemId";
+
+    String FIELDS_VALUE = "fields";
+
+    String TASK_VALUE = "task";
+
+    String PACKAGEITEMS_VALUE = "packageItems";
+    
+    String FORMDATA_VALUE = "formData";
+    
+    String ASSOC_PACKAGEITEMS_VALUE = "assoc_packageItems";
+    
+    String ASSOC_BPM_ASSIGNEE_ADDED_VALUE = "assoc_bpm_assignee_added";
+    
+    String ASSOC_BPM_ASSIGNEES_ADDED_VALUE = "assoc_bpm_assignees_added";
+
+    String ASSOC_PACKAGEITEMS_ADDED_VALUES  = "assoc_packageItems_added";
+    
+    String PERSISTEDOBJECT_VALUE = "persistedObject";
+    
+    String PROP_TRANSITIONS_VALUE =  "prop_transitions";
+    
+    String NEXT_VALUE = "Next";
+
+    String ENDDATE_VALUE = "endDate";
+
+    String DUEDATE_VALUE = "dueDate";
+
+    String INITIATOR_VALUE = "initiator";
+
+    String ISACTIVE_VALUE = "isActive";
+
+    String ISDEFAULT_VALUE = "isDefault";
+
+    String ISHIDDEN_VALUE = "isHidden";
+
+    String DEFINITION_VALUE = "definition";
+
+    String TRANSITIONS_VALUE = "transitions";
 }

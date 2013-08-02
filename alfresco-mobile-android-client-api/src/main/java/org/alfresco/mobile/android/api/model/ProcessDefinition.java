@@ -15,19 +15,46 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.workflow;
+package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * 
+ * @author jpascal
+ *
+ */
 public interface ProcessDefinition extends Serializable
 {
+    /**
+     * Returns the unique identifier of the process definition. Identifier = key : versionnumber : variables
+     * @return
+     */
     String getIdentifier();
+    
+    /**
+     * Returns the Key of the process-definition
+     * @return
+     */
+    String getKey();
 
+    /**
+     * Returns the Human readable Name of the process-definition
+     * @return
+     */
     String getName();
-
+    
+    /**
+     * Returns the Version of the process-definition
+     * @return
+     */
     String getVersion();
 
-    Map<String, String> getData();
+    /**
+     * Returns all extra properties 
+     * @return
+     */
+    Map<String, Serializable> getData();
 
 }

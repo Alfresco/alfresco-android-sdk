@@ -21,15 +21,55 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.workflow.ProcessDefinition;
-import org.alfresco.mobile.android.api.model.workflow.Task;
-import org.alfresco.mobile.android.api.model.workflow.Process;
+import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.Task.Transition;
 
 public interface WorkflowService
 {
+
+    /**
+     * Allowable filter property : Name of the document or folder.
+     */
+    String FILTER_STATUS = "filterStatus";
+
+    int FILTER_STATUS_ANY = 0;
+
+    int FILTER_STATUS_ACTIVE = 1;
+
+    int FILTER_STATUS_COMPLETE = 2;
+
+    String FILTER_DUE = "filterDue";
+
+    int FILTER_DUE_TODAY = 0;
+
+    int FILTER_DUE_TOMORROW = 1;
+
+    int FILTER_DUE_7DAYS = 7;
+
+    int FILTER_DUE_OVERDUE = 100;
+
+    int FILTER_DUE_NODATE = -1;
+
+    String FILTER_PRIORITY = "filterPriority";
+
+    int FILTER_PRIORITY_LOW = 3;
+
+    int FILTER_PRIORITY_MEDIUM = 2;
+
+    int FILTER_PRIORITY_HIGH = 1;
+
+    String FILTER_ASSIGNEE = "filterAssignee";
+
+    int FILTER_ASSIGNEE_ME = 1;
+
+    int FILTER_ASSIGNEE_UNASSIGNED = 2;
 
     // ////////////////////////////////////////////////////////////////
     // PROCESS DEFINITIONS
@@ -90,8 +130,16 @@ public interface WorkflowService
      * @param items
      * @return
      */
-    List<Process> startProcess(ProcessDefinition processDefinition, Map<String, Serializable> variables,
-            List<Node> items);
+    Process startProcess(ProcessDefinition processDefinition, List<Person> assignees, Map<String, Serializable> variables, List<Node> items);
+
+    /**
+     * Deletes a process. An authenticated user can only delete a process if the
+     * authenticated user has started the process or if the user is involved in
+     * any of the process’s tasks.
+     * 
+     * @param process
+     */
+    void deleteProcess(Process process);
 
     /**
      * Retrieves a single process.
@@ -108,6 +156,7 @@ public interface WorkflowService
      * @return
      */
     Map<String, Serializable> getVariables(Process process);
+
 
     /**
      * Update the variables for a given process. If the variable doesn't exist
@@ -128,15 +177,8 @@ public interface WorkflowService
 
     PagingResult<Task> getTasks(Process process, ListingContext listingContext);
 
-    /**
-     * Get Thumbnail of the process
-     * 
-     * @param process
-     */
-    void getProcessDiagram(Process process);
-
     // ////////////////////////////////////////////////////////////////
-    // ITEMS
+    // DOCUMENTS AS ATTACHMENTS
     // ////////////////////////////////////////////////////////////////
 
     /**
@@ -145,7 +187,9 @@ public interface WorkflowService
      * @param task
      * @return
      */
-    List<Node> getItems(Process process);
+    List<Node> getDocuments(Process process);
+
+    PagingResult<Node> getDocuments(Process process, ListingContext listingContext);
 
     /**
      * Returns a list items associated to the the task.
@@ -153,7 +197,9 @@ public interface WorkflowService
      * @param task
      * @return
      */
-    List<Node> getItems(Task task);
+    List<Node> getDocuments(Task task);
+
+    PagingResult<Node> getDocuments(Task task, ListingContext listingContext);
 
     /**
      * Add a list of items to the the process/task.
@@ -161,7 +207,7 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void addItems(Process process, List<Node> items);
+    void addDocuments(Process process, List<Node> items);
 
     /**
      * Add a list of items to the the process/task.
@@ -169,7 +215,7 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void addItems(Task task, List<Node> items);
+    void addDocuments(Task task, List<Node> items);
 
     /**
      * Delete a list of items to the the process/task.
@@ -177,7 +223,7 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void removeItems(Process process, List<Node> items);
+    void removeDocuments(Process process, List<Node> items);
 
     /**
      * Delete a list of items to the the process/task.
@@ -185,9 +231,8 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void removeItems(Task task, List<Node> items);
+    void removeDocuments(Task task, List<Node> items);
 
-    
     // ////////////////////////////////////////////////////////////////
     // TASKS
     // ////////////////////////////////////////////////////////////////
@@ -206,4 +251,44 @@ public interface WorkflowService
      */
     PagingResult<Task> getTasks(ListingContext listingContext);
 
+    /**
+     * Retrieves a single task.
+     * @param taskIdentifier
+     * @return
+     */
+    Task getTask(String taskIdentifier);
+    
+    /**
+     * Claiming a task is done by one of the candidates of a task, task owner or
+     * process-initiator
+     * 
+     * @param task
+     * @return
+     */
+    Task claimTask(Task task);
+    
+    /**
+     * Completing a task
+     * @param task
+     * @return
+     */
+    Task completeTask(Task  task, String transitionIdentifier, Map<String, Serializable> variables);
+    
+    /**
+     * Refresh a task ie complete all properties + transitions info. equivalent of getTask(taskId)
+     * @param task
+     * @return
+     */
+    Task refreshTask(Task task);
+    // ////////////////////////////////////////////////////////////////
+    // DIAGRAM
+    // ////////////////////////////////////////////////////////////////
+    /**
+     * Get Thumbnail of the process
+     * 
+     * @param process
+     */
+    ContentStream getProcessDiagram(Process process);
+
+    ContentStream getProcessDiagram(String processId);
 }

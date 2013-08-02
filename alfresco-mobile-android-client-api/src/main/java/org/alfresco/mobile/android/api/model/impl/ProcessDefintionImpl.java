@@ -15,16 +15,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.workflow.impl.onpremise;
+package org.alfresco.mobile.android.api.model.impl;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.model.workflow.ProcessDefinition;
+import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+/**
+ * 
+ * @author jpascal
+ *
+ */
 public class ProcessDefintionImpl implements ProcessDefinition
 {
     private static final long serialVersionUID = 1L;
@@ -33,13 +39,15 @@ public class ProcessDefintionImpl implements ProcessDefinition
     private String identifier;
 
     private String name;
-
+    
+    private String key;
+    
     private String version;
 
     /**
-     * Extra data map that contains all information about the specific activity.
+     * Extra data map that contains all information about the specific process definition.
      */
-    private Map<String, String> data;
+    private Map<String, Serializable> data;
 
     /**
      * Parse Json Response from Alfresco REST API to create a process Definition
@@ -52,15 +60,15 @@ public class ProcessDefintionImpl implements ProcessDefinition
     {
         ProcessDefintionImpl definition = new ProcessDefintionImpl();
 
+        // Public Properties
         definition.identifier = JSONConverter.getString(json, OnPremiseConstant.ID_VALUE);
-        definition.name = JSONConverter.getString(json, OnPremiseConstant.NAME_VALUE);
+        definition.name = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
+        definition.key = JSONConverter.getString(json, OnPremiseConstant.NAME_VALUE);
         definition.version = JSONConverter.getString(json, OnPremiseConstant.VERSION_VALUE);
-
-        definition.data = new HashMap<String, String>();
-        definition.data.put(OnPremiseConstant.URL_VALUE, JSONConverter.getString(json, OnPremiseConstant.URL_VALUE));
-        definition.data
-                .put(OnPremiseConstant.TITLE_VALUE, JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE));
-        definition.data.put(OnPremiseConstant.TITLE_VALUE,
+        
+        // Extra Properties
+        definition.data = new HashMap<String, Serializable>();
+        definition.data.put(OnPremiseConstant.DESCRIPTION_VALUE,
                 JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE));
 
         return definition;
@@ -70,19 +78,21 @@ public class ProcessDefintionImpl implements ProcessDefinition
     {
         ProcessDefintionImpl definition = new ProcessDefintionImpl();
 
-        definition.identifier = JSONConverter.getString(json, CloudConstant.ID_VALUE);
-        definition.name = JSONConverter.getString(json, CloudConstant.NAME_VALUE);
-        definition.version = JSONConverter.getString(json, CloudConstant.VERSION_VALUE);
+        // Public Properties
+        definition.identifier = JSONConverter.getString(json, PublicAPIConstant.ID_VALUE);
+        definition.name = JSONConverter.getString(json, PublicAPIConstant.NAME_VALUE);
+        definition.key = JSONConverter.getString(json, PublicAPIConstant.KEY_VALUE);
+        definition.version = JSONConverter.getString(json, PublicAPIConstant.VERSION_VALUE);
 
-        definition.data = new HashMap<String, String>();
-        definition.data.put(CloudConstant.KEY_VALUE, JSONConverter.getString(json, CloudConstant.KEY_VALUE));
-        definition.data.put(CloudConstant.CATEGORY_VALUE, JSONConverter.getString(json, CloudConstant.CATEGORY_VALUE));
-        definition.data.put(CloudConstant.DEPLOYMENTID_VALUE,
-                JSONConverter.getString(json, CloudConstant.DEPLOYMENTID_VALUE));
-        definition.data.put(CloudConstant.STARTFORMRESOURCEKEY_VALUE,
-                JSONConverter.getString(json, CloudConstant.STARTFORMRESOURCEKEY_VALUE));
-        definition.data.put(CloudConstant.GRAPHICNOTATIONDEFINED_VALUE,
-                JSONConverter.getString(json, CloudConstant.GRAPHICNOTATIONDEFINED_VALUE));
+        // Extra Properties
+        definition.data = new HashMap<String, Serializable>();
+        definition.data.put(PublicAPIConstant.CATEGORY_VALUE, JSONConverter.getString(json, PublicAPIConstant.CATEGORY_VALUE));
+        definition.data.put(PublicAPIConstant.DEPLOYMENTID_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.DEPLOYMENTID_VALUE));
+        definition.data.put(PublicAPIConstant.STARTFORMRESOURCEKEY_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.STARTFORMRESOURCEKEY_VALUE));
+        definition.data.put(PublicAPIConstant.GRAPHICNOTATIONDEFINED_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.GRAPHICNOTATIONDEFINED_VALUE));
 
         return definition;
     }
@@ -106,8 +116,14 @@ public class ProcessDefintionImpl implements ProcessDefinition
     }
 
     /** {@inheritDoc} */
-    public Map<String, String> getData()
+    public Map<String, Serializable> getData()
     {
         return data;
+    }
+
+    @Override
+    public String getKey()
+    {
+        return key;
     }
 }

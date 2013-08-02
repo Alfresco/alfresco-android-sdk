@@ -15,34 +15,41 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.workflow;
+package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-public interface Task extends Serializable
+/**
+ * 
+ * @author jpascal
+ *
+ */
+public interface Process extends Serializable
 {
     String getIdentifier();
-
-    String getProcessIdentifier();
-
-    String getProcessDefinitionIdentifier();
-
+    
     String getDefinitionIdentifier();
-
+    
+    String getKey();
+    
     GregorianCalendar getStartedAt();
-
-    String getDescription();
-
-    int getPriority();
-
-    String getAssigneeIdentifier();
+    
+    GregorianCalendar getDueAt();
+    
+    GregorianCalendar getEndedAt();
+    
+    Integer getPriority();
+    
+    String getInitiatorIdentifier();
 
     String getName();
     
-    GregorianCalendar getDueAt();
+    String getDescription();
+    
+    Map<String, Serializable> getData();
 
-    Map<String, String> getData();
-
+    boolean hasAllVariables();
+    
 }

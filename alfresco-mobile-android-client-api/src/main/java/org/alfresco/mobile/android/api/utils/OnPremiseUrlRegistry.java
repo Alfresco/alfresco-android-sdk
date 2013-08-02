@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 
 /**
  * List of all alfresco specific url used inside the SDK.
@@ -455,6 +454,12 @@ public final class OnPremiseUrlRegistry
 
     /** @since 1.3.0 */
     public static final String VARIABLE_PROCESSID = "{processId}";
+    
+    /** @since 1.3.0 */
+    public static final String VARIABLE_PROCESSKEY = "{processKey}";
+    
+    /** @since 1.3.0 */
+    public static final String VARIABLE_TASKID = "{taskId}";
 
     /** @since 1.3.0 */
     public static final String URL_PROCESS_DEFINITIONS = "api/workflow-definitions";
@@ -469,8 +474,28 @@ public final class OnPremiseUrlRegistry
     public static final String URL_PROCESS = URL_PROCESSES + "/" + VARIABLE_PROCESSID;
     
     /** @since 1.3.0 */
-    // TODO Replace with
     public static final String URL_TASK_FOR_PROCESS = URL_PROCESS + "/task-instances";
+    
+    /** @since 1.3.0 */
+    public static final String URL_PROCESS_DIAGRAM = URL_PROCESS + "/diagram";
+    
+    /** @since 1.3.0 */
+    public static final String URL_TASKS = "api/task-instances";
+    
+    /** @since 1.3.0 */
+    public static final String URL_TASK = URL_TASKS + "/{taskId}";
+    
+    /** @since 1.3.0 */
+    public static final String URL_FORM_DEFINITIONS = "api/formdefinitions";
+    
+    /** @since 1.3.0 */
+    public static final String URL_FORM_PROCESS = "api/workflow/{processKey}/formprocessor";
+    
+    /** @since 1.3.0 */
+    public static final String URL_FORM_TASK = "api/task/{taskId}/formprocessor";
+    
+    /** @since 1.3.0 */
+    public static final String URL_PERSON_GUID = "api/forms/picker/authority/children?selectableType=cm:person&searchTerm={username}&size=1";
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionsUrl(AlfrescoSession session)
@@ -503,6 +528,47 @@ public final class OnPremiseUrlRegistry
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASK_FOR_PROCESS).replace(VARIABLE_PROCESSID, processId);
     }
 
+    /** @since 1.3.0 */
+    public static String getProcessItemsUrl(AlfrescoSession session, String processId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_FORM_DEFINITIONS);
+    }
+    
+    /** @since 1.3.0 */
+    public static String getTasksUrl(AlfrescoSession session)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASKS);
+    }
+
+    /** @since 1.3.0 */
+    public static String getWorkflowDiagram(AlfrescoSession session, String processId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESS_DIAGRAM).replace(VARIABLE_PROCESSID, processId);
+    }
+    
+    /** @since 1.3.0 */
+    public static String getFormProcessUrl(AlfrescoSession session, String processKey)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_FORM_PROCESS).replace(VARIABLE_PROCESSKEY, processKey);
+    }
+    
+    /** @since 1.3.0 */
+    public static String getFormTaskUrl(AlfrescoSession session, String taskId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_FORM_TASK).replace(VARIABLE_TASKID, taskId);
+    }
+    
+    public static String getTaskUrl(AlfrescoSession session, String taskIdentifier)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASK).replace(VARIABLE_TASKID, taskIdentifier);
+    }
+    
+    /** @since 1.3.0 */
+    public static String getPersonGUIDUrl(AlfrescoSession session, String username)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PERSON_GUID).replace(VARIABLE_USERNAME, getEncodingPersonIdentifier(username));
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////////////
@@ -515,4 +581,5 @@ public final class OnPremiseUrlRegistry
         }
         return personIdentifier;
     }
+
 }

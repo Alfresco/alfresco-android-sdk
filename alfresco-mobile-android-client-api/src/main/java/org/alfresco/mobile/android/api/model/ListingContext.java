@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -46,6 +46,9 @@ public class ListingContext implements Serializable
 
     /** The sorting modifier. */
     private boolean sortingModifier = true;
+
+    /** The sorting. */
+    private ListingFilter filter = null;
 
     /**
      * Instantiates a new listing context.
@@ -152,5 +155,27 @@ public class ListingContext implements Serializable
     public void setSkipCount(int skipCount)
     {
         this.skipCount = skipCount;
+    }
+
+    /**
+     * Returns the filter.
+     * 
+     * @since 1.3
+     * @param filter : .
+     */
+    public ListingFilter getFilter()
+    {
+        return filter;
+    }
+
+    /**
+     * Sets the filter.
+     * 
+     * @since 1.3
+     * @param filter : .
+     */
+    public void setFilter(ListingFilter filter)
+    {
+        this.filter = filter;
     }
 }

@@ -21,12 +21,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.workflow.Process;
-import org.alfresco.mobile.android.api.model.workflow.ProcessDefinition;
-import org.alfresco.mobile.android.api.model.workflow.Task;
+import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.Task.Transition;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
@@ -90,12 +93,19 @@ public class AbstractWorkflowService extends AlfrescoService implements Workflow
     }
 
     @Override
-    public List<Process> startProcess(ProcessDefinition processDefinition, Map<String, Serializable> variables,
+    public Process startProcess(ProcessDefinition processDefinition, List<Person> assignees, Map<String, Serializable> variables,
             List<Node> items)
     {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+    public void deleteProcess(Process process)
+    {
+        // TODO Auto-generated method stub
+    }
+
 
     @Override
     public Process getProcess(String processId)
@@ -126,88 +136,127 @@ public class AbstractWorkflowService extends AlfrescoService implements Workflow
     }
 
     @Override
-    public void getProcessDiagram(Process process)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public PagingResult<Task> getTasks(Process process, ListingContext listingContext)
     {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    // ////////////////////////////////////////////////////////////////
+    // DIAGRAM
+    // ////////////////////////////////////////////////////////////////
+    @Override
+    public ContentStream getProcessDiagram(Process process)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public ContentStream getProcessDiagram(String processId)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
     // ////////////////////////////////////////////////////////////////
     // ITEMS
     // ////////////////////////////////////////////////////////////////
     @Override
-    public List<Node> getItems(Process process)
+    public List<Node> getDocuments(Process process)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Node> getItems(Task task)
+    public List<Node> getDocuments(Task task)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public PagingResult<Node> getDocuments(Process process, ListingContext listingContext)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void addItems(Process process, List<Node> items)
+    public PagingResult<Node> getDocuments(Task task, ListingContext listingContext)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addDocuments(Process process, List<Node> items)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void addItems(Task task, List<Node> items)
+    public void addDocuments(Task task, List<Node> items)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeItems(Process process, List<Node> items)
+    public void removeDocuments(Process process, List<Node> items)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeItems(Task task, List<Node> items)
+    public void removeDocuments(Task task, List<Node> items)
     {
         // TODO Auto-generated method stub
-
     }
 
     // ////////////////////////////////////////////////////////////////
     // TASKS
     // ////////////////////////////////////////////////////////////////
-    /**
-     * Returns a list of tasks that the authenticated user is allowed to see.
-     * 
-     * @return
-     */
     public List<Task> getTasks()
     {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /**
-     * Returns a list of tasks that the authenticated user is allowed to see.
-     * 
-     * @param listingContext
-     * @return
-     */
     public PagingResult<Task> getTasks(ListingContext listingContext)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
+    public Task getTask(String taskIdentifier)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public Task claimTask(Task task)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Task completeTask(Task task, String transitionIdentifier, Map<String, Serializable> variables)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Task refreshTask(Task task)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

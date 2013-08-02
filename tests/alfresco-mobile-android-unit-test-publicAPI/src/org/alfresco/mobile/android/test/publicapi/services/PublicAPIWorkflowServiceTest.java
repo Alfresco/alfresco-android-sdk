@@ -26,4 +26,9 @@ public class PublicAPIWorkflowServiceTest extends WorkflowServiceTest
     {
         super.testProcessDefinition();
     }
+    
+    public void testAdhocWorkflow()
+    {
+        super.testAdhocWorkflow();
+    }
 }

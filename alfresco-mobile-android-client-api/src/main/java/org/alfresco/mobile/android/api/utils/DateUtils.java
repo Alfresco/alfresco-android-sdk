@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -44,6 +45,8 @@ public final class DateUtils
     public static final String FORMAT_4 = "MMM dd yyyy HH:mm:ss zzzz";
 
     public static final String FORMAT_5 = "dd MMM yyyy HH:mm:ss zzzz";
+
+    public static final String FORMAT_6 = "yyyy-MM-dd'T'hh:mm:ss.SSS";
 
     private static final String[] DATE_FORMATS = { FORMAT_1, FORMAT_2, FORMAT_3, FORMAT_4, FORMAT_5 };
 
@@ -117,5 +120,25 @@ public final class DateUtils
             d = parseDate(date);
         }
         return d;
+    }
+
+    public static String format(GregorianCalendar calendar)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")
+        {
+            private static final long serialVersionUID = 1L;
+
+            public StringBuffer format(Date date, StringBuffer toAppendTo, java.text.FieldPosition pos)
+            {
+                StringBuffer toFix = super.format(date, toAppendTo, pos);
+                return toFix.insert(toFix.length() - 2, ':');
+            };
+        };
+        return dateFormat.format(calendar.getTime());
+    }
+    
+    public static String formatISO(GregorianCalendar calendar)
+    {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(calendar.getTime());
     }
 }

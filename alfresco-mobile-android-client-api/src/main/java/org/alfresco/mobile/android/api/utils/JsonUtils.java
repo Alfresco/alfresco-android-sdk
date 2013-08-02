@@ -151,5 +151,32 @@ public final class JsonUtils
         }
         return sb.toString();
     }
+    
+    /**
+     * Utility method to help creating a default cmis query.
+     * 
+     * @param sb
+     * @param delimiter
+     * @param tokens
+     */
+    public static void join(StringBuilder sb, CharSequence delimiter, Object[] tokens)
+    {
+        boolean firstTime = true;
+        for (Object token : tokens)
+        {
+            if (firstTime)
+            {
+                firstTime = false;
+            }
+            else
+            {
+                sb.append(delimiter);
+            }
+            sb.append("'" + token + "'");
+        }
+    }
+    
+    
+    
 
 }

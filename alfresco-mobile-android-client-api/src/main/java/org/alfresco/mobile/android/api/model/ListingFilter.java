@@ -15,20 +15,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.workflow;
+package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
-public interface Process extends Serializable
+public class ListingFilter implements Serializable
 {
-    String getIdentifier();
+    private static final long serialVersionUID = 1L;
     
-    GregorianCalendar getStartedAt();
+    private Map<String, Serializable> mapValues = new HashMap<String, Serializable>();
 
-    String getDefinitionIdentifier();
+    public void addFilter(String key, Serializable value)
+    {
+        mapValues.put(key, value);
+    }
+    
+    public boolean hasFilterValue(String key)
+    {
+        return mapValues.containsKey(key);
+    }
+    
+    public Serializable getFilterValue(String key)
+    {
+        return mapValues.get(key);
+    }
 
-    Map<String, String> getData();
-
+    public Map<String, Serializable> getFilters()
+    {
+        return mapValues;
+    }
 }
