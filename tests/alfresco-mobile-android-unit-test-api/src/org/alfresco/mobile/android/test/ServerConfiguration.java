@@ -100,4 +100,8 @@ public interface ServerConfiguration
     String INVITED = "user_invited";
 
     String INVITED_PASSWORD = "user_invited_password";
+    
+    String WORKFLOW = "user_workflow";
+
+    String WORKFLOW_PASSWORD = "user_workflow_password";
 }

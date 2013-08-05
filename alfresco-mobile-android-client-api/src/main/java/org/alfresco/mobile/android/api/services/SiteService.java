@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 
 /**
@@ -188,14 +189,15 @@ public interface SiteService extends Service
      * @throws AlfrescoServiceException
      */
     List<Site> getPendingSites();
-    
+
     /**
      * Returns a list of join site requests from the current user that have yet
      * to be actioned. An empty list is returned if there are no outstanding
      * requests.
      * 
      * @since 1.2.0
-     * @return Returns a paged list of sites the current user has requested to be a member.
+     * @return Returns a paged list of sites the current user has requested to
+     *         be a member.
      * @throws AlfrescoServiceException
      */
     PagingResult<Site> getPendingSites(ListingContext listingContext);
@@ -220,9 +222,30 @@ public interface SiteService extends Service
      * @throws AlfrescoServiceException : If the request can not be completed
      *             successfully an exception is thrown with error code
      *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_NOT_LEFT
-     *             SITE_NOT_LEFT} or {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_LAST_MANAGER
-     *             SITE_LAST_MANAGER} if the user is the last manager of the site.
+     *             SITE_NOT_LEFT} or
+     *             {@link org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry#SITE_LAST_MANAGER
+     *             SITE_LAST_MANAGER} if the user is the last manager of the
+     *             site.
      */
     Site leaveSite(Site site);
+
+    /**
+     * Returns a list of site members.
+     * 
+     * @since 1.3.0
+     * @param site
+     * @return
+     */
+    List<Person> getAllMembers(Site site);
+
+    /**
+     * Returns a paged list of site members.
+     * 
+     * @since 1.3.0
+     * @param site
+     * @param listingContext
+     * @return
+     */
+    PagingResult<Person> getAllMembers(Site site, ListingContext listingContext);
 
 }

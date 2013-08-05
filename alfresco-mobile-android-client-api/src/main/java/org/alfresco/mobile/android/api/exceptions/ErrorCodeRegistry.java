@@ -210,4 +210,11 @@ public interface ErrorCodeRegistry
 
     /** Failed to retrieve tags. */
     int RATING_NOT_FOUND = 1001;
+    
+    
+    // ///////////////////////////////////
+    // WORKFLOW/TASK ERRORS
+    // ///////////////////////////////////
+    /** Generic error code for all RatingService. */
+    int WORKFLOW_GENERIC = 1100;
 }

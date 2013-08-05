@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
 import org.alfresco.mobile.android.api.services.VersionService;
+import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.os.Parcel;
@@ -39,6 +40,8 @@ import android.os.Parcel;
  */
 public abstract class AbstractServiceRegistry implements ServiceRegistry
 {
+    protected final AlfrescoSession session;
+
     protected DocumentFolderService documentFolderService;
 
     protected SearchService searchService;
@@ -55,9 +58,9 @@ public abstract class AbstractServiceRegistry implements ServiceRegistry
 
     protected RatingService ratingsService;
 
-    protected final AlfrescoSession session;
-
     protected PersonService personService;
+    
+    protected WorkflowService workflowService;
 
     public AbstractServiceRegistry(AlfrescoSession session)
     {

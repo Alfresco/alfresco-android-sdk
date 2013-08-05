@@ -181,7 +181,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(cf);
         Assert.assertNotNull(cf.getFile());
-        Assert.assertTrue(cf.getFile().length() + ">" + ANDROID_ASSET_SIZE, cf.getFile().length() < ANDROID_ASSET_SIZE);
+        Assert.assertTrue(cf.getFile().length() + ">" + ANDROID_ASSET_SIZE, cf.getFile().length() <= ANDROID_ASSET_SIZE);
         f = new File(customCacheFolder.getPath() + "/rendition");
         Assert.assertEquals(f, cf.getFile().getParentFile());
 

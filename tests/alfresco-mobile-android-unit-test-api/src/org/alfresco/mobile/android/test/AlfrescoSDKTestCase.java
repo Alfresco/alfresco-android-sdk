@@ -49,6 +49,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
@@ -195,6 +196,19 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////
     // CREATE CLOUD SESSION
     // //////////////////////////////////////////////////////////////////////
+    public String getUsername(String username)
+    {
+        String tmpusername = username;
+        if (ENABLE_CONFIG_FILE)
+        {
+            if (config.getExtraProperties().containsKey(username))
+            {
+                tmpusername = config.getExtraProperties().getProperty(username);
+            }
+        }
+        return tmpusername;
+    }
+    
     public AlfrescoSession createSession(String username, String password, Map<String, Serializable> parameters)
     {
         String tmpusername = username, tmppassword = password;
@@ -679,6 +693,11 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     protected boolean isOnPremise()
     {
         return isOnPremise(alfsession);
+    }
+    
+    protected boolean hasPublicAPI()
+    {
+       return isOnPremise() && ((RepositorySessionImpl) alfsession).hasPublicAPI();
     }
 
     protected AuthenticationProvider getAuthenticationProvider()

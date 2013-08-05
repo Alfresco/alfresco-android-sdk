@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -72,7 +73,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
     @Override
     /** {@inheritDoc} */
-    public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier, String type)
+    public ContentStream getRenditionStream(String identifier, String type)
     {
         try
         {
@@ -135,7 +136,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
             if (favoriteDocumentsIdentifier == null) { return favoriteDocumentsList; }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
-            join(builder, " OR cmis:objectId=", favoriteDocumentsIdentifier);
+            JsonUtils.join(builder, " OR cmis:objectId=", favoriteDocumentsIdentifier);
 
             List<Node> nodes = session.getServiceRegistry().getSearchService()
                     .search(builder.toString(), SearchLanguage.CMIS);
@@ -171,7 +172,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
             if (favoriteFoldersIdentifier == null) { return favoriteFolderList; }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:folder WHERE cmis:objectId=");
-            join(builder, " OR cmis:objectId=", favoriteFoldersIdentifier);
+            JsonUtils.join(builder, " OR cmis:objectId=", favoriteFoldersIdentifier);
 
             List<Node> nodes = session.getServiceRegistry().getSearchService()
                     .search(builder.toString(), SearchLanguage.CMIS);
@@ -347,29 +348,4 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
         return null;
     }
-
-    /**
-     * Utility method to help creating a default cmis query.
-     * 
-     * @param sb
-     * @param delimiter
-     * @param tokens
-     */
-    private static void join(StringBuilder sb, CharSequence delimiter, Object[] tokens)
-    {
-        boolean firstTime = true;
-        for (Object token : tokens)
-        {
-            if (firstTime)
-            {
-                firstTime = false;
-            }
-            else
-            {
-                sb.append(delimiter);
-            }
-            sb.append("'" + token + "'");
-        }
-    }
-
 }

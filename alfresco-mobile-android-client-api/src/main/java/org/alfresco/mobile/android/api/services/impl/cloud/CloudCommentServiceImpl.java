@@ -17,27 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.cloud;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.Comment;
-import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.impl.CommentImpl;
-import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractCommentService;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.CloudSessionImpl;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
-import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
-import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
-import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -47,9 +30,8 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudCommentServiceImpl extends AbstractCommentService
+public class CloudCommentServiceImpl extends PublicAPICommentServiceImpl
 {
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -58,57 +40,6 @@ public class CloudCommentServiceImpl extends AbstractCommentService
     public CloudCommentServiceImpl(CloudSession repositorySession)
     {
         super(repositorySession);
-    }
-
-    /** {@inheritDoc} */
-    protected UrlBuilder getCommentsUrl(Node node, ListingContext listingContext, boolean isReadOperation)
-    {
-        String link = CloudUrlRegistry.getCommentsUrl((CloudSession) session, node.getIdentifier());
-        UrlBuilder url = new UrlBuilder(link);
-        if (listingContext != null)
-        {
-            url.addParameter(CloudConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
-            url.addParameter(CloudConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
-        }
-        return url;
-    }
-
-    @SuppressWarnings("unchecked")
-    /** {@inheritDoc} */
-    protected Comment parseData(Map<String, Object> json)
-    {
-        return CommentImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.ENTRY_VALUE));
-    }
-
-    /** {@inheritDoc} */
-    protected UrlBuilder getCommentUrl(Node node, Comment comment)
-    {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
-        return new UrlBuilder(CloudUrlRegistry.getCommentUrl((CloudSession) session, node.getIdentifier(),
-                comment.getIdentifier()));
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////
-    // / INTERNAL
-    // ////////////////////////////////////////////////////////////////////////////////////
-    @SuppressWarnings("unchecked")
-    /** {@inheritDoc} */
-    protected PagingResult<Comment> computeComment(UrlBuilder url)
-    {
-        // read and parse
-        Response resp = read(url, ErrorCodeRegistry.COMMENT_GENERIC);
-        PublicAPIResponse response = new PublicAPIResponse(resp);
-
-        List<Comment> result = new ArrayList<Comment>();
-        Map<String, Object> data = null;
-        for (Object entry : response.getEntries())
-        {
-            data = (Map<String, Object>) ((Map<String, Object>) entry).get(CloudConstant.ENTRY_VALUE);
-            result.add(CommentImpl.parsePublicAPIJson(data));
-        }
-
-        return new PagingResultImpl<Comment>(result, response.getHasMoreItems(), response.getSize());
     }
     
     // ////////////////////////////////////////////////////

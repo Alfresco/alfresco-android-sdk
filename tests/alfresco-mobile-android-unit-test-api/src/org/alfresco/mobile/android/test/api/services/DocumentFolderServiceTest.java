@@ -672,7 +672,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Document doc2 = (Document) docfolderservice.updateProperties(doc, properties);
         doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         Assert.assertNotNull(doc2);
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertEquals(doc.getIdentifier(), doc2.getIdentifier());
         }

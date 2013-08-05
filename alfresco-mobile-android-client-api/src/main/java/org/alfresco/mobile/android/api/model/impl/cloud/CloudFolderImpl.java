@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.api.model.impl.cloud;
 
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIFolderImpl;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -29,7 +29,7 @@ import android.os.Parcelable;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudFolderImpl extends CloudNodeImpl implements Folder
+public class CloudFolderImpl extends PublicAPIFolderImpl
 {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class CloudFolderImpl extends CloudNodeImpl implements Folder
 
     public CloudFolderImpl(Map<String, Object> json)
     {
-        super(PublicAPIBaseTypeIds.FOLDER.value(), json);
+        super(json);
     }
 
     // ////////////////////////////////////////////////////

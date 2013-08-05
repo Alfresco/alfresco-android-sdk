@@ -27,8 +27,6 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.test.api.services.DocumentFolderServiceTest;
 
-import android.util.Log;
-
 public class CloudDocumentFolderServiceTest extends DocumentFolderServiceTest
 {
 

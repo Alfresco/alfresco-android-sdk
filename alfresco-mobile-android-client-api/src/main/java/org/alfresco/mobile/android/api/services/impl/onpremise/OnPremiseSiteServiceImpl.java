@@ -29,10 +29,12 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.model.impl.JoinSiteRequestImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
@@ -527,6 +529,39 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     {
         return OnPremiseUrlRegistry.getLeaveSiteUrl(session, site.getIdentifier(), session.getPersonIdentifier());
     }
+    
+    /** {@inheritDoc} */
+    public List<Person> getAllMembers(Site site)
+    {
+        return getAllMembers(site, null).getList();
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    public PagingResult<Person> getAllMembers(Site site, ListingContext listingContext)
+    {
+        List<Person> persons = new ArrayList<Person>();
+        try
+        {
+            // build URL
+            String link = OnPremiseUrlRegistry.getAllSiteMembers(session, site.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // send and parse
+            Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+            List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
+
+            for (Object obj : json)
+            {
+                persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj).get(OnPremiseConstant.AUTHORITY_VALUE)));
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return new PagingResultImpl<Person>(persons, false, persons.size());
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
@@ -732,5 +767,4 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-
 }

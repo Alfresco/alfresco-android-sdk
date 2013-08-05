@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
+import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -109,6 +110,16 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
         return personService;
     }
     
+    @Override
+    public WorkflowService getWorkflowService()
+    {
+        if (workflowService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            this.workflowService = new CloudWorkflowServiceImpl((CloudSession) session);
+        }
+        return workflowService;
+    }
+    
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
@@ -129,5 +140,4 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
     {
         super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
     }
-
 }
