@@ -29,6 +29,8 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 public class CompanyImpl implements Company
 {
+    private static final long serialVersionUID = 1L;
+
     private Map<String, String> properties;
 
     private boolean isCloud = false;

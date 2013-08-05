@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
+
 
 /**
  * @since 1.3.0
  * @author Jean Marie Pascal
  */
-public interface Company
+public interface Company extends Serializable
 {
 
     /**
