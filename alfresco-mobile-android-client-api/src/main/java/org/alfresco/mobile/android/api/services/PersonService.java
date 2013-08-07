@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import java.util.List;
+
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
+import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 
 /**
@@ -48,5 +53,24 @@ public interface PersonService extends Service
      *             during the process.
      */
     ContentFile getAvatar(Person person);
+
+    /**
+     * Returns a list of persons which respect the keyword.
+     * 
+     * @since 1.3
+     * @param keyword
+     * @return
+     */
+     List<Person> search(String keyword);
+
+    /**
+     * Returns a paged list of persons which respect the keyword.
+     * 
+     * @since 1.3
+     * @param keyword
+     * @param listingContext
+     * @return
+     */
+     PagingResult<Person> search(String keyword, ListingContext listingContext);
 
 }

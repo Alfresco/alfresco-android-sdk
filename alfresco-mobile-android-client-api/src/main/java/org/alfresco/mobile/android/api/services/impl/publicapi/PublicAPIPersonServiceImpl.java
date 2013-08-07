@@ -17,12 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.publicapi;
 
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
+import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
@@ -82,6 +85,24 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
         {
             convertException(e);
         }
+        return null;
+    }
+    
+    
+    // ////////////////////////////////////////////////////
+    // Search
+    // ////////////////////////////////////////////////////
+    @Override
+    public List<Person> search(String keyword)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public PagingResult<Person> search(String keyword, ListingContext listingContext)
+    {
+        // TODO Auto-generated method stub
         return null;
     }
 

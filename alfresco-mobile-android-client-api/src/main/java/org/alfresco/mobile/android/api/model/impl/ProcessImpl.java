@@ -31,6 +31,11 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+/**
+ * @since 1.3
+ * @author jpascal
+ *
+ */
 public class ProcessImpl implements Process
 {
     private static final long serialVersionUID = 1L;

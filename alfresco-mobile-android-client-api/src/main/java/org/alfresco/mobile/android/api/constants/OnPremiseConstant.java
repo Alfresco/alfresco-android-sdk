@@ -152,6 +152,11 @@ public interface OnPremiseConstant
     String COMPANY_VALUE = "company";
 
     String AUTHORITY_VALUE = "authority";
+    
+    String FILTER_VALUE = "filter";
+    
+    String PEOPLE_VALUE = "people";
+
 
     // COMPANY
 
@@ -359,6 +364,10 @@ public interface OnPremiseConstant
     String ASSOC_BPM_ASSIGNEE_ADDED_VALUE = "assoc_bpm_assignee_added";
     
     String ASSOC_BPM_ASSIGNEES_ADDED_VALUE = "assoc_bpm_assignees_added";
+    
+    String ASSOC_BPM_GROUPASSIGNEE_ADDED = "assoc_bpm_groupAssignee_added";
+
+    
 
     String ASSOC_PACKAGEITEMS_ADDED_VALUES  = "assoc_packageItems_added";
     

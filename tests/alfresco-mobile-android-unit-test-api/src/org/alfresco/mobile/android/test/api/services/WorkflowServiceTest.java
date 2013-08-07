@@ -208,7 +208,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
         Document doc = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                 .getChildByPath(SAMPLE_DATAPATH_WORKFLOW);
-        List<Node> docs = new ArrayList<Node>();
+        List<Document> docs = new ArrayList<Document>();
         docs.add(doc);
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -313,9 +313,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         //Prepare Variable to complete task
         variables.clear();
         variables.put(WorkflowModel.PROP_COMMENT, "This is my comment!");
-        
+        variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE,  taskRefreshed.getTransitions().get(0).getIdentifier());
+
         //Close Active Task
-        Task taskCompleted = workflowService.completeTask(taskInProgress, taskRefreshed.getTransitions().get(0).getIdentifier(), variables);
+        Task taskCompleted = workflowService.completeTask(taskInProgress, variables);
         Assert.assertNotNull(taskCompleted);
         Assert.assertEquals(taskCompleted.getIdentifier(), taskInProgress.getIdentifier());
         Assert.assertTrue(taskCompleted.getEndedAt() != null);
@@ -389,7 +390,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
         Document doc = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
                 .getChildByPath(SAMPLE_DATAPATH_WORKFLOW);
-        List<Node> docs = new ArrayList<Node>();
+        List<Document> docs = new ArrayList<Document>();
         docs.add(doc);
 
         GregorianCalendar calendar = new GregorianCalendar();
@@ -495,9 +496,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         variables.clear();
         variables.put(WorkflowModel.PROP_COMMENT, "This is my comment!");
         variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, "Approve");
-        
+        variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE,  taskRefreshed.getTransitions().get(0).getIdentifier());
+
         //Close Active Task
-        Task taskCompleted = workflowService.completeTask(taskInProgress, taskRefreshed.getTransitions().get(0).getIdentifier(), variables);
+        Task taskCompleted = workflowService.completeTask(taskInProgress, variables);
         Assert.assertNotNull(taskCompleted);
         Assert.assertEquals(taskCompleted.getIdentifier(), taskInProgress.getIdentifier());
         Assert.assertTrue(taskCompleted.getEndedAt() != null);
