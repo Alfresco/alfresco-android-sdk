@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ContentStream;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -29,7 +30,6 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.Task;
-import org.alfresco.mobile.android.api.model.Task.Transition;
 
 public interface WorkflowService
 {
@@ -130,7 +130,8 @@ public interface WorkflowService
      * @param items
      * @return
      */
-    Process startProcess(ProcessDefinition processDefinition, List<Person> assignees, Map<String, Serializable> variables, List<Node> items);
+    Process startProcess(ProcessDefinition processDefinition, List<Person> assignees,
+            Map<String, Serializable> variables, List<Document> items);
 
     /**
      * Deletes a process. An authenticated user can only delete a process if the
@@ -156,7 +157,6 @@ public interface WorkflowService
      * @return
      */
     Map<String, Serializable> getVariables(Process process);
-
 
     /**
      * Update the variables for a given process. If the variable doesn't exist
@@ -253,11 +253,12 @@ public interface WorkflowService
 
     /**
      * Retrieves a single task.
+     * 
      * @param taskIdentifier
      * @return
      */
     Task getTask(String taskIdentifier);
-    
+
     /**
      * Claiming a task is done by one of the candidates of a task, task owner or
      * process-initiator
@@ -266,20 +267,41 @@ public interface WorkflowService
      * @return
      */
     Task claimTask(Task task);
-    
+
     /**
-     * Completing a task
+     * This removes the assignee of the task i.e the current user
+     * 
      * @param task
      * @return
      */
-    Task completeTask(Task  task, String transitionIdentifier, Map<String, Serializable> variables);
-    
+    Task unClaimTask(Task task);
+
     /**
-     * Refresh a task ie complete all properties + transitions info. equivalent of getTask(taskId)
+     * Completing a task
+     * 
+     * @param task
+     * @return
+     */
+    Task completeTask(Task task, Map<String, Serializable> variables);
+
+    /**
+     * Refresh a task ie complete all properties + transitions info. equivalent
+     * of getTask(taskId)
+     * 
      * @param task
      * @return
      */
     Task refreshTask(Task task);
+
+    /**
+     * Reassign the task from the owner to an assignee
+     * 
+     * @param task
+     * @param assignee
+     * @return
+     */
+    Task reassignTask(Task task, Person assignee);
+
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////

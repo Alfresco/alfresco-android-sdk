@@ -137,31 +137,6 @@ public abstract class BaseListFragment extends BaseFragment
     }
     
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        setRetainInstance(true);
-        checkSession(checkSession);
-        if (initLoader)
-        {
-            continueLoading(loaderId, callback);
-        }
-        
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        View v = inflater.inflate(R.layout.sdk_list, null);
-
-        init(v, emptyListMessageId);
-        
-        setRetainInstance(true);
-        checkSession(checkSession);
-        if (initLoader)
-        {
-            continueLoading(loaderId, callback);
-        }
-        
-        return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);

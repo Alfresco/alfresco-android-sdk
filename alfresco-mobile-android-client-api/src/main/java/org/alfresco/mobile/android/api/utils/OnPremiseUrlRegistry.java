@@ -426,14 +426,24 @@ public final class OnPremiseUrlRegistry
     // //////////////////////////////////////////////////////////////////////////////
     public static final String URL_PERSON_DETAILS = "api/people/{username}";
 
+    /** @since 1.3.0 */
+    public static final String URL_SEARCH_PERSON = "api/people";
+
+    
     /**
      * @param session : Repository Session
      * @return Returns an url to retrieve user Details
      */
-    public static String getPersonDetailssUrl(AlfrescoSession session, String username)
+    public static String getPersonDetailsUrl(AlfrescoSession session, String username)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE)
                 .concat(URL_PERSON_DETAILS.replace(VARIABLE_USERNAME, getEncodingPersonIdentifier(username)));
+    }
+    
+    /** @since 1.3.0 */
+    public static String getSearchPersonUrl(AlfrescoSession session)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_SEARCH_PERSON);
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

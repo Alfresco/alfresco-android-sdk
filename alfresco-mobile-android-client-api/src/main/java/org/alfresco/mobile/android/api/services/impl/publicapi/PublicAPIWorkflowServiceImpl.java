@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.model.Node;
@@ -138,7 +139,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
     public Process startProcess(ProcessDefinition processDefinition, List<Person> assignees,
-            Map<String, Serializable> variables, List<Node> items)
+            Map<String, Serializable> variables, List<Document> items)
     {
         if (isObjectNull(processDefinition)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processDefinition")); }

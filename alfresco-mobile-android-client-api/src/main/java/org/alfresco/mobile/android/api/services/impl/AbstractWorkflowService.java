@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ContentStream;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -29,7 +30,6 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.Task;
-import org.alfresco.mobile.android.api.model.Task.Transition;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
@@ -94,7 +94,7 @@ public class AbstractWorkflowService extends AlfrescoService implements Workflow
 
     @Override
     public Process startProcess(ProcessDefinition processDefinition, List<Person> assignees, Map<String, Serializable> variables,
-            List<Node> items)
+            List<Document> items)
     {
         // TODO Auto-generated method stub
         return null;
@@ -247,7 +247,7 @@ public class AbstractWorkflowService extends AlfrescoService implements Workflow
     }
 
     @Override
-    public Task completeTask(Task task, String transitionIdentifier, Map<String, Serializable> variables)
+    public Task completeTask(Task task, Map<String, Serializable> variables)
     {
         // TODO Auto-generated method stub
         return null;
@@ -255,6 +255,20 @@ public class AbstractWorkflowService extends AlfrescoService implements Workflow
 
     @Override
     public Task refreshTask(Task task)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Task reassignTask(Task task, Person assignee)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Task unClaimTask(Task task)
     {
         // TODO Auto-generated method stub
         return null;
