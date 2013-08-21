@@ -568,6 +568,7 @@ public final class OnPremiseUrlRegistry
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_FORM_TASK).replace(VARIABLE_TASKID, taskId);
     }
     
+    /** @since 1.3.0 */
     public static String getTaskUrl(AlfrescoSession session, String taskIdentifier)
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASK).replace(VARIABLE_TASKID, taskIdentifier);

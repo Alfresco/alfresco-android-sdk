@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
 import org.alfresco.mobile.android.api.utils.DateUtils;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Parcel;
@@ -75,20 +76,20 @@ public class PublicAPINodeImpl implements Node
     public PublicAPINodeImpl(String type, Map<String, Object> json)
     {
         super();
-        properties.put(ID, new PropertyImpl(JSONConverter.getString(json, ID)));
-        properties.put(GUID, new PropertyImpl(JSONConverter.getString(json, GUID)));
-        properties.put(NAME, new PropertyImpl(JSONConverter.getString(json, NAME)));
-        properties.put(TITLE, new PropertyImpl(JSONConverter.getString(json, TITLE)));
-        properties.put(DESCRIPTION, new PropertyImpl(JSONConverter.getString(json, DESCRIPTION)));
-        properties.put(CREATEDAT, new PropertyImpl(JSONConverter.getString(json, CREATEDAT)));
-        properties.put(CREATEDBY, new PropertyImpl(JSONConverter.getString(json, CREATEDBY)));
-        properties.put(MODIFIEDAT, new PropertyImpl(JSONConverter.getString(json, MODIFIEDAT)));
-        properties.put(MODIFIEDBY, new PropertyImpl(JSONConverter.getString(json, MODIFIEDBY)));
-        properties.put(MODIFIEDBY, new PropertyImpl(JSONConverter.getString(json, MODIFIEDBY)));
-        properties.put(MIMETYPE, new PropertyImpl(JSONConverter.getString(json, MIMETYPE)));
-        properties.put(SIZEINBYTES, new PropertyImpl(JSONConverter.getString(json, SIZEINBYTES)));
-        properties.put(VERSIONLABEL, new PropertyImpl(JSONConverter.getString(json, VERSIONLABEL)));
-        properties.put(TYPE, new PropertyImpl(type));
+        this.properties.put(ID, new PropertyImpl(JSONConverter.getString(json, ID)));
+        this.properties.put(GUID, new PropertyImpl(JSONConverter.getString(json, GUID)));
+        this.properties.put(NAME, new PropertyImpl(JSONConverter.getString(json, NAME)));
+        this.properties.put(TITLE, new PropertyImpl(JSONConverter.getString(json, TITLE)));
+        this.properties.put(DESCRIPTION, new PropertyImpl(JSONConverter.getString(json, DESCRIPTION)));
+        this.properties.put(CREATEDAT, new PropertyImpl(JSONConverter.getString(json, CREATEDAT)));
+        this.properties.put(CREATEDBY, new PropertyImpl(JSONConverter.getString(json, CREATEDBY)));
+        this.properties.put(MODIFIEDAT, new PropertyImpl(JSONConverter.getString(json, MODIFIEDAT)));
+        this.properties.put(MODIFIEDBY, new PropertyImpl(JSONConverter.getString(json, MODIFIEDBY)));
+        this.properties.put(MODIFIEDBY, new PropertyImpl(JSONConverter.getString(json, MODIFIEDBY)));
+        this.properties.put(MIMETYPE, new PropertyImpl(JSONConverter.getString(json, MIMETYPE)));
+        this.properties.put(SIZEINBYTES, new PropertyImpl(JSONConverter.getString(json, SIZEINBYTES)));
+        this.properties.put(VERSIONLABEL, new PropertyImpl(JSONConverter.getString(json, VERSIONLABEL)));
+        this.properties.put(TYPE, new PropertyImpl(type));
         this.hasAllProperties = false;
     }
 
@@ -98,6 +99,9 @@ public class PublicAPINodeImpl implements Node
     @Override
     public String getIdentifier()
     {
+        if (getPropertyValue(GUID) == null &&  getPropertyValue(ID) != null){
+            return NodeRefUtils.getNodeIdentifier((String) getPropertyValue(ID));
+        }
         return getPropertyValue(GUID);
     }
 

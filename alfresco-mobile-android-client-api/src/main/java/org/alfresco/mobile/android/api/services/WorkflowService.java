@@ -24,7 +24,6 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
@@ -33,7 +32,9 @@ import org.alfresco.mobile.android.api.model.Task;
 
 public interface WorkflowService
 {
-
+    // ////////////////////////////////////////////////////////////////
+    // FILTERS
+    // ////////////////////////////////////////////////////////////////
     /**
      * Allowable filter property : Name of the document or folder.
      */
@@ -99,11 +100,6 @@ public interface WorkflowService
      */
     ProcessDefinition getProcessDefinition(String processDefinitionIdentifier);
 
-    /**
-     * Gets the model of the start form type definition.
-     */
-    Map<String, Serializable> getFormModel(String processDefinitionIdentifier);
-
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
@@ -151,23 +147,6 @@ public interface WorkflowService
     Process getProcess(String processId);
 
     /**
-     * Retrieve the variable's for a given process.
-     * 
-     * @param process
-     * @return
-     */
-    Map<String, Serializable> getVariables(Process process);
-
-    /**
-     * Update the variables for a given process. If the variable doesn't exist
-     * yet, it will be created.
-     * 
-     * @param process
-     * @param variables
-     */
-    void updateVariable(Process process, Map<String, Serializable> variables);
-
-    /**
      * Get the tasks in a process.
      * 
      * @param process
@@ -176,6 +155,8 @@ public interface WorkflowService
     List<Task> getTasks(Process process);
 
     PagingResult<Task> getTasks(Process process, ListingContext listingContext);
+    
+    Process refresh(Process process);
 
     // ////////////////////////////////////////////////////////////////
     // DOCUMENTS AS ATTACHMENTS
@@ -187,9 +168,8 @@ public interface WorkflowService
      * @param task
      * @return
      */
-    List<Node> getDocuments(Process process);
-
-    PagingResult<Node> getDocuments(Process process, ListingContext listingContext);
+    List<Document> getDocuments(Process process);
+    PagingResult<Document> getDocuments(Process process, ListingContext listingContext);
 
     /**
      * Returns a list items associated to the the task.
@@ -197,17 +177,8 @@ public interface WorkflowService
      * @param task
      * @return
      */
-    List<Node> getDocuments(Task task);
-
-    PagingResult<Node> getDocuments(Task task, ListingContext listingContext);
-
-    /**
-     * Add a list of items to the the process/task.
-     * 
-     * @param process
-     * @param items
-     */
-    void addDocuments(Process process, List<Node> items);
+    List<Document> getDocuments(Task task);
+    PagingResult<Document> getDocuments(Task task, ListingContext listingContext);
 
     /**
      * Add a list of items to the the process/task.
@@ -215,7 +186,7 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void addDocuments(Task task, List<Node> items);
+    void addDocuments(Task task, List<Document> items);
 
     /**
      * Delete a list of items to the the process/task.
@@ -223,15 +194,7 @@ public interface WorkflowService
      * @param process
      * @param items
      */
-    void removeDocuments(Process process, List<Node> items);
-
-    /**
-     * Delete a list of items to the the process/task.
-     * 
-     * @param process
-     * @param items
-     */
-    void removeDocuments(Task task, List<Node> items);
+    void removeDocuments(Task task, List<Document> items);
 
     // ////////////////////////////////////////////////////////////////
     // TASKS
@@ -285,13 +248,12 @@ public interface WorkflowService
     Task completeTask(Task task, Map<String, Serializable> variables);
 
     /**
-     * Refresh a task ie complete all properties + transitions info. equivalent
-     * of getTask(taskId)
+     * Refresh a task ie complete all properties. 
      * 
      * @param task
      * @return
      */
-    Task refreshTask(Task task);
+    Task refresh(Task task);
 
     /**
      * Reassign the task from the owner to an assignee
@@ -301,7 +263,17 @@ public interface WorkflowService
      * @return
      */
     Task reassignTask(Task task, Person assignee);
-
+    
+    /**
+     * Update the variables for a given process. If the variable doesn't exist
+     * yet, it will be created.
+     * Only small subset of variableId can be upgraded.
+     * 
+     * @param process
+     * @param variables
+     */
+    Task updateVariables(Task task, Map<String, Serializable> variables);
+    
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////

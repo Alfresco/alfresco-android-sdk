@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Map;
 
 public interface Task extends Serializable
@@ -46,23 +45,11 @@ public interface Task extends Serializable
 
     GregorianCalendar getDueAt();
 
-    Map<String, Serializable> getData();
-    
-    boolean hasAllProperties();
-    
-    List<Transition> getTransitions();
+    boolean hasAllVariables();
 
-    public interface Transition extends Serializable
-    {
-        String getIdentifier();
+    Property getVariable(String name);
 
-        String getTitle();
+    Map<String, Property> getVariables();
 
-        String getDescription();
-
-        boolean isDefault();
-
-        boolean isHidden();
-    }
-
+    <T> T getVariableValue(String name);
 }

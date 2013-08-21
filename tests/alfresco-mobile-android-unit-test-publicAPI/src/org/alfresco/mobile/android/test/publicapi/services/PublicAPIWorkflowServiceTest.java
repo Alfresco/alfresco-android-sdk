@@ -17,11 +17,30 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.publicapi.services;
 
+import junit.framework.Assert;
+
 import org.alfresco.mobile.android.test.api.services.WorkflowServiceTest;
 
 
 public class PublicAPIWorkflowServiceTest extends WorkflowServiceTest
 {
+    /** {@inheritDoc} */
+    protected void initSession()
+    {
+        if (alfsession == null)
+        {
+            alfsession = createRepositorySession();
+            alfsession = createSession(WORKFLOW, WORKFLOW_PASSWORD, null);
+        }
+
+        // Retrieve Service
+        workflowService = alfsession.getServiceRegistry().getWorkflowService();
+
+        // Check Services
+        Assert.assertNotNull(alfsession.getServiceRegistry());
+        Assert.assertNotNull(workflowService);
+    }
+    
     public void testProcessDefinition()
     {
         super.testProcessDefinition();

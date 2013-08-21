@@ -329,6 +329,12 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String VARIABLE_TASKID = "{taskId}";
+    
+    /** @since 1.3.0 */
+    public static final String VARIABLE_ITEMID = "{itemId}";
+    
+    /** @since 1.3.0 */
+    private static final String VARIABLE_NAME = "{variableName}";
 
     /** @since 1.3.0 */
     public static final String URL_PROCESS_DEFINITIONS = "process-definitions";
@@ -343,18 +349,35 @@ public class PublicAPIUrlRegistry
     public static final String URL_PROCESS = URL_PROCESSES + "/" + VARIABLE_PROCESSID;
     
     /** @since 1.3.0 */
+    public static final String URL_PROCESS_DIAGRAM =URL_PROCESS + "/image";
+    
+    /** @since 1.3.0 */
     public static final String URL_ITEMS_PROCESS = URL_PROCESS + "/items";
     
     /** @since 1.3.0 */
     public static final String URL_TASKS = "tasks";
-
+    
     /** @since 1.3.0 */
     public static final String URL_TASK = URL_TASKS + "/" + VARIABLE_TASKID;
+    
+    /** @since 1.3.0 */
+    public static final String URL_TASK_VARIABLES = URL_TASK + "/variables";
+    
+    /** @since 1.3.0 */
+    public static final String URL_TASK_VARIABLE = URL_TASK_VARIABLES + "/{variableName}";
+    
+    /** @since 1.3.0 */
+    public static final String URL_ITEMS_TASK = URL_TASK + "/items";
+    
+    /** @since 1.3.0 */
+    public static final String URL_ITEM_ID_TASK = URL_ITEMS_TASK + "/{itemId}";
 
     /** @since 1.3.0 */
     // TODO Replace with
     // public static final String URL_PROCESS = URL_PROCESS + "/tasks";
     public static final String URL_TASK_FOR_PROCESS = "tasks";
+
+
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionsUrl(AlfrescoSession session)
@@ -394,6 +417,12 @@ public class PublicAPIUrlRegistry
     }
     
     /** @since 1.3.0 */
+    public static String getProcessVariablesUrl(AlfrescoSession session, String taskId)
+    {
+        return createPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, taskId)).toString();
+    }
+    
+    /** @since 1.3.0 */
     public static String getTasksUrl(AlfrescoSession session)
     {
         return createPrefix(session).append(URL_TASKS).toString();
@@ -404,7 +433,36 @@ public class PublicAPIUrlRegistry
     {
         return createPrefix(session).append(URL_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
+    
+    /** @since 1.3.0 */
+    public static String getTaskVariablesUrl(AlfrescoSession session, String taskId)
+    {
+        return createPrefix(session).append(URL_TASK_VARIABLES.replace(VARIABLE_TASKID, taskId)).toString();
+    }
+    
+    /** @since 1.3.0 */
+    public static String getTaskVariableUrl(AlfrescoSession session, String taskId, String variableId)
+    {
+        return createPrefix(session).append(URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
+    }
 
+    /** @since 1.3.0 */
+    public static String getTaskItemsUrl(AlfrescoSession session, String taskId)
+    {
+        return createPrefix(session).append(URL_ITEMS_TASK.replace(VARIABLE_TASKID, taskId)).toString();
+    }
+    
+    /** @since 1.3.0 */
+    public static String getTaskItemByIdUrl(AlfrescoSession session, String taskId, String documentId)
+    {
+        return createPrefix(session).append(URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
+    }
+    
+    public static String getWorkflowDiagram(AlfrescoSession session, String processId)
+    {
+        return createPrefix(session).append(URL_PROCESS_DIAGRAM.replace(VARIABLE_PROCESSID, processId)).toString();
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////////
     // TOOLS
     // //////////////////////////////////////////////////////////////////////////////

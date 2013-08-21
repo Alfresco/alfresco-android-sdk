@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
- * 
+ * @since 1.3
  * @author jpascal
  *
  */
@@ -48,8 +48,12 @@ public interface Process extends Serializable
     
     String getDescription();
     
-    Map<String, Serializable> getData();
-
     boolean hasAllVariables();
+    
+    Property getVariable(String name);
+
+    Map<String, Property> getVariables();
+
+    <T> T getVariableValue(String name);
     
 }

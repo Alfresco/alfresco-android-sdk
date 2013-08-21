@@ -18,17 +18,20 @@
 package org.alfresco.mobile.android.api.model.impl;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
+import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
@@ -60,18 +63,17 @@ public class TaskImpl implements Task
 
     private String assignee;
 
-    private boolean hasAllProperties;
-
-    private List<Task.Transition> transitions;
+    private boolean hasAllVariables;
 
     /**
      * Extra data map that contains all information about the specific activity.
      */
     private Map<String, Serializable> data;
 
+    private Map<String, Property> variables = new HashMap<String, Property>();
+
     /**
-     * Parse Json Response from Alfresco REST API to create a process Definition
-     * Object.
+     * Parse Json Response from Alfresco REST API to create a Task Object.<br/>
      * 
      * @param json : json response that contains data from the repository
      * @return ProcessDefinition Object
@@ -84,47 +86,54 @@ public class TaskImpl implements Task
         TaskImpl task = new TaskImpl();
         task.data = new HashMap<String, Serializable>();
 
-        // Task
+        // JSON : "Data block"
         task.identifier = JSONConverter.getString(json, OnPremiseConstant.ID_VALUE);
         task.key = JSONConverter.getString(json, OnPremiseConstant.NAME_VALUE);
-
         task.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
         task.name = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
 
-        Map<String, Object> data = (Map<String, Object>) json.get(OnPremiseConstant.PROPERTIES_VALUE);
+        // Extra properties
+        task.data.put(OnPremiseConstant.STATE_VALUE, JSONConverter.getString(json, OnPremiseConstant.STATE_VALUE));
+        task.data.put(OnPremiseConstant.ISPOOLED_VALUE,
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISPOOLED_VALUE));
+        task.data.put(OnPremiseConstant.ISEDITABLE_VALUE,
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISEDITABLE_VALUE));
+        task.data.put(OnPremiseConstant.ISREASSIGNABLE_VALUE,
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISREASSIGNABLE_VALUE));
+        task.data.put(OnPremiseConstant.ISCLAIMABLE_VALUE,
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISCLAIMABLE_VALUE));
+        task.data.put(OnPremiseConstant.ISRELEASABLE_VALUE,
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISRELEASABLE_VALUE));
+        task.data.put(OnPremiseConstant.OUTCOME_VALUE, JSONConverter.getBoolean(json, OnPremiseConstant.OUTCOME_VALUE));
+
+        // JSON : "OWNER block"
+        Map<String, Object> data = (Map<String, Object>) json.get(OnPremiseConstant.OWNER_VALUE);
         if (data != null)
         {
-            task.description = JSONConverter.getString(data, OnPremiseConstant.BPM_DESCRIPTION_VALUE);
-            task.priority = JSONConverter.getInteger(data, OnPremiseConstant.BPM_PRIORITY_VALUE).intValue();
-
-            GregorianCalendar g = new GregorianCalendar();
-            SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
-
-            String date = JSONConverter.getString(data, OnPremiseConstant.BPM_STARTDATE_VALUE);
-            if (date != null)
-            {
-                g.setTime(DateUtils.parseDate(date, sdf));
-                task.startedAt = g;
-            }
-            
-            date = JSONConverter.getString(data, OnPremiseConstant.BPM_DUEDATE_VALUE);
-            if (date != null)
-            {
-                g = new GregorianCalendar();
-                g.setTime(DateUtils.parseDate(date, sdf));
-                task.dueAt = g;
-            }
-
-            date = JSONConverter.getString(data, OnPremiseConstant.BPM_COMPLETIONDATE_VALUE);
-            if (date != null)
-            {
-                g = new GregorianCalendar();
-                g.setTime(DateUtils.parseDate(date, sdf));
-                task.endedAt = g;
-            }
+            task.data.put(OnPremiseConstant.OWNER_VALUE, PersonImpl.parseJson(data));
+            task.assignee = JSONConverter.getString(data, OnPremiseConstant.USERNAME_VALUE);
             data.clear();
         }
 
+        // JSON : "Properties block"
+        data = (Map<String, Object>) json.get(OnPremiseConstant.PROPERTIES_VALUE);
+        if (data != null)
+        {
+            task.variables = parseProperties(data);
+
+            task.description = task.variables.get(WorkflowModel.PROP_DESCRIPTION).getValue();
+            task.priority = task.variables.get(WorkflowModel.PROP_PRIORITY).getValue();
+            task.startedAt = task.variables.get(WorkflowModel.PROP_START_DATE).getValue();
+            task.dueAt = task.variables.get(WorkflowModel.PROP_DUE_DATE).getValue();
+            task.endedAt = task.variables.get(WorkflowModel.PROP_COMPLETION_DATE).getValue();
+            task.hasAllVariables = true;
+        }
+        else
+        {
+            task.hasAllVariables = false;
+        }
+
+        // JSON : "WorkflowInstance block"
         data = (Map<String, Object>) json.get(OnPremiseConstant.WORKFLOWINSTANCE_VALUE);
         if (data != null)
         {
@@ -136,36 +145,30 @@ public class TaskImpl implements Task
             data.clear();
         }
 
-        data = (Map<String, Object>) json.get(OnPremiseConstant.OWNER_VALUE);
-        if (data != null)
-        {
-            task.data.put(OnPremiseConstant.OWNER_VALUE, PersonImpl.parseJson(data));
-            task.assignee = JSONConverter.getString(data, OnPremiseConstant.USERNAME_VALUE);
-            data.clear();
-        }
-
-        data = (Map<String, Object>) json.get(OnPremiseConstant.DEFINITION_VALUE);
-        if (data != null)
-        {
-            task.hasAllProperties = true;
-            List<Transition> transitions = new ArrayList<Transition>();
-            data = (Map<String, Object>) data.get(OnPremiseConstant.NODE_VALUE);
-            if (data != null)
-            {
-                List<Object> list = (List<Object>) data.get(OnPremiseConstant.TRANSITIONS_VALUE);
-                for (Object object : list)
-                {
-                    transitions.add(TransitionImpl.parseJson(((Map<String, Object>) object)));
-                }
-                task.transitions = transitions;
-            }
-        }
-        else
-        {
-            task.hasAllProperties = false;
-        }
-
         return task;
+    }
+
+    public static Task refreshTask(Task task, Map<String, Property> properties)
+    {
+        if (task == null) { return null; }
+        if (properties == null) { return task; }
+
+        TaskImpl refreshedTask = new TaskImpl();
+        refreshedTask.identifier = task.getIdentifier();
+        refreshedTask.processIdentifier = task.getProcessIdentifier();
+        refreshedTask.processDefinitionIdentifier = task.getProcessDefinitionIdentifier();
+        refreshedTask.key = task.getKey();
+        refreshedTask.startedAt = task.getStartedAt();
+        refreshedTask.endedAt = task.getEndedAt();
+        refreshedTask.description = task.getDescription();
+        refreshedTask.priority = task.getPriority();
+        refreshedTask.assignee = task.getAssigneeIdentifier();
+        refreshedTask.name = task.getName();
+        refreshedTask.dueAt = task.getDueAt();
+        refreshedTask.variables = properties;
+        refreshedTask.hasAllVariables = true;
+
+        return refreshedTask;
     }
 
     public static Task parsePublicAPIJson(Map<String, Object> json)
@@ -213,6 +216,101 @@ public class TaskImpl implements Task
 
         return task;
     }
+
+    private static Map<String, Property> parseProperties(Map<String, Object> data)
+    {
+        Map<String, Property> properties = new HashMap<String, Property>(data.size());
+        VariableType variableType;
+
+        GregorianCalendar g = new GregorianCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
+
+        for (Entry<String, Object> entry : data.entrySet())
+        {
+            variableType = VARIABLE_TYPE.get(entry.getKey());
+            if (variableType != null)
+            {
+                // Empty case
+                if (entry.getValue() == null
+                        || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty()))
+                {
+                    properties.put(entry.getKey(), new PropertyImpl(entry.getValue(), variableType.propertyType,
+                            variableType.isMultiValued));
+                    continue;
+                }
+
+                // Other case
+                switch (variableType.propertyType)
+                {
+                    case DATETIME:
+                        g = new GregorianCalendar();
+                        g.setTime(DateUtils.parseDate((String) entry.getValue(), sdf));
+                        properties.put(entry.getKey(), new PropertyImpl(g, variableType.propertyType,
+                                variableType.isMultiValued));
+                        break;
+                    case INTEGER:
+                        properties.put(entry.getKey(), new PropertyImpl(((BigInteger) entry.getValue()).intValue(),
+                                variableType.propertyType, variableType.isMultiValued));
+                        break;
+                    default:
+                        properties.put(entry.getKey(), new PropertyImpl(entry.getValue(), variableType.propertyType,
+                                variableType.isMultiValued));
+                        break;
+                }
+            }
+        }
+        return properties;
+    }
+
+    private static final Map<String, VariableType> VARIABLE_TYPE = new HashMap<String, VariableType>()
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            // task constants
+            put(WorkflowModel.PROP_TASK_ID, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_START_DATE, new VariableType(PropertyType.DATETIME));
+            put(WorkflowModel.PROP_DUE_DATE, new VariableType(PropertyType.DATETIME));
+            put(WorkflowModel.PROP_COMPLETION_DATE, new VariableType(PropertyType.DATETIME));
+            put(WorkflowModel.PROP_PRIORITY, new VariableType(PropertyType.INTEGER));
+            put(WorkflowModel.PROP_STATUS, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_PERCENT_COMPLETE, new VariableType(PropertyType.INTEGER));
+            put(WorkflowModel.PROP_COMPLETED_ITEMS, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_COMMENT, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.ASSOC_POOLED_ACTORS, new VariableType(PropertyType.STRING, true));
+
+            // workflow task contstants
+            put(WorkflowModel.PROP_CONTEXT, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_DESCRIPTION, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_OUTCOME, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_PACKAGE_ACTION_GROUP, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_PACKAGE_ITEM_ACTION_GROUP, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_HIDDEN_TRANSITIONS, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_REASSIGNABLE, new VariableType(PropertyType.BOOLEAN));
+            put(WorkflowModel.ASSOC_PACKAGE, new VariableType(PropertyType.STRING));
+
+            // Start task contstants
+            put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_WORKFLOW_PRIORITY, new VariableType(PropertyType.INTEGER));
+            put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, new VariableType(PropertyType.DATETIME));
+            put(WorkflowModel.PROP_ASSIGNEE, new VariableType(PropertyType.STRING));
+
+            // Activiti Task Constants
+            put(WorkflowModel.PROP_OUTCOME_PROPERTY_NAME, new VariableType(PropertyType.STRING));
+
+            // Extra Properties
+            put(WorkflowModel.PROP_REVIEW_OUTCOME, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_CONTENT, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_CREATED, new VariableType(PropertyType.DATETIME));
+            put(WorkflowModel.PROP_NAME, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_OWNER, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_COMPANYHOME, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_INITIATOR, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_CANCELLED, new VariableType(PropertyType.BOOLEAN));
+            put(WorkflowModel.PROP_INITIATORHOME, new VariableType(PropertyType.STRING));
+            put(WorkflowModel.PROP_NOTIFYME, new VariableType(PropertyType.BOOLEAN));
+
+        }
+    };
 
     /** {@inheritDoc} */
     public String getIdentifier()
@@ -287,71 +385,47 @@ public class TaskImpl implements Task
         return endedAt;
     }
 
-    public static class TransitionImpl implements Task.Transition
+    @Override
+    public boolean hasAllVariables()
     {
-        private static final long serialVersionUID = 1L;
-
-        String identifier;
-
-        String title;
-
-        String description;
-
-        boolean isDefault;
-
-        boolean isHidden;
-
-        public static Task.Transition parseJson(Map<String, Object> json)
-        {
-            TransitionImpl transition = new TransitionImpl();
-
-            if (json == null) { return null; }
-
-            transition.identifier = JSONConverter.getString(json, OnPremiseConstant.ID_VALUE);
-            transition.title = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
-            transition.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
-            transition.isDefault = JSONConverter.getBoolean(json, OnPremiseConstant.ISDEFAULT_VALUE);
-            transition.isHidden = JSONConverter.getBoolean(json, OnPremiseConstant.ISHIDDEN_VALUE);
-
-            return transition;
-        }
-
-        public String getIdentifier()
-        {
-            return identifier;
-        }
-
-        public String getTitle()
-        {
-            return title;
-        }
-
-        public String getDescription()
-        {
-            return description;
-        }
-
-        public boolean isDefault()
-        {
-            return isDefault;
-        }
-
-        public boolean isHidden()
-        {
-            return isHidden;
-        }
+        return hasAllVariables;
     }
 
     @Override
-    public List<Transition> getTransitions()
+    public Property getVariable(String name)
     {
-        return transitions;
+        return variables.get(name);
     }
 
     @Override
-    public boolean hasAllProperties()
+    public Map<String, Property> getVariables()
     {
-        return hasAllProperties;
+        return new HashMap<String, Property>(variables);
     }
 
+    @Override
+    public <T> T getVariableValue(String name)
+    {
+        if (variables.get(name) != null) { return variables.get(name).getValue(); }
+        return null;
+    }
+
+    private static class VariableType
+    {
+        public PropertyType propertyType;
+
+        public boolean isMultiValued;
+
+        public VariableType(PropertyType type)
+        {
+            this.propertyType = type;
+            this.isMultiValued = false;
+        }
+
+        public VariableType(PropertyType type, boolean isMultiValued)
+        {
+            this.propertyType = type;
+            this.isMultiValued = isMultiValued;
+        }
+    }
 }

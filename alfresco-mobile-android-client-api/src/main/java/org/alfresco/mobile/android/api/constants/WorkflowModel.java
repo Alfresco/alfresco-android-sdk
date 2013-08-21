@@ -148,8 +148,8 @@ public interface WorkflowModel
     String PROP_REVIEW_OUTCOME = WF_MODEL_PREFIX.concat("_reviewOutcome");
 
     String PROP_REQUIRED_APPROVE_PERCENT = WF_MODEL_PREFIX.concat("_requiredApprovePercent");
-    
-    String PROP_OWNER = ContentModel.CONTENT_MODEL_PREFIX.concat("_owner");
+
+    String PROP_NOTIFYME = WF_MODEL_PREFIX.concat("_notifyMe");
 
     // //////////////////////////////////////////////////////////////
     // TRANSITION
@@ -165,7 +165,7 @@ public interface WorkflowModel
     // //////////////////////////////////////////////////////////////
     // DEFAULT PROCESS KEY
     // /////////////////////////////////////////////////////////////
-    // SUFFIX
+    // PREFIX
     String KEY_PREFIX_JBPM = "jbpm$";
 
     String KEY_PREFIX_ACTIVITI = "activiti$";
@@ -328,4 +328,25 @@ public interface WorkflowModel
 
     int PRIORITY_HIGH = 1;
 
+    // //////////////////////////////////////////////////////////////
+    // EXTRA PROPERTIES CONTENT MODEL
+    // /////////////////////////////////////////////////////////////
+    String PROP_OWNER = ContentModel.CONTENT_MODEL_PREFIX.concat("_owner");
+
+    String PROP_NAME = ContentModel.CONTENT_MODEL_PREFIX.concat("_name");
+
+    String PROP_CONTENT = ContentModel.CONTENT_MODEL_PREFIX.concat("_content");
+
+    String PROP_CREATED = ContentModel.CONTENT_MODEL_PREFIX.concat("_created");
+
+    // //////////////////////////////////////////////////////////////
+    // EXTRA PROPERTIES
+    // /////////////////////////////////////////////////////////////
+    String PROP_COMPANYHOME = "companyhome";
+
+    String PROP_INITIATOR = "initiator";
+
+    String PROP_CANCELLED = "cancelled";
+
+    String PROP_INITIATORHOME = "initiatorhome";
 }

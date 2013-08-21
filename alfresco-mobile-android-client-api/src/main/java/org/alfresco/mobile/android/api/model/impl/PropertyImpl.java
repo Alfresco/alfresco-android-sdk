@@ -38,8 +38,10 @@ public class PropertyImpl implements Property
 
     /** Simple representation of property value. */
     private Object value;
-    
+
     private PropertyType type;
+
+    private Boolean isMultiValued;
 
     /**
      * Use by default for creating property object that wraps an OpenCMIS
@@ -62,17 +64,25 @@ public class PropertyImpl implements Property
     {
         this.value = value;
     }
-    
+
     public PropertyImpl(Object value, PropertyType type)
     {
         this.value = value;
         this.type = type;
     }
 
+    public PropertyImpl(Object value, PropertyType type, Boolean isMultiValued)
+    {
+        this.value = value;
+        this.type = type;
+        this.isMultiValued = isMultiValued;
+    }
+
     /** {@inheritDoc} */
     public boolean isMultiValued()
     {
         if (prop != null) { return prop.isMultiValued(); }
+        if (isMultiValued != null) { return isMultiValued; }
         return false;
     }
 

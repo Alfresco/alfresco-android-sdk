@@ -28,13 +28,13 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
  * @since 1.3
  * @author jpascal
- *
  */
 public class ProcessImpl implements Process
 {
@@ -66,7 +66,9 @@ public class ProcessImpl implements Process
     /**
      * Extra data map that contains all information about the specific activity.
      */
-    private Map<String, Serializable> data;
+    private Map<String, Property> variables = new HashMap<String, Property>();
+
+    private HashMap<String, Serializable> data;
 
     private static final String SUFFIX_WORKFLOW_DEFINITION = "api/workflow-definitions/";
 
@@ -135,18 +137,45 @@ public class ProcessImpl implements Process
         return process;
     }
 
+    public static Process refreshProcess(Process process, Map<String, Property> properties)
+    {
+        if (process == null) { return null; }
+        if (properties == null) { return process; }
+
+        ProcessImpl refreshedProcess = new ProcessImpl();
+        refreshedProcess.identifier = process.getIdentifier();
+        refreshedProcess.definitionIdentifier = process.getDefinitionIdentifier();
+        refreshedProcess.key = process.getKey();
+        refreshedProcess.startedAt = process.getStartedAt();
+        refreshedProcess.endedAt = process.getEndedAt();
+        refreshedProcess.description = process.getDescription();
+        refreshedProcess.priority = process.getPriority();
+        refreshedProcess.initiatorIdentifier = process.getInitiatorIdentifier();
+        refreshedProcess.name = process.getName();
+        refreshedProcess.dueAt = process.getDueAt();
+        refreshedProcess.variables = properties;
+        refreshedProcess.hasAllVariables = true;
+
+        return refreshedProcess;
+    }
+
     public static Process parsePublicAPIJson(Map<String, Object> json)
     {
         ProcessImpl process = new ProcessImpl();
 
         process.identifier = JSONConverter.getString(json, PublicAPIConstant.ID_VALUE);
         process.definitionIdentifier = JSONConverter.getString(json, PublicAPIConstant.PROCESSDEFINITIONID_VALUE);
+        process.key = process.definitionIdentifier.split(":")[0];
 
-        String startedAt = JSONConverter.getString(json, PublicAPIConstant.STARTEDAT_VALUE);
         GregorianCalendar g = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
-        g.setTime(DateUtils.parseDate(startedAt, sdf));
-        process.startedAt = g;
+
+        String startedAt = JSONConverter.getString(json, PublicAPIConstant.STARTEDAT_VALUE);
+        if (startedAt != null)
+        {
+            g.setTime(DateUtils.parseDate(startedAt, sdf));
+            process.startedAt = g;
+        }
 
         String endedAt = JSONConverter.getString(json, PublicAPIConstant.ENDEDAT_VALUE);
         if (endedAt != null)
@@ -233,5 +262,24 @@ public class ProcessImpl implements Process
     public boolean hasAllVariables()
     {
         return hasAllVariables;
+    }
+
+    @Override
+    public Property getVariable(String name)
+    {
+        return variables.get(name);
+    }
+
+    @Override
+    public Map<String, Property> getVariables()
+    {
+        return new HashMap<String, Property>(variables);
+    }
+
+    @Override
+    public <T> T getVariableValue(String name)
+    {
+        if (variables.get(name) != null) { return variables.get(name).getValue(); }
+        return null;
     }
 }
