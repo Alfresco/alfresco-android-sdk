@@ -242,7 +242,7 @@ public final class OnPremiseUrlRegistry
     }
     
     /** @since 1.3.0 */
-    public static String getAllSiteMembers(AlfrescoSession session, String siteIdentifier)
+    public static String getSiteMembershipUrl(AlfrescoSession session, String siteIdentifier)
     {
         return session
                 .getBaseUrl()

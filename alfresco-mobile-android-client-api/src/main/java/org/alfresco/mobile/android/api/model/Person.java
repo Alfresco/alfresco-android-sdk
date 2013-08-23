@@ -147,5 +147,12 @@ public interface Person extends Serializable
      * @return the company object
      */
     Company getCompany();
+    
+    /**
+     * Indicates whether the person has all it’s metadata populated.
+     * @return true if all properties are available.
+     */
+    boolean hasAllProperties();
+
 
 }

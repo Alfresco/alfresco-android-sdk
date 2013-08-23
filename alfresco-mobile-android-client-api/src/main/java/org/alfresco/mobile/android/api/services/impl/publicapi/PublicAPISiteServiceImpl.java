@@ -596,6 +596,20 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
         }
         return isMember;
     }
+    
+    @Override
+    public List<Person> searchMembers(Site site, String keywords)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization

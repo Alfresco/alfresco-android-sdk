@@ -154,6 +154,12 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         return new PagingResultImpl<Person>(definitions, false, size);
     }
     
+    @Override
+    public Person refresh(Person person)
+    {
+        return getPerson(person.getIdentifier());
+    }
+    
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +212,4 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-
-   
 }

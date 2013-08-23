@@ -73,4 +73,14 @@ public interface PersonService extends Service
      */
      PagingResult<Person> search(String keyword, ListingContext listingContext);
 
+     /**
+      * Returns the latest (and complete) set of properties for the provided
+      * person.
+      * 
+      * @since 1.3.0
+      * @param person
+      * @return
+      */
+     Person refresh(Person person);
+     
 }
