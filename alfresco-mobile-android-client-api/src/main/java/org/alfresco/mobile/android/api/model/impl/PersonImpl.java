@@ -54,6 +54,8 @@ public class PersonImpl implements Person
     private boolean isCloud = false;
 
     private Map<String, String> properties;
+    
+    private boolean hasAllProperties = true;
 
     private Company company;
 
@@ -97,7 +99,10 @@ public class PersonImpl implements Person
      */
     public static PersonImpl parseJson(Map<String, Object> json)
     {
-
+        return parseJson(json, true);
+    }
+    
+    public static PersonImpl parseJson(Map<String, Object> json, boolean hasAllProperties){
         String separatorInternal = "Store/";
 
         PersonImpl person = new PersonImpl();
@@ -133,6 +138,8 @@ public class PersonImpl implements Person
         person.properties = props;
 
         person.company = CompanyImpl.parseJson(json, props.get(OnPremiseConstant.LOCATION_VALUE));
+        
+        person.hasAllProperties = hasAllProperties;
 
         return person;
     }
@@ -143,8 +150,13 @@ public class PersonImpl implements Person
      * @param json : json response that contains data from the repository
      * @return Person object that contains essential information about it.
      */
-    @SuppressWarnings("unchecked")
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json)
+    {
+       return parsePublicAPIJson(json, true);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static PersonImpl parsePublicAPIJson(Map<String, Object> json, boolean hasAllProperties)
     {
         PersonImpl person = new PersonImpl();
 
@@ -167,6 +179,8 @@ public class PersonImpl implements Person
 
         person.company = CompanyImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.COMPANY_VALUE),
                 props.get(CloudConstant.LOCATION_VALUE));
+        
+        person.hasAllProperties = hasAllProperties;
 
         return person;
     }
@@ -267,6 +281,12 @@ public class PersonImpl implements Person
     public Company getCompany()
     {
         return company;
+    }
+
+    /** {@inheritDoc} */
+    public boolean hasAllProperties()
+    {
+        return hasAllProperties;
     }
 
 }

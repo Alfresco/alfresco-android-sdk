@@ -292,6 +292,17 @@ public interface OnPremiseConstant
     String PARAM_PAGESIZE = "pageSize";
 
     String PARAM_REVERSE = "reverse";
+    
+    String SIZE_VALUE = "size";
+    
+    String POS_VALUE = "pos";
+
+    String NF_VALUE = "nf";
+    
+    String AUTHORITYTYPE_VALUE = "authorityType";
+    
+    String USER_UPPERCASE_VALUE = "USER";
+
 
     // ERROR
     String CODE_VALUE = "code";

@@ -1,5 +1,7 @@
 package org.alfresco.mobile.android.test.api.services;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -291,7 +293,67 @@ public class PersonServiceTest extends AlfrescoSDKTestCase
         Assert.assertNull(company.getFaxNumber());
         Assert.assertNull(company.getEmail());
         Assert.assertNull(company.getFullAddress());
+    }
+    
+    /**
+     * Success Test for Search Person
+     * 
+     * @since 1.3.0
+     */
+    public void testSearchPerson()
+    {
+        //Referential 
+        //Full Name : User Manager
+        //Username : user_manage@rediff.com
+        Person referentialPerson = personService.getPerson(USER_MANAGER_ID);
         
+        List<Person> resultPerson = personService.search("user_manage");
+        Assert.assertNotNull(resultPerson);
+        Assert.assertEquals(1, resultPerson.size());
+        Person p = resultPerson.get(0);
+        Assert.assertEquals(referentialPerson.getIdentifier(), resultPerson.get(0).getIdentifier());
+        Assert.assertTrue(resultPerson.get(0).hasAllProperties());
+        Assert.assertEquals(USER_MANAGER_ID, p.getIdentifier());
+        Assert.assertEquals(USER_MANAGER_FIRST, p.getFirstName());
+        Assert.assertEquals(USER_MANAGER_LAST, p.getLastName());
+        Assert.assertEquals(USER_MANAGER_FULL, p.getFullName());
+        Assert.assertEquals(JOBTITLE, p.getJobTitle());
+        Assert.assertEquals(LOCATION, p.getLocation());
+        Assert.assertEquals(SUMMARY, p.getSummary());
+        Assert.assertEquals(TELEPHONE, p.getTelephoneNumber());
+        Assert.assertEquals(MOBILE, p.getMobileNumber());
+        Assert.assertEquals(EMAIL, p.getEmail());
+        Assert.assertEquals(SKYPE, p.getSkypeId());
+        Assert.assertEquals(IM, p.getInstantMessageId());
+        Assert.assertEquals(GOOGLEID, p.getGoogleId());
+
+        Company company = p.getCompany();
+        Assert.assertNotNull(company);
+        Assert.assertEquals(COMPANY, company.getName());
+        Assert.assertEquals(ADRESS1, company.getAddress1());
+        Assert.assertEquals(ADRESS2, company.getAddress2());
+        Assert.assertEquals(ADRESS3, company.getAddress3());
+        Assert.assertEquals(POSTALCODE, company.getPostCode());
+        Assert.assertEquals(COMPANYTEL, company.getTelephoneNumber());
+        Assert.assertEquals(COMPANYFAX, company.getFaxNumber());
+        Assert.assertEquals(COMPANYEMAIL, company.getEmail());
+        Assert.assertNotNull(company.getFullAddress());
+        
+        resultPerson = personService.search("User M");
+        Assert.assertNotNull(resultPerson);
+        Assert.assertEquals(1, resultPerson.size());
+        Assert.assertEquals(referentialPerson.getIdentifier(), resultPerson.get(0).getIdentifier());
+        Assert.assertTrue(resultPerson.get(0).hasAllProperties());
+        
+        resultPerson = personService.search("Manage");
+        Assert.assertNotNull(resultPerson);
+        Assert.assertEquals(1, resultPerson.size());
+        Assert.assertEquals(referentialPerson.getIdentifier(), resultPerson.get(0).getIdentifier());
+        
+        resultPerson = personService.search("U* Ma*");
+        Assert.assertNotNull(resultPerson);
+        Assert.assertEquals(1, resultPerson.size());
+        Assert.assertEquals(referentialPerson.getIdentifier(), resultPerson.get(0).getIdentifier());
     }
     
 

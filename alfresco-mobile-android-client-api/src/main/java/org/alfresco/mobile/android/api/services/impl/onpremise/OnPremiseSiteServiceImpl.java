@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -549,15 +550,42 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     public PagingResult<Person> getAllMembers(Site site, ListingContext listingContext)
     {
+        return searchMembers(site, null, listingContext);
+    }
+
+    /** {@inheritDoc} */
+    public List<Person> searchMembers(Site site, String keywords)
+    {
+        return searchMembers(site, keywords, null).getList();
+    }
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    public PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext)
+    {
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        
         List<Person> persons = new ArrayList<Person>();
+        int maxItems = -1;
         try
         {
             // build URL
-            String link = OnPremiseUrlRegistry.getAllSiteMembers(session, site.getIdentifier());
+            String link = OnPremiseUrlRegistry.getSiteMembershipUrl(session, site.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
+            if (keywords != null)
+            {
+                url.addParameter(OnPremiseConstant.NF_VALUE, keywords);
+                url.addParameter(OnPremiseConstant.AUTHORITYTYPE_VALUE, OnPremiseConstant.USER_UPPERCASE_VALUE);
+            }
+            if (listingContext != null)
+            {
+                url.addParameter(OnPremiseConstant.SIZE_VALUE, listingContext.getMaxItems());
+                maxItems = listingContext.getMaxItems();
+                url.addParameter(PublicAPIConstant.POS_VALUE, listingContext.getSkipCount());
+            }
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
@@ -566,14 +594,14 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             for (Object obj : json)
             {
                 persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj)
-                        .get(OnPremiseConstant.AUTHORITY_VALUE)));
+                        .get(OnPremiseConstant.AUTHORITY_VALUE), false));
             }
         }
         catch (Exception e)
         {
             convertException(e);
         }
-        return new PagingResultImpl<Person>(persons, false, persons.size());
+        return new PagingResultImpl<Person>(persons, (maxItems != -1 && persons.size() == maxItems), persons.size());
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
