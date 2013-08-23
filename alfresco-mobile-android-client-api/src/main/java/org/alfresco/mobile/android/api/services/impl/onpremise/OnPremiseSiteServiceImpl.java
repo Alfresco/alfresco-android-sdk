@@ -275,20 +275,31 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////
     // MEMBERSHIPS
     // ////////////////////////////////////////////////////
+    @Override
+    public boolean isMember(Site site, Person person)
+    {
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        if (isObjectNull(person)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+
+        return isMemberOf(site, person.getIdentifier());
+    }
+
     /**
      * Determine if the current user is member of the specific site.
      * 
      * @param site :
      * @return true if the current user is member. False otherwise.
      */
-    private boolean isMemberOf(Site site)
+    private boolean isMemberOf(Site site, String personId)
     {
         boolean isMember = false;
         try
         {
             // build URL
-            String link = OnPremiseUrlRegistry.getMemberOfSiteUrl(session, site.getIdentifier(),
-                    session.getPersonIdentifier());
+            String link = OnPremiseUrlRegistry.getMemberOfSiteUrl(session, site.getIdentifier(), personId);
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse
@@ -342,7 +353,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
             // Check isMember because on onPremise theres no error message if
             // the user is already member of a site.
-            if (isMemberOf(site)) { throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_ALREADY_MEMBER,
+            if (isMemberOf(site, session.getPersonIdentifier())) { throw new AlfrescoServiceException(
+                    ErrorCodeRegistry.SITE_ALREADY_MEMBER,
                     Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
 
             switch (site.getVisibility())
@@ -529,7 +541,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     {
         return OnPremiseUrlRegistry.getLeaveSiteUrl(session, site.getIdentifier(), session.getPersonIdentifier());
     }
-    
+
     /** {@inheritDoc} */
     public List<Person> getAllMembers(Site site)
     {
@@ -553,7 +565,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
             for (Object obj : json)
             {
-                persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj).get(OnPremiseConstant.AUTHORITY_VALUE)));
+                persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj)
+                        .get(OnPremiseConstant.AUTHORITY_VALUE)));
             }
         }
         catch (Exception e)

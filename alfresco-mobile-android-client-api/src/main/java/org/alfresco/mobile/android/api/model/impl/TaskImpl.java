@@ -181,6 +181,11 @@ public class TaskImpl implements Task
         task.identifier = JSONConverter.getString(json, PublicAPIConstant.ID_VALUE);
         task.priority = JSONConverter.getInteger(json, PublicAPIConstant.PRIORITY_VALUE).intValue();
         task.key = JSONConverter.getString(json, PublicAPIConstant.FORMRESOURCEKEY_VALUE);
+        if (task.key == null)
+        {
+            task.key = JSONConverter.getString(json, PublicAPIConstant.ACTIVITYDEFINITIONID_VALUE);
+        }
+        task.name = JSONConverter.getString(json, PublicAPIConstant.NAME_VALUE);
 
         String startedAt = JSONConverter.getString(json, PublicAPIConstant.STARTEDAT_VALUE);
         GregorianCalendar g = new GregorianCalendar();
@@ -213,6 +218,7 @@ public class TaskImpl implements Task
         task.processDefinitionIdentifier = JSONConverter.getString(json, PublicAPIConstant.PROCESSDEFINITIONID_VALUE);
 
         task.data = new HashMap<String, Serializable>();
+        task.data.put(PublicAPIConstant.STATE_VALUE, JSONConverter.getString(json, PublicAPIConstant.STATE_VALUE));
 
         return task;
     }

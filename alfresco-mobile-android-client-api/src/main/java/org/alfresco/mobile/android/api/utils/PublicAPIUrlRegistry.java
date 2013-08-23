@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
-import java.util.Map;
-
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -29,8 +27,11 @@ public class PublicAPIUrlRegistry
     // Public API
     // @since 1.3
     public static final String PREFIX_PUBLIC_API = "/api/-default-/public/alfresco/versions/1";
+    
+    public static final String PREFIX_PUBLIC_API_WORKFLOW = "/api/-default-/public/workflow/versions/1";
 
     public static final String BINDING_NETWORK_CMISATOM = "/api/-default-/public/cmis/versions/1.0/atom/";
+    
 
     // VARIABLES
     public static final String VARIABLE_PERSONID = "{personId}";
@@ -373,99 +374,104 @@ public class PublicAPIUrlRegistry
     public static final String URL_ITEM_ID_TASK = URL_ITEMS_TASK + "/{itemId}";
 
     /** @since 1.3.0 */
-    // TODO Replace with
-    // public static final String URL_PROCESS = URL_PROCESS + "/tasks";
-    public static final String URL_TASK_FOR_PROCESS = "tasks";
-
+    public static final String URL_TASK_FOR_PROCESS = URL_PROCESS + "/tasks";
 
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionsUrl(AlfrescoSession session)
     {
-        return createPrefix(session).append(URL_PROCESS_DEFINITIONS).toString();
+        return createWorkflowPrefix(session).append(URL_PROCESS_DEFINITIONS).toString();
     }
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionUrl(AlfrescoSession session, String workflowDefinitionId)
     {
-        return createPrefix(session).append(
+        return createWorkflowPrefix(session).append(
                 URL_PROCESS_DEFINITION.replace(VARIABLE_PROCESSDEFINITIONID, workflowDefinitionId)).toString();
     }
 
     /** @since 1.3.0 */
     public static String getProcessesUrl(AlfrescoSession session)
     {
-        return createPrefix(session).append(URL_PROCESSES).toString();
+        return createWorkflowPrefix(session).append(URL_PROCESSES).toString();
     }
 
     /** @since 1.3.0 */
     public static String getProcessUrl(AlfrescoSession session, String processId)
     {
-        return createPrefix(session).append(URL_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
     }
 
     /** @since 1.3.0 */
     public static String getTasksForProcessIdUrl(AlfrescoSession session, String processId)
     {
-        return createPrefix(session).append(URL_TASK_FOR_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_TASK_FOR_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getProcessItemsUrl(AlfrescoSession session, String processId)
     {
-        return createPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getProcessVariablesUrl(AlfrescoSession session, String taskId)
     {
-        return createPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, taskId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, taskId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getTasksUrl(AlfrescoSession session)
     {
-        return createPrefix(session).append(URL_TASKS).toString();
+        return createWorkflowPrefix(session).append(URL_TASKS).toString();
     }
     
     /** @since 1.3.0 */
     public static String getTaskUrl(AlfrescoSession session, String taskId)
     {
-        return createPrefix(session).append(URL_TASK.replace(VARIABLE_TASKID, taskId)).toString();
+        return createWorkflowPrefix(session).append(URL_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getTaskVariablesUrl(AlfrescoSession session, String taskId)
     {
-        return createPrefix(session).append(URL_TASK_VARIABLES.replace(VARIABLE_TASKID, taskId)).toString();
+        return createWorkflowPrefix(session).append(URL_TASK_VARIABLES.replace(VARIABLE_TASKID, taskId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getTaskVariableUrl(AlfrescoSession session, String taskId, String variableId)
     {
-        return createPrefix(session).append(URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
+        return createWorkflowPrefix(session).append(URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
     }
 
     /** @since 1.3.0 */
     public static String getTaskItemsUrl(AlfrescoSession session, String taskId)
     {
-        return createPrefix(session).append(URL_ITEMS_TASK.replace(VARIABLE_TASKID, taskId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEMS_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
     
     /** @since 1.3.0 */
     public static String getTaskItemByIdUrl(AlfrescoSession session, String taskId, String documentId)
     {
-        return createPrefix(session).append(URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
     }
     
     public static String getWorkflowDiagram(AlfrescoSession session, String processId)
     {
-        return createPrefix(session).append(URL_PROCESS_DIAGRAM.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_PROCESS_DIAGRAM.replace(VARIABLE_PROCESSID, processId)).toString();
     }
     
     // ///////////////////////////////////////////////////////////////////////////////
     // TOOLS
     // //////////////////////////////////////////////////////////////////////////////
+    protected static StringBuilder createWorkflowPrefix(AlfrescoSession session)
+    {
+        StringBuilder sb = new StringBuilder(session.getBaseUrl());
+        sb.append(PREFIX_PUBLIC_API_WORKFLOW);
+        sb.append("/");
+        return sb;
+    }
+    
     protected static StringBuilder createPrefix(AlfrescoSession session)
     {
         StringBuilder sb = new StringBuilder(session.getBaseUrl());

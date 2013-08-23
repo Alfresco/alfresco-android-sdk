@@ -50,4 +50,28 @@ public class PublicAPIWorkflowServiceTest extends WorkflowServiceTest
     {
         super.testAdhocWorkflow();
     }
+    
+    @Override
+    public void testFilters()
+    {
+        super.testFilters();
+    }
+    
+    @Override
+    public void testParallelWorkflow()
+    {
+        super.testParallelWorkflow();
+    }
+    
+    @Override
+    public void testPooledWorkflow()
+    {
+        super.testPooledWorkflow();
+    }
+    
+    @Override
+    public void testReviewWorkflow()
+    {
+        super.testReviewWorkflow();
+    }
 }

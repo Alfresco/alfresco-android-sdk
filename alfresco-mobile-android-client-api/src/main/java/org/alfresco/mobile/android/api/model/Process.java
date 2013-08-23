@@ -36,8 +36,6 @@ public interface Process extends Serializable
     
     GregorianCalendar getStartedAt();
     
-    GregorianCalendar getDueAt();
-    
     GregorianCalendar getEndedAt();
     
     Integer getPriority();

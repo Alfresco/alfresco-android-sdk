@@ -54,6 +54,7 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
 import android.os.Parcel;
@@ -172,7 +173,14 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 else
                 {
-
+                    List<String> guids = new ArrayList<String>(assignees.size());
+                    for (Person p : assignees)
+                    {
+                        //guids.add(getPersonGUID(p));
+                        guids.add(p.getIdentifier());
+                    }
+                    //jo.put(OnPremiseConstant.ASSOC_BPM_ASSIGNEES_ADDED_VALUE, TextUtils.join(",", guids));
+                    variablesJson.put(WorkflowModel.ASSOC_ASSIGNEES, TextUtils.join(",", guids));
                 }
             }
 
@@ -189,15 +197,11 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // ITEMS
             if (items != null && !items.isEmpty())
             {
-                org.apache.chemistry.opencmis.commons.impl.json.JSONArray variablesItems = new org.apache.chemistry.opencmis.commons.impl.json.JSONArray();
+                JSONArray variablesItems = new JSONArray();
                 String id = null;
                 for (Node node : items)
                 {
                     id = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                    if (NodeRefUtils.isIdentifier(id))
-                    {
-                        id = NodeRefUtils.createNodeRefByIdentifier(id);
-                    }
                     variablesItems.add(id);
                 }
                 jo.put(PublicAPIConstant.ITEMS_VALUE, variablesItems);
@@ -225,7 +229,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
         return process;
     }
-
+    
     public void deleteProcess(Process process)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
@@ -323,15 +327,10 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 if (listingContext.getFilter() != null)
                 {
-                    url.addParameter(PublicAPIConstant.WHERE_VALUE,
-                            getPredicate(process.getIdentifier(), listingContext.getFilter()));
+                    url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(listingContext.getFilter()));
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
-            }
-            else
-            {
-                url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(process.getIdentifier(), null));
             }
 
             // send and parse
@@ -456,7 +455,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
             // Prepare JSON Object
             JSONObject jo = new JSONObject();
-            jo.put(PublicAPIConstant.ID_VALUE, NodeRefUtils.createNodeRefByIdentifier(NodeRefUtils.getCleanIdentifier(items.get(0).getIdentifier())));
+            jo.put(PublicAPIConstant.ID_VALUE, NodeRefUtils.getCleanIdentifier(items.get(0).getIdentifier()));
 
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
 
@@ -483,8 +482,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         try
         {
             // Prepare URL
-            String link = PublicAPIUrlRegistry.getTaskItemByIdUrl(session, task.getIdentifier(), NodeRefUtils.getCleanIdentifier(NodeRefUtils.createNodeRefByIdentifier(items.get(0)
-                    .getIdentifier())));
+            String link = PublicAPIUrlRegistry.getTaskItemByIdUrl(session, task.getIdentifier(),
+                    NodeRefUtils.getCleanIdentifier(items.get(0).getIdentifier()));
             UrlBuilder url = new UrlBuilder(link);
 
             // send
@@ -574,7 +573,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
     public Task completeTask(Task task, Map<String, Serializable> variables)
     {
-        return updateTask(task, variables, PublicAPIConstant.RESOLVED_VALUE);
+        return updateTask(task, variables, PublicAPIConstant.COMPLETED_VALUE);
     }
 
     @Override
@@ -626,14 +625,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             }
 
             // VARIABLES
-            if (variables != null && !variables.isEmpty())
-            {
-                JSONObject variablesJson = new JSONObject();
-                for (Entry<String, Serializable> entry : variables.entrySet())
-                {
-                    variablesJson.put(entry.getKey(), entry.getValue());
-                }
-                jo.put(PublicAPIConstant.VARIABLES_VALUE, variablesJson);
+            if (variables != null && !variables.isEmpty()){
+                updateVariables(task, variables);
             }
 
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
@@ -680,7 +673,6 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // VARIABLES
     // ////////////////////////////////////////////////////////////////
-    @SuppressWarnings("unchecked")
     private Map<String, Property> getVariables(Task task)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
@@ -702,7 +694,6 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return variables;
     }
 
-    @SuppressWarnings("unchecked")
     private Map<String, Property> getVariables(Process process)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
@@ -755,6 +746,9 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        
+        if (isMapNull(variables)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "variables")); }
 
         Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
         if (variables != null)
@@ -764,27 +758,67 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         Task resultTask = task;
         try
         {
+            String link = PublicAPIUrlRegistry.getTaskVariablesUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // prepare json data
+            JSONArray ja = new JSONArray();
+            JSONObject jo;
             for (Entry<String, Serializable> entry : internalVariables.entrySet())
             {
-                String link = PublicAPIUrlRegistry.getTaskVariableUrl(session, task.getIdentifier(), entry.getKey());
-                UrlBuilder url = new UrlBuilder(link);
-
-                // prepare json data
-                JSONObject jo = new JSONObject();
+                jo = new JSONObject();
                 jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
                 jo.put(PublicAPIConstant.VALUE, entry.getValue());
                 jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
-                final JsonDataWriter dataWriter = new JsonDataWriter(jo);
-
-                // send
-                put(url, dataWriter.getContentType(), null, new Output()
-                {
-                    public void write(OutputStream out) throws IOException
-                    {
-                        dataWriter.write(out);
-                    }
-                }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+                ja.add(jo);
             }
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(ja);
+
+            // send
+            post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            resultTask = getTask(task.getIdentifier());
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+        return resultTask;
+    }
+
+    public Task updateVariable(Task task, String key, Serializable value)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Task resultTask = task;
+        try
+        {
+            String link = PublicAPIUrlRegistry.getTaskVariableUrl(session, task.getIdentifier(), key);
+            UrlBuilder url = new UrlBuilder(link);
+
+            // prepare json data
+            JSONObject jo = new JSONObject();
+            jo.put(PublicAPIConstant.NAME_VALUE, key);
+            jo.put(PublicAPIConstant.VALUE, value);
+            jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            put(url, dataWriter.getContentType(), null, new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
             resultTask = getTask(task.getIdentifier());
         }
         catch (Exception e)

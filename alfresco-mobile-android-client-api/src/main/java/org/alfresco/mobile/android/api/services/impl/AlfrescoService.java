@@ -123,7 +123,7 @@ public abstract class AlfrescoService implements Service
     {
         // make the call
         Response resp = getHttpInvoker().invokePOST(url, contentType, writer, getSessionHttp());
-
+        
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
         {

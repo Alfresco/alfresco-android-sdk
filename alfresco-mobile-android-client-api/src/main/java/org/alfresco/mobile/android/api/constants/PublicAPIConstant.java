@@ -262,4 +262,13 @@ public interface PublicAPIConstant extends OnPremiseConstant
     
     String LOCAL_VALUE = "local";
 
+    String STARTUSERID_VALUE = "startUserId";
+
+    String DURATIONINMS_VALUE = "durationInMs";
+
+    String ENDACTIVITYID_VALUE = "endActivityId";
+
+    String PROCESSDEFINITIONKEY_VALUE = "processDefinitionKey";
+
+    String STARTACTIVITYID_VALUE = "startActivityId";
 }

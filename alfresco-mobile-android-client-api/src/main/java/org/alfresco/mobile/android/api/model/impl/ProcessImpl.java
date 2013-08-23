@@ -111,14 +111,6 @@ public class ProcessImpl implements Process
             process.endedAt = g;
         }
 
-        date = JSONConverter.getString(json, OnPremiseConstant.DUEDATE_VALUE);
-        if (date != null)
-        {
-            g = new GregorianCalendar();
-            g.setTime(DateUtils.parseDate(date, sdf));
-            process.dueAt = g;
-        }
-
         // PARSE INITIATOR
         Map<String, Object> initiator = (Map<String, Object>) json.get(OnPremiseConstant.INITIATOR_VALUE);
         Person p = PersonImpl.parseJson(initiator);
@@ -127,6 +119,16 @@ public class ProcessImpl implements Process
         // EXTRA PROPERTIES
         process.data = new HashMap<String, Serializable>();
         process.data.put(OnPremiseConstant.INITIATOR_VALUE, p);
+        
+        date = JSONConverter.getString(json, OnPremiseConstant.DUEDATE_VALUE);
+        if (date != null)
+        {
+            g = new GregorianCalendar();
+            g.setTime(DateUtils.parseDate(date, sdf));
+            process.dueAt = g;
+        }
+        process.data.put(OnPremiseConstant.DUEDATE_VALUE, g);
+        
         process.data.put(OnPremiseConstant.DESCRIPTION_VALUE,
                 JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE));
         process.data.put(OnPremiseConstant.ISACTIVE_VALUE,
@@ -152,7 +154,6 @@ public class ProcessImpl implements Process
         refreshedProcess.priority = process.getPriority();
         refreshedProcess.initiatorIdentifier = process.getInitiatorIdentifier();
         refreshedProcess.name = process.getName();
-        refreshedProcess.dueAt = process.getDueAt();
         refreshedProcess.variables = properties;
         refreshedProcess.hasAllVariables = true;
 
@@ -165,7 +166,8 @@ public class ProcessImpl implements Process
 
         process.identifier = JSONConverter.getString(json, PublicAPIConstant.ID_VALUE);
         process.definitionIdentifier = JSONConverter.getString(json, PublicAPIConstant.PROCESSDEFINITIONID_VALUE);
-        process.key = process.definitionIdentifier.split(":")[0];
+        process.key = JSONConverter.getString(json, PublicAPIConstant.PROCESSDEFINITIONKEY_VALUE);
+        process.initiatorIdentifier = JSONConverter.getString(json, PublicAPIConstant.STARTUSERID_VALUE);
 
         GregorianCalendar g = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
@@ -182,12 +184,24 @@ public class ProcessImpl implements Process
         {
             g = new GregorianCalendar();
             g.setTime(DateUtils.parseDate(endedAt, sdf));
-            process.startedAt = g;
+            process.endedAt = g;
         }
 
         process.hasAllVariables = false;
 
+        // EXTRA PROPERTIES
         process.data = new HashMap<String, Serializable>();
+        if (json.containsKey(PublicAPIConstant.DURATIONINMS_VALUE))
+        {
+            process.data.put(PublicAPIConstant.DURATIONINMS_VALUE,
+                    JSONConverter.getInteger(json, PublicAPIConstant.DURATIONINMS_VALUE).intValue());
+        }
+        process.data.put(PublicAPIConstant.STARTACTIVITYID_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.STARTACTIVITYID_VALUE));
+        process.data.put(PublicAPIConstant.ENDACTIVITYID_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.ENDACTIVITYID_VALUE));
+        process.data.put(PublicAPIConstant.COMPLETED_VALUE,
+                JSONConverter.getBoolean(json, PublicAPIConstant.COMPLETED_VALUE));
 
         return process;
     }
@@ -226,12 +240,6 @@ public class ProcessImpl implements Process
     public String getKey()
     {
         return key;
-    }
-
-    @Override
-    public GregorianCalendar getDueAt()
-    {
-        return dueAt;
     }
 
     @Override
