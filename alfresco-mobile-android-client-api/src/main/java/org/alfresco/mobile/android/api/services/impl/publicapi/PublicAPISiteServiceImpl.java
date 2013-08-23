@@ -271,7 +271,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
                     if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST) { throw new AlfrescoServiceException(
                             ErrorCodeRegistry.SITE_ALREADY_MEMBER,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
-                    
+
                     if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
                     {
                         convertStatusCode(resp, ErrorCodeRegistry.SITE_GENERIC);
@@ -286,7 +286,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
                     if (resp.getResponseCode() == HttpStatus.SC_BAD_REQUEST) { throw new AlfrescoServiceException(
                             ErrorCodeRegistry.SITE_ALREADY_MEMBER,
                             Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
-                    
+
                     if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
                     {
                         convertStatusCode(resp, ErrorCodeRegistry.SITE_GENERIC);
@@ -520,7 +520,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
             Log.e(TAG, Log.getStackTraceString(e));
         }
     }
-    
+
     // ////////////////////////////////////////////////////
     // Site Membership
     // ////////////////////////////////////////////////////
@@ -557,6 +557,45 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
         return new PagingResultImpl<Person>(personList, response.getHasMoreItems(), response.getSize());
     }
 
+    @SuppressWarnings("unchecked")
+    public boolean isMember(Site site, Person person)
+    {
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
+        if (isObjectNull(person)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+
+        boolean isMember = false;
+        try
+        {
+            // build URL
+            String link = CloudUrlRegistry.getAllMembersSiteUrl((CloudSession) session, site.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // send and parse
+            Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
+                    .get(PublicAPIConstant.ENTRY_VALUE);
+            if (data != null)
+            {
+                isMember = true;
+            }
+        }
+        catch (AlfrescoServiceException e)
+        {
+            if (e.getErrorCode() == 400)
+            {
+                isMember = false;
+            }
+            else
+            {
+                convertException(e);
+            }
+        }
+        return isMember;
+    }
 
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization

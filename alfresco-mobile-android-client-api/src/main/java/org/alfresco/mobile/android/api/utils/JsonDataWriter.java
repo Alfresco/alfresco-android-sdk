@@ -34,18 +34,21 @@ public class JsonDataWriter
 
     private static final String CRLF = "\r\n";
 
-    private JSONObject json;
-
-    private JSONArray jsonArray;
+    private Object jsonObject;
 
     public JsonDataWriter(JSONObject json)
     {
-        this.json = json;
+        this.jsonObject = json;
     }
 
     public JsonDataWriter(JSONArray jsonArray)
     {
-        this.jsonArray = jsonArray;
+        this.jsonObject = jsonArray;
+    }
+
+    public JsonDataWriter(org.apache.chemistry.opencmis.commons.impl.json.JSONArray jsonArray)
+    {
+        this.jsonObject = jsonArray;
     }
 
     public String getContentType()
@@ -53,19 +56,20 @@ public class JsonDataWriter
         return CONTENT_TYPE_URLENCODED;
     }
 
-    public void write(OutputStream out) throws IOException 
+    public void write(OutputStream out) throws IOException
     {
-        if (json != null)
+        if (jsonObject == null) { return; }
+        if (jsonObject instanceof JSONObject)
         {
-            writeLine(out, json.toJSONString());
+            writeLine(out, ((JSONObject) jsonObject).toJSONString());
         }
-        else if (jsonArray != null)
+        else
         {
-            writeLine(out, jsonArray.toString());
+            writeLine(out, jsonObject.toString());
         }
     }
 
-    private void writeLine(OutputStream out, String s) throws IOException 
+    private void writeLine(OutputStream out, String s) throws IOException
     {
         String tmpString = (s == null ? CRLF : s + CRLF);
         out.write(tmpString.getBytes("UTF-8"));

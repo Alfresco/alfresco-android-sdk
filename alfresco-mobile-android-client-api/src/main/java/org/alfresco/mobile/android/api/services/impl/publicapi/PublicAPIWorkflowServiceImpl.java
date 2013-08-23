@@ -4,17 +4,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
@@ -23,10 +29,14 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.api.model.impl.ProcessDefintionImpl;
+import org.alfresco.mobile.android.api.model.impl.ProcessDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
+import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
 import org.alfresco.mobile.android.api.model.impl.TaskImpl;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIDocumentImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractWorkflowService;
@@ -36,16 +46,20 @@ import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
@@ -90,7 +104,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Object entry : response.getEntries())
             {
                 data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-                definitions.add(ProcessDefintionImpl.parsePublicAPIJson(data));
+                definitions.add(ProcessDefinitionImpl.parsePublicAPIJson(data));
             }
         }
         catch (Exception e)
@@ -118,20 +132,13 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
                     .get(PublicAPIConstant.ENTRY_VALUE);
-            definition = ProcessDefintionImpl.parsePublicAPIJson(data);
+            definition = ProcessDefinitionImpl.parsePublicAPIJson(data);
         }
         catch (Exception e)
         {
             convertException(e);
         }
         return definition;
-    }
-
-    @Override
-    public Map<String, Serializable> getFormModel(String processDefinitionIdentifier)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -166,7 +173,14 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 else
                 {
-
+                    List<String> guids = new ArrayList<String>(assignees.size());
+                    for (Person p : assignees)
+                    {
+                        //guids.add(getPersonGUID(p));
+                        guids.add(p.getIdentifier());
+                    }
+                    //jo.put(OnPremiseConstant.ASSOC_BPM_ASSIGNEES_ADDED_VALUE, TextUtils.join(",", guids));
+                    variablesJson.put(WorkflowModel.ASSOC_ASSIGNEES, TextUtils.join(",", guids));
                 }
             }
 
@@ -183,15 +197,11 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // ITEMS
             if (items != null && !items.isEmpty())
             {
-                org.apache.chemistry.opencmis.commons.impl.json.JSONArray variablesItems = new org.apache.chemistry.opencmis.commons.impl.json.JSONArray();
+                JSONArray variablesItems = new JSONArray();
                 String id = null;
                 for (Node node : items)
                 {
                     id = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                    if (NodeRefUtils.isIdentifier(id))
-                    {
-                        id = NodeRefUtils.createNodeRefByIdentifier(id);
-                    }
                     variablesItems.add(id);
                 }
                 jo.put(PublicAPIConstant.ITEMS_VALUE, variablesItems);
@@ -219,7 +229,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
         return process;
     }
-
+    
     public void deleteProcess(Process process)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
@@ -317,15 +327,10 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 if (listingContext.getFilter() != null)
                 {
-                    url.addParameter(PublicAPIConstant.WHERE_VALUE,
-                            getPredicate(process.getIdentifier(), listingContext.getFilter()));
+                    url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(listingContext.getFilter()));
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
-            }
-            else
-            {
-                url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(process.getIdentifier(), null));
             }
 
             // send and parse
@@ -347,22 +352,40 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
     }
 
+    @Override
+    public Process refresh(Process process)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Process resultProcess = process;
+        try
+        {
+            resultProcess = ProcessImpl.refreshProcess(process, getVariables(process));
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return resultProcess;
+    }
+
     // ////////////////////////////////////////////////////////////////
     // ITEMS
     // ////////////////////////////////////////////////////////////////
     @Override
-    public List<Node> getDocuments(Task task)
+    public List<Document> getDocuments(Task task)
     {
         return getDocuments(task, null).getList();
     }
 
     @Override
-    public List<Node> getDocuments(Process process)
+    public List<Document> getDocuments(Process process)
     {
         return getDocuments(process, null).getList();
     }
 
-    public PagingResult<Node> getDocuments(Task task, ListingContext listingContext)
+    public PagingResult<Document> getDocuments(Task task, ListingContext listingContext)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -373,7 +396,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return getItems(task.getProcessIdentifier(), listingContext);
     }
 
-    public PagingResult<Node> getDocuments(Process process, ListingContext listingContext)
+    public PagingResult<Document> getDocuments(Process process, ListingContext listingContext)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
@@ -385,9 +408,9 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     @SuppressWarnings("unchecked")
-    public PagingResult<Node> getItems(String id, ListingContext listingContext)
+    private PagingResult<Document> getItems(String id, ListingContext listingContext)
     {
-        List<Node> tasks = new ArrayList<Node>();
+        List<Document> tasks = new ArrayList<Document>();
         PublicAPIResponse response = null;
         try
         {
@@ -415,7 +438,61 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Node>(tasks, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Document>(tasks, response.getHasMoreItems(), response.getSize());
+    }
+
+    @Override
+    public void addDocuments(Task task, List<Document> items)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getTaskItemsUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // Prepare JSON Object
+            JSONObject jo = new JSONObject();
+            jo.put(PublicAPIConstant.ID_VALUE, NodeRefUtils.getCleanIdentifier(items.get(0).getIdentifier()));
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+    }
+
+    public void removeDocuments(Task task, List<Document> items)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getTaskItemByIdUrl(session, task.getIdentifier(),
+                    NodeRefUtils.getCleanIdentifier(items.get(0).getIdentifier()));
+            UrlBuilder url = new UrlBuilder(link);
+
+            // send
+            delete(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -483,6 +560,9 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
                     .get(PublicAPIConstant.ENTRY_VALUE);
             task = TaskImpl.parsePublicAPIJson(data);
+
+            // Task doesn't contain variables so we refresh
+            task = refresh(task);
         }
         catch (Exception e)
         {
@@ -491,8 +571,40 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return task;
     }
 
-    @SuppressWarnings("unchecked")
     public Task completeTask(Task task, Map<String, Serializable> variables)
+    {
+        return updateTask(task, variables, PublicAPIConstant.COMPLETED_VALUE);
+    }
+
+    @Override
+    public Task claimTask(Task task)
+    {
+        return updateTask(task, null, PublicAPIConstant.CLAIMED_VALUE);
+    }
+
+    @Override
+    public Task unClaimTask(Task task)
+    {
+        return updateTask(task, null, PublicAPIConstant.UNCLAIMED_VALUE);
+    }
+
+    @Override
+    public Task reassignTask(Task task, Person assignee)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        if (isObjectNull(assignee)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "assignee")); }
+
+        Map<String, Serializable> variables = new HashMap<String, Serializable>(1);
+        variables.put(PublicAPIConstant.ASSIGNEE_VALUE, assignee.getIdentifier());
+        updateVariables(task, variables);
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Task updateTask(Task task, Map<String, Serializable> variables, String state)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -503,11 +615,19 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // Prepare URL
             String link = PublicAPIUrlRegistry.getTaskUrl(session, task.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
-            url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
 
             // Prepare JSON Object
             JSONObject jo = new JSONObject();
-            jo.put(PublicAPIConstant.STATE_VALUE, PublicAPIConstant.RESOLVED_VALUE);
+            if (state != null)
+            {
+                url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
+                jo.put(PublicAPIConstant.STATE_VALUE, state);
+            }
+
+            // VARIABLES
+            if (variables != null && !variables.isEmpty()){
+                updateVariables(task, variables);
+            }
 
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
 
@@ -532,9 +652,259 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return resultTask;
     }
 
+    @Override
+    public Task refresh(Task task)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Task resultTask = task;
+        try
+        {
+            resultTask = TaskImpl.refreshTask(task, getVariables(task));
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return resultTask;
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // VARIABLES
+    // ////////////////////////////////////////////////////////////////
+    private Map<String, Property> getVariables(Task task)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Map<String, Property> variables = new HashMap<String, Property>();
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getTaskVariablesUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+            variables = getVariables(url);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return variables;
+    }
+
+    private Map<String, Property> getVariables(Process process)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+
+        Map<String, Property> variables = new HashMap<String, Property>();
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getProcessVariablesUrl(session, process.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+            variables = getVariables(url);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return variables;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Property> getVariables(UrlBuilder url)
+    {
+
+        Map<String, Property> variables = new HashMap<String, Property>();
+        try
+        {
+            // send and parse
+            Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            PublicAPIResponse response = new PublicAPIResponse(resp);
+
+            Map<String, Object> data = null;
+            for (Object entry : response.getEntries())
+            {
+                data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
+                variables.put((String) data.get(PublicAPIConstant.NAME_VALUE), parseProperty(data));
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return variables;
+    }
+
+    @Override
+    public Task updateVariables(Task task, Map<String, Serializable> variables)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        
+        if (isMapNull(variables)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "variables")); }
+
+        Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
+        if (variables != null)
+        {
+            internalVariables.putAll(variables);
+        }
+        Task resultTask = task;
+        try
+        {
+            String link = PublicAPIUrlRegistry.getTaskVariablesUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // prepare json data
+            JSONArray ja = new JSONArray();
+            JSONObject jo;
+            for (Entry<String, Serializable> entry : internalVariables.entrySet())
+            {
+                jo = new JSONObject();
+                jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                jo.put(PublicAPIConstant.VALUE, entry.getValue());
+                jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
+                ja.add(jo);
+            }
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(ja);
+
+            // send
+            post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            resultTask = getTask(task.getIdentifier());
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+        return resultTask;
+    }
+
+    public Task updateVariable(Task task, String key, Serializable value)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Task resultTask = task;
+        try
+        {
+            String link = PublicAPIUrlRegistry.getTaskVariableUrl(session, task.getIdentifier(), key);
+            UrlBuilder url = new UrlBuilder(link);
+
+            // prepare json data
+            JSONObject jo = new JSONObject();
+            jo.put(PublicAPIConstant.NAME_VALUE, key);
+            jo.put(PublicAPIConstant.VALUE, value);
+            jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            put(url, dataWriter.getContentType(), null, new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            resultTask = getTask(task.getIdentifier());
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+        return resultTask;
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // DIAGRAM
+    // ////////////////////////////////////////////////////////////////
+    @Override
+    public ContentStream getProcessDiagram(Process process)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+
+        return getProcessDiagram(process.getIdentifier());
+    }
+
+    @Override
+    public ContentStream getProcessDiagram(String processId)
+    {
+        if (isStringNull(processId)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId")); }
+
+        try
+        {
+            ContentStream cf = null;
+            String url = PublicAPIUrlRegistry.getWorkflowDiagram(session, processId);
+            UrlBuilder builder = new UrlBuilder(url);
+            Response resp = read(builder, ErrorCodeRegistry.WORKFLOW_GENERIC);
+
+            cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader(), resp.getContentLength()
+                    .longValue());
+
+            return cf;
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
+    }
+
     // ////////////////////////////////////////////////////
     // UTILS
     // ////////////////////////////////////////////////////
+    private static final Map<String, PropertyType> VARIABLE_TYPES = new HashMap<String, PropertyType>(6)
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            put("d:text", PropertyType.STRING);
+            put("bpm:workflowPackage", PropertyType.STRING);
+            put("d:boolean", PropertyType.BOOLEAN);
+            put("d:int", PropertyType.INTEGER);
+            put("d:noderef", PropertyType.STRING);
+            put("d:datetime", PropertyType.DATETIME);
+        }
+    };
+
+    private SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
+
+    private Property parseProperty(Map<String, Object> data)
+    {
+        if (VARIABLE_TYPES.containsKey((String) data.get(PublicAPIConstant.TYPE_VALUE)))
+        {
+            PropertyType type = VARIABLE_TYPES.get((String) data.get(PublicAPIConstant.TYPE_VALUE));
+            // Other case
+            switch (type)
+            {
+                case DATETIME:
+                    GregorianCalendar g = new GregorianCalendar();
+                    g.setTime(DateUtils.parseDate((String) data.get(PublicAPIConstant.VALUE), sdf));
+                    return new PropertyImpl(g, type);
+                case INTEGER:
+                    return new PropertyImpl(((BigInteger) data.get(PublicAPIConstant.VALUE)).intValue(), type);
+                default:
+                    return new PropertyImpl(data.get(PublicAPIConstant.VALUE), type);
+            }
+        }
+        return null;
+    }
+
     private Object getPredicate(ListingFilter filter)
     {
         return getPredicate(null, filter);
@@ -696,7 +1066,6 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         catch (UnsupportedEncodingException e)
         {
         }
-
     }
 
     // ////////////////////////////////////////////////////

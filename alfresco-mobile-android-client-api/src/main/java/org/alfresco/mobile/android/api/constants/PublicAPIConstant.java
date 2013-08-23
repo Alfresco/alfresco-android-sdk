@@ -251,4 +251,24 @@ public interface PublicAPIConstant extends OnPremiseConstant
     String ACTIVITYDEFINITIONID_VALUE = "activityDefinitionId";
 
     String FORMRESOURCEKEY_VALUE = "formResourceKey";
+
+    String VALUE = "value";
+
+    String CLAIMED_VALUE = "claimed";
+    
+    String UNCLAIMED_VALUE = "unclaimed";
+
+    String SCOPE_VALUE = "scope";
+    
+    String LOCAL_VALUE = "local";
+
+    String STARTUSERID_VALUE = "startUserId";
+
+    String DURATIONINMS_VALUE = "durationInMs";
+
+    String ENDACTIVITYID_VALUE = "endActivityId";
+
+    String PROCESSDEFINITIONKEY_VALUE = "processDefinitionKey";
+
+    String STARTACTIVITYID_VALUE = "startActivityId";
 }

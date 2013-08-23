@@ -31,7 +31,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * @author jpascal
  *
  */
-public class ProcessDefintionImpl implements ProcessDefinition
+public class ProcessDefinitionImpl implements ProcessDefinition
 {
     private static final long serialVersionUID = 1L;
 
@@ -56,9 +56,9 @@ public class ProcessDefintionImpl implements ProcessDefinition
      * @param json : json response that contains data from the repository
      * @return ProcessDefinition Object
      */
-    public static ProcessDefintionImpl parseJson(Map<String, Object> json)
+    public static ProcessDefinitionImpl parseJson(Map<String, Object> json)
     {
-        ProcessDefintionImpl definition = new ProcessDefintionImpl();
+        ProcessDefinitionImpl definition = new ProcessDefinitionImpl();
 
         // Public Properties
         definition.identifier = JSONConverter.getString(json, OnPremiseConstant.ID_VALUE);
@@ -76,7 +76,7 @@ public class ProcessDefintionImpl implements ProcessDefinition
 
     public static ProcessDefinition parsePublicAPIJson(Map<String, Object> json)
     {
-        ProcessDefintionImpl definition = new ProcessDefintionImpl();
+        ProcessDefinitionImpl definition = new ProcessDefinitionImpl();
 
         // Public Properties
         definition.identifier = JSONConverter.getString(json, PublicAPIConstant.ID_VALUE);

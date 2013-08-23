@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.api.model.impl.ProcessDefintionImpl;
+import org.alfresco.mobile.android.api.model.impl.ProcessDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
 import org.alfresco.mobile.android.api.model.impl.TaskImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractWorkflowService;
@@ -76,6 +76,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<ProcessDefinition> definitions = new ArrayList<ProcessDefinition>();
         Map<String, Object> json = new HashMap<String, Object>(0);
+        boolean hasMoreItems = false;
         int size = 0;
         try
         {
@@ -91,7 +92,30 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 size = jo.size();
                 for (Object obj : jo)
                 {
-                    definitions.add(ProcessDefintionImpl.parseJson((Map<String, Object>) obj));
+                    definitions.add(ProcessDefinitionImpl.parseJson((Map<String, Object>) obj));
+                }
+
+                if (listingContext != null)
+                {
+                    int fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
+
+                    // Case if skipCount > result size
+                    if (listingContext.getSkipCount() < size)
+                    {
+                        fromIndex = listingContext.getSkipCount();
+                    }
+
+                    // Case if skipCount > result size
+                    if (listingContext.getMaxItems() + fromIndex >= size)
+                    {
+                        definitions = definitions.subList(fromIndex, size);
+                        hasMoreItems = false;
+                    }
+                    else
+                    {
+                        definitions = definitions.subList(fromIndex, listingContext.getMaxItems() + fromIndex);
+                        hasMoreItems = true;
+                    }
                 }
             }
         }
@@ -100,7 +124,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<ProcessDefinition>(definitions, false, size);
+        return new PagingResultImpl<ProcessDefinition>(definitions, hasMoreItems, size);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,7 +146,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             if (json != null)
             {
                 Map<String, Object> jo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
-                definition = ProcessDefintionImpl.parseJson(jo);
+                definition = ProcessDefinitionImpl.parseJson(jo);
             }
         }
         catch (Exception e)
@@ -130,13 +154,6 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
         return definition;
-    }
-
-    @Override
-    public Map<String, Serializable> getFormModel(String processDefinitionIdentifier)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -201,7 +218,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     variablesItems.add(NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
                 }
-                jo.put(OnPremiseConstant.ASSOC_PACKAGEITEMS_ADDED_VALUES,
+                jo.put(OnPremiseConstant.ASSOC_PACKAGEITEMS_ADDED_VALUE,
                         TextUtils.join(",", variablesItems.toArray(new String[0])));
             }
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
@@ -331,22 +348,42 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return getTasks(OnPremiseUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier()), listingContext);
     }
 
+    @Override
+    public Process refresh(Process process)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+
+        return getProcess(process.getIdentifier());
+    }
+
     // ////////////////////////////////////////////////////////////////
     // ITEMS
     // ////////////////////////////////////////////////////////////////
     @Override
-    public List<Node> getDocuments(Task task)
+    public List<Document> getDocuments(Task task)
     {
         return getDocuments(task, null).getList();
     }
 
     @Override
-    public List<Node> getDocuments(Process process)
+    public List<Document> getDocuments(Process process)
     {
-        return getDocuments(process, null).getList();
+        try
+        {
+            ListingContext lc = new ListingContext();
+            lc.setMaxItems(1);
+            PagingResult<Task> tasks = getTasks(process, lc);
+            if (tasks.getTotalItems() > 0) { return getDocuments(tasks.getList().get(0), null).getList(); }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return new ArrayList<Document>(0);
     }
 
-    public PagingResult<Node> getDocuments(Task task, ListingContext listingContext)
+    public PagingResult<Document> getDocuments(Task task, ListingContext listingContext)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -357,7 +394,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return getItems(task.getIdentifier(), listingContext);
     }
 
-    public PagingResult<Node> getDocuments(Process process, ListingContext listingContext)
+    public PagingResult<Document> getDocuments(Process process, ListingContext listingContext)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
@@ -369,9 +406,9 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     @SuppressWarnings("unchecked")
-    public PagingResult<Node> getItems(String id, ListingContext listingContext)
+    private PagingResult<Document> getItems(String id, ListingContext listingContext)
     {
-        List<Node> nodes = new ArrayList<Node>();
+        List<Document> nodes = new ArrayList<Document>();
         try
         {
             String link = OnPremiseUrlRegistry.getProcessItemsUrl(session, id);
@@ -425,7 +462,43 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Node>(nodes, false, nodes.size());
+        return new PagingResultImpl<Document>(nodes, false, nodes.size());
+    }
+
+    @Override
+    public void addDocuments(Task task, List<Document> items)
+    {
+        updateDocuments(task, items, true);
+    }
+
+    @Override
+    public void removeDocuments(Task task, List<Document> items)
+    {
+        updateDocuments(task, items, false);
+    }
+
+    private void updateDocuments(Task task, List<Document> items, boolean isAddition)
+    {
+        try
+        {
+            String variableKey = OnPremiseConstant.ASSOC_PACKAGEITEMS_REMOVED_VALUE;
+            if (isAddition)
+            {
+                variableKey = OnPremiseConstant.ASSOC_PACKAGEITEMS_ADDED_VALUE;
+            }
+            List<String> variablesItems = new ArrayList<String>(items.size());
+            for (Node node : items)
+            {
+                variablesItems.add(NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+            }
+            Map<String, Serializable> variables = new HashMap<String, Serializable>();
+            variables.put(variableKey, TextUtils.join(",", variablesItems.toArray(new String[0])));
+            updateVariables(task, variables);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -463,6 +536,10 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                         {
                             url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
                             url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, true);
+                        }
+                        else if (FILTER_ASSIGNEE_ME == (Integer) lf.getFilterValue(FILTER_ASSIGNEE))
+                        {
+                            url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
                         }
                     }
                     else
@@ -605,6 +682,11 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
 
+        Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
+        if (variables != null)
+        {
+            internalVariables.putAll(variables);
+        }
         Task resultTask = task;
         try
         {
@@ -614,10 +696,21 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // prepare json data
             JSONObject jo = new JSONObject();
 
-            // VARIABLES
-            if (variables != null && !variables.isEmpty())
+            // TRANSITION
+            if (!internalVariables.containsKey(WorkflowModel.PROP_TRANSITIONS_VALUE))
             {
-                for (Entry<String, Serializable> entry : variables.entrySet())
+                String transitionIdentifier = "";
+                if (task.getIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+                {
+                    transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
+                }
+                internalVariables.put(WorkflowModel.PROP_TRANSITIONS_VALUE, transitionIdentifier);
+            }
+
+            // VARIABLES
+            if (internalVariables != null && !internalVariables.isEmpty())
+            {
+                for (Entry<String, Serializable> entry : internalVariables.entrySet())
                 {
                     if (ALFRESCO_TO_WORKFLOW.containsKey(entry.getKey()))
                     {
@@ -655,7 +748,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     @Override
-    public Task refreshTask(Task task)
+    public Task refresh(Task task)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -705,7 +798,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
         return reassign(task.getIdentifier(), assignee.getIdentifier());
     }
-    
+
     @SuppressWarnings("unchecked")
     private Task reassign(String taskId, String assigneeId)
     {
@@ -742,6 +835,71 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
         return updatedTask;
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // VARIABLES
+    // ////////////////////////////////////////////////////////////////
+    public Task updateVariables(Task task, Map<String, Serializable> variables)
+    {
+        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
+        if (variables != null)
+        {
+            internalVariables.putAll(variables);
+        }
+        Task resultTask = task;
+        try
+        {
+            String link = OnPremiseUrlRegistry.getFormTaskUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            // prepare json data
+            JSONObject jo = new JSONObject();
+            // VARIABLES
+            if (internalVariables != null && !internalVariables.isEmpty())
+            {
+                for (Entry<String, Serializable> entry : internalVariables.entrySet())
+                {
+                    if (ALFRESCO_TO_WORKFLOW.containsKey(entry.getKey()))
+                    {
+                        jo.put(ALFRESCO_TO_WORKFLOW.get(entry.getKey()), entry.getValue());
+                    }
+                    else
+                    {
+                        jo.put(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            Response resp = post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            String data = JSONConverter.getString(json, OnPremiseConstant.PERSISTEDOBJECT_VALUE);
+
+            // WorkflowInstance[id=activiti$18328,active=true,def=WorkflowDefinition[
+            String taskId = data.split("\\[")[1].split(",")[0].split("=")[1];
+
+            resultTask = getTask(taskId);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+
+        return resultTask;
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -862,5 +1020,4 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-
 }

@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.publicapi;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -27,12 +30,14 @@ import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
@@ -95,15 +100,48 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
     @Override
     public List<Person> search(String keyword)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return search(keyword, null).getList();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public PagingResult<Person> search(String keyword, ListingContext listingContext)
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (isStringNull(keyword)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "keyword")); }
+        
+        List<Person> definitions = new ArrayList<Person>();
+        Map<String, Object> json = new HashMap<String, Object>(0);
+        int size = 0;
+        try
+        {
+            String link = OnPremiseUrlRegistry.getSearchPersonUrl(session);
+            UrlBuilder url = new UrlBuilder(link);
+            url.addParameter(OnPremiseConstant.FILTER_VALUE, keyword);
+            if (listingContext != null)
+            {
+                url.addParameter(OnPremiseConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+            }
+
+            // send and parse
+            Response resp = read(url, ErrorCodeRegistry.PERSON_GENERIC);
+            json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            if (json != null)
+            {
+                List<Object> jo = (List<Object>) json.get(OnPremiseConstant.PEOPLE_VALUE);
+                size = jo.size();
+                for (Object obj : jo)
+                {
+                    definitions.add(PersonImpl.parseJson((Map<String, Object>) obj));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return new PagingResultImpl<Person>(definitions, false, size);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////

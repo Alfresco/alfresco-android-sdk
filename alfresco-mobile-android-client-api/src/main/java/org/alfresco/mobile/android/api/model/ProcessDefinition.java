@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * 
@@ -50,11 +49,4 @@ public interface ProcessDefinition extends Serializable
      * @return
      */
     String getVersion();
-
-    /**
-     * Returns all extra properties 
-     * @return
-     */
-    Map<String, Serializable> getData();
-
 }

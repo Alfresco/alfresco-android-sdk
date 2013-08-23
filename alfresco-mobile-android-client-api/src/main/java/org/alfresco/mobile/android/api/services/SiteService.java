@@ -247,5 +247,13 @@ public interface SiteService extends Service
      * @return
      */
     PagingResult<Person> getAllMembers(Site site, ListingContext listingContext);
+    
+    /**
+     * Returns true if the person is a member of the specified site.
+     * @param site
+     * @param person
+     * @return
+     */
+    boolean isMember(Site site, Person person);
 
 }

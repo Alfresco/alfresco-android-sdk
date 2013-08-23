@@ -152,11 +152,10 @@ public interface OnPremiseConstant
     String COMPANY_VALUE = "company";
 
     String AUTHORITY_VALUE = "authority";
-    
-    String FILTER_VALUE = "filter";
-    
-    String PEOPLE_VALUE = "people";
 
+    String FILTER_VALUE = "filter";
+
+    String PEOPLE_VALUE = "people";
 
     // COMPANY
 
@@ -302,7 +301,7 @@ public interface OnPremiseConstant
     String EXCEPTION_VALUE = "exception";
 
     String CALLSTACK_VALUE = "callstack";
-    
+
     // Paging
     String SKIP_COUNT_VALUE = "skipCount";
 
@@ -322,29 +321,20 @@ public interface OnPremiseConstant
     String WORKFLOWINSTANCE_VALUE = "workflowInstance";
 
     String BPM_DESCRIPTION_VALUE = "bpm_description";
-    
-    String BPM_STARTDATE_VALUE = "bpm_startDate";
-    
-    String BPM_PRIORITY_VALUE = "bpm_priority";
-    
-    String BPM_COMPLETIONDATE_VALUE = "bpm_completionDate";
-    
-    String BPM_DUEDATE_VALUE = "bpm_dueDate";
 
     String PROPERTIES_VALUE = "properties";
-    
-    String POOLEDTASKS_VALUE = "pooledTasks";
-    
-    String STATE_VALUE = "state";
-    
-    String COMPLETED_UPPERCASE_VALUE = "COMPLETED";
-    
-    String IN_PROGRESS_UPPERCASE_VALUE = "IN_PROGRESS";
-    
-    String DUEAFTER_VALUE = "dueAfter";
-    
-    String DUEBEFORE_VALUE = "dueBefore";
 
+    String POOLEDTASKS_VALUE = "pooledTasks";
+
+    String STATE_VALUE = "state";
+
+    String COMPLETED_UPPERCASE_VALUE = "COMPLETED";
+
+    String IN_PROGRESS_UPPERCASE_VALUE = "IN_PROGRESS";
+
+    String DUEAFTER_VALUE = "dueAfter";
+
+    String DUEBEFORE_VALUE = "dueBefore";
 
     // Form Definition
     String ITEMKIND_VALUE = "itemKind";
@@ -356,25 +346,27 @@ public interface OnPremiseConstant
     String TASK_VALUE = "task";
 
     String PACKAGEITEMS_VALUE = "packageItems";
-    
+
     String FORMDATA_VALUE = "formData";
-    
+
     String ASSOC_PACKAGEITEMS_VALUE = "assoc_packageItems";
-    
+
     String ASSOC_BPM_ASSIGNEE_ADDED_VALUE = "assoc_bpm_assignee_added";
-    
+
     String ASSOC_BPM_ASSIGNEES_ADDED_VALUE = "assoc_bpm_assignees_added";
-    
+
     String ASSOC_BPM_GROUPASSIGNEE_ADDED = "assoc_bpm_groupAssignee_added";
 
-    
+    String ASSOC_BPM_GROUPASSIGNEE_REMOVED = "assoc_bpm_groupAssignee_removed";
 
-    String ASSOC_PACKAGEITEMS_ADDED_VALUES  = "assoc_packageItems_added";
-    
+    String ASSOC_PACKAGEITEMS_ADDED_VALUE = "assoc_packageItems_added";
+
+    String ASSOC_PACKAGEITEMS_REMOVED_VALUE = "assoc_packageItems_removed";
+
     String PERSISTEDOBJECT_VALUE = "persistedObject";
-    
-    String PROP_TRANSITIONS_VALUE =  "prop_transitions";
-    
+
+    String PROP_TRANSITIONS_VALUE = "prop_transitions";
+
     String NEXT_VALUE = "Next";
 
     String ENDDATE_VALUE = "endDate";
@@ -392,4 +384,16 @@ public interface OnPremiseConstant
     String DEFINITION_VALUE = "definition";
 
     String TRANSITIONS_VALUE = "transitions";
+
+    String ISPOOLED_VALUE = "isPooled";
+
+    String ISEDITABLE_VALUE = "isEditable";
+
+    String ISREASSIGNABLE_VALUE = "isReassignable";
+
+    String ISCLAIMABLE_VALUE = "isClaimable";
+
+    String ISRELEASABLE_VALUE = "isReleasable";
+
+    String OUTCOME_VALUE = "outcome";
 }
