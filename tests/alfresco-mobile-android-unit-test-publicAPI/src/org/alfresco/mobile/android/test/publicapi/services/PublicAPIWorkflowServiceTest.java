@@ -74,4 +74,10 @@ public class PublicAPIWorkflowServiceTest extends WorkflowServiceTest
     {
         super.testReviewWorkflow();
     }
+    
+    @Override
+    public void testFaillureWorkflowService()
+    {
+        super.testFaillureWorkflowService();
+    }
 }

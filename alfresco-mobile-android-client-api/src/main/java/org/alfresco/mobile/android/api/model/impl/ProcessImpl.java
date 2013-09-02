@@ -202,6 +202,8 @@ public class ProcessImpl implements Process
                 JSONConverter.getString(json, PublicAPIConstant.ENDACTIVITYID_VALUE));
         process.data.put(PublicAPIConstant.COMPLETED_VALUE,
                 JSONConverter.getBoolean(json, PublicAPIConstant.COMPLETED_VALUE));
+        process.data.put(PublicAPIConstant.DELETEREASON_VALUE,
+                JSONConverter.getString(json, PublicAPIConstant.DELETEREASON_VALUE));
 
         return process;
     }

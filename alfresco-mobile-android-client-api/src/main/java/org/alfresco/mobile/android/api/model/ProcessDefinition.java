@@ -20,33 +20,45 @@ package org.alfresco.mobile.android.api.model;
 import java.io.Serializable;
 
 /**
+ * A process definition is a description of an execution flow in terms of
+ * activities. <br/>
+ * New processes/workflows are created and started for a process definition.
  * 
- * @author jpascal
- *
+ * @since 1.3.0
+ * @author Jean Marie PASCAL
  */
 public interface ProcessDefinition extends Serializable
 {
     /**
-     * Returns the unique identifier of the process definition. Identifier = key : versionnumber : variables
-     * @return
+     * Returns the unique identifier of the process definition. <br/>
+     * Identifier = key : versionnumber : variables
+     * 
+     * @since 1.3.0
+     * @return the unique identifier
      */
     String getIdentifier();
-    
+
     /**
      * Returns the Key of the process-definition
-     * @return
+     * 
+     * @since 1.3.0
+     * @return the key
      */
     String getKey();
 
     /**
      * Returns the Human readable Name of the process-definition
-     * @return
+     * 
+     * @since 1.3.0
+     * @return the name
      */
     String getName();
-    
+
     /**
      * Returns the Version of the process-definition
-     * @return
+     * 
+     * @since 1.3.0
+     * @return the version number
      */
     String getVersion();
 }

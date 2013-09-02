@@ -147,7 +147,7 @@ public interface DocumentFolderService extends Service
      * Lists all immediate child documents of the given context folder.
      * 
      * @param folder : context folder
-     * @param listingContext : defines the behaviour of paging results
+     * @param listingContext : defines the behavior of paging results
      *            {@link org.alfresco.mobile.android.api.model.ListingContext
      *            ListingContext}
      * @return Returns a paged list of all immediate child documents of the

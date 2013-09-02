@@ -21,9 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Provides all identifiers that are available inside Alfresco Mobile SDK. <br/>
- * Use those constants to get a specific property for WorkflowService
+ * Alfresco comes with a set of predefined workflow/process definitions which
+ * can be used right out of the box. For more complex requirements, you can also
+ * create, deploy, and manage your own Activiti workflows. <br/>
+ * This interface provides all identifiers that are available inside Alfresco
+ * Mobile SDK for the workflow.<br/>
+ * Use those constants in conjonction with the
+ * {@link org.alfresco.mobile.android.api.services.WorkflowService
+ * WorkflowService} .
  * 
+ * @since 1.3
  * @author Jean Marie Pascal
  */
 public interface WorkflowModel

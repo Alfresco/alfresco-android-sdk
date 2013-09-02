@@ -17,22 +17,26 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.ContentStream;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
+import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
+/**
+ * Abstract class implementation of WorkflowService. Responsible of sharing
+ * common methods between child class (OnPremise and PublicAPI)
+ * 
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public abstract class AbstractWorkflowService extends AlfrescoService implements WorkflowService
 {
 
@@ -47,5 +51,74 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
         super(repositorySession);
     }
 
+    // ////////////////////////////////////////////////////////////////
+    // PROCESS DEFINITIONS
+    // ////////////////////////////////////////////////////////////////
+    public List<ProcessDefinition> getProcessDefinitions()
+    {
+        return getProcessDefinitions(null).getList();
+    }
 
+    // ////////////////////////////////////////////////////////////////
+    // PROCESS
+    // ////////////////////////////////////////////////////////////////
+    /**
+     * Internal method to retrieve a specific process url. (depending on
+     * repository type)
+     * 
+     * @param process : a process object
+     * @return UrlBuilder to retrieve for a specific process url.
+     */
+    protected abstract UrlBuilder getProcessUrl(Process process);
+
+    /** {@inheritDoc} */
+    public void deleteProcess(Process process)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        try
+        {
+            delete(getProcessUrl(process), ErrorCodeRegistry.WORKFLOW_GENERIC);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public List<Process> getProcesses()
+    {
+        return getProcesses(null).getList();
+    }
+
+    /** {@inheritDoc} */
+    public List<Task> getTasks(Process process)
+    {
+        return getTasks(process, null).getList();
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // ITEMS
+    // ////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    public List<Document> getDocuments(Task task)
+    {
+        return getDocuments(task, null).getList();
+    }
+
+    /** {@inheritDoc} */
+    public List<Document> getDocuments(Process process)
+    {
+        return getDocuments(process, null).getList();
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // TASKS
+    // ////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    public List<Task> getTasks()
+    {
+        return getTasks((ListingContext) null).getList();
+    }
 }

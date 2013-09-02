@@ -271,4 +271,8 @@ public interface PublicAPIConstant extends OnPremiseConstant
     String PROCESSDEFINITIONKEY_VALUE = "processDefinitionKey";
 
     String STARTACTIVITYID_VALUE = "startActivityId";
+
+    String CANDIDATEUSER_VALUE = "candidateUser";
+
+    String DELETEREASON_VALUE = "deleteReason";
 }

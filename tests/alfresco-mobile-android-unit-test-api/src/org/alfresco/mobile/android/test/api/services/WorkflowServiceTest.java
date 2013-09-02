@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
 import java.io.Serializable;
@@ -321,7 +338,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Task taskComplete = null;
         if (!hasPublicAPI())
         {
-            lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+            lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
             lc.setFilter(lf);
             pagingTasks = workflowService.getTasks(adhocProcess, lc);
             Assert.assertNotNull(pagingTasks);
@@ -476,7 +493,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(followingTask.getIdentifier(), taskCompleted.getIdentifier());
         if (taskCompleted.hasAllVariables())
         {
-            Assert.assertNull(taskCompleted.getVariables().get(WorkflowModel.PROP_COMMENT));
+            // Assert.assertNull(taskCompleted.getVariables().get(WorkflowModel.PROP_COMMENT));
         }
 
         // Check the process is present
@@ -503,25 +520,30 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertNotNull(proc.getName());
             Assert.assertNotNull(proc.getDescription());
+        }
+        // No Active task after process completion
+        tasks = workflowService.getTasks(adhocProcess);
+        Assert.assertNotNull(tasks);
+        Assert.assertEquals(0, tasks.size());
 
-            // No Active task after process completion
-            tasks = workflowService.getTasks(adhocProcess);
-            Assert.assertNotNull(tasks);
-            Assert.assertEquals(0, tasks.size());
+        // There's 3 completed task
+        lc = new ListingContext();
+        lf = new ListingFilter();
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+        lc.setFilter(lf);
+        pagingTasks = workflowService.getTasks(adhocProcess, lc);
+        Assert.assertNotNull(pagingTasks);
 
-            // There's 3 completed task
-            lc = new ListingContext();
-            lf = new ListingFilter();
-            lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
-            lc.setFilter(lf);
-            pagingTasks = workflowService.getTasks(adhocProcess, lc);
-            Assert.assertNotNull(pagingTasks);
-            Assert.assertEquals(3, pagingTasks.getTotalItems());
-            Assert.assertEquals(3, pagingTasks.getList().size());
-            for (Task task : pagingTasks.getList())
-            {
-                Assert.assertNotNull(task.getEndedAt());
-            }
+        int nbTask = 2;
+        if (!hasPublicAPI())
+        {
+            nbTask = 3;
+        }
+        Assert.assertEquals(nbTask, pagingTasks.getTotalItems());
+        Assert.assertEquals(nbTask, pagingTasks.getList().size());
+        for (Task task : pagingTasks.getList())
+        {
+            Assert.assertNotNull(task.getEndedAt());
         }
     }
 
@@ -555,7 +577,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Task taskComplete = null;
         if (!hasPublicAPI())
         {
-            lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+            lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
             lc.setFilter(lf);
             pagingTasks = workflowService.getTasks(adhocProcess, lc);
             Assert.assertNotNull(pagingTasks);
@@ -569,7 +591,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         }
 
         // Filter on status ACTIVE
-        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
         lc.setFilter(lf);
         pagingTasks = workflowService.getTasks(adhocProcess, lc);
         Assert.assertNotNull(pagingTasks);
@@ -586,7 +608,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         }
 
         // Filter on status ANY == ALL Tasks
-        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ANY);
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ANY);
         lc.setFilter(lf);
         pagingTasks = workflowService.getTasks(adhocProcess, lc);
         Assert.assertNotNull(pagingTasks);
@@ -646,6 +668,14 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             {
                 Assert.assertTrue(true);
             }
+        }
+        else
+        {
+            // In public API it's still possible to retrieve procesInfo after a
+            // deletion.
+            Process pr = workflowService.getProcess(adhocProcess.getIdentifier());
+            Assert.assertTrue((Boolean) ((ProcessImpl) pr).getData().get(PublicAPIConstant.COMPLETED_VALUE));
+            Assert.assertNotNull(((ProcessImpl) pr).getData().get(PublicAPIConstant.DELETEREASON_VALUE));
         }
     }
 
@@ -763,67 +793,51 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         ListingFilter lf = new ListingFilter();
         PagingResult<Task> pagingTasks = null;
         Task taskUnassigned = null;
-        if (!hasPublicAPI())
-        {
-            lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
-            lf.addFilter(WorkflowService.FILTER_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
-            lc.setFilter(lf);
-            pagingTasks = workflowService.getTasks(lc);
-            Assert.assertNotNull(pagingTasks);
-            Assert.assertEquals(1, pagingTasks.getTotalItems());
-            Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+        lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
+        lc.setFilter(lf);
+        pagingTasks = workflowService.getTasks(lc);
+        Assert.assertNotNull(pagingTasks);
+        Assert.assertEquals(1, pagingTasks.getTotalItems());
+        Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
 
-            // Check Task
-            taskUnassigned = pagingTasks.getList().get(0);
-            Assert.assertNotNull(taskUnassigned);
-            Assert.assertNull(taskUnassigned.getEndedAt());
-            Assert.assertNull(taskUnassigned.getAssigneeIdentifier());
-            Assert.assertEquals(taskUnassigned.getIdentifier(), taskInProgress.getIdentifier());
-        }
+        // Check Task
+        taskUnassigned = pagingTasks.getList().get(0);
+        Assert.assertNotNull(taskUnassigned);
+        Assert.assertNull(taskUnassigned.getEndedAt());
+        Assert.assertNull(taskUnassigned.getAssigneeIdentifier());
+        Assert.assertEquals(taskUnassigned.getIdentifier(), taskInProgress.getIdentifier());
 
         // Claim Task & check it's assigned
         Task claimedTask = workflowService.claimTask(taskInProgress);
-        if (hasPublicAPI())
-        {
-            claimedTask = workflowService.getTask(claimedTask.getIdentifier());
-        }
         Assert.assertNotNull(claimedTask);
         Assert.assertNotNull(claimedTask.getAssigneeIdentifier());
         Assert.assertEquals(alfsession.getPersonIdentifier(), claimedTask.getAssigneeIdentifier());
         Assert.assertEquals(taskInProgress.getIdentifier(), claimedTask.getIdentifier());
 
-        if (!hasPublicAPI())
-        {
-            // Search unassigned task
-            // No task found
-            pagingTasks = workflowService.getTasks(lc);
-            Assert.assertNotNull(pagingTasks);
-            Assert.assertEquals(0, pagingTasks.getTotalItems());
-            Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
-        }
+        // Search unassigned task
+        // No task found
+        pagingTasks = workflowService.getTasks(lc);
+        Assert.assertNotNull(pagingTasks);
+        Assert.assertEquals(0, pagingTasks.getTotalItems());
+        Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
 
         // UnClaim Task & check it's unassigned
         Task unClaimedTask = workflowService.unClaimTask(claimedTask);
         Assert.assertNotNull(unClaimedTask);
-        if (hasPublicAPI())
-        {
-            unClaimedTask = workflowService.getTask(unClaimedTask.getIdentifier());
-        }
         Assert.assertNull(unClaimedTask.getAssigneeIdentifier());
         Assert.assertEquals(taskInProgress.getIdentifier(), unClaimedTask.getIdentifier());
 
-        if (!hasPublicAPI())
-        {
-            // Search unassigned task
-            // 1 task found
-            pagingTasks = workflowService.getTasks(lc);
-            Assert.assertNotNull(pagingTasks);
-            Assert.assertEquals(1, pagingTasks.getTotalItems());
-            Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
-        }
+        // Search unassigned task
+        // 1 task found
+        pagingTasks = workflowService.getTasks(lc);
+        Assert.assertNotNull(pagingTasks);
+        Assert.assertEquals(1, pagingTasks.getTotalItems());
+        Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
 
         if (!hasPublicAPI())
         {
+
             // Reassign Task & check it's unassigned
             Person assignee = alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONSUMER));
             Task reassignedTask = workflowService.reassignTask(unClaimedTask, assignee);
@@ -833,13 +847,13 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             Assert.assertNotNull(reassignedTask);
             Assert.assertEquals(assignee.getIdentifier(), reassignedTask.getAssigneeIdentifier());
             Assert.assertEquals(taskInProgress.getIdentifier(), reassignedTask.getIdentifier());
-            
+
             // Search unassigned task
             // No task found
             pagingTasks = workflowService.getTasks(lc);
             Assert.assertEquals(0, pagingTasks.getTotalItems());
             Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
-            
+
             // Reassign the task again as initiator
             assignee = alfsession.getServiceRegistry().getPersonService().getPerson(alfsession.getPersonIdentifier());
             reassignedTask = workflowService.reassignTask(unClaimedTask, assignee);
@@ -853,13 +867,12 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
             // Search assigned task
             // 1 task found
-            lf.addFilter(WorkflowService.FILTER_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
+            lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
             pagingTasks = workflowService.getTasks(lc);
             Assert.assertNotNull(pagingTasks);
             Assert.assertEquals(1, pagingTasks.getTotalItems());
             Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
         }
-
         // COMPLETE TASK
         Task taskCompleted = workflowService.completeTask(taskInProgress, null);
         Assert.assertNotNull(taskCompleted);
@@ -867,6 +880,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertTrue(taskCompleted.getEndedAt() != null);
 
         // Search assigned task
+        lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
         pagingTasks = workflowService.getTasks(lc);
         Assert.assertNotNull(pagingTasks);
         Assert.assertEquals(1, pagingTasks.getTotalItems());
@@ -935,10 +949,13 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(reviewProcess.getKey());
         Assert.assertNotNull(reviewProcess.getStartedAt());
         Assert.assertNull(reviewProcess.getEndedAt());
-        Assert.assertEquals(WorkflowModel.PRIORITY_LOW, (int) reviewProcess.getPriority());
+        if (!hasPublicAPI())
+        {
+            Assert.assertEquals(WorkflowModel.PRIORITY_LOW, (int) reviewProcess.getPriority());
+            Assert.assertNotNull(reviewProcess.getName());
+            Assert.assertEquals(DESCRIPTION, reviewProcess.getDescription());
+        }
         Assert.assertNotNull(reviewProcess.getInitiatorIdentifier());
-        Assert.assertNotNull(reviewProcess.getName());
-        Assert.assertEquals(DESCRIPTION, reviewProcess.getDescription());
         if (!hasPublicAPI())
         {
             // Extra Properties
@@ -961,7 +978,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Task taskComplete = null;
         if (!hasPublicAPI())
         {
-            lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+            lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
             lc.setFilter(lf);
             pagingTasks = workflowService.getTasks(reviewProcess, lc);
             Assert.assertNotNull(pagingTasks);
@@ -975,7 +992,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         }
 
         // Filter on status ACTIVE
-        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
         lc.setFilter(lf);
         pagingTasks = workflowService.getTasks(reviewProcess, lc);
         Assert.assertNotNull(pagingTasks);
@@ -992,7 +1009,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         }
 
         // Filter on status ANY == ALL Tasks
-        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ANY);
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ANY);
         lc.setFilter(lf);
         pagingTasks = workflowService.getTasks(reviewProcess, lc);
         Assert.assertNotNull(pagingTasks);
@@ -1059,12 +1076,13 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(proc);
         Assert.assertNotNull(proc.getStartedAt());
         Assert.assertNotNull(proc.getEndedAt());
-        Assert.assertEquals(WorkflowModel.PRIORITY_LOW, (int) proc.getPriority());
         Assert.assertNotNull(proc.getInitiatorIdentifier());
-        Assert.assertNotNull(proc.getName());
-        Assert.assertEquals(DESCRIPTION, proc.getDescription());
         if (!hasPublicAPI())
         {
+            Assert.assertNotNull(proc.getName());
+            Assert.assertEquals(DESCRIPTION, proc.getDescription());
+            Assert.assertEquals(WorkflowModel.PRIORITY_LOW, (int) proc.getPriority());
+
             // Extra Properties
             Map<String, Serializable> data = ((ProcessImpl) proc).getData();
             Assert.assertTrue(!data.isEmpty());
@@ -1154,13 +1172,14 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(parallelProcess.getKey());
         Assert.assertNotNull(parallelProcess.getStartedAt());
         Assert.assertNull(parallelProcess.getEndedAt());
-        Assert.assertEquals(WorkflowModel.PRIORITY_MEDIUM, (int) parallelProcess.getPriority());
         Assert.assertNotNull(parallelProcess.getInitiatorIdentifier());
-        Assert.assertNotNull(parallelProcess.getName());
-        Assert.assertEquals(DESCRIPTION_2, parallelProcess.getDescription());
 
         if (!hasPublicAPI())
         {
+            Assert.assertNotNull(parallelProcess.getName());
+            Assert.assertEquals(DESCRIPTION_2, parallelProcess.getDescription());
+            Assert.assertEquals(WorkflowModel.PRIORITY_MEDIUM, (int) parallelProcess.getPriority());
+
             // Extra Properties
             Map<String, Serializable> data = ((ProcessImpl) parallelProcess).getData();
             Assert.assertTrue(!data.isEmpty());
@@ -1181,7 +1200,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         for (Task task : tasks)
         {
             Assert.assertNotNull(task.getAssigneeIdentifier());
-            if (parallelProcess.getKey().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+            if (hasPublicAPI() || parallelProcess.getKey().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
             {
                 Assert.assertEquals(WorkflowModel.TASK_ACTIVITI_REVIEW, task.getKey());
             }
@@ -1226,6 +1245,22 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
         // Delete the process
         workflowService.deleteProcess(parallelProcess);
+    }
+
+    /**
+     * All Failures test for the workflowService
+     */
+    public void testFaillureWorkflowService()
+    {
+        // //////////////////
+        // PROCESS DEFINITION
+        // //////////////////
+        ProcessDefinition def = getProcessDefinition("wrongId");
+        Assert.assertNull(def);
+
+        // //////////////////
+        // PROCESS
+        // //////////////////
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////

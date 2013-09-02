@@ -21,29 +21,56 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The ListingFilter can be used to get a list of objects that meet certain
+ * criteria. <br/>
+ * It's generally used in conjunction with
+ * {@link org.alfresco.mobile.android.api.model.ListingContext ListingContext}
+ * 
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public class ListingFilter implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     private Map<String, Serializable> mapValues = new HashMap<String, Serializable>();
 
+    /**
+     * Add a specific key/value filter.
+     * 
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     */
     public void addFilter(String key, Serializable value)
     {
         mapValues.put(key, value);
     }
-    
+
+    /**
+     * @param key : key whose presence in this filter is to be tested
+     * @return true if the filter contains a mapping for the specified key
+     */
     public boolean hasFilterValue(String key)
     {
         return mapValues.containsKey(key);
     }
-    
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if this filter contains no mapping for the key. 
+     * @param key
+     * @return
+     */
     public Serializable getFilterValue(String key)
     {
         return mapValues.get(key);
     }
 
+    /**
+     * @return the map containing all filters to apply.
+     */
     public Map<String, Serializable> getFilters()
     {
-        return mapValues;
+        return new HashMap<String, Serializable>(mapValues);
     }
 }

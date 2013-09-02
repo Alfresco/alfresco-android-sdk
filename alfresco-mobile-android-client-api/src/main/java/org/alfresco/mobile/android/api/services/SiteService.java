@@ -70,7 +70,7 @@ public interface SiteService extends Service
     List<Site> getAllSites();
 
     /**
-     * @param listingContext : Listing context that define the behaviour of
+     * @param listingContext : Listing context that define the behavior of
      *            paging results
      *            {@link org.alfresco.mobile.android.api.model.ListingContext
      *            ListingContext}
