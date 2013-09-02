@@ -124,6 +124,9 @@ public class TaskImpl implements Task
             task.description = task.variables.get(WorkflowModel.PROP_DESCRIPTION).getValue();
             task.priority = task.variables.get(WorkflowModel.PROP_PRIORITY).getValue();
             task.startedAt = task.variables.get(WorkflowModel.PROP_START_DATE).getValue();
+            if (task.startedAt == null){
+                task.startedAt = task.variables.get(WorkflowModel.PROP_CREATED).getValue();
+            }
             task.dueAt = task.variables.get(WorkflowModel.PROP_DUE_DATE).getValue();
             task.endedAt = task.variables.get(WorkflowModel.PROP_COMPLETION_DATE).getValue();
             task.hasAllVariables = true;
@@ -240,7 +243,7 @@ public class TaskImpl implements Task
                 if (entry.getValue() == null
                         || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty()))
                 {
-                    properties.put(entry.getKey(), new PropertyImpl(entry.getValue(), variableType.propertyType,
+                    properties.put(entry.getKey(), new PropertyImpl(null, variableType.propertyType,
                             variableType.isMultiValued));
                     continue;
                 }

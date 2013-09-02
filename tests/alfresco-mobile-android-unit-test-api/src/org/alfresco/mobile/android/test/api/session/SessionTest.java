@@ -131,7 +131,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(alfsession.getRepositoryInfo().getVersion());
         if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
-            Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("4.0.0"));
+            Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("4.2.0"));
             Assert.assertEquals(4, alfsession.getRepositoryInfo().getMajorVersion().intValue());
             Assert.assertEquals(0, alfsession.getRepositoryInfo().getMinorVersion().intValue());
             Assert.assertEquals(0, alfsession.getRepositoryInfo().getMaintenanceVersion().intValue());

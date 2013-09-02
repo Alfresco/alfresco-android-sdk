@@ -154,16 +154,30 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         ProcessDefinition definition = null;
         try
         {
-            String link = OnPremiseUrlRegistry.getProcessDefinitionUrl(session, processDefinitionIdentifier);
-            UrlBuilder url = new UrlBuilder(link);
-
-            // send and parse
-            Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
-            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-            if (json != null)
+            if (session.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
             {
-                Map<String, Object> jo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
-                definition = ProcessDefinitionImpl.parseJson(jo);
+                String link = OnPremiseUrlRegistry.getProcessDefinitionUrl(session, processDefinitionIdentifier);
+                UrlBuilder url = new UrlBuilder(link);
+
+                // send and parse
+                Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
+                Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                if (json != null)
+                {
+                    Map<String, Object> jo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
+                    definition = ProcessDefinitionImpl.parseJson(jo);
+                }
+            }
+            else
+            {
+                List<ProcessDefinition> definitions = getProcessDefinitions();
+                for (ProcessDefinition processDefinition : definitions)
+                {
+                    if (processDefinitionIdentifier.equals(processDefinition.getIdentifier())){
+                        definition = processDefinition;
+                        break;
+                    }
+                }
             }
         }
         catch (Exception e)

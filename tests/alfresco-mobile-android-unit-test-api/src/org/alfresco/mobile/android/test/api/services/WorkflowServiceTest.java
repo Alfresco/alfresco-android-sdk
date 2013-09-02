@@ -281,7 +281,11 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             // Variables
             Assert.assertTrue(!taskInProgress.getVariables().isEmpty());
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_TASK_ID));
-            Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_START_DATE));
+            if (isAlfrescoV4())
+            {
+                Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_START_DATE));
+                Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
+            }
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_DUE_DATE));
             Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_COMPLETION_DATE));
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_PRIORITY));
@@ -295,7 +299,6 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_OUTCOME));
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_PACKAGE_ACTION_GROUP));
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_PACKAGE_ITEM_ACTION_GROUP));
-            Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_REASSIGNABLE));
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.ASSOC_PACKAGE));
             Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_WORKFLOW_DESCRIPTION));
@@ -355,21 +358,28 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 // Variables
                 Assert.assertTrue(!taskComplete.getVariables().isEmpty());
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_TASK_ID));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_START_DATE));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_DUE_DATE));
+                if (isAlfrescoV4())
+                {
+                    Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_START_DATE));
+                    Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_DUE_DATE));
+                    Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.ASSOC_POOLED_ACTORS));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_OUTCOME));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_COMPANYHOME));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_INITIATOR));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_CANCELLED));
+                    Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_INITIATORHOME));
+                }
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_COMPLETION_DATE));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_PRIORITY));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_STATUS));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_PERCENT_COMPLETE));
                 Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.PROP_COMPLETED_ITEMS));
                 Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.PROP_COMMENT));
-                Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.ASSOC_POOLED_ACTORS));
                 Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.PROP_CONTEXT));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_DESCRIPTION));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_OUTCOME));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_PACKAGE_ACTION_GROUP));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_PACKAGE_ITEM_ACTION_GROUP));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_REASSIGNABLE));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.ASSOC_PACKAGE));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_WORKFLOW_DESCRIPTION));
@@ -382,10 +392,6 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_CREATED));
                 Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.PROP_NAME));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_OWNER));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_COMPANYHOME));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_INITIATOR));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_CANCELLED));
-                Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_INITIATORHOME));
                 Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_NOTIFYME));
 
                 // Extra Data
@@ -886,7 +892,14 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(1, pagingTasks.getTotalItems());
         Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
         Assert.assertTrue(taskCompleted.getIdentifier() != pagingTasks.getList().get(0).getIdentifier());
-        Assert.assertEquals(WorkflowModel.TASK_REJECTED, pagingTasks.getList().get(0).getKey());
+        if (isAlfrescoV4() || hasPublicAPI())
+        {
+            Assert.assertEquals(WorkflowModel.TASK_REJECTED, pagingTasks.getList().get(0).getKey());
+        }
+        else
+        {
+            Assert.assertEquals(WorkflowModel.TASK_APPROVED, pagingTasks.getList().get(0).getKey());
+        }
 
         // Delete the process
         workflowService.deleteProcess(poolProcess);
@@ -1052,8 +1065,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(taskCompleted.getEndedAt());
         if (!hasPublicAPI())
         {
-            Assert.assertEquals(WorkflowModel.TRANSITION_APPROVE,
-                    taskCompleted.getVariableValue(WorkflowModel.PROP_OUTCOME));
+            Assert.assertEquals(WorkflowModel.TRANSITION_APPROVE.toLowerCase(),
+                    ((String) taskCompleted.getVariableValue(WorkflowModel.PROP_OUTCOME)).toLowerCase());
         }
 
         // Check Tasks
@@ -1091,15 +1104,18 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             Assert.assertNotNull(data.get(OnPremiseConstant.ISACTIVE_VALUE));
         }
 
-        // Delete the process
-        try
+        if (isAlfrescoV4())
         {
-            workflowService.deleteProcess(reviewProcess);
-            Assert.fail();
-        }
-        catch (Exception e)
-        {
-            Assert.assertTrue(true);
+            // Delete the process
+            try
+            {
+                workflowService.deleteProcess(reviewProcess);
+                Assert.fail();
+            }
+            catch (Exception e)
+            {
+                Assert.assertTrue(true);
+            }
         }
     }
 
@@ -1241,8 +1257,14 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         tasks = workflowService.getTasks(parallelProcess);
         Assert.assertNotNull(tasks);
         Assert.assertEquals(1, tasks.size());
-        Assert.assertEquals(WorkflowModel.TASK_REJECTEDPARALLEL, tasks.get(0).getKey());
-
+        if (isAlfrescoV4() || hasPublicAPI())
+        {
+            Assert.assertEquals(WorkflowModel.TASK_REJECTEDPARALLEL, tasks.get(0).getKey());
+        }
+        else
+        {
+            Assert.assertEquals(WorkflowModel.TASK_APPROVEDPARALLEL, tasks.get(0).getKey());
+        }
         // Delete the process
         workflowService.deleteProcess(parallelProcess);
     }
