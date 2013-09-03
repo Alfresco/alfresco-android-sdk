@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.PersonService;
@@ -37,6 +38,10 @@ import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflow
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
+import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
+import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -178,7 +183,26 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
         {
             if (hasPublicAPI)
             {
-                this.workflowService = new PublicAPIWorkflowServiceImpl(session);
+                try
+                {
+                  //Detect if workflow public API is present
+                    UrlBuilder builder = new UrlBuilder(PublicAPIUrlRegistry.getProcessDefinitionsUrl(session));
+                    Response resp = NetworkHttpInvoker
+                            .invokeGET(builder, ((RepositorySessionImpl) session).getCmisSession().getBinding()
+                                    .getAuthenticationProvider().getHTTPHeaders(session.getBaseUrl()));
+                    if (resp.getResponseCode() == HttpStatus.SC_OK)
+                    {
+                        this.workflowService = new PublicAPIWorkflowServiceImpl(session);
+                    }
+                    else
+                    {
+                        this.workflowService = new OnPremiseWorkflowServiceImpl(session);
+                    }
+                }
+                catch (Exception e)
+                {
+                    this.workflowService = new OnPremiseWorkflowServiceImpl(session);
+                }
             }
             else
             {

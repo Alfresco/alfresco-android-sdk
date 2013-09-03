@@ -51,8 +51,6 @@ import android.os.Parcelable;
  */
 public class RepositorySessionImpl extends RepositorySession
 {
-    private boolean hasPublicAPI = false;
-
     public RepositorySessionImpl()
     {
 

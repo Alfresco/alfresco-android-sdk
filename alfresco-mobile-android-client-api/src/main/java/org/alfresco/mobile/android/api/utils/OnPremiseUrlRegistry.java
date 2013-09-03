@@ -35,8 +35,6 @@ public final class OnPremiseUrlRegistry
 
     public static final String BINDING_CMIS = "/service/cmis";
 
-    public static final String BINDING_PUBLIC_API = "/service/cmis";
-
     public static final String PREFIX_SERVICE = "/service/";
 
     public static final String PREFIX_CMIS = "cmis";

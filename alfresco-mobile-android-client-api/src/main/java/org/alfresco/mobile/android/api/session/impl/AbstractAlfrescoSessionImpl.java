@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.api.session.authentication.impl.BasicAuthenti
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
+import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
@@ -174,6 +175,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
     private ListingContext lc;
 
     private boolean forceBinding = false;
+
+    protected boolean hasPublicAPI = false;
 
     /** {@inheritDoc} */
     public void addParameter(String key, Serializable value)
@@ -341,11 +344,27 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         {
             tmpBindingUrl = tmpBindingUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS);
         }
+        //Force binding with Alfresco Webscript CMIS implementation
         else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS))
         {
             forceBinding = true;
             this.baseUrl = tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, "");
             sessionParameters.put(BASE_URL, tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, ""));
+        }
+        //Force binding with OpenCMIS implementation
+        else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMISATOM))
+        {
+            forceBinding = true;
+            this.baseUrl = tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMISATOM, "");
+            sessionParameters.put(BASE_URL, tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMISATOM, ""));
+        }
+        //Force binding with Public API implementation
+        else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM))
+        {
+            forceBinding = true;
+            hasPublicAPI  = true;
+            this.baseUrl = tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, "");
+            sessionParameters.put(BASE_URL, tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, ""));
         }
         sessionParameters.put(SessionParameter.ATOMPUB_URL, tmpBindingUrl);
 
