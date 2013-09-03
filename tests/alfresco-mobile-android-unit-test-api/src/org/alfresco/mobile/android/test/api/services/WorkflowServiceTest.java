@@ -284,7 +284,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             if (isAlfrescoV4())
             {
                 Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_START_DATE));
-                Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
+                Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
             }
             Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_DUE_DATE));
             Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_COMPLETION_DATE));
@@ -361,7 +361,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 if (isAlfrescoV4())
                 {
                     Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_START_DATE));
-                    Assert.assertNotNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
+                    Assert.assertNull(taskInProgress.getVariableValue(WorkflowModel.PROP_HIDDEN_TRANSITIONS));
                     Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_DUE_DATE));
                     Assert.assertNull(taskComplete.getVariableValue(WorkflowModel.ASSOC_POOLED_ACTORS));
                     Assert.assertNotNull(taskComplete.getVariableValue(WorkflowModel.PROP_OUTCOME));

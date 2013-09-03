@@ -794,7 +794,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
             List<String> aspects = new ArrayList<String>(1);
             aspects.add("fdk:exif");
 
-            // CREATE DOCUMENT WITH LIST OF ASPECTS
+            // CREATE FOLDER WITH LIST OF ASPECTS
             Folder customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
                     .createFolder(folder, "fdkCompany", properties, aspects);
 
@@ -815,22 +815,22 @@ public class DocumentTest extends AlfrescoSDKTestCase
             propertiesM.put(ContentModel.PROP_ARTIST, "ArtistM");
             propertiesM.put("fdk:manufacturer", "AlfrescoM");
 
-            Folder customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+            Folder customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
 
-            customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customDoc2);
+            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customFolder2);
             
             // Check Aspects
-            Assert.assertNotNull(customDoc2.getAspects());
-            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
-            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_AUDIO));
-            Assert.assertTrue(customDoc2.hasAspect("fdk:exif"));
+            Assert.assertNotNull(customFolder2.getAspects());
+            Assert.assertTrue(customFolder2.hasAspect(ContentModel.ASPECT_TITLED));
+            Assert.assertTrue(customFolder2.hasAspect(ContentModel.ASPECT_AUDIO));
+            Assert.assertTrue(customFolder2.hasAspect("fdk:exif"));
 
-            Assert.assertEquals(ContentModel.TYPE_FOLDER, customDoc2.getType());
-            Assert.assertEquals("AlfrescoM", customDoc2.getProperty("fdk:manufacturer").getValue());
-            Assert.assertEquals("ArtistM", customDoc2.getProperty(ContentModel.PROP_ARTIST).getValue());
-            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customDoc2.getTitle());
-            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customDoc2.getDescription());
+            Assert.assertEquals(ContentModel.TYPE_FOLDER, customFolder2.getType());
+            Assert.assertEquals("AlfrescoM", customFolder2.getProperty("fdk:manufacturer").getValue());
+            Assert.assertEquals("ArtistM", customFolder2.getProperty(ContentModel.PROP_ARTIST).getValue());
+            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customFolder2.getTitle());
+            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customFolder2.getDescription());
 
             // CREATE FOLDER WITH LIST OF ASPECTS + CUSTOM TYPE
             customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
@@ -846,20 +846,22 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals("Artist", customFolder.getProperty(ContentModel.PROP_ARTIST).getValue());
 
             // UpdateProperties
-            customDoc2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
+            
+            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customFolder2);
 
             // Check Aspects
-            Assert.assertNotNull(customDoc2.getAspects());
-            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_TITLED));
-            Assert.assertTrue(customDoc2.hasAspect(ContentModel.ASPECT_AUDIO));
-            Assert.assertTrue(customDoc2.hasAspect("fdk:exif"));
+            Assert.assertNotNull(customFolder2.getAspects());
+            Assert.assertTrue(customFolder2.hasAspect(ContentModel.ASPECT_TITLED));
+            Assert.assertTrue(customFolder2.hasAspect(ContentModel.ASPECT_AUDIO));
+            Assert.assertTrue(customFolder2.hasAspect("fdk:exif"));
 
-            Assert.assertEquals("fdk:customfolder", customFolder.getType());
-            Assert.assertEquals("AlfrescoM", customDoc2.getProperty("fdk:manufacturer").getValue());
-            Assert.assertEquals("ArtistM", customDoc2.getProperty(ContentModel.PROP_ARTIST).getValue());
-            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customDoc2.getTitle());
-            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customDoc2.getDescription());
+            Assert.assertEquals("fdk:customfolder", customFolder2.getType());
+            Assert.assertEquals("AlfrescoM", customFolder2.getProperty("fdk:manufacturer").getValue());
+            Assert.assertEquals("ArtistM", customFolder2.getProperty(ContentModel.PROP_ARTIST).getValue());
+            Assert.assertEquals(SAMPLE_DOC_NAME + "M", customFolder2.getTitle());
+            Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION + "M", customFolder2.getDescription());
 
             // CREATE DOCUMENT WITH CUSTOM TYPE
             customFolder = alfsession.getServiceRegistry().getDocumentFolderService()
