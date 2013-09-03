@@ -158,10 +158,10 @@ public class ListingContext implements Serializable
     }
 
     /**
-     * Returns the filter.
+     * Returns the {@link org.alfresco.mobile.android.api.model.ListingFilter
+     * ListingFilter} associated to the current ListingContext.
      * 
      * @since 1.3
-     * @param filter : .
      */
     public ListingFilter getFilter()
     {
@@ -169,10 +169,11 @@ public class ListingContext implements Serializable
     }
 
     /**
-     * Sets the filter.
+     * Sets the {@link org.alfresco.mobile.android.api.model.ListingFilter
+     * ListingFilter}.
      * 
      * @since 1.3
-     * @param filter : .
+     * @param filter :
      */
     public void setFilter(ListingFilter filter)
     {

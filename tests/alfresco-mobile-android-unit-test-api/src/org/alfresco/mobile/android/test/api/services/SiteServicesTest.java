@@ -110,7 +110,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             Assert.assertNotNull(s2);
             Assert.assertEquals(totalItems, pagingSites.getTotalItems());
 
-            Assert.assertTrue(s1.getShortName().equals(s2.getShortName()));
+            if (isAlfrescoV4()){
+                Assert.assertTrue(s1.getShortName().equals(s2.getShortName()));
+            }
 
             // ////////////////////////////////////////////////////
             // Check Visibility
@@ -154,7 +156,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
                 previousSite = sites.get(0);
                 for (Site site : sites)
                 {
-                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) <= 0);
+                    Assert.assertTrue(previousSite.getShortName().compareToIgnoreCase(site.getShortName()) <= 0);
                     previousSite = site;
                 }
 
@@ -167,7 +169,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
                 previousSite = sites.get(0);
                 for (Site site : sites)
                 {
-                    Assert.assertTrue(previousSite.getShortName().compareTo(site.getShortName()) >= 0);
+                    Assert.assertTrue(previousSite.getShortName().compareToIgnoreCase(site.getShortName()) >= 0);
                     previousSite = site;
                 }
 
@@ -183,7 +185,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
                 {
                     if (previousSite.getTitle().compareTo(site.getTitle()) >= 0)
                     {
-                        Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) >= 0);
+                        Assert.assertTrue(previousSite.getTitle().compareToIgnoreCase(site.getTitle()) >= 0);
                     }
                     else
                     {
@@ -210,7 +212,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
                     {
                         if (previousSite.getTitle().compareTo(site.getTitle()) <= 0)
                         {
-                            Assert.assertTrue(previousSite.getTitle().compareTo(site.getTitle()) <= 0);
+                            Assert.assertTrue(previousSite.getTitle().compareToIgnoreCase(site.getTitle()) <= 0);
                         }
                         else
                         {
@@ -1082,8 +1084,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Site publicSite = siteService.getSite(PUBLIC_SITE);
         Person referentialUser = alfsession.getServiceRegistry().getPersonService()
                 .getPerson(alfsession.getPersonIdentifier());
-        Person consumerPerson = alfsession.getServiceRegistry().getPersonService()
-                .getPerson(getUsername(CONSUMER));
+        Person consumerPerson = alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONSUMER));
 
         List<Person> members = siteService.getAllMembers(publicSite);
         Assert.assertNotNull(members);
@@ -1094,10 +1095,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals(member.getLastName(), referentialUser.getLastName());
         Assert.assertEquals(member.getJobTitle(), referentialUser.getJobTitle());
         Assert.assertEquals(member.getCompany().getName(), referentialUser.getCompany().getName());
-        
+
         Assert.assertTrue(siteService.isMember(publicSite, referentialUser));
         Assert.assertFalse(siteService.isMember(publicSite, consumerPerson));
-
 
         // Test multiple users
         ArrayList<String> referentialMembers = new ArrayList<String>(4);
@@ -1127,7 +1127,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals(member.getLastName(), referentialUser.getLastName());
         Assert.assertEquals(member.getJobTitle(), referentialUser.getJobTitle());
         Assert.assertEquals(member.getCompany().getName(), referentialUser.getCompany().getName());
-        
+
         // FIRST NAME + Partial name
         members = siteService.searchMembers(publicSite, referentialUser.getLastName());
         Assert.assertNotNull(members);
@@ -1138,8 +1138,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals(member.getLastName(), referentialUser.getLastName());
         Assert.assertEquals(member.getJobTitle(), referentialUser.getJobTitle());
         Assert.assertEquals(member.getCompany().getName(), referentialUser.getCompany().getName());
-        
-        //Paging Result Members
+
+        // Paging Result Members
         ListingContext lc = new ListingContext();
         PagingResult<Person> pagingMembers = siteService.searchMembers(mobileTestSite, "User", lc);
         Assert.assertNotNull(pagingMembers);
@@ -1153,19 +1153,23 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(person.getIdentifier(), referentialMembers.contains(person.getIdentifier()));
         }
-        
-        //Only 1
-        lc.setMaxItems(1);
-        pagingMembers = siteService.searchMembers(mobileTestSite, "User", lc);
-        Assert.assertNotNull(pagingMembers);
-        Assert.assertEquals(1, pagingMembers.getTotalItems());
-        Assert.assertTrue(pagingMembers.hasMoreItems());
-        
-        //Only 2
-        lc.setMaxItems(2);
-        pagingMembers = siteService.searchMembers(mobileTestSite, "User", lc);
-        Assert.assertNotNull(pagingMembers);
-        Assert.assertEquals(2, pagingMembers.getTotalItems());
-        Assert.assertTrue(pagingMembers.hasMoreItems());
+
+        // Paging size doesn't work for 3.4
+        if (isAlfrescoV4())
+        {
+            // Only 1
+            lc.setMaxItems(1);
+            pagingMembers = siteService.searchMembers(mobileTestSite, "User", lc);
+            Assert.assertNotNull(pagingMembers);
+            Assert.assertEquals(1, pagingMembers.getTotalItems());
+            Assert.assertTrue(pagingMembers.hasMoreItems());
+
+            // Only 2
+            lc.setMaxItems(2);
+            pagingMembers = siteService.searchMembers(mobileTestSite, "User", lc);
+            Assert.assertNotNull(pagingMembers);
+            Assert.assertEquals(2, pagingMembers.getTotalItems());
+            Assert.assertTrue(pagingMembers.hasMoreItems());
+        }
     }
 }
