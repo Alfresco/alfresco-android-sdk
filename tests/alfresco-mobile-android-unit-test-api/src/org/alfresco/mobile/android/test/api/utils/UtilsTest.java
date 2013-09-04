@@ -95,5 +95,4 @@ public class UtilsTest extends AndroidTestCase
         Assert.assertFalse("i is not equal to " + "I".toLowerCase(new Locale("tr")),
                 "i".equals("I".toLowerCase(new Locale("tr"))));
     }
-
 }

@@ -93,6 +93,24 @@ public final class DateUtils
             }
         }
 
+        if (d == null)
+        {
+            for (int i = 0; i < DATE_FORMATS.length; i++)
+            {
+                sdf = new SimpleDateFormat(DATE_FORMATS[i], Locale.ENGLISH);
+                sdf.setLenient(true);
+                try
+                {
+                    d = sdf.parse(atomPubDate);
+                    break;
+                }
+                catch (ParseException e)
+                {
+                    continue;
+                }
+            }
+        }
+
         return d;
     }
 
@@ -136,7 +154,7 @@ public final class DateUtils
         };
         return dateFormat.format(calendar.getTime());
     }
-    
+
     public static String formatISO(GregorianCalendar calendar)
     {
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(calendar.getTime());

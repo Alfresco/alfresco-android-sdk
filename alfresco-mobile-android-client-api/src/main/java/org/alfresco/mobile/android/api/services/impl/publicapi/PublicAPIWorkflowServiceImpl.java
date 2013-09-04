@@ -265,9 +265,16 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             UrlBuilder url = new UrlBuilder(link);
             if (listingContext != null)
             {
+                if (listingContext.getFilter() != null)
+                {
+                    url.addParameter(PublicAPIConstant.WHERE_VALUE,
+                            getPredicate(null, listingContext.getFilter(), true));
+                }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
             }
+
+            Log.d(TAG, url.toString());
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -941,12 +948,17 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return getPredicate(null, filter);
     }
 
+    private String getPredicate(String processIdentifier, ListingFilter filter)
+    {
+        return getPredicate(processIdentifier, filter, false);
+    }
+
     /**
      * @param processIdentifier
      * @param filter
      * @return
      */
-    private String getPredicate(String processIdentifier, ListingFilter filter)
+    private String getPredicate(String processIdentifier, ListingFilter filter, boolean isProcess)
     {
         StringBuilder sb = new StringBuilder("(");
 
@@ -961,7 +973,28 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             return sb.toString();
         }
 
-        if (filter.hasFilterValue(FILTER_KEY_ASSIGNEE))
+        if (isProcess && filter.hasFilterValue(FILTER_KEY_INITIATOR))
+        {
+            if (filter.getFilterValue(FILTER_KEY_INITIATOR) instanceof String)
+            {
+                addPredicate(sb, PublicAPIConstant.STARTUSERID_VALUE,
+                        (String) filter.getFilterValue(FILTER_KEY_INITIATOR));
+            }
+            else if (FILTER_INITIATOR_ME == (Integer) filter.getFilterValue(FILTER_KEY_INITIATOR))
+            {
+                addPredicate(sb, PublicAPIConstant.STARTUSERID_VALUE, session.getPersonIdentifier());
+            }
+            else if (FILTER_INITIATOR_ANY == (Integer) filter.getFilterValue(FILTER_KEY_INITIATOR))
+            {
+                // Do Nothing
+            }
+        }
+        else if (isProcess)
+        {
+            addPredicate(sb, PublicAPIConstant.STARTUSERID_VALUE, session.getPersonIdentifier());
+        }
+
+        if (!isProcess && filter.hasFilterValue(FILTER_KEY_ASSIGNEE))
         {
             if (filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof String)
             {
@@ -976,7 +1009,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
             }
         }
-        else if (processIdentifier == null)
+        else if (!isProcess && processIdentifier == null)
         {
             addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
         }
