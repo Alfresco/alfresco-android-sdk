@@ -342,6 +342,8 @@ public interface OnPremiseConstant
     String COMPLETED_UPPERCASE_VALUE = "COMPLETED";
 
     String IN_PROGRESS_UPPERCASE_VALUE = "IN_PROGRESS";
+    
+    String ACTIVE_UPPERCASE_VALUE = "ACTIVE";
 
     String DUEAFTER_VALUE = "dueAfter";
 

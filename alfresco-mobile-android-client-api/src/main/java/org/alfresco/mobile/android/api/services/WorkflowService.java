@@ -127,6 +127,17 @@ public interface WorkflowService
 
     /** Only unassigned tasks. */
     int FILTER_ASSIGNEE_UNASSIGNED = 2;
+    
+    /** tasks assigned to anybody. */
+    int FILTER_ASSIGNEE_ANY = 3;
+    
+    String FILTER_KEY_INITIATOR = "filterInitiator";
+    
+    /** Only tasks explicitly assign to the current user. */
+    int FILTER_INITIATOR_ME = 1;
+    
+    /** tasks assigned to anybody. */
+    int FILTER_INITIATOR_ANY = 2;
 
     // ////////////////////////////////////////////////////////////////
     // PROCESS DEFINITIONS

@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
@@ -43,6 +44,7 @@ import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
+import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
@@ -307,6 +309,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         sessionParameters.put(SessionParameter.PASSWORD, password);
         sessionParameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
         // sessionParameters.put(SessionParameter.CLIENT_COMPRESSION, "true");
+        sessionParameters.put(CmisBindingsHelper.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage() + ", en;q=0.7");
 
         // connection settings
         addParameterIfExist(BINDING_URL, SessionParameter.ATOMPUB_URL);

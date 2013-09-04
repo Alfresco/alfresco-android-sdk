@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -173,7 +172,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 List<ProcessDefinition> definitions = getProcessDefinitions();
                 for (ProcessDefinition processDefinition : definitions)
                 {
-                    if (processDefinitionIdentifier.equals(processDefinition.getIdentifier())){
+                    if (processDefinitionIdentifier.equals(processDefinition.getIdentifier()))
+                    {
                         definition = processDefinition;
                         break;
                     }
@@ -300,10 +300,108 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             UrlBuilder url = new UrlBuilder(link);
             if (listingContext != null)
             {
-                url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+                if (listingContext.getFilter() != null)
+                {
+                    ListingFilter lf = listingContext.getFilter();
+
+                    // Assignee
+                    if (lf.hasFilterValue(FILTER_KEY_INITIATOR))
+                    {
+                        if (lf.getFilterValue(FILTER_KEY_INITIATOR) instanceof String)
+                        {
+                            url.addParameter(OnPremiseConstant.INITIATOR_VALUE, lf.getFilterValue(FILTER_KEY_INITIATOR));
+                        }
+                        else if (lf.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof Integer)
+                        {
+                            switch ((Integer) lf.getFilterValue(FILTER_KEY_INITIATOR))
+                            {
+                                case FILTER_ASSIGNEE_ME:
+                                    url.addParameter(OnPremiseConstant.INITIATOR_VALUE, session.getPersonIdentifier());
+                                    break;
+                                case FILTER_ASSIGNEE_ANY:
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        url.addParameter(OnPremiseConstant.INITIATOR_VALUE, session.getPersonIdentifier());
+                    }
+
+                    if (lf.hasFilterValue(FILTER_KEY_PRIORITY))
+                    {
+                        url.addParameter(OnPremiseConstant.PRIORITY_VALUE, lf.getFilterValue(FILTER_KEY_PRIORITY));
+                    }
+
+                    if (lf.hasFilterValue(FILTER_KEY_STATUS))
+                    {
+                        switch ((Integer) lf.getFilterValue(FILTER_KEY_STATUS))
+                        {
+                            case FILTER_STATUS_COMPLETE:
+                                url.addParameter(OnPremiseConstant.STATE_VALUE,
+                                        OnPremiseConstant.COMPLETED_UPPERCASE_VALUE);
+                                break;
+                            case FILTER_STATUS_ACTIVE:
+                                url.addParameter(OnPremiseConstant.STATE_VALUE,
+                                        OnPremiseConstant.ACTIVE_UPPERCASE_VALUE);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (lf.hasFilterValue(FILTER_KEY_DUE))
+                    {
+                        GregorianCalendar calendar = new GregorianCalendar();
+                        calendar.set(Calendar.HOUR, 11);
+                        calendar.set(Calendar.MINUTE, 59);
+                        calendar.set(Calendar.SECOND, 59);
+                        calendar.set(Calendar.MILLISECOND, 999);
+
+                        switch ((Integer) lf.getFilterValue(FILTER_KEY_DUE))
+                        {
+                            case FILTER_DUE_TODAY:
+                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+
+                                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                                break;
+                            case FILTER_DUE_TOMORROW:
+                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                                break;
+                            case FILTER_DUE_7DAYS:
+                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 7);
+                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                                break;
+                            case FILTER_DUE_OVERDUE:
+                                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                                break;
+                            case FILTER_DUE_NODATE:
+                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, "");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                url.addParameter(OnPremiseConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 maxItems = listingContext.getMaxItems();
-                url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                url.addParameter(OnPremiseConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
             }
+            else
+            {
+                url.addParameter(OnPremiseConstant.STATE_VALUE, OnPremiseConstant.IN_PROGRESS_UPPERCASE_VALUE);
+            }
+            
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -540,14 +638,23 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                         {
                             url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, lf.getFilterValue(FILTER_KEY_ASSIGNEE));
                         }
-                        else if (FILTER_ASSIGNEE_UNASSIGNED == (Integer) lf.getFilterValue(FILTER_KEY_ASSIGNEE))
+                        else if (lf.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof Integer)
                         {
-                            url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
-                            url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, true);
-                        }
-                        else if (FILTER_ASSIGNEE_ME == (Integer) lf.getFilterValue(FILTER_KEY_ASSIGNEE))
-                        {
-                            url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                            switch ((Integer) lf.getFilterValue(FILTER_KEY_ASSIGNEE))
+                            {
+                                case FILTER_ASSIGNEE_UNASSIGNED:
+                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                    url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, true);
+                                    break;
+                                case FILTER_ASSIGNEE_ME:
+                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                    break;
+                                case FILTER_ASSIGNEE_ANY:
+                                    break;
+
+                                default:
+                                    break;
+                            }
                         }
                     }
                     else

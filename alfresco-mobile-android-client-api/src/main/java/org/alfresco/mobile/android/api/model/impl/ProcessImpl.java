@@ -244,6 +244,11 @@ public class ProcessImpl implements Process
         return key;
     }
 
+    public GregorianCalendar getDueAt()
+    {
+        return dueAt;
+    }
+
     @Override
     public Integer getPriority()
     {

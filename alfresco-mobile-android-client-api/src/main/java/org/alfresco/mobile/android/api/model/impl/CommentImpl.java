@@ -154,8 +154,8 @@ public class CommentImpl implements Comment
     {
         GregorianCalendar g = null;
         if (creationDate != null)
-        {
-            Date d = DateUtils.parseJsonDate(creationDate);
+        { 
+            Date d = DateUtils.parseDate(creationDate);
             if (d != null)
             {
                 g = new GregorianCalendar();
@@ -174,7 +174,7 @@ public class CommentImpl implements Comment
         GregorianCalendar g = null;
         if (modificationDate != null)
         {
-            Date d = DateUtils.parseJsonDate(modificationDate);
+            Date d = DateUtils.parseDate(modificationDate);
             if (d != null)
             {
                 g = new GregorianCalendar();
@@ -213,5 +213,9 @@ public class CommentImpl implements Comment
     {
         return delete;
     }
-
+    
+    public Person getCreatedByPerson()
+    {
+        return author;
+    }
 }
