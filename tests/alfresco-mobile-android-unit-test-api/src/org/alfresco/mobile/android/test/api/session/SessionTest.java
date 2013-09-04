@@ -108,7 +108,7 @@ public class SessionTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(alfsession.getRepositoryInfo());
         Assert.assertNotNull(alfsession.getRootFolder());
         Assert.assertNotNull(alfsession.getBaseUrl());
-        Assert.assertEquals(ALFRESCO_CMIS_ATOMPUB_URL, alfsession.getBaseUrl());
+        Assert.assertEquals("http://cmis.alfresco.com", alfsession.getBaseUrl());
         Assert.assertEquals(ALFRESCO_CMIS_USER, alfsession.getPersonIdentifier());
         Assert.assertNotNull(alfsession.getDefaultListingContext());
         Assert.assertNotNull(alfsession.getServiceRegistry());

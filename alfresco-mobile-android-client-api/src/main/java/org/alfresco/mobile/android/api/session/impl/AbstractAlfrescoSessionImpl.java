@@ -341,33 +341,33 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         createCmisSettings();
 
         String tmpBindingUrl = (String) getParameter(BASE_URL);
-        // Binding with Alfresco Webscript CMIS implementation
-        if (tmpBindingUrl != null && !tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS)
-                && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
-        {
-            tmpBindingUrl = tmpBindingUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS);
-        }
-        //Force binding with Alfresco Webscript CMIS implementation
-        else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS))
+
+        // Force binding with Alfresco Webscript CMIS implementation
+        if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMIS))
         {
             forceBinding = true;
             this.baseUrl = tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, "");
             sessionParameters.put(BASE_URL, tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMIS, ""));
         }
-        //Force binding with OpenCMIS implementation
+        // Force binding with OpenCMIS implementation
         else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(OnPremiseUrlRegistry.BINDING_CMISATOM))
         {
             forceBinding = true;
             this.baseUrl = tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMISATOM, "");
             sessionParameters.put(BASE_URL, tmpBindingUrl.replace(OnPremiseUrlRegistry.BINDING_CMISATOM, ""));
         }
-        //Force binding with Public API implementation
+        // Force binding with Public API implementation
         else if (tmpBindingUrl != null && tmpBindingUrl.endsWith(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM))
         {
             forceBinding = true;
-            hasPublicAPI  = true;
+            hasPublicAPI = true;
             this.baseUrl = tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, "");
             sessionParameters.put(BASE_URL, tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, ""));
+        }
+        // Binding Automatic
+        else if (tmpBindingUrl != null && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
+        {
+            tmpBindingUrl = tmpBindingUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS);
         }
         sessionParameters.put(SessionParameter.ATOMPUB_URL, tmpBindingUrl);
 
