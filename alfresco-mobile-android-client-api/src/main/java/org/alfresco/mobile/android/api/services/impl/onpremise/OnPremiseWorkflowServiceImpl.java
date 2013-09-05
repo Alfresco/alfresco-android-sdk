@@ -318,7 +318,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                                 case FILTER_ASSIGNEE_ME:
                                     url.addParameter(OnPremiseConstant.INITIATOR_VALUE, session.getPersonIdentifier());
                                     break;
-                                case FILTER_ASSIGNEE_ANY:
+                                case FILTER_ASSIGNEE_ALL:
                                     break;
                                 default:
                                     break;
@@ -648,10 +648,11 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                                     break;
                                 case FILTER_ASSIGNEE_ME:
                                     url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                    url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, false);
                                     break;
-                                case FILTER_ASSIGNEE_ANY:
+                                case FILTER_ASSIGNEE_ALL:
+                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
                                     break;
-
                                 default:
                                     break;
                             }
