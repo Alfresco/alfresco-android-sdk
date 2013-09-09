@@ -653,6 +653,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                                 case FILTER_ASSIGNEE_ALL:
                                     url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
                                     break;
+                                case FILTER_NO_ASSIGNEE:
+                                    break;
                                 default:
                                     break;
                             }
@@ -687,8 +689,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
                     if (lf.hasFilterValue(FILTER_KEY_DUE))
                     {
-                        GregorianCalendar calendar = new GregorianCalendar();
-                        calendar.set(Calendar.HOUR, 11);
+                        GregorianCalendar calendar = new GregorianCalendar(); 
+                        calendar.set(Calendar.HOUR_OF_DAY, 23);
                         calendar.set(Calendar.MINUTE, 59);
                         calendar.set(Calendar.SECOND, 59);
                         calendar.set(Calendar.MILLISECOND, 999);

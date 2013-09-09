@@ -131,6 +131,9 @@ public interface WorkflowService
     /** tasks assigned to the current user and unassigned task current user can claim (member of the group)*/
     int FILTER_ASSIGNEE_ALL = 3;
     
+    /** tasks not assigned to the current user*/
+    int FILTER_NO_ASSIGNEE = 4;
+    
     String FILTER_KEY_INITIATOR = "filterInitiator";
     
     /** Only tasks explicitly assign to the current user. */
