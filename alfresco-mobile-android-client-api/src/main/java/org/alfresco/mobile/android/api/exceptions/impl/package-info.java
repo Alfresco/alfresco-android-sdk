@@ -15,40 +15,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api;
-
-import java.io.IOException;
-import java.util.Properties;
-
 /**
- * Responsible to retrieves informations about SDK.
+ * Provides implementation of all Alfresco Mobile SDK specific exceptions.
  * 
  * @author Jean Marie Pascal
  */
-public final class SDKProperties
-{
-    private SDKProperties()
-    {
-    }
-
-    /**
-     * Retrieve the value for the specified key.
-     * @param key 
-     * @return value associated to the key. Null if the key doesn't exist.
-     */
-    public static String getString(String key)
-    {
-        try
-        {
-            Properties properties = new Properties();
-            properties.load(SDKProperties.class
-                    .getResourceAsStream("/org/alfresco/mobile/android/api/version.properties"));
-            return (String) properties.get(key);
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
-    }
-
-}
+package org.alfresco.mobile.android.api.exceptions.impl;

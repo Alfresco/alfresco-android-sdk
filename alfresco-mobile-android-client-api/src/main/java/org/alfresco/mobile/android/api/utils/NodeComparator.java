@@ -24,6 +24,11 @@ import java.util.Date;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 
+/**
+ * Utility class to enable sorting on Node object.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class NodeComparator implements Serializable, Comparator<Node>
 {
 
