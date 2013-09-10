@@ -103,7 +103,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         }
         return null;
     }
-
+    
     // ////////////////////////////////////////////////////
     // Search
     // ////////////////////////////////////////////////////

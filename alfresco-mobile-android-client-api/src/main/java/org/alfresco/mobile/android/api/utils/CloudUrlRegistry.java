@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.session.CloudSession;
 
 /**
- * List of all alfresco specific url used inside the SDK.
+ * List of urls used by the Alfresco Public API REST services and used inside the SDK.
  * 
  * @author Jean Marie Pascal
  */

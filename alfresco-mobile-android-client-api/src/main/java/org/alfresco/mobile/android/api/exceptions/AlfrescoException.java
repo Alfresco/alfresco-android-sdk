@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.api.exceptions;
 
 /**
- * Base class for all exceptions using the API.
+ * Base class for all exceptions using the Mobile SDK API.
  * 
  * @author Jean Marie Pascal
  */

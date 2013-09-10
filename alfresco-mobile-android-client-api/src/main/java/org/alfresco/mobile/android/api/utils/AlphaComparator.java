@@ -23,6 +23,11 @@ import java.util.Comparator;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 
+/**
+ * Utility class to enable alphabetical sorting for site object.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AlphaComparator implements Serializable, Comparator<Site>
 {
 

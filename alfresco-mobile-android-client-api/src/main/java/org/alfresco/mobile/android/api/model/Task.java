@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
- * A Task represent work or tasks carried out by members of Alfresco repository.
+ * A Task represents work or tasks carried out by members of Alfresco repository.
  * This element stands for manual amount of work performed by a person, a group,
  * or automatically. <br/>
  * A collection of default Alfresco variables are available inside the

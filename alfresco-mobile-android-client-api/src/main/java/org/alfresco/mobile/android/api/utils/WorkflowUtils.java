@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.api.utils;
 
 /**
+ * Utility class for WorkflowService.
+ * 
  * @since 1.3
  * @author jpascal
  */

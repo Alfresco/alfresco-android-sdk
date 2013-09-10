@@ -215,6 +215,6 @@ public interface ErrorCodeRegistry
     // ///////////////////////////////////
     // WORKFLOW/TASK ERRORS
     // ///////////////////////////////////
-    /** Generic error code for all RatingService. */
+    /** Generic error code for all WorkflowService. */
     int WORKFLOW_GENERIC = 1100;
 }

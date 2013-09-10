@@ -25,7 +25,7 @@ import java.util.List;
  * can be used right out of the box. For more complex requirements, you can also
  * create, deploy, and manage your own Activiti workflows. <br/>
  * This interface provides all identifiers that are available inside Alfresco
- * Mobile SDK for the workflow.<br/>
+ * Mobile SDK to manage workflow and tasks.<br/>
  * Use those constants in conjonction with the
  * {@link org.alfresco.mobile.android.api.services.WorkflowService
  * WorkflowService} .

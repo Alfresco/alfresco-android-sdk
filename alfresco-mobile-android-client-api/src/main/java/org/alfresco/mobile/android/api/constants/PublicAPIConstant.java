@@ -18,9 +18,10 @@
 package org.alfresco.mobile.android.api.constants;
 
 /**
- * Provides all constants necessary for Alfresco Cloud. <br/>
+ * Provides all constants necessary used by Alfresco Public API. <br/>
  * Generally it's used for parsing data (json, atompub xml).
  * 
+ * @since 1.3
  * @author Jean Marie Pascal
  */
 public interface PublicAPIConstant extends OnPremiseConstant
