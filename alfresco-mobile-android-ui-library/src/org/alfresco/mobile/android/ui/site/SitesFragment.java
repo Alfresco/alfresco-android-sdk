@@ -102,7 +102,7 @@ public abstract class SitesFragment extends BaseListFragment implements
         {
             onLoaderException(results.getException());
         }
-        else
+        else if (lv != null)
         {
             displayPagingData(results.getData(), loaderId, callback);
         }

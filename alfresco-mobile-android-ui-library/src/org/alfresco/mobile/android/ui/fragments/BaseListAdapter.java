@@ -90,7 +90,7 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
         return v;
     }
 
-    private void updateControls(VH vh, T item)
+    protected void updateControls(VH vh, T item)
     {
         if (item != null && vh != null)
         {
@@ -106,7 +106,7 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
 
     protected abstract void updateIcon(VH vh, T item2);
 
-    private View recycleOrCreateView(Context c, View v, int layoutId)
+    protected View recycleOrCreateView(Context c, View v, int layoutId)
     {
         if (v == null)
         {
@@ -115,6 +115,15 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
             VH vh = create(vhClassName, v);
             v.setTag(vh);
         }
+        return v;
+    }
+
+    protected View createView(Context c, View v, int layoutId)
+    {
+        LayoutInflater vi = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        v = vi.inflate(layoutId, null);
+        VH vh = create(vhClassName, v);
+        v.setTag(vh);
         return v;
     }
 
