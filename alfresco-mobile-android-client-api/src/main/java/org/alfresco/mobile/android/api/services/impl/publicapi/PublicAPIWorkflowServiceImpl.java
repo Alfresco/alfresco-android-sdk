@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -186,7 +185,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // ASSIGNEES
             if (assignees != null && !assignees.isEmpty())
             {
-                if (assignees.size() == 1)
+                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
                 {
                     variablesJson.put(WorkflowModel.PROP_ASSIGNEE, assignees.get(0).getIdentifier());
                 }
@@ -645,15 +644,36 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             JSONObject jo = new JSONObject();
             if (state != null)
             {
-                url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
                 jo.put(PublicAPIConstant.STATE_VALUE, state);
+                if (variables != null)
+                {
+                    url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE + ","
+                            + PublicAPIConstant.VARIABLES_VALUE);
+
+                    // prepare json data
+                    JSONArray ja = new JSONArray();
+                    JSONObject jv;
+                    for (Entry<String, Serializable> entry : variables.entrySet())
+                    {
+                        jv = new JSONObject();
+                        jv.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                        jv.put(PublicAPIConstant.VALUE, entry.getValue());
+                        jv.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
+                        ja.add(jv);
+                    }
+                    jo.put(PublicAPIConstant.VARIABLES_VALUE, ja);
+                }
+                else
+                {
+                    url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
+                }
             }
 
             // VARIABLES
-            if (variables != null && !variables.isEmpty())
-            {
-                updateVariables(task, variables);
-            }
+            /*
+             * if (variables != null && !variables.isEmpty()) {
+             * updateVariables(task, variables); }
+             */
 
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
 
