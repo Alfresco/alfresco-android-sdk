@@ -39,7 +39,6 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
  */
 public abstract class AbstractWorkflowService extends AlfrescoService implements WorkflowService
 {
-
     /**
      * Default constructor for service. </br> Used by the
      * {@link AbstractServiceRegistry}.

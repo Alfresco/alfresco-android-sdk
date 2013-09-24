@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -83,8 +84,10 @@ import android.util.Log;
  */
 public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 {
-
     private static final String TAG = PublicAPIWorkflowServiceImpl.class.getName();
+
+    /** Use for Public API to include extra variables in response. */
+    public static final String INCLUDE_VARIABLES = "filterIncludeVariables";
 
     public PublicAPIWorkflowServiceImpl(AlfrescoSession repositorySession)
     {
@@ -527,7 +530,11 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 if (listingContext.getFilter() != null)
                 {
-                    url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(listingContext.getFilter()));
+                    String predicate = (String) getPredicate(listingContext.getFilter());
+                    if (predicate != null && !predicate.isEmpty())
+                    {
+                        url.addParameter(PublicAPIConstant.WHERE_VALUE, predicate);
+                    }
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
@@ -994,24 +1001,32 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             addPredicate(sb, PublicAPIConstant.STARTUSERID_VALUE, session.getPersonIdentifier());
         }
 
-        if (!isProcess && filter.hasFilterValue(FILTER_KEY_ASSIGNEE))
+        if (!isProcess && filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof String)
         {
-            if (filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof String)
+            addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, (String) filter.getFilterValue(FILTER_KEY_ASSIGNEE));
+        }
+        else if (!isProcess && filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof Integer)
+        {
+            switch ((Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
             {
-                addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, (String) filter.getFilterValue(FILTER_KEY_ASSIGNEE));
-            }
-            else if (FILTER_ASSIGNEE_UNASSIGNED == (Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
-            {
-                addPredicate(sb, PublicAPIConstant.CANDIDATEUSER_VALUE, session.getPersonIdentifier());
-            }
-            else if (FILTER_ASSIGNEE_ME == (Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
-            {
-                addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+                case FILTER_ASSIGNEE_UNASSIGNED:
+                    addPredicate(sb, PublicAPIConstant.CANDIDATEUSER_VALUE, session.getPersonIdentifier());
+                    break;
+                case FILTER_ASSIGNEE_ME:
+                    addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+                    break;
+                case FILTER_ASSIGNEE_ALL:
+                    break;
+                case FILTER_NO_ASSIGNEE:
+                    break;
+                default:
+                    break;
             }
         }
         else if (!isProcess && processIdentifier == null)
         {
-            addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+            // addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE,
+            // session.getPersonIdentifier());
         }
 
         if (filter.hasFilterValue(FILTER_KEY_PRIORITY))
@@ -1076,9 +1091,14 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             }
         }
 
+        if (filter.hasFilterValue(INCLUDE_VARIABLES))
+        {
+            addPredicate(sb, PublicAPIConstant.INCLUDEVARIABLES_VALUE, "true");
+        }
+
         sb.append(")");
 
-        return sb.toString();
+        return "()".equals(sb.toString()) ? "" : sb.toString();
     }
 
     /**

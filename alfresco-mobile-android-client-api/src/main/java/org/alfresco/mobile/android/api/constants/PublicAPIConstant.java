@@ -276,4 +276,8 @@ public interface PublicAPIConstant extends OnPremiseConstant
     String CANDIDATEUSER_VALUE = "candidateUser";
 
     String DELETEREASON_VALUE = "deleteReason";
+    
+    String INCLUDEVARIABLES_VALUE = "includeVariables";
+
+    String PROCESSVARIABLES_VALUE = "processVariables";
 }
