@@ -83,8 +83,10 @@ import android.util.Log;
  */
 public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 {
-
     private static final String TAG = PublicAPIWorkflowServiceImpl.class.getName();
+
+    /** Use for Public API to include extra variables in response. */
+    public static final String INCLUDE_VARIABLES = "filterIncludeVariables";
 
     public PublicAPIWorkflowServiceImpl(AlfrescoSession repositorySession)
     {
@@ -183,7 +185,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // ASSIGNEES
             if (assignees != null && !assignees.isEmpty())
             {
-                if (assignees.size() == 1)
+                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
                 {
                     variablesJson.put(WorkflowModel.PROP_ASSIGNEE, assignees.get(0).getIdentifier());
                 }
@@ -527,7 +529,11 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 if (listingContext.getFilter() != null)
                 {
-                    url.addParameter(PublicAPIConstant.WHERE_VALUE, getPredicate(listingContext.getFilter()));
+                    String predicate = (String) getPredicate(listingContext.getFilter());
+                    if (predicate != null && !predicate.isEmpty())
+                    {
+                        url.addParameter(PublicAPIConstant.WHERE_VALUE, predicate);
+                    }
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
@@ -638,15 +644,36 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             JSONObject jo = new JSONObject();
             if (state != null)
             {
-                url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
                 jo.put(PublicAPIConstant.STATE_VALUE, state);
+                if (variables != null)
+                {
+                    url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE + ","
+                            + PublicAPIConstant.VARIABLES_VALUE);
+
+                    // prepare json data
+                    JSONArray ja = new JSONArray();
+                    JSONObject jv;
+                    for (Entry<String, Serializable> entry : variables.entrySet())
+                    {
+                        jv = new JSONObject();
+                        jv.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                        jv.put(PublicAPIConstant.VALUE, entry.getValue());
+                        jv.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
+                        ja.add(jv);
+                    }
+                    jo.put(PublicAPIConstant.VARIABLES_VALUE, ja);
+                }
+                else
+                {
+                    url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.STATE_VALUE);
+                }
             }
 
             // VARIABLES
-            if (variables != null && !variables.isEmpty())
-            {
-                updateVariables(task, variables);
-            }
+            /*
+             * if (variables != null && !variables.isEmpty()) {
+             * updateVariables(task, variables); }
+             */
 
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
 
@@ -994,24 +1021,32 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             addPredicate(sb, PublicAPIConstant.STARTUSERID_VALUE, session.getPersonIdentifier());
         }
 
-        if (!isProcess && filter.hasFilterValue(FILTER_KEY_ASSIGNEE))
+        if (!isProcess && filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof String)
         {
-            if (filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof String)
+            addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, (String) filter.getFilterValue(FILTER_KEY_ASSIGNEE));
+        }
+        else if (!isProcess && filter.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof Integer)
+        {
+            switch ((Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
             {
-                addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, (String) filter.getFilterValue(FILTER_KEY_ASSIGNEE));
-            }
-            else if (FILTER_ASSIGNEE_UNASSIGNED == (Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
-            {
-                addPredicate(sb, PublicAPIConstant.CANDIDATEUSER_VALUE, session.getPersonIdentifier());
-            }
-            else if (FILTER_ASSIGNEE_ME == (Integer) filter.getFilterValue(FILTER_KEY_ASSIGNEE))
-            {
-                addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+                case FILTER_ASSIGNEE_UNASSIGNED:
+                    addPredicate(sb, PublicAPIConstant.CANDIDATEUSER_VALUE, session.getPersonIdentifier());
+                    break;
+                case FILTER_ASSIGNEE_ME:
+                    addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+                    break;
+                case FILTER_ASSIGNEE_ALL:
+                    break;
+                case FILTER_NO_ASSIGNEE:
+                    break;
+                default:
+                    break;
             }
         }
         else if (!isProcess && processIdentifier == null)
         {
-            addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE, session.getPersonIdentifier());
+            // addPredicate(sb, PublicAPIConstant.ASSIGNEE_VALUE,
+            // session.getPersonIdentifier());
         }
 
         if (filter.hasFilterValue(FILTER_KEY_PRIORITY))
@@ -1076,9 +1111,14 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             }
         }
 
+        if (filter.hasFilterValue(INCLUDE_VARIABLES))
+        {
+            addPredicate(sb, PublicAPIConstant.INCLUDEVARIABLES_VALUE, "true");
+        }
+
         sb.append(")");
 
-        return sb.toString();
+        return "()".equals(sb.toString()) ? "" : sb.toString();
     }
 
     /**

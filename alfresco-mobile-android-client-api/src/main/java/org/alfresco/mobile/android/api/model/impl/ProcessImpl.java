@@ -19,18 +19,22 @@ package org.alfresco.mobile.android.api.model.impl;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
+import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 
 /**
  * @since 1.3
@@ -119,7 +123,7 @@ public class ProcessImpl implements Process
         // EXTRA PROPERTIES
         process.data = new HashMap<String, Serializable>();
         process.data.put(OnPremiseConstant.INITIATOR_VALUE, p);
-        
+
         date = JSONConverter.getString(json, OnPremiseConstant.DUEDATE_VALUE);
         if (date != null)
         {
@@ -128,7 +132,7 @@ public class ProcessImpl implements Process
             process.dueAt = g;
         }
         process.data.put(OnPremiseConstant.DUEDATE_VALUE, g);
-        
+
         process.data.put(OnPremiseConstant.DESCRIPTION_VALUE,
                 JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE));
         process.data.put(OnPremiseConstant.ISACTIVE_VALUE,
@@ -204,6 +208,41 @@ public class ProcessImpl implements Process
                 JSONConverter.getBoolean(json, PublicAPIConstant.COMPLETED_VALUE));
         process.data.put(PublicAPIConstant.DELETEREASON_VALUE,
                 JSONConverter.getString(json, PublicAPIConstant.DELETEREASON_VALUE));
+
+        if (json.containsKey(PublicAPIConstant.PROCESSVARIABLES_VALUE))
+        {
+            ArrayList<Map<String, Object>> jo = (ArrayList<Map<String, Object>>) json
+                    .get(PublicAPIConstant.PROCESSVARIABLES_VALUE);
+
+            for (Map<String, Object> item : jo)
+            {
+                if (item.containsKey(PublicAPIConstant.NAME_VALUE)
+                        && WorkflowModel.PROP_WORKFLOW_PRIORITY.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                {
+                    process.priority = JSONConverter.getInteger(item, PublicAPIConstant.VALUE).intValue();
+                }
+
+                if (item.containsKey(PublicAPIConstant.NAME_VALUE)
+                        && WorkflowModel.PROP_WORKFLOW_DESCRIPTION.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                {
+                    process.description = JSONConverter.getString(item, PublicAPIConstant.VALUE);
+                }
+
+                if (item.containsKey(PublicAPIConstant.NAME_VALUE)
+                        && WorkflowModel.PROP_WORKFLOW_DUE_DATE.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                {
+                    String dueDateValue = JSONConverter.getString(item, PublicAPIConstant.VALUE);
+                    if (dueDateValue != null)
+                    {
+                        g = new GregorianCalendar();
+                        g.setTime(DateUtils.parseDate(dueDateValue, sdf));
+                        process.dueAt = g;
+                    }
+                }
+            }
+
+            process.hasAllVariables = true;
+        }
 
         return process;
     }
