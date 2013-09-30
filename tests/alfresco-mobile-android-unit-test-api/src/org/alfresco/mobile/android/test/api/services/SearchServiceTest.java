@@ -249,6 +249,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         // Query Search
         // ///////////////////////////////////////////////////////////////////////////
         quickSearch("SELECT * from cmis:folder where cmis:name = 'testsearch'", 0);
+        
+        quickSearch("SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:dictionary\"')", 1);
 
         // 3.4 D CE : 0
         quickSearch("SELECT * from cmis:folder where cmis:name = 'TESTSEARCH'", 1);

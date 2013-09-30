@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.asynchronous;
 
+import java.util.List;
+
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -44,6 +47,10 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
     /** Unique NodeChildrenLoader identifier. */
     public static final int ID = NodeChildrenLoader.class.hashCode();
 
+    public static final int FOLDER_USER_HOMES = 0;
+
+    public static final int FOLDER_SHARED = 1;
+
     /** Parent Folder object. */
     private Folder parentFolder;
 
@@ -52,6 +59,9 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
 
     /** Folder path from which we want children node. */
     private String folderPath = null;
+
+    /** Folder id. */
+    private int folderAppId = -1;
 
     /**
      * Get all children from a the specified folder. </br> Use
@@ -85,6 +95,13 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
         this.folderPath = folderPath;
     }
 
+    public NodeChildrenLoader(Context context, AlfrescoSession session, int folderAppId)
+    {
+        super(context);
+        this.session = session;
+        this.folderAppId = folderAppId;
+    }
+
     /**
      * Get all children from the documentlibrary inside a site. </br> Use
      * {@link #setListingContext(ListingContext)} to define characteristics of
@@ -114,6 +131,30 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
                 parentFolder = session.getServiceRegistry().getSiteService().getDocumentLibrary(site);
             }
 
+            if (folderAppId != -1)
+            {
+                List<Node> nodes = null;
+                String query = null;
+                switch (folderAppId)
+                {
+                    case FOLDER_SHARED:
+                        query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:shared\"')";
+                        break;
+                    case FOLDER_USER_HOMES:
+                        query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:user_homes/cm:"
+                                + session.getPersonIdentifier() + "\"')";
+                        break;
+                    default:
+                        break;
+                }
+
+                nodes = session.getServiceRegistry().getSearchService().search(query, SearchLanguage.CMIS);
+                if (nodes != null && nodes.size() == 1)
+                {
+                    parentFolder = (Folder) nodes.get(0);
+                }
+            }
+
             if (folderPath != null)
             {
                 Node n = session.getServiceRegistry().getDocumentFolderService().getChildByPath(folderPath);
@@ -127,7 +168,6 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
                 {
                     parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
                 }
-
             }
             else if (parentFolder != null)
             {
