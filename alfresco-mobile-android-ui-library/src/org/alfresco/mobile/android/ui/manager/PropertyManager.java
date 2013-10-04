@@ -38,8 +38,7 @@ public class PropertyManager
             put(ContentModel.PROP_VERSION_LABEL, R.string.metadata_prop_version);
         }
     };
-    
-    
+
     @SuppressWarnings("serial")
     private static final Map<String, Integer> ASPECT_GEOGRAPHIC = new HashMap<String, Integer>(2)
     {
@@ -91,6 +90,14 @@ public class PropertyManager
     };
 
     @SuppressWarnings("serial")
+    private static final Map<String, Integer> ASPECT_RESTRICTABLE = new HashMap<String, Integer>(1)
+    {
+        {
+            put(ContentModel.PROP_OFFLINE_EXPIRES_AFTER, R.string.metadata_prop_offline_expires_after);
+        }
+    };
+
+    @SuppressWarnings("serial")
     private static final Map<String, Map<String, Integer>> ASPECT_PROPS_LIST = new HashMap<String, Map<String, Integer>>(
             3)
     {
@@ -99,10 +106,10 @@ public class PropertyManager
             put(ContentModel.ASPECT_GEOGRAPHIC, ASPECT_GEOGRAPHIC);
             put(ContentModel.ASPECT_AUDIO, ASPECT_AUDIO);
             put(ContentModel.ASPECT_EXIF, ASPECT_EXIF);
-
+            put(ContentModel.ASPECT_RESTRICTABLE, ASPECT_RESTRICTABLE);
         }
     };
-    
+
     @SuppressWarnings("serial")
     private static final Map<String, Integer> ASPECTS = new HashMap<String, Integer>(3)
     {
@@ -111,6 +118,7 @@ public class PropertyManager
             put(ContentModel.ASPECT_GEOGRAPHIC, R.string.metadata_aspect_geographic);
             put(ContentModel.ASPECT_AUDIO, R.string.metadata_aspect_audio);
             put(ContentModel.ASPECT_EXIF, R.string.metadata_aspect_exif);
+            put(ContentModel.ASPECT_RESTRICTABLE, R.string.metadata_aspect_restrictable);
         }
     };
 
@@ -118,8 +126,9 @@ public class PropertyManager
     {
         return ASPECT_PROPS_LIST.get(aspect);
     }
-    
-    public static Integer getAspectLabel(String aspect){
+
+    public static Integer getAspectLabel(String aspect)
+    {
         return ASPECTS.get(aspect);
     }
 

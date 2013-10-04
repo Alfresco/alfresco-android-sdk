@@ -1190,7 +1190,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         // AUTHOR
         ALFRESCO_ASPECTS.put(ContentModel.PROP_AUTHOR, CMISPREFIX_ASPECTS + ContentModel.ASPECT_AUTHOR);
-
+        
+        // RESTRICTABLE
+        for (String prop : ContentModel.ASPECT_RESTRICTABLE_PROPS)
+        {
+            ALFRESCO_ASPECTS.put(prop, CMISPREFIX_ASPECTS + ContentModel.ASPECT_RESTRICTABLE);
+        }
     }
 
     /**
