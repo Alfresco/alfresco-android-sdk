@@ -37,13 +37,13 @@ import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.Property;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
-import org.apache.chemistry.opencmis.client.api.TransientDocument;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
+import org.apache.chemistry.opencmis.client.api.TransientDocument;
 
 import android.test.AndroidTestCase;
 
@@ -278,12 +278,12 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         String authorValue = "Mr JUnit Test";
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(PropertyIds.NAME, "testMobile");
+        properties.put(PropertyIds.NAME, "test1");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled,P:app:inlineeditable");
         properties.put("cm:description", descriptionValue1);
         properties.put("app:editInline", true);
 
-        Document doc = rootFolder.createDocument(properties, null, null);
+        Document doc = session.getRootFolder().createDocument(properties, null, null);
 
         // get transient document
         TransientDocument tDoc = doc.getTransientDocument();
@@ -340,7 +340,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         properties.put(PropertyIds.NAME, "exif.test");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
 
-        AlfrescoDocument doc = (AlfrescoDocument) rootFolder.createDocument(properties, null, null);
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
 
         doc.addAspect("P:exif:exif");
 
@@ -384,7 +384,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         properties.put(PropertyIds.NAME, "taggable.test");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:taggable");
 
-        AlfrescoDocument doc = (AlfrescoDocument) rootFolder.createDocument(properties, null, null);
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
 
         assertTrue(doc.hasAspect("P:cm:taggable"));
 
@@ -411,7 +411,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document, P:cm:titled");
         properties.put("cm:description", "desc1");
 
-        AlfrescoDocument doc = (AlfrescoDocument) rootFolder.createDocument(properties, null, null);
+        AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
 
         ObjectId pwcId = doc.checkOut();
         assertNotNull(pwcId);
@@ -419,7 +419,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         AlfrescoDocument pwc = (AlfrescoDocument) session.getObject(pwcId);
         assertNotNull(pwc);
 
-        assertEquals("desc1", (String) pwc.getPropertyValue("cm:description"));
+        assertEquals("desc1", pwc.getPropertyValue("cm:description"));
 
         properties = new HashMap<String, Object>();
         properties.put("cm:description", "desc2");
@@ -431,7 +431,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         newDoc.refresh();
         assertNotNull(newDoc);
 
-        assertEquals("desc2", (String) newDoc.getPropertyValue("cm:description"));
+        assertEquals("desc2", newDoc.getPropertyValue("cm:description"));
 
         // delete
         newDoc.delete(true);
