@@ -219,7 +219,7 @@
     <string name="search_hint">Enter search term</string>
     <!-- Comments -->
     <string name="comments">Comments</string>
-    <string name="comment_create_hint">Type your comment here &#8230;</string>
+    <string name="comment_add_hint">Type your comment here &#8230;</string>
     <!-- Actions -->
     <string name="create">Create</string>
     <string name="add">Add</string>

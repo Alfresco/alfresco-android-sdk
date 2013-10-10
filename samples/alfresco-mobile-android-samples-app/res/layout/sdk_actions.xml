@@ -27,7 +27,7 @@
         android:id="@+id/display_comments"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_menu_start_conversation"
+        android:drawableLeft="@drawable/ic_action_dialog"
         android:text="@string/comments" />
 
     <Button

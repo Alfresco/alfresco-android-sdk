@@ -153,6 +153,7 @@ public class MimeTypeManager
         EXT2ICON.put("rtx", R.drawable.mime_txt);
         EXT2ICON.put("sct", R.drawable.mime_txt);
         EXT2ICON.put("snd", R.drawable.mime_audio);
+        EXT2ICON.put("spd", R.drawable.mime_pages);
         EXT2ICON.put("stm", R.drawable.mime_html);
         EXT2ICON.put("svg", R.drawable.mime_xml);
         EXT2ICON.put("swf", R.drawable.mime_swf);

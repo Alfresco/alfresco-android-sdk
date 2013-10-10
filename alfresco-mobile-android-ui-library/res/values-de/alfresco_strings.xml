@@ -217,7 +217,7 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <!-- Comments -->
     <string name="comments">Kommentare</string>
-    <string name="comment_create_hint">Kommentar hier eingeben...</string>
+    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
     <!-- Actions -->
     <string name="create">Erzeugen</string>
     <string name="add">Hinzufügen</string>

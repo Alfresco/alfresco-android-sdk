@@ -73,7 +73,7 @@ public class CommentAdapter extends BaseListAdapter<Comment, GenericViewHolder>
     @Override
     protected void updateIcon(GenericViewHolder vh, Comment item)
     {
-        renditionManager.display(vh.icon, item.getCreatedBy(), R.drawable.ic_menu_start_conversation);
+        renditionManager.display(vh.icon, item.getCreatedBy(), R.drawable.ic_action_dialog);
     }
 }
 
