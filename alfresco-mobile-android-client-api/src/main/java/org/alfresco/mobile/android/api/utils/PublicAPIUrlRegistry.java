@@ -27,11 +27,14 @@ public class PublicAPIUrlRegistry
     // Public API
     // @since 1.3
     public static final String PREFIX_PUBLIC_API = "/api/-default-/public/alfresco/versions/1";
-    
+
+    private static final String PREFIX_CLOUD_PUBLIC_API = "/public/alfresco/versions/1";
+
+    private static final String PREFIX_CLOUD_PUBLIC_API_WORKFLOW = "/public/workflow/versions/1";
+
     public static final String PREFIX_PUBLIC_API_WORKFLOW = "/api/-default-/public/workflow/versions/1";
 
     public static final String BINDING_NETWORK_CMISATOM = "/api/-default-/public/cmis/versions/1.0/atom/";
-    
 
     // VARIABLES
     public static final String VARIABLE_PERSONID = "{personId}";
@@ -139,7 +142,7 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.1.0 */
     public static final String URL_LEAVE_SITE = "sites/{siteId}/members/{personId}";
-    
+
     /** @since 1.3.0 */
     public static final String URL_ALLMEMBERSOF = "sites/{siteId}/members";
 
@@ -202,7 +205,7 @@ public class PublicAPIUrlRegistry
                 URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
                         VARIABLE_SITEID, siteIdentifier)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getAllMembersSiteUrl(CloudSession session, String siteShortName)
     {
@@ -330,10 +333,10 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String VARIABLE_TASKID = "{taskId}";
-    
+
     /** @since 1.3.0 */
     public static final String VARIABLE_ITEMID = "{itemId}";
-    
+
     /** @since 1.3.0 */
     private static final String VARIABLE_NAME = "{variableName}";
 
@@ -348,34 +351,33 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String URL_PROCESS = URL_PROCESSES + "/" + VARIABLE_PROCESSID;
-    
+
     /** @since 1.3.0 */
-    public static final String URL_PROCESS_DIAGRAM =URL_PROCESS + "/image";
-    
+    public static final String URL_PROCESS_DIAGRAM = URL_PROCESS + "/image";
+
     /** @since 1.3.0 */
     public static final String URL_ITEMS_PROCESS = URL_PROCESS + "/items";
-    
+
     /** @since 1.3.0 */
     public static final String URL_TASKS = "tasks";
-    
+
     /** @since 1.3.0 */
     public static final String URL_TASK = URL_TASKS + "/" + VARIABLE_TASKID;
-    
+
     /** @since 1.3.0 */
     public static final String URL_TASK_VARIABLES = URL_TASK + "/variables";
-    
+
     /** @since 1.3.0 */
     public static final String URL_TASK_VARIABLE = URL_TASK_VARIABLES + "/{variableName}";
-    
+
     /** @since 1.3.0 */
     public static final String URL_ITEMS_TASK = URL_TASK + "/items";
-    
+
     /** @since 1.3.0 */
     public static final String URL_ITEM_ID_TASK = URL_ITEMS_TASK + "/{itemId}";
 
     /** @since 1.3.0 */
     public static final String URL_TASK_FOR_PROCESS = URL_PROCESS + "/tasks";
-
 
     /** @since 1.3.0 */
     public static String getProcessDefinitionsUrl(AlfrescoSession session)
@@ -405,43 +407,46 @@ public class PublicAPIUrlRegistry
     /** @since 1.3.0 */
     public static String getTasksForProcessIdUrl(AlfrescoSession session, String processId)
     {
-        return createWorkflowPrefix(session).append(URL_TASK_FOR_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_TASK_FOR_PROCESS.replace(VARIABLE_PROCESSID, processId))
+                .toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getProcessItemsUrl(AlfrescoSession session, String processId)
     {
-        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, processId))
+                .toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getProcessVariablesUrl(AlfrescoSession session, String taskId)
     {
         return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, taskId)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getTasksUrl(AlfrescoSession session)
     {
         return createWorkflowPrefix(session).append(URL_TASKS).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getTaskUrl(AlfrescoSession session, String taskId)
     {
         return createWorkflowPrefix(session).append(URL_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getTaskVariablesUrl(AlfrescoSession session, String taskId)
     {
         return createWorkflowPrefix(session).append(URL_TASK_VARIABLES.replace(VARIABLE_TASKID, taskId)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getTaskVariableUrl(AlfrescoSession session, String taskId, String variableId)
     {
-        return createWorkflowPrefix(session).append(URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
+        return createWorkflowPrefix(session).append(
+                URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
     }
 
     /** @since 1.3.0 */
@@ -449,35 +454,67 @@ public class PublicAPIUrlRegistry
     {
         return createWorkflowPrefix(session).append(URL_ITEMS_TASK.replace(VARIABLE_TASKID, taskId)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getTaskItemByIdUrl(AlfrescoSession session, String taskId, String documentId)
     {
-        return createWorkflowPrefix(session).append(URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
+        return createWorkflowPrefix(session).append(
+                URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
     }
-    
+
     public static String getWorkflowDiagram(AlfrescoSession session, String processId)
     {
-        return createWorkflowPrefix(session).append(URL_PROCESS_DIAGRAM.replace(VARIABLE_PROCESSID, processId)).toString();
+        return createWorkflowPrefix(session).append(URL_PROCESS_DIAGRAM.replace(VARIABLE_PROCESSID, processId))
+                .toString();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////////
     // TOOLS
     // //////////////////////////////////////////////////////////////////////////////
     protected static StringBuilder createWorkflowPrefix(AlfrescoSession session)
     {
-        StringBuilder sb = new StringBuilder(session.getBaseUrl());
-        sb.append(PREFIX_PUBLIC_API_WORKFLOW);
-        sb.append("/");
-        return sb;
+        return createCloudWorkflowPrefix(session, null);
     }
-    
-    protected static StringBuilder createPrefix(AlfrescoSession session)
+
+    private static StringBuilder createCloudWorkflowPrefix(AlfrescoSession session, String networkIdentifier)
     {
         StringBuilder sb = new StringBuilder(session.getBaseUrl());
-        sb.append(getPublicApiPrefix());
+
+        if (session instanceof CloudSession)
+        {
+            sb.append("/");
+            if (networkIdentifier != null)
+            {
+                sb.append(networkIdentifier);
+            }
+            else if (((CloudSession) session).getNetwork() != null)
+            {
+                sb.append(((CloudSession) session).getNetwork().getIdentifier());
+            }
+            sb.append(getCloudPubliWorkflowcApiPrefix());
+        }
+        else if (session instanceof RepositorySession)
+        {
+            sb.append(getPublicWorkflowApiPrefix());
+        }
         sb.append("/");
+
         return sb;
+    }
+
+    protected static String getPublicWorkflowApiPrefix()
+    {
+        return PREFIX_PUBLIC_API_WORKFLOW;
+    }
+
+    protected static String getCloudPubliWorkflowcApiPrefix()
+    {
+        return PREFIX_CLOUD_PUBLIC_API_WORKFLOW;
+    }
+
+    protected static StringBuilder createPrefix(AlfrescoSession session)
+    {
+        return createPrefix(session, null);
     }
 
     protected static StringBuilder createPrefix(CloudSession session)
@@ -500,7 +537,7 @@ public class PublicAPIUrlRegistry
             {
                 sb.append(((CloudSession) session).getNetwork().getIdentifier());
             }
-            sb.append(getPublicApiPrefix());
+            sb.append(getCloudPublicApiPrefix());
         }
         else if (session instanceof RepositorySession)
         {
@@ -516,6 +553,11 @@ public class PublicAPIUrlRegistry
         return PREFIX_PUBLIC_API;
     }
 
+    protected static String getCloudPublicApiPrefix()
+    {
+        return PREFIX_CLOUD_PUBLIC_API;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////////////
@@ -528,7 +570,7 @@ public class PublicAPIUrlRegistry
         }
         return personIdentifier;
     }
-    
+
     public static String getPublicAPIUrl(String baseUrl)
     {
         StringBuilder sb = new StringBuilder(baseUrl);

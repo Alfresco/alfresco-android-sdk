@@ -77,7 +77,12 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     {
         try
         {
-            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, identifier, type));
+            String nodeIdentifier = identifier;
+            if (NodeRefUtils.isVersionIdentifier(identifier) || NodeRefUtils.isIdentifier(identifier))
+            {
+                nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(identifier);
+            }
+            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, nodeIdentifier, type));
             url.addParameter("format", "json");
             Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
             org.alfresco.mobile.android.api.model.ContentStream cf;
@@ -113,8 +118,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     @Override
     public PagingResult<Document> getFavoriteDocuments(ListingContext listingContext)
     {
-        String link = PublicAPIUrlRegistry.getUserFavouriteDocumentsUrl(session,
-                session.getPersonIdentifier());
+        String link = PublicAPIUrlRegistry.getUserFavouriteDocumentsUrl(session, session.getPersonIdentifier());
         UrlBuilder url = new UrlBuilder(link);
         if (listingContext != null)
         {
@@ -133,8 +137,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     @Override
     public PagingResult<Folder> getFavoriteFolders(ListingContext listingContext)
     {
-        String link = PublicAPIUrlRegistry
-                .getUserFavouriteFoldersUrl(session, session.getPersonIdentifier());
+        String link = PublicAPIUrlRegistry.getUserFavouriteFoldersUrl(session, session.getPersonIdentifier());
         UrlBuilder url = new UrlBuilder(link);
         if (listingContext != null)
         {
