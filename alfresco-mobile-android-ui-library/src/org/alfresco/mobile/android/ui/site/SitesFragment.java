@@ -111,7 +111,7 @@ public abstract class SitesFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Site>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
 }

@@ -59,7 +59,7 @@ public class TagLoaderCallback extends BaseLoaderCallback implements LoaderCallb
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Tag>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     public void setOnLoaderListener(OnLoaderListener mListener)

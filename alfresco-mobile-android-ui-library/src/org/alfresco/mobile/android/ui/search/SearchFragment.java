@@ -144,7 +144,7 @@ public abstract class SearchFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     protected void search(String keywords, boolean fullText, boolean isExact)

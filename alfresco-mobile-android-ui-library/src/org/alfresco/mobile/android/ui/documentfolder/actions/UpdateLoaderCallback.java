@@ -100,7 +100,7 @@ public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCa
     @Override
     public void onLoaderReset(Loader<LoaderResult<Node>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     public void setOnUpdateListener(OnNodeUpdateListener mListener)

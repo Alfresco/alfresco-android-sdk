@@ -204,7 +204,6 @@ public class ChildrenFragment extends NavigationFragment
             parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
         }
 
-        // TODO CanAddchildren
         if (parentFolder != null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.CREATE_FOLDER, Menu.FIRST + MenuActionItem.CREATE_FOLDER,

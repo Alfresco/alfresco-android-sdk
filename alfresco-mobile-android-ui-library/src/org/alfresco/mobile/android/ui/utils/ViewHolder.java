@@ -28,6 +28,6 @@ public class ViewHolder
 {
     public ViewHolder(View view)
     {
-        // TODO Auto-generated constructor stub
+        // Nothing special
     }
 }

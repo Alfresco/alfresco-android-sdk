@@ -682,8 +682,6 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
      */
     public void testSiteMembership()
     {
-        // TODO Activate when cloud test env is ready.
-
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);

@@ -83,8 +83,6 @@ public abstract class AbstractSimpleReadOnlyTests extends AbstractCmisTestCase {
     @Override
     protected void initSession()
     {
-        // TODO Auto-generated method stub
-        
     }
     
     /**

@@ -42,7 +42,6 @@ import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.PublicAPIResponse;
@@ -600,15 +599,15 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
     @Override
     public List<Person> searchMembers(Site site, String keywords)
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Not possible to search a member with the current public api.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext)
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Not possible to search a member with the current public api.
+        throw new UnsupportedOperationException();
     }
 
     // ////////////////////////////////////////////////////

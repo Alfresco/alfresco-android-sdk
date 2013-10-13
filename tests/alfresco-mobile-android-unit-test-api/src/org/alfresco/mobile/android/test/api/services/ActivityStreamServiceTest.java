@@ -302,7 +302,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 }
                 catch (AlfrescoServiceException e)
                 {
-                    // TODO: handle exception
+                    // Nothing special
                 }
             }
             else
@@ -332,7 +332,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 }
                 catch (AlfrescoServiceException e)
                 {
-                    // TODO: handle exception
+                    // Nothing special
                 }
             }
             else
@@ -352,7 +352,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                     }
                     catch (AlfrescoServiceException e)
                     {
-                        // TODO: handle exception
+                        // Nothing special
                     }
                 }
                 else
@@ -417,7 +417,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
         }
         catch (Exception e)
         {
-            // TODO: handle exception
+            // Nothing special
         }
 
         return doc;

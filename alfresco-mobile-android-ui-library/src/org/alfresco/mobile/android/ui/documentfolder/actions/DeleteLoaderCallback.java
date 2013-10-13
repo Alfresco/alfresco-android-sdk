@@ -88,7 +88,7 @@ public class DeleteLoaderCallback implements LoaderCallbacks<LoaderResult<Void>>
     @Override
     public void onLoaderReset(Loader<LoaderResult<Void>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     public void setOnDeleteListener(OnNodeDeleteListener mListener)

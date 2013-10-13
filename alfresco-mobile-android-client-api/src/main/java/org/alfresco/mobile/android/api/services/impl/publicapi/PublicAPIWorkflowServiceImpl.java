@@ -1103,7 +1103,6 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                     addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
                     break;
                 case FILTER_DUE_NODATE:
-                    // TODO!
                     addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "LIKE");
                     break;
                 default:

@@ -43,8 +43,6 @@ public class SessionTest extends AlfrescoSDKTestCase
     @Override
     protected void initSession()
     {
-        // TODO Auto-generated method stub
-
     }
 
     /**

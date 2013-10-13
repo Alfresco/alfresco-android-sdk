@@ -178,7 +178,6 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
     public static final String PREFIX_GROUP = "org.alfresco.site.group";
 
-    // TODO Constant Manager ?
     @SuppressWarnings("serial")
     private static final Map<String, Integer> EVENT_ICON = new HashMap<String, Integer>()
     {
@@ -266,7 +265,6 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         return value;
     }
 
-    // TODO Constant Manager ?
     @SuppressWarnings("serial")
     private static final Map<String, Integer> MAP_ACTIVITY_TYPE = new HashMap<String, Integer>()
     {

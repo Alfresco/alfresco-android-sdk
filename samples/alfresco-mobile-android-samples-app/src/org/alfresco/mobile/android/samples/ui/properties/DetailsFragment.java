@@ -62,7 +62,6 @@ public class DetailsFragment extends BaseFragment
 
     public DetailsFragment()
     {
-        // TODO Auto-generated constructor stub
     }
 
     public static DetailsFragment newInstance(Node n)
@@ -164,7 +163,6 @@ public class DetailsFragment extends BaseFragment
         }
 
         b = (Button) v.findViewById(R.id.display_all_versions);
-        // TODO Permission
         if (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_ALL_VERSIONS.value()))
         {
             b.setOnClickListener(new OnClickListener()
