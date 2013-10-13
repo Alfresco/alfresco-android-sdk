@@ -165,7 +165,8 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
         }
         else if (resp.getResponseCode() != HttpStatus.SC_OK)
         {
-            convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
+            return null;
+            //convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
         }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
