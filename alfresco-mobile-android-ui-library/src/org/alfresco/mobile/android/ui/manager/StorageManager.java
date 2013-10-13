@@ -49,7 +49,6 @@ public class StorageManager
         File folder = null;
         try
         {
-            // TODO determine if storage inside or external
             folder = createFolder(context.getCacheDir(), extendedPath);
         }
         catch (Exception e)

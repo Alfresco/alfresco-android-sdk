@@ -95,7 +95,7 @@ public abstract class TagsNodeFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Tag>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
 }

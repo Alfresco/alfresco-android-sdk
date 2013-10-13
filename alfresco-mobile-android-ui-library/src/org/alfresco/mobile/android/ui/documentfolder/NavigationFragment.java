@@ -181,7 +181,7 @@ public abstract class NavigationFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     public Boolean hasActivateThumbnail()

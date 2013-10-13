@@ -137,6 +137,11 @@ public final class ExceptionHelper
         AlfrescoErrorContent er = null;
         if (session instanceof RepositorySession)
         {
+            if (resp.getResponseCode() == HttpStatus.SC_UNAUTHORIZED)
+            {
+                throw new CmisUnauthorizedException();
+            }
+
             try
             {
                 er = OnPremiseErrorContent.parseJson(resp.getErrorContent());

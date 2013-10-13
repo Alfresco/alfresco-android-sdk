@@ -86,8 +86,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(docfolderservice);
     }
 
-    // TODO Check TotalItems !!!!
-    // TODO Split into 2 for folders and for files
     /**
      * Test Paging and navigation.
      * 
@@ -746,7 +744,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
-        //TODO Check
         if (isOnPremise()){
             Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getTitle());
             Assert.assertEquals(ROOT_TEST_FOLDER_NAME, doc2.getDescription());
@@ -1951,9 +1948,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(unitTestFolder.getIdentifier(), folder.getIdentifier());
         Assert.assertFalse(folder.hasAllProperties());
         Assert.assertTrue(docfolderservice.isFavorite(folder));
-
-        
-        //TODO Continue implementing
     }
     
 }

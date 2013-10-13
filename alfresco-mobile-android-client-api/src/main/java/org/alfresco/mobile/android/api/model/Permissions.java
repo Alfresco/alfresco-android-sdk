@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * Permissions represent the actions a person can perform on a node.
  * 

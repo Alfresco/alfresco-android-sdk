@@ -203,7 +203,6 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
     @Override
     public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> arg0)
     {
-        // TODO Auto-generated method stub
         mProgressDialog.dismiss();
     }
 }

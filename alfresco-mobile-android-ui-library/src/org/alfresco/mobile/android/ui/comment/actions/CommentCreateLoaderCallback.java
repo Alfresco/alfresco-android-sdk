@@ -75,7 +75,7 @@ public class CommentCreateLoaderCallback extends BaseLoaderCallback implements L
     @Override
     public void onLoaderReset(Loader<LoaderResult<Comment>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     public void setOnCommentCreateListener(OnCommentCreateListener mListener)
