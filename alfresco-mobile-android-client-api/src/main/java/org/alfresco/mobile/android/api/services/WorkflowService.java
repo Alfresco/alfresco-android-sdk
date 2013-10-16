@@ -46,7 +46,7 @@ import org.alfresco.mobile.android.api.model.Task;
  * @since 1.3.0
  * @author Jean Marie PASCAL
  */
-public interface WorkflowService
+public interface WorkflowService extends Service
 {
     // ////////////////////////////////////////////////////////////////
     // FILTERS

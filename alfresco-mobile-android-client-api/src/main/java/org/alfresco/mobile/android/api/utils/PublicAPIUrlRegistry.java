@@ -312,6 +312,9 @@ public class PublicAPIUrlRegistry
     // //////////////////////////////////////////////////////////////////////////////
     public static final String URL_PERSON_DETAILS = "people/{personId}";
 
+    /** @since 1.3.0 */
+    private static final String URL_SEARCH_PERSON = "api/people";
+
     /**
      * @param session : Repository Session
      * @return Returns an url to retrieve user Details
@@ -320,6 +323,12 @@ public class PublicAPIUrlRegistry
     {
         return createPrefix(session).append(
                 URL_PERSON_DETAILS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+    }
+
+    /** @since 1.3.0 */
+    public static String getSearchPersonUrl(AlfrescoSession session)
+    {
+        return createInternalPrefix(session, null).append(URL_SEARCH_PERSON).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -542,6 +551,27 @@ public class PublicAPIUrlRegistry
         else if (session instanceof RepositorySession)
         {
             sb.append(getPublicApiPrefix());
+        }
+        sb.append("/");
+
+        return sb;
+    }
+
+    private static StringBuilder createInternalPrefix(AlfrescoSession session, String networkIdentifier)
+    {
+        StringBuilder sb = new StringBuilder(session.getBaseUrl());
+
+        if (session instanceof CloudSession)
+        {
+            sb.append("/");
+            if (networkIdentifier != null)
+            {
+                sb.append(networkIdentifier);
+            }
+            else if (((CloudSession) session).getNetwork() != null)
+            {
+                sb.append(((CloudSession) session).getNetwork().getIdentifier());
+            }
         }
         sb.append("/");
 

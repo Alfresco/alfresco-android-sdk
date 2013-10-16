@@ -35,6 +35,8 @@ import org.alfresco.mobile.android.api.model.impl.PersonImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
@@ -79,9 +81,7 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
         try
         {
             Person person = getPerson(personIdentifier);
-            if (person.getAvatarIdentifier() == null){
-                return null;
-            }
+            if (person.getAvatarIdentifier() == null) { return null; }
             ContentStream st = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                     .getDocumentFolderService()).downloadContentStream(person.getAvatarIdentifier());
             return st;
@@ -92,8 +92,7 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
         }
         return null;
     }
-    
-    
+
     // ////////////////////////////////////////////////////
     // Search
     // ////////////////////////////////////////////////////
@@ -109,15 +108,21 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
     {
         if (isStringNull(keyword)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "keyword")); }
-        
+
         List<Person> definitions = new ArrayList<Person>();
         Map<String, Object> json = new HashMap<String, Object>(0);
         int size = 0;
         try
         {
             String link = OnPremiseUrlRegistry.getSearchPersonUrl(session);
+            if (session instanceof CloudSession)
+            {
+                link = PublicAPIUrlRegistry.getSearchPersonUrl(session);
+            }
+
             UrlBuilder url = new UrlBuilder(link);
             url.addParameter(OnPremiseConstant.FILTER_VALUE, keyword);
+
             if (listingContext != null)
             {
                 url.addParameter(OnPremiseConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
@@ -143,12 +148,13 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
 
         return new PagingResultImpl<Person>(definitions, false, size);
     }
-    
+
     @Override
     public Person refresh(Person person)
     {
         return getPerson(person.getIdentifier());
     }
+
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -159,21 +165,21 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
         Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
 
         // check response code
-        if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR || resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
+        if (resp.getResponseCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR
+                || resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
         {
             throw new AlfrescoServiceException(ErrorCodeRegistry.PERSON_NOT_FOUND, resp.getErrorContent());
         }
-        else if (resp.getResponseCode() != HttpStatus.SC_OK)
-        {
-            return null;
-            //convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
+        else if (resp.getResponseCode() != HttpStatus.SC_OK) { return null;
+        // convertStatusCode(resp, ErrorCodeRegistry.PERSON_GENERIC);
         }
 
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-        Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json).get(PublicAPIConstant.ENTRY_VALUE);
+        Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
+                .get(PublicAPIConstant.ENTRY_VALUE);
         return PersonImpl.parsePublicAPIJson(data);
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
