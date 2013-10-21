@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.session;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -36,6 +37,32 @@ import android.os.Parcelable;
  */
 public interface AlfrescoSession extends Parcelable
 {
+    // ///////////////////////////////////////////////
+    // HTTP REQUEST
+    // ///////////////////////////////////////////////
+    /**
+     * Define the HTTP Header "Accept-Encoding" for all requests.<br/>
+     * Values can be
+     * <ul>
+     * <li>true (as string value) : gzip,deflate</li>
+     * <li>false (as string value) : empty value</li>
+     * <li>any string value : replace the default value.</li>
+     * </ul>
+     * <b>This parameter can't be changed after the session creation</b>.
+     * 
+     * @since 1.3
+     */
+    String HTTP_ACCEPT_ENCODING = "org.alfresco.mobile.http.encoding";
+
+    /**
+     * Define the HTTP Header "Accept-Language" for all requests.<br/>
+     * by default it's system Locale + ", en-us;q=0.8" <b>This parameter can't
+     * be changed after the session creation</b>.
+     * 
+     * @since 1.3
+     */
+    String HTTP_ACCEPT_LANGUAGE = "org.alfresco.mobile.http.language";
+
     // ///////////////////////////////////////////////
     // EXTENSION
     // ///////////////////////////////////////////////
@@ -64,10 +91,10 @@ public interface AlfrescoSession extends Parcelable
      * <b>This parameter can't be changed after the session creation</b>.
      */
     String AUTHENTICATOR_CLASSNAME = "org.alfresco.mobile.api.authenticator.classname";
-    
+
     /**
-     * Define the specific implementation of HTTP layer for the session. Must
-     * be a full qualified classname. This class must extend
+     * Define the specific implementation of HTTP layer for the session. Must be
+     * a full qualified classname. This class must extend
      * {@link org.apache.chemistry.opencmis.client.bindings.spi.http.HttpInvoker}
      * <br/>
      * <b>This parameter can't be changed after the session creation</b>.
@@ -101,8 +128,10 @@ public interface AlfrescoSession extends Parcelable
     // CACHE
     // ///////////////////////////////////////////////
     /**
-     * Define the path to the cache folder. The cache folder is used to store temporary file.<br/>
-     * Value must be String value that represents a valid path inside the device.<br/>
+     * Define the path to the cache folder. The cache folder is used to store
+     * temporary file.<br/>
+     * Value must be String value that represents a valid path inside the
+     * device.<br/>
      * Default : "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache"
      */
     String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
@@ -184,7 +213,7 @@ public interface AlfrescoSession extends Parcelable
      * Returns a list of all the parameter names stored in the sesssion.
      */
     List<String> getParameterKeys();
-    
+
     /**
      * Clears any cached data the session is storing.
      */

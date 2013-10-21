@@ -207,7 +207,7 @@ public class PublicAPIUrlRegistry
     }
 
     /** @since 1.3.0 */
-    public static String getAllMembersSiteUrl(CloudSession session, String siteShortName)
+    public static String getAllMembersSiteUrl(AlfrescoSession session, String siteShortName)
     {
         return createPrefix(session).append(URL_ALLMEMBERSOF.replace(VARIABLE_SITEID, siteShortName)).toString();
     }

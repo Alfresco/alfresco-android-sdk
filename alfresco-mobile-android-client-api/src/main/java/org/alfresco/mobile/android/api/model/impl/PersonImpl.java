@@ -54,7 +54,7 @@ public class PersonImpl implements Person
     private boolean isCloud = false;
 
     private Map<String, String> properties;
-    
+
     private boolean hasAllProperties = true;
 
     private Company company;
@@ -101,8 +101,9 @@ public class PersonImpl implements Person
     {
         return parseJson(json, true);
     }
-    
-    public static PersonImpl parseJson(Map<String, Object> json, boolean hasAllProperties){
+
+    public static PersonImpl parseJson(Map<String, Object> json, boolean hasAllProperties)
+    {
         String separatorInternal = "Store/";
 
         PersonImpl person = new PersonImpl();
@@ -138,7 +139,7 @@ public class PersonImpl implements Person
         person.properties = props;
 
         person.company = CompanyImpl.parseJson(json, props.get(OnPremiseConstant.LOCATION_VALUE));
-        
+
         person.hasAllProperties = hasAllProperties;
 
         return person;
@@ -152,9 +153,9 @@ public class PersonImpl implements Person
      */
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json)
     {
-       return parsePublicAPIJson(json, true);
+        return parsePublicAPIJson(json, true);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json, boolean hasAllProperties)
     {
@@ -179,7 +180,7 @@ public class PersonImpl implements Person
 
         person.company = CompanyImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.COMPANY_VALUE),
                 props.get(CloudConstant.LOCATION_VALUE));
-        
+
         person.hasAllProperties = hasAllProperties;
 
         return person;
@@ -212,9 +213,28 @@ public class PersonImpl implements Person
     /** {@inheritDoc} */
     public String getFullName()
     {
-        if ((firstName != null && firstName.length() != 0) || (lastName != null && lastName.length() != 0)) { return firstName
-                + " " + lastName; }
-        return username;
+        StringBuilder builder = new StringBuilder();
+        if (firstName != null && firstName.length() != 0)
+        {
+            builder.append(firstName);
+        }
+
+        if (lastName != null && lastName.length() != 0)
+        {
+            if (builder.length() != 0)
+            {
+                builder.append(lastName);
+            }
+            else
+            {
+                builder.append(" ");
+                builder.append(lastName);
+            }
+        }
+
+        if (builder.length() == 0) { return username; }
+
+        return builder.toString();
     }
 
     /** {@inheritDoc} */

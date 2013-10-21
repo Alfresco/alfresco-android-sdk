@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.api.model.impl.PermissionsImpl;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
@@ -512,7 +513,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
 
             // EXTRACT METADATA + Generate Thumbnails
-            if (RepositoryVersionHelper.isAlfrescoProduct(session))
+            if (session instanceof RepositorySession && RepositoryVersionHelper.isAlfrescoProduct(session))
             {
                 if (session.getParameter(AlfrescoSession.EXTRACT_METADATA) != null
                         && (Boolean) session.getParameter(AlfrescoSession.EXTRACT_METADATA))

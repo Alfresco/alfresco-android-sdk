@@ -35,6 +35,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.apache.chemistry.opencmis.client.bindings.impl.ClientVersion;
 import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
@@ -51,6 +52,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import android.util.Log;
 
 public class NetworkHttpInvoker implements HttpInvoker
 {
@@ -95,6 +98,7 @@ public class NetworkHttpInvoker implements HttpInvoker
         try
         {
             // log before connect
+            // Log.d("URL", url.toString());
             if (LOG.isDebugEnabled())
             {
                 LOG.debug(method + " " + url);
@@ -193,16 +197,36 @@ public class NetworkHttpInvoker implements HttpInvoker
             }
 
             // compression
-            Object compression = session.get(SessionParameter.COMPRESSION);
-            if ((compression != null) && Boolean.parseBoolean(compression.toString()))
+            Object compression = session.get(AlfrescoSession.HTTP_ACCEPT_ENCODING);
+            if (compression == null)
             {
-                conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
+                conn.setRequestProperty("Accept-Encoding", "");
+            }
+            else
+            {
+                Boolean compressionValue;
+                try
+                {
+                    compressionValue = Boolean.parseBoolean(compression.toString());
+                    if (compressionValue)
+                    {
+                        conn.setRequestProperty("Accept-Encoding", "gzip,deflate");
+                    }
+                    else
+                    {
+                        conn.setRequestProperty("Accept-Encoding", "");
+                    }
+                }
+                catch (Exception e)
+                {
+                    conn.setRequestProperty("Accept-Encoding", compression.toString());
+                }
             }
 
             // locale
-            if (session.get(CmisBindingsHelper.ACCEPT_LANGUAGE) instanceof String)
+            if (session.get(AlfrescoSession.HTTP_ACCEPT_LANGUAGE) instanceof String && session.get(AlfrescoSession.HTTP_ACCEPT_LANGUAGE) != null)
             {
-                conn.setRequestProperty("Accept-Language", session.get(CmisBindingsHelper.ACCEPT_LANGUAGE).toString());
+                conn.setRequestProperty("Accept-Language", session.get(AlfrescoSession.HTTP_ACCEPT_LANGUAGE).toString());
             }
 
             // send data
@@ -262,7 +286,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             throw new CmisConnectionException("Cannot access " + url + ": " + e.getMessage(), e);
         }
     }
-    
+
     // ///////////////////////////////////////////////
     // STATIC METHOD
     // ///////////////////////////////////////////////
@@ -281,20 +305,21 @@ public class NetworkHttpInvoker implements HttpInvoker
     {
         return invoke(url, "POST", contentType, null, null, true, null, null, params);
     }
-    
+
     private static Response invoke(UrlBuilder url, String method, String contentType,
             Map<String, List<String>> httpHeaders, Output writer, BigInteger offset, BigInteger length,
             Map<String, String> params)
     {
         return invoke(url, method, contentType, httpHeaders, writer, false, offset, length, params);
     }
-    
+
     private static Response invoke(UrlBuilder url, String method, String contentType,
-            Map<String, List<String>> httpHeaders, Output writer, boolean forceOutput, BigInteger offset, BigInteger length,
-            Map<String, String> params){
+            Map<String, List<String>> httpHeaders, Output writer, boolean forceOutput, BigInteger offset,
+            BigInteger length, Map<String, String> params)
+    {
         try
         {
-            //Log.d("URL", url.toString());
+            // Log.d("URL", url.toString());
 
             // connect
             HttpURLConnection conn = (HttpURLConnection) (new URL(url.toString())).openConnection();
@@ -398,7 +423,7 @@ public class NetworkHttpInvoker implements HttpInvoker
 
             if (writer != null)
             {
-                //conn.setChunkedStreamingMode((64 * 1024) - 1);
+                // conn.setChunkedStreamingMode((64 * 1024) - 1);
                 OutputStream connOut = null;
                 connOut = conn.getOutputStream();
                 OutputStream out = new BufferedOutputStream(connOut, BUFFER_SIZE);
@@ -428,5 +453,5 @@ public class NetworkHttpInvoker implements HttpInvoker
             throw new CmisConnectionException("Cannot access " + url + ": " + e.getMessage(), e);
         }
     }
-    
+
 }
