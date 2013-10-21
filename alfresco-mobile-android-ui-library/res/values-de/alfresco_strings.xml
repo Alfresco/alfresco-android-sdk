@@ -55,8 +55,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <!-- Listing -->
-    <string name="load_more">Mehr laden...</string>
-    <string name="load_more_progress">Ladevorgang wird durchgeführt...</string>
+    <string name="load_more">Weitere laden...</string>
+    <string name="load_more_progress">Ladevorgang in Bearbeitung...</string>
     <string name="listing_nodata">Keine Daten.</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -64,9 +64,9 @@
     <string name="dialog_wait">Bitte warten</string>
     <!-- Activities -->
     <string name="activities">Aktivitäten</string>
-    <string name="org_alfresco_blog_post_created">{0} Blog Post erstellt von {1}</string>
-    <string name="org_alfresco_blog_post_updated">{0} Blog Post aktualisiert von {1}</string>
-    <string name="org_alfresco_blog_post_deleted">{0} Blog Post gelöscht von {1}</string>
+    <string name="org_alfresco_blog_post_created">{0} Blog-Post erstellt von {1}</string>
+    <string name="org_alfresco_blog_post_updated">{0} Blog-Post aktualisiert von {1}</string>
+    <string name="org_alfresco_blog_post_deleted">{0} Blog-Post gelöscht von {1}</string>
     <string name="org_alfresco_comments_comment_created">{1} kommentierte {0}</string>
     <string name="org_alfresco_comments_comment_updated">{1} aktualisierte Kommentar am {0}</string>
     <string name="org_alfresco_comments_comment_deleted">{1} löschte Kommentar aus {0}</string>
@@ -94,10 +94,10 @@
     <string name="org_alfresco_documentlibrary_inline_edit">{0} Dokument bearbeitet von {1}</string>
     <string name="org_alfresco_documentlibrary_file_liked">{1} gefällt Dokument {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} gefällt Ordner {0}</string>
-    <string name="org_alfresco_wiki_page_created">{0} Wiki Seite erstellt von {1}</string>
-    <string name="org_alfresco_wiki_page_edited">{0} Wiki Seite aktualisiert von {1}</string>
-    <string name="org_alfresco_wiki_page_renamed">{2} Wiki Seite umbenannt in {0} von {1}</string>
-    <string name="org_alfresco_wiki_page_deleted">{0} Wiki Seite gelöscht von {1}</string>
+    <string name="org_alfresco_wiki_page_created">{0} Wiki-Seite erstellt von {1}</string>
+    <string name="org_alfresco_wiki_page_edited">{0} Wiki-Seite aktualisiert von {1}</string>
+    <string name="org_alfresco_wiki_page_renamed">{2} Wiki-Seite umbenannt in {0} von {1}</string>
+    <string name="org_alfresco_wiki_page_deleted">{0} Wiki-Seite gelöscht von {1}</string>
     <string name="org_alfresco_site_group_added">{1} Gruppe zur Site {4} mit Rolle {2} hinzugefügt</string>
     <string name="org_alfresco_site_group_removed">{1} Gruppe von Site {4} entfernt</string>
     <string name="org_alfresco_site_group_role_changed">{1} Rolle der Gruppe in {2} geändert</string>
@@ -174,6 +174,9 @@
     <string name="metadata_prop_version_modified_by">Zuletzt geändert von</string>
     <string name="metadata_prop_version_comment">Kommentar</string>
     <string name="metadata_prop_version_current">Aktuelle Version</string>
+    <!-- Metadata RESTRICTABLE -->
+    <string name="metadata_aspect_restrictable">Beschränkbar</string>
+    <string name="metadata_prop_offline_expires_after">Offline läuft nach (Stunden) ab</string>
     <!-- Upload/Create Content -->
     <string name="content_app_pick_file">Anwendung für Dateiauswahl wählen</string>
     <string name="content_upload">Datei hochladen</string>
@@ -195,8 +198,8 @@
     <!-- Download -->
     <string name="download">Herunterladen</string>
     <string name="download_complete">Download abgeschlossen</string>
-    <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten</string>
-    <string name="download_progress">Download wird durchgeführt...</string>
+    <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten.</string>
+    <string name="download_progress">Download-Vorgang in Bearbeitung...</string>
     <!-- Empty -->
     <string name="empty_child">Kein Dokument gefunden</string>
     <string name="empty_site">Keine Sites verfügbar</string>
@@ -217,7 +220,7 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <!-- Comments -->
     <string name="comments">Kommentare</string>
-    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
+    <string name="comment_add_hint">Kommentar hier eingeben</string>
     <!-- Actions -->
     <string name="create">Erzeugen</string>
     <string name="add">Hinzufügen</string>
