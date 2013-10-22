@@ -44,7 +44,6 @@ import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.api.SessionFactory;
-import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
@@ -159,9 +158,14 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
             tmpSettings.put(HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
         }
 
-        if (!tmpSettings.containsKey(SessionParameter.COMPRESSION))
+        if (!tmpSettings.containsKey(HTTP_ACCEPT_ENCODING))
         {
-            tmpSettings.put(SessionParameter.COMPRESSION, "true");
+            tmpSettings.put(HTTP_ACCEPT_ENCODING, "true");
+        }
+
+        if (!tmpSettings.containsKey(HTTP_ACCEPT_LANGUAGE))
+        {
+            tmpSettings.put(HTTP_ACCEPT_LANGUAGE, Locale.getDefault().getLanguage() + ", en-us;q=0.8");
         }
 
         userParameters = tmpSettings;
@@ -308,9 +312,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         sessionParameters.put(SessionParameter.USER, userIdentifier);
         sessionParameters.put(SessionParameter.PASSWORD, password);
         sessionParameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-        // sessionParameters.put(SessionParameter.CLIENT_COMPRESSION, "true");
-        sessionParameters.put(CmisBindingsHelper.ACCEPT_LANGUAGE, Locale.getDefault().getLanguage() + ", en;q=0.7");
-
+        
         // connection settings
         addParameterIfExist(BINDING_URL, SessionParameter.ATOMPUB_URL);
         addParameterIfExist(BASE_URL, BASE_URL);
@@ -322,10 +324,10 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
                 SessionParameter.AUTHENTICATION_PROVIDER_CLASS);
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
-        addParameterIfExist(SessionParameter.COMPRESSION, SessionParameter.COMPRESSION);
+        addParameterIfExist(HTTP_ACCEPT_ENCODING, HTTP_ACCEPT_ENCODING);
+        addParameterIfExist(HTTP_ACCEPT_LANGUAGE, HTTP_ACCEPT_LANGUAGE);
         addParameterIfExist(ONPREMISE_TRUSTMANAGER_CLASSNAME, ONPREMISE_TRUSTMANAGER_CLASSNAME);
         addParameterIfExist(HTTP_INVOKER_CLASSNAME, SessionParameter.HTTP_INVOKER_CLASS);
-
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)

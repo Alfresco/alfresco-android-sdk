@@ -535,7 +535,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
     {
         List<Person> personList = new ArrayList<Person>();
         // build URL
-        String link = PublicAPIUrlRegistry.getAllMembersSiteUrl((CloudSession) session, site.getIdentifier());
+        String link = PublicAPIUrlRegistry.getAllMembersSiteUrl(session, site.getIdentifier());
         UrlBuilder url = new UrlBuilder(link);
         if (listingContext != null)
         {
