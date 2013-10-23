@@ -56,13 +56,22 @@ public interface AlfrescoSession extends Parcelable
 
     /**
      * Define the HTTP Header "Accept-Language" for all requests.<br/>
-     * by default it's system Locale + ", en-us;q=0.8" <b>This parameter can't
+     * By default it's system Locale + ", en-us;q=0.8" <b>This parameter can't
      * be changed after the session creation</b>.
      * 
      * @since 1.3
      */
     String HTTP_ACCEPT_LANGUAGE = "org.alfresco.mobile.http.language";
-
+    
+    /**
+     * Used by the NetworkHttpInvoker to enable/disable the chunkStreamingMode.
+     * Some HTTP server configuration doesn't support this mode. <br/>
+     * By default the mode is disabled.
+     * <b>This parameter can't be changed after the session creation</b>.
+     * 
+     * @since 1.3
+     */
+    String HTTP_CHUNK_TRANSFERT = "org.alfresco.mobile.http.transfert.chunk";
     // ///////////////////////////////////////////////
     // EXTENSION
     // ///////////////////////////////////////////////

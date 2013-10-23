@@ -535,6 +535,12 @@ public final class OnPremiseUrlRegistry
     {
         return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_TASK_FOR_PROCESS).replace(VARIABLE_PROCESSID, processId);
     }
+    
+    /** @since 1.3.0 */
+    public static String getAllTasksForProcessIdUrl(AlfrescoSession session, String processId)
+    {
+        return session.getBaseUrl().concat(PREFIX_SERVICE).concat(URL_PROCESS).replace(VARIABLE_PROCESSID, processId);
+    }
 
     /** @since 1.3.0 */
     public static String getProcessItemsUrl(AlfrescoSession session, String processId)

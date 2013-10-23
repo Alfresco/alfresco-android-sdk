@@ -348,6 +348,8 @@ public interface OnPremiseConstant
     String DUEAFTER_VALUE = "dueAfter";
 
     String DUEBEFORE_VALUE = "dueBefore";
+    
+    String INCLUDETASKS_VALUE = "includeTasks";
 
     // Form Definition
     String ITEMKIND_VALUE = "itemKind";
@@ -409,4 +411,6 @@ public interface OnPremiseConstant
     String ISRELEASABLE_VALUE = "isReleasable";
 
     String OUTCOME_VALUE = "outcome";
+
+    String TASKS_VALUE = "tasks";
 }

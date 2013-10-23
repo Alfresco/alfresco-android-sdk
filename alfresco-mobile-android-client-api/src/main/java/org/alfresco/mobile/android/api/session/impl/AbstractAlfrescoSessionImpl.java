@@ -326,6 +326,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
         addParameterIfExist(HTTP_ACCEPT_ENCODING, HTTP_ACCEPT_ENCODING);
         addParameterIfExist(HTTP_ACCEPT_LANGUAGE, HTTP_ACCEPT_LANGUAGE);
+        addParameterIfExist(HTTP_CHUNK_TRANSFERT, HTTP_CHUNK_TRANSFERT);
         addParameterIfExist(ONPREMISE_TRUSTMANAGER_CLASSNAME, ONPREMISE_TRUSTMANAGER_CLASSNAME);
         addParameterIfExist(HTTP_INVOKER_CLASSNAME, SessionParameter.HTTP_INVOKER_CLASS);
     }

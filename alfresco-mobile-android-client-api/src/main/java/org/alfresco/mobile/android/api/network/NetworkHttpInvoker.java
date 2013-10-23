@@ -53,8 +53,6 @@ import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
-
 public class NetworkHttpInvoker implements HttpInvoker
 {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpInvoker.class);
@@ -91,7 +89,7 @@ public class NetworkHttpInvoker implements HttpInvoker
     {
         return (HttpURLConnection) url.openConnection();
     }
-
+    
     protected Response invoke(UrlBuilder url, String method, String contentType, Map<String, String> headers,
             Output writer, BindingSession session, BigInteger offset, BigInteger length)
     {
@@ -232,7 +230,14 @@ public class NetworkHttpInvoker implements HttpInvoker
             // send data
             if (writer != null)
             {
-                // conn.setChunkedStreamingMode((64 * 1024) - 1);
+                Object chunkTransfert = session.get(AlfrescoSession.HTTP_CHUNK_TRANSFERT);
+                if (chunkTransfert != null && Boolean.parseBoolean(chunkTransfert.toString()))
+                {
+                    conn.setRequestProperty(HTTP.TRANSFER_ENCODING, "chunked");
+                    conn.setChunkedStreamingMode(0);
+                }
+
+                conn.setConnectTimeout(900000);
 
                 OutputStream connOut = null;
 
