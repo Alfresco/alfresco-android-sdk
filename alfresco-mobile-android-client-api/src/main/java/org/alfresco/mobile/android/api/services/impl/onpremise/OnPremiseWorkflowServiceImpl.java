@@ -401,7 +401,6 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             {
                 url.addParameter(OnPremiseConstant.STATE_VALUE, OnPremiseConstant.IN_PROGRESS_UPPERCASE_VALUE);
             }
-            
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -458,7 +457,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
 
-        return getTasks(OnPremiseUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier()), listingContext);
+        String link = OnPremiseUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier());
+        if (listingContext.getFilter() != null)
+        {
+            ListingFilter lf = listingContext.getFilter();
+            if (lf.hasFilterValue(FILTER_KEY_STATUS)
+                    && (Integer) lf.getFilterValue(FILTER_KEY_STATUS) == FILTER_STATUS_ANY)
+            {
+                link = OnPremiseUrlRegistry.getAllTasksForProcessIdUrl(session, process.getIdentifier());
+            }
+        }
+        return getTasks(link, listingContext);
     }
 
     /** {@inheritDoc} */
@@ -682,6 +691,9 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                                 url.addParameter(OnPremiseConstant.STATE_VALUE,
                                         OnPremiseConstant.IN_PROGRESS_UPPERCASE_VALUE);
                                 break;
+                            case FILTER_STATUS_ANY:
+                                url.addParameter(OnPremiseConstant.INCLUDETASKS_VALUE, "true");
+                                break;
                             default:
                                 break;
                         }
@@ -689,7 +701,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
                     if (lf.hasFilterValue(FILTER_KEY_DUE))
                     {
-                        GregorianCalendar calendar = new GregorianCalendar(); 
+                        GregorianCalendar calendar = new GregorianCalendar();
                         calendar.set(Calendar.HOUR_OF_DAY, 23);
                         calendar.set(Calendar.MINUTE, 59);
                         calendar.set(Calendar.SECOND, 59);
@@ -744,7 +756,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             if (json != null)
             {
-                List<Object> jo = (List<Object>) json.get(OnPremiseConstant.DATA_VALUE);
+                List<Object> jo = null;
+                if (json.get(OnPremiseConstant.DATA_VALUE) instanceof List)
+                {
+                    jo = (List<Object>) json.get(OnPremiseConstant.DATA_VALUE);
+                }
+                else if (json.get(OnPremiseConstant.DATA_VALUE) instanceof Map)
+                {
+                    Map<String, Object> jso = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
+                    jo = (List<Object>) jso.get(OnPremiseConstant.TASKS_VALUE);
+                }
+                
                 size = jo.size();
                 for (Object obj : jo)
                 {
