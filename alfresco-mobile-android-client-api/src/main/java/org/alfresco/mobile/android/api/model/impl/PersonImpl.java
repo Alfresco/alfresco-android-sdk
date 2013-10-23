@@ -223,11 +223,11 @@ public class PersonImpl implements Person
         {
             if (builder.length() != 0)
             {
+                builder.append(" ");
                 builder.append(lastName);
             }
             else
             {
-                builder.append(" ");
                 builder.append(lastName);
             }
         }
