@@ -291,6 +291,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             tmp.put(USER, user);
             tmp.put(PASSWORD, password);
             tmp.put(CLOUD_BASIC_AUTH, true);
+            tmp.put(SessionParameter.CLIENT_COMPRESSION, "true");
+            tmp.put(AlfrescoSession.HTTP_ACCEPT_ENCODING, "false");
+            tmp.put(AlfrescoSession.HTTP_CHUNK_TRANSFERT, "true");
 
             session = CloudSession.connect(null, tmp);
         }
