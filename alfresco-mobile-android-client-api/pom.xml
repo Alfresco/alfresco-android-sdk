@@ -89,7 +89,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.chemistry.opencmis</groupId>
-					<artifactId>chemistry-opencmis-client-impl</artifactId>
+					<artifactId>chemistry-opencmis-android-client</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
