@@ -27,10 +27,12 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.ServerConfigFile;
+import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.util.Log;
 
@@ -185,6 +187,9 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
             tmp.put(USER, user);
             tmp.put(PASSWORD, password);
             tmp.put(CLOUD_BASIC_AUTH, true);
+            tmp.put(SessionParameter.CLIENT_COMPRESSION, "true");
+            tmp.put(AlfrescoSession.HTTP_ACCEPT_ENCODING, "false");
+            tmp.put(AlfrescoSession.HTTP_CHUNK_TRANSFERT, "true");
 
             alfsession = CloudSession.connect(null, tmp);
         }

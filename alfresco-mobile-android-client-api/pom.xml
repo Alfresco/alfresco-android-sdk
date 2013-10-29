@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
 		<artifactId>alfresco-mobile-android-sdk</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.0</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android-client-api</artifactId>
@@ -89,7 +89,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.chemistry.opencmis</groupId>
-					<artifactId>chemistry-opencmis-client-impl</artifactId>
+					<artifactId>chemistry-opencmis-android-client</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
