@@ -458,7 +458,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
 
         String link = OnPremiseUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier());
-        if (listingContext.getFilter() != null)
+        if (listingContext != null && listingContext.getFilter() != null)
         {
             ListingFilter lf = listingContext.getFilter();
             if (lf.hasFilterValue(FILTER_KEY_STATUS)
