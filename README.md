@@ -1,4 +1,4 @@
-Welcome to the Alfresco Android SDK v1.1
+Welcome to the Alfresco Android SDK v1.4
 ========================================
 
 The Alfresco Android SDK includes a set of APIs and samples that allows developers to quickly build Alfresco-enabled applications. 
