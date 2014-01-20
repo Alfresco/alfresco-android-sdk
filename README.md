@@ -10,7 +10,7 @@ Documentation
 
 Full documentation, including getting started instructions can be found [here](https://www.alfresco.com/cmis/browser?id=workspace://SpacesStore/76fdddfc-74ad-49e1-8a72-a742083e30fe). 
 
-More information can be found on our [developer portal](http://developer.alfresco.com/mobile) and on our [website](http://www.alfresco.com/products/mobile).
+More information can be found on our [developer portal](http://developer.alfresco.com/mobile), on our [website](http://www.alfresco.com/products/mobile) and our [wiki](https://wiki.alfresco.com/wiki/Mobile).
 
 
 Releases
