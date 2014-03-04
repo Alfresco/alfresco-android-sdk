@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk.tests</groupId>
 		<artifactId>alfresco-mobile-android-sdk-tests</artifactId>
-		<version>1.4.0</version>
+		<version>1.3.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
