@@ -36,18 +36,23 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
+import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AtomPubParser;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * The PersonService can be used to get informations about people.
@@ -71,6 +76,20 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
     protected UrlBuilder getPersonDetailssUrl(String personIdentifier)
     {
         return new UrlBuilder(PublicAPIUrlRegistry.getPersonDetailssUrl(session, personIdentifier));
+    }
+
+    @Override
+    public UrlBuilder getAvatarUrl(String personIdentifier)
+    {
+        Person person = getPerson(personIdentifier);
+        if (person.getAvatarIdentifier() == null) { return null; }
+        Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
+        CmisObject obj = cmisSession.getObject(person.getAvatarIdentifier());
+        String url = ((AbstractAtomPubService) cmisSession.getBinding().getObjectService()).loadLink(session
+                .getRepositoryInfo().getIdentifier(), obj.getId(), AtomPubParser.LINK_REL_CONTENT,
+                null);
+        Log.d("Avatar URL", url);
+        return new UrlBuilder(url);
     }
 
     /** {@inheritDoc} */

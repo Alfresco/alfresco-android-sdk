@@ -282,6 +282,7 @@ public abstract class BaseListFragment extends BaseFragment
             if (adapter.getCount() == 0)
             {
                 lv.setEmptyView(ev);
+                lv.setContentDescription(getString(emptyListMessageId));
             }
             else
             {
@@ -428,6 +429,7 @@ public abstract class BaseListFragment extends BaseFragment
                 {
                     lv.setAdapter(null);
                 }
+                lv.setContentDescription(getString(emptyListMessageId));
                 //Log.d("BaseListFragment", "ITEMS : Empty !");
             }
             else

@@ -873,6 +873,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
+            Log.d(TAG, Log.getStackTraceString(e));
             convertException(e);
         }
         return null;
@@ -924,6 +925,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier,
             String type);
+
+    public abstract UrlBuilder getRenditionUrl(String identifier, String type);
 
     /** {@inheritDoc} */
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)

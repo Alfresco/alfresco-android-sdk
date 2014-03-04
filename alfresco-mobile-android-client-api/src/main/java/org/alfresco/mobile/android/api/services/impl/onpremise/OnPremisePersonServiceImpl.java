@@ -69,6 +69,24 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         return new UrlBuilder(OnPremiseUrlRegistry.getPersonDetailsUrl(session, personIdentifier));
     }
 
+    public UrlBuilder getAvatarUrl(String personIdentifier)
+    {
+        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+
+        String url = getAvatarURL(personIdentifier);
+
+        // Alfresco Version before V4
+        if (session.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4)
+        {
+            Person person = getPerson(personIdentifier);
+            url = OnPremiseUrlRegistry.getThumbnailsUrl(session, person.getAvatarIdentifier(),
+                    OnPremiseConstant.AVATAR_VALUE);
+        }
+
+        return new UrlBuilder(url);
+    }
+
     /** {@inheritDoc} */
     public ContentStream getAvatarStream(String personIdentifier)
     {
@@ -78,18 +96,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         try
         {
             ContentStream cf = null;
-
-            String url = getAvatarURL(personIdentifier);
-
-            // Alfresco Version before V4
-            if (session.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4)
-            {
-                Person person = getPerson(personIdentifier);
-                url = OnPremiseUrlRegistry.getThumbnailsUrl(session, person.getAvatarIdentifier(),
-                        OnPremiseConstant.AVATAR_VALUE);
-            }
-
-            UrlBuilder builder = new UrlBuilder(url);
+            UrlBuilder builder = getAvatarUrl(personIdentifier);
             Response resp = read(builder, ErrorCodeRegistry.PERSON_GENERIC);
 
             cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader() + ";" + resp.getCharset(), resp

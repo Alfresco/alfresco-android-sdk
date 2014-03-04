@@ -886,6 +886,13 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
+    @Override
+    public UrlBuilder getProcessDiagramUrl(String processId)
+    {
+        String url = PublicAPIUrlRegistry.getWorkflowDiagram(session, processId);
+        return new UrlBuilder(url);
+    }
+    
     /** {@inheritDoc} */
     public ContentStream getProcessDiagram(Process process)
     {

@@ -72,6 +72,22 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     }
 
     @Override
+    public UrlBuilder getRenditionUrl(String identifier, String type)
+    {
+        try
+        {
+            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, identifier, type));
+            url.addParameter("format", "json");
+            return url;
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
+    }
+    
+    @Override
     /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String type)
     {
@@ -82,8 +98,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             {
                 nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(identifier);
             }
-            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, nodeIdentifier, type));
-            url.addParameter("format", "json");
+            UrlBuilder url = getRenditionUrl(nodeIdentifier, type);
             Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
             org.alfresco.mobile.android.api.model.ContentStream cf;
             if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)

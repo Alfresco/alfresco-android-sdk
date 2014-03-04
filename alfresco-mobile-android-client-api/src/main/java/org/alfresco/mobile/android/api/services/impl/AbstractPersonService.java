@@ -67,6 +67,8 @@ public abstract class AbstractPersonService extends AlfrescoService implements P
         return null;
     }
 
+    public abstract UrlBuilder getAvatarUrl(String personIdentifier);
+    
     /**
      * Retrieves the avatar rendition for the specified username.
      * 
