@@ -14,7 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources>
 
@@ -77,21 +77,21 @@
     <string name="org_alfresco_calendar_event_created">{0} calendar event created by {1}</string>
     <string name="org_alfresco_calendar_event_updated">{0} calendar event updated by {1}</string>
     <string name="org_alfresco_calendar_event_deleted">{0} calendar event deleted by {1}</string>
-    <string name="org_alfresco_documentlibrary_file_added">{0} document added by {1}</string>
-    <string name="org_alfresco_documentlibrary_files_added">{0} documents added by {1}</string>
-    <string name="org_alfresco_documentlibrary_file_created">{0} document created by {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">{0} file added by {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">{0} files added by {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">{0} file created by {1}</string>
     <string name="org_alfresco_documentlibrary_file_deleted">{0} was deleted by {1}</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">{0} documents deleted by {1}</string>
-    <string name="org_alfresco_documentlibrary_file_updated">{0} document updated by {1}</string>
-    <string name="org_alfresco_documentlibrary_files_updated">{0} documents updated by {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{0} files deleted by {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">{0} file updated by {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{0} files updated by {1}</string>
     <string name="org_alfresco_documentlibrary_folder_added">{0} folder added by {1}</string>
     <string name="org_alfresco_documentlibrary_folders_added">{0} folders added by {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} was deleted by {1}</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">{0} folders deleted {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} document checked out to Google Docs by {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} document checked in from Google Docs by {1}</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">{0} document edited by {1}</string>
-    <string name="org_alfresco_documentlibrary_file_liked">{1} liked document {0}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} file checked out to Google Docs by {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} file checked in from Google Docs by {1}</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">{0} file edited by {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} liked file {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} liked folder {0}</string>
     <string name="org_alfresco_wiki_page_created">{0} wiki page created by {1}</string>
     <string name="org_alfresco_wiki_page_edited">{0} wiki page updated by {1}</string>
@@ -200,14 +200,14 @@
     <string name="download_error">An error occurred during download operation.</string>
     <string name="download_progress">Downloading in progress &#8230;</string>
     <!-- Empty -->
-    <string name="empty_child">No document found</string>
+    <string name="empty_child">No files found</string>
     <string name="empty_site">No sites available</string>
     <string name="empty_version">No version history available</string>
     <string name="empty_session">No session available</string>
     <string name="empty_actvity">No activity found</string>
     <string name="empty_tag">No tag found</string>
     <string name="empty_comment">No comments found</string>
-    <string name="empty_search">No document found</string>
+    <string name="empty_search">No files found</string>
     <!-- Size -->
     <string name="file_size_empty">0 byte</string>
     <string name="file_size_bytes">bytes</string>
