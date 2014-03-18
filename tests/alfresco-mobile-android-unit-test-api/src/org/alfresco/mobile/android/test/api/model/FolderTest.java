@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
 /**
  * Test class for Folder Object.
@@ -89,7 +90,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         // Type
         Assert.assertNotNull(folder.getType());
         Assert.assertEquals(ContentModel.TYPE_FOLDER, folder.getType());
-        Assert.assertEquals(ObjectType.FOLDER_BASETYPE_ID, folder.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
+        Assert.assertEquals(BaseTypeId.CMIS_FOLDER.value(), folder.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
 
 
         // Check Properties Methods

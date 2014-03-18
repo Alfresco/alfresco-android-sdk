@@ -331,7 +331,7 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
                 if (e.getMessage().contains("Permission was denied")) { throw new AlfrescoServiceException(
                         ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
             } else {
-                if (e.getMessage().contains("one site manager")) { throw new AlfrescoServiceException(
+                if (e.getMessage().contains("one site manager") || e.getMessage().contains("remove last manager")) { throw new AlfrescoServiceException(
                         ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
             }
             convertException(e);

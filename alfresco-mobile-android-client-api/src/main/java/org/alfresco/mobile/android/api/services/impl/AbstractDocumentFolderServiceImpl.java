@@ -712,11 +712,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             if (!ContentModel.TYPE_CONTENT.equals(node.getType()) && !ContentModel.TYPE_FOLDER.equals(node.getType()))
             {
                 String objectBaseTypeId = node.getProperty(PropertyIds.BASE_TYPE_ID).getValue();
-                if (ObjectType.DOCUMENT_BASETYPE_ID.equals(objectBaseTypeId))
+                if (BaseTypeId.CMIS_DOCUMENT.value().equals(objectBaseTypeId))
                 {
                     tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + node.getType());
                 }
-                else if (ObjectType.FOLDER_BASETYPE_ID.equals(objectBaseTypeId))
+                else if (BaseTypeId.CMIS_FOLDER.value().equals(objectBaseTypeId))
                 {
                     tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_FOLDER + node.getType());
                 }
@@ -1059,11 +1059,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             if (ContentModel.TYPE_CONTENT.equals(typeId))
             {
-                objectId = ObjectType.DOCUMENT_BASETYPE_ID;
+                objectId = BaseTypeId.CMIS_DOCUMENT.value();
             }
             else if (ContentModel.TYPE_FOLDER.equals(typeId))
             {
-                objectId = ObjectType.FOLDER_BASETYPE_ID;
+                objectId = BaseTypeId.CMIS_FOLDER.value();
             }
             else
             {

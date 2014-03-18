@@ -447,9 +447,12 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
                         .get(PublicAPIConstant.ID_VALUE); }
             }
         }
-        catch (Exception e)
+        catch (AlfrescoServiceException e)
         {
-            convertException(e);
+            if (e.getErrorCode() != 400)
+            {
+                convertException(e);
+            }
         }
         return null;
     }
@@ -569,7 +572,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
         try
         {
             // build URL
-            String link = PublicAPIUrlRegistry.getAllMembersSiteUrl((CloudSession) session, site.getIdentifier());
+            String link = PublicAPIUrlRegistry.getAllMembersSiteUrl(session, site.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse
