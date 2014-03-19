@@ -25,3 +25,9 @@ License
 -------
 
 The Alfresco Android SDK is distributed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+
+Contributors
+-----------------
+
+* Davi Garcia Pereira	 https://github.com/davigp
