@@ -59,6 +59,13 @@ public interface VersionService extends Service
     
     
     /**
+     * Get the latest version of a document.
+     * @param document
+     * @return
+     */
+    Document getLatestVersion(Document document);
+    
+    /**
      * Get the version history that relates to the referenced document.
      * 
      * @param document : document object in version control.

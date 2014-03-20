@@ -96,6 +96,8 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     {
         return getTasks(process, null).getList();
     }
+    
+    public abstract UrlBuilder getProcessDiagramUrl(String processId);
 
     // ////////////////////////////////////////////////////////////////
     // ITEMS

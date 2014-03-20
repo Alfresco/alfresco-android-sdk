@@ -1052,6 +1052,13 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
+    @Override
+    public UrlBuilder getProcessDiagramUrl(String processId)
+    {
+        String url = OnPremiseUrlRegistry.getWorkflowDiagram(session, processId);
+        return new UrlBuilder(url);
+    }
+    
     /** {@inheritDoc} */
     public ContentStream getProcessDiagram(Process process)
     {

@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.alfresco.cmis.client.AlfrescoDocument;
-import org.alfresco.cmis.client.TransientAlfrescoDocument;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -43,7 +42,6 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
-import org.apache.chemistry.opencmis.client.api.TransientDocument;
 
 import android.test.AndroidTestCase;
 
@@ -286,7 +284,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         Document doc = session.getRootFolder().createDocument(properties, null, null);
 
         // get transient document
-        TransientDocument tDoc = doc.getTransientDocument();
+        /*TransientDocument tDoc = doc.getTransientDocument();
 
         Property<String> descriptionProperty = tDoc.getProperty("cm:description");
         assertNotNull(descriptionProperty);
@@ -327,7 +325,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         assertNull(doc3.getProperty("cm:description"));
 
         // delete
-        doc2.delete(true);
+        doc2.delete(true);*/
     }
 
     public void testEXIFAspect()

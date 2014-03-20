@@ -48,6 +48,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 
 /**
@@ -122,7 +123,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(SAMPLE_DOC_NAME, doc.getTitle());
         Assert.assertEquals(SAMPLE_FOLDER_DESCRIPTION, doc.getDescription());
         Assert.assertEquals(ContentModel.TYPE_CONTENT, doc.getType());
-        Assert.assertEquals(ObjectType.DOCUMENT_BASETYPE_ID, doc.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue()
+        Assert.assertEquals(BaseTypeId.CMIS_DOCUMENT.value(), doc.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue()
                 .toString());
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getCreatedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
@@ -331,7 +332,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
-        Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
+        Assert.assertTrue(compareDate(doc.getCreatedAt().getTime(), doc.getModifiedAt().getTime()));
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
         Assert.assertTrue(doc.isDocument());

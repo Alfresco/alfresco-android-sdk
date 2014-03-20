@@ -13,7 +13,7 @@
 
 	<groupId>org.alfresco.mobile.android.sdk</groupId>
 	<artifactId>alfresco-mobile-android-sdk</artifactId>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android SDK (Parent)</name>
@@ -134,9 +134,8 @@
 		<junit.version>4.10</junit.version>
 
 		<!-- Alfresco Configuration -->
-		<alfresco.sdk.version>1.3.0</alfresco.sdk.version>
-		<chemistry.opencmis.version>0.10.0</chemistry.opencmis.version>
-		<alfresco.opencmis.version>0.6-ANDROID</alfresco.opencmis.version>
+		<chemistry.opencmis.version>1.0.0-r1578909</chemistry.opencmis.version>
+		<alfresco.opencmis.version>0.7-ANDROID</alfresco.opencmis.version>
 
 		<!-- Plugins -->
 		<site.basedir>${project.parent.basedir}</site.basedir>

@@ -60,8 +60,10 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
     /** Folder path from which we want children node. */
     private String folderPath = null;
 
-    /** Folder id. */
+    /** Folder INTERNAL id. */
     private int folderAppId = -1;
+
+    private String folderIdentifier;
 
     /**
      * Get all children from a the specified folder. </br> Use
@@ -93,6 +95,13 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
         super(context);
         this.session = session;
         this.folderPath = folderPath;
+    }
+
+    public NodeChildrenLoader(String folderIdentifier, Context context, AlfrescoSession session)
+    {
+        super(context);
+        this.session = session;
+        this.folderIdentifier = folderIdentifier;
     }
 
     public NodeChildrenLoader(Context context, AlfrescoSession session, int folderAppId)
@@ -180,7 +189,20 @@ public class NodeChildrenLoader extends AbstractPagingLoader<LoaderResult<Paging
                 pagingResult = session.getServiceRegistry().getDocumentFolderService()
                         .getChildren(parentFolder, listingContext);
             }
-
+            else if (folderIdentifier != null)
+            {
+                Node n = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(folderIdentifier);
+                if (n.isFolder())
+                {
+                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                            .getChildren((Folder) n, listingContext);
+                    parentFolder = (Folder) n;
+                }
+                else
+                {
+                    parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
+                }
+            }
         }
         catch (Exception e)
         {

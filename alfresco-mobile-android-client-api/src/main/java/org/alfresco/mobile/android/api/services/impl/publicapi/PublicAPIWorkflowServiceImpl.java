@@ -886,6 +886,13 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
+    @Override
+    public UrlBuilder getProcessDiagramUrl(String processId)
+    {
+        String url = PublicAPIUrlRegistry.getWorkflowDiagram(session, processId);
+        return new UrlBuilder(url);
+    }
+
     /** {@inheritDoc} */
     public ContentStream getProcessDiagram(Process process)
     {
@@ -1134,16 +1141,10 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             queryPart.append(" AND ");
         }
 
-        try
-        {
-            queryPart.append(URLEncoder.encode(name, "UTF-8"));
-            queryPart.append("='");
-            queryPart.append(URLEncoder.encode(value, "UTF-8"));
-            queryPart.append("'");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-        }
+        queryPart.append(name);
+        queryPart.append("='");
+        queryPart.append(value);
+        queryPart.append("'");
     }
 
     /**

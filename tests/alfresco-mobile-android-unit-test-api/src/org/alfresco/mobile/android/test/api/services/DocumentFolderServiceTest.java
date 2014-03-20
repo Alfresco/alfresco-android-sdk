@@ -774,7 +774,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
         ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertNull(cf);
         }
@@ -784,7 +784,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         cf = docfolderservice.getRendition(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertNull(cf);
         }
@@ -794,7 +794,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
 
         ContentStream ci = docfolderservice.getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertNull(ci);
         }
@@ -806,7 +806,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // 28S1
         ci = session.getServiceRegistry().getDocumentFolderService()
                 .getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise())
+        if (isOnPremise() && !hasPublicAPI())
         {
             Assert.assertNull(ci);
         }

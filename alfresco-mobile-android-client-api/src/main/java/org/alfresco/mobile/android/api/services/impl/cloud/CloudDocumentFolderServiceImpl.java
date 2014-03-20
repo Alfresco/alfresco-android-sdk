@@ -56,11 +56,9 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
         super(cloudSession);
     }
 
-    @Override
-    /** {@inheritDoc} */
-    public ContentStream getRenditionStream(String identifier, String title)
+    public UrlBuilder getRenditionUrl(String identifier, String title)
     {
-        ContentStream cf = null;
+        UrlBuilder cf = null;
         try
         {
             String internalRenditionType = null;
@@ -78,8 +76,28 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
             if (renditionIdentifier == null) { return null; }
 
             // Second getData
-            UrlBuilder url = new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
+            return new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
                     renditionIdentifier));
+        }
+        catch (CmisObjectNotFoundException e)
+        {
+            cf = null;
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return cf;
+    }
+
+    @Override
+    /** {@inheritDoc} */
+    public ContentStream getRenditionStream(String identifier, String title)
+    {
+        ContentStream cf = null;
+        try
+        {
+            UrlBuilder url = getRenditionUrl(identifier, title);
             Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
             if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
             {
@@ -131,6 +149,7 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
         if (object != null && kind != null)
         {
             List<Rendition> renditions = object.getRenditions();
+            if (renditions == null){ return null;}
             for (Rendition rendition : renditions)
             {
                 if (kind.equalsIgnoreCase(rendition.getKind()) && title.equalsIgnoreCase(rendition.getTitle())) { return rendition

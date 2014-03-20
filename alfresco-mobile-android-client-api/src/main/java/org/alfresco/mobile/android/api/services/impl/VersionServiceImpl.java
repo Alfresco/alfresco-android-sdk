@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
@@ -48,6 +49,8 @@ import android.os.Parcelable;
  */
 public class VersionServiceImpl extends AlfrescoService implements VersionService
 {
+    protected Session cmisSession;
+    
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
@@ -57,12 +60,35 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
     public VersionServiceImpl(AlfrescoSession repositorySession)
     {
         super(repositorySession);
+        this.cmisSession = ((AbstractAlfrescoSessionImpl) repositorySession).getCmisSession();
+    }
+    
+    public Document getLatestVersion(Document document){
+        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+        
+        try
+        {
+            VersioningService versioningService = cmisSession.getBinding().getVersioningService();
+            OperationContext ctxt = cmisSession.getDefaultContext();
+            ObjectFactory objectFactory = cmisSession.getObjectFactory();
+ 
+            ObjectData objectData = versioningService.getObjectOfLatestVersion(session.getRepositoryInfo().getIdentifier(),
+                    document.getIdentifier(), (String) document.getProperty(PropertyIds.VERSION_SERIES_ID).getValue(), false, ctxt.getFilterString(), ctxt.isIncludeAllowableActions(),
+                    ctxt.getIncludeRelationships(), ctxt.getRenditionFilterString(), ctxt.isIncludePolicies(),
+                    ctxt.isIncludeAcls(), null);
+            
+            return (Document) convertNode(objectFactory.convertObject(objectData, ctxt));
+        } catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
     }
 
     /** {@inheritDoc} */
     public List<Document> getVersions(Document document)
     {
-
         return getVersions(document, null).getList();
     }
 
@@ -91,8 +117,6 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
         
         try
         {
-            Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
-
             VersioningService versioningService = cmisSession.getBinding().getVersioningService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
