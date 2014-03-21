@@ -92,8 +92,8 @@ import android.util.Log;
  */
 public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     
-    public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://repo.opencmis.org/inmemory/atom/";
-    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http://repo.opencmis.org/inmemory/";
+    public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom/";
+    public static final String CHEMISTRY_INMEMORY_BASE_URL = "http:///cmis.alfresco.com/";
 
 
     public static final String DEFAULT_TESTS_ENABLED = "true";
