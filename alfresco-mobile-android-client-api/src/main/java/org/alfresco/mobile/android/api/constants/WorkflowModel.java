@@ -268,7 +268,7 @@ public interface WorkflowModel
     };
 
     @SuppressWarnings("serial")
-    List<String> FAMILY_REVIEW = new ArrayList<String>(3)
+    List<String> FAMILY_PROCESS_REVIEW = new ArrayList<String>(3)
     {
         {
             add(KEY_REVIEW_JBPM);

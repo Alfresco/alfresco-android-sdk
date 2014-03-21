@@ -145,6 +145,9 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String URL_ALLMEMBERSOF = "sites/{siteId}/members";
+    
+    /** @since 1.3.0 */
+    public static final String URL_MEMBEROF = "sites/{siteId}/members/{personId}";
 
     /**
      * @param session
@@ -210,6 +213,14 @@ public class PublicAPIUrlRegistry
     public static String getAllMembersSiteUrl(AlfrescoSession session, String siteShortName)
     {
         return createPrefix(session).append(URL_ALLMEMBERSOF.replace(VARIABLE_SITEID, siteShortName)).toString();
+    }
+    
+    /** @since 1.3.0 */
+    public static String getMemberOfSiteUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
+    {
+        return createPrefix(session)
+                .append((URL_MEMBEROF.replace(VARIABLE_SITEID, siteIdentifier).replace(VARIABLE_PERSONID,
+                        getEncodingPersonIdentifier(inviteId)))).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////

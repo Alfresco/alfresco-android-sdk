@@ -572,7 +572,7 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
         try
         {
             // build URL
-            String link = PublicAPIUrlRegistry.getAllMembersSiteUrl(session, site.getIdentifier());
+            String link = PublicAPIUrlRegistry.getMemberOfSiteUrl(session, site.getIdentifier(), person.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
 
             // send and parse

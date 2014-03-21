@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.test.api.services;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 import android.util.Log;
@@ -36,7 +37,7 @@ public class ServicesTest extends AlfrescoSDKTestCase
      * Test to check creation of alfresco Service after binding with an alfresco
      * server.
      * 
-     * @Requirement 82S1, 
+     * @Requirement 82S1,
      */
     public void testAlfrescoServices()
     {
@@ -79,13 +80,17 @@ public class ServicesTest extends AlfrescoSDKTestCase
             Assert.assertNotNull(alfsession.getServiceRegistry().getVersionService());
             Assert.assertNotNull(alfsession.getServiceRegistry().getSearchService());
 
-            // Check Alfresco Services are NOT created
-            Assert.assertNull(alfsession.getServiceRegistry().getSiteService());
-            Assert.assertNull(alfsession.getServiceRegistry().getActivityStreamService());
-            Assert.assertNull(alfsession.getServiceRegistry().getCommentService());
-            Assert.assertNull(alfsession.getServiceRegistry().getPersonService());
-            Assert.assertNull(alfsession.getServiceRegistry().getRatingService());
-            Assert.assertNull(alfsession.getServiceRegistry().getTaggingService());
+            //We might point to cmis.alfresco.com in this case alfresco services are not null.
+            if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession))
+            {
+                // Check Alfresco Services are NOT created
+                Assert.assertNull(alfsession.getServiceRegistry().getSiteService());
+                Assert.assertNull(alfsession.getServiceRegistry().getActivityStreamService());
+                Assert.assertNull(alfsession.getServiceRegistry().getCommentService());
+                Assert.assertNull(alfsession.getServiceRegistry().getPersonService());
+                Assert.assertNull(alfsession.getServiceRegistry().getRatingService());
+                Assert.assertNull(alfsession.getServiceRegistry().getTaggingService());
+            }
         }
         else
         {

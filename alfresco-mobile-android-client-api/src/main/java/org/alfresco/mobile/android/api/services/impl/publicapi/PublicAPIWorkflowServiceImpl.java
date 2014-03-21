@@ -185,7 +185,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             // ASSIGNEES
             if (assignees != null && !assignees.isEmpty())
             {
-                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
+                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey())
+                        || WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
                 {
                     variablesJson.put(WorkflowModel.PROP_ASSIGNEE, assignees.get(0).getIdentifier());
                 }
