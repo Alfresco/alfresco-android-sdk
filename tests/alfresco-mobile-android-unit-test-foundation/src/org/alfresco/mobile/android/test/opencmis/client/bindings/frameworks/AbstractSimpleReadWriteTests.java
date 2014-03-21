@@ -36,6 +36,7 @@
 package org.alfresco.mobile.android.test.opencmis.client.bindings.frameworks;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -53,38 +54,50 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
 /**
  * Simple read-write test.
  */
-public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase {
+public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
+{
 
     public static final String TEST_CREATE_FOLDER = "createFolder";
+
     public static final String TEST_CREATE_DOCUMENT = "createDocument";
+
     public static final String TEST_CREATE_FROM_SOURCE = "createDocumentFromSource";
+
     public static final String TEST_SET_AND_DELETE_CONTENT = "setAndDeleteContent";
+
     public static final String TEST_UPDATE_PROPERTIES = "updateProperties";
+
     public static final String TEST_DELETE_TREE = "deleteTree";
+
     public static final String TEST_MOVE_OBJECT = "moveObject";
+
     public static final String TEST_COPY_OBJECT = "copyObject";
+
     public static final String TEST_VERSIONING = "versioning";
 
     private static final byte[] CONTENT = "My document test content!".getBytes();
+
     private static final byte[] CONTENT2 = "Another test content!".getBytes();
+
     private static final String CONTENT_TYPE = "text/plain";
 
     @Override
     protected void initSession()
     {
     }
-    
+
     /**
      * Tests folder creation.
      */
-    public void testCreateFolder() {
-        if (!isEnabled(TEST_CREATE_FOLDER)) {
-            return;
-        }
+    public void testCreateFolder()
+    {
+        if (!isEnabled(TEST_CREATE_FOLDER)) { return; }
+
+        // timestamp
 
         // create folder
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
-        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, "testfolder"));
+        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, "testfolder" + new Date().getTime()));
         propList.add(getObjectFactory().createPropertyIdData(PropertyIds.OBJECT_TYPE_ID, getDefaultFolderType()));
 
         Properties properties = getObjectFactory().createPropertiesData(propList);
@@ -98,16 +111,16 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests document creation.
      */
-    public void testCreateDocument() throws Exception {
-        if (!isEnabled(TEST_CREATE_DOCUMENT)) {
-            return;
-        }
+    public void testCreateDocument() throws Exception
+    {
+        if (!isEnabled(TEST_CREATE_DOCUMENT)) { return; }
 
         VersioningState vs = (isVersionable(getDefaultDocumentType()) ? VersioningState.MAJOR : VersioningState.NONE);
 
         // create document
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
-        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, "testdoc.txt"));
+        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME,
+                "testdoc" + new Date().getTime() + ".txt"));
         propList.add(getObjectFactory().createPropertyIdData(PropertyIds.OBJECT_TYPE_ID, getDefaultDocumentType()));
 
         Properties properties = getObjectFactory().createPropertiesData(propList);
@@ -119,7 +132,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         // read and assert content
         ContentStream contentStream2 = getContent(docId, null);
         assertMimeType(CONTENT_TYPE, contentStream2.getMimeType());
-        if (contentStream2.getBigLength() != null) {
+        if (contentStream2.getBigLength() != null)
+        {
             assertEquals(CONTENT.length, contentStream2.getBigLength().intValue());
         }
 
@@ -127,23 +141,20 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         assertContent(CONTENT, content);
 
         // apply an ACL
-        //NO ACL SUPPORT IN android binding.
-        /*if (supportsManageACLs()) {
-            Ace ace = getObjectFactory()
-                    .createAccessControlEntry(getUsername(), Collections.singletonList("cmis:read"));
-            Acl acl = getObjectFactory().createAccessControlList(Collections.singletonList(ace));
-
-            Acl newAcl = getBinding().getAclService().applyAcl(getTestRepositoryId(), docId, acl, null,
-                    getAclPropagation(), null);
-            assertNotNull(newAcl);
-
-            Acl readAcl = getBinding().getAclService().getAcl(getTestRepositoryId(), docId, Boolean.FALSE, null);
-            assertNotNull(readAcl);
-
-            assertEquals(newAcl, readAcl);
-        } else {
-            warning("ACLs management not supported!");
-        }*/
+        // NO ACL SUPPORT IN android binding.
+        /*
+         * if (supportsManageACLs()) { Ace ace = getObjectFactory()
+         * .createAccessControlEntry(getUsername(),
+         * Collections.singletonList("cmis:read")); Acl acl =
+         * getObjectFactory().
+         * createAccessControlList(Collections.singletonList(ace)); Acl newAcl =
+         * getBinding().getAclService().applyAcl(getTestRepositoryId(), docId,
+         * acl, null, getAclPropagation(), null); assertNotNull(newAcl); Acl
+         * readAcl = getBinding().getAclService().getAcl(getTestRepositoryId(),
+         * docId, Boolean.FALSE, null); assertNotNull(readAcl);
+         * assertEquals(newAcl, readAcl); } else {
+         * warning("ACLs management not supported!"); }
+         */
 
         // delete document
         delete(docId, true);
@@ -152,10 +163,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests document creation from source.
      */
-    public void testCreateDocumentFromSource() throws Exception {
-        if (!isEnabled(TEST_CREATE_FROM_SOURCE)) {
-            return;
-        }
+    public void testCreateDocumentFromSource() throws Exception
+    {
+        if (!isEnabled(TEST_CREATE_FROM_SOURCE)) { return; }
 
         VersioningState vs = (isVersionable(getDefaultDocumentType()) ? VersioningState.MAJOR : VersioningState.NONE);
 
@@ -192,10 +202,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests setting and deleting content stream.
      */
-    public void testSetAndDeleteContent() throws Exception {
-        if (!isEnabled(TEST_SET_AND_DELETE_CONTENT)) {
-            return;
-        }
+    public void testSetAndDeleteContent() throws Exception
+    {
+        if (!isEnabled(TEST_SET_AND_DELETE_CONTENT)) { return; }
 
         boolean requiresCheckOut = getRepositoryInfo().getCapabilities().getContentStreamUpdatesCapability() == CapabilityContentStreamUpdates.PWCONLY;
 
@@ -205,10 +214,14 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
 
         // if a check out is required, do it
         Holder<String> docIdHolder = new Holder<String>(docId);
-        if (requiresCheckOut) {
-            if (isVersionable) {
+        if (requiresCheckOut)
+        {
+            if (isVersionable)
+            {
                 getBinding().getVersioningService().checkOut(getTestRepositoryId(), docIdHolder, null, null);
-            } else {
+            }
+            else
+            {
                 warning("Default document type is not versionable!");
                 delete(docId, true);
                 return;
@@ -218,9 +231,12 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         String docIdWorkingCopy = docIdHolder.getValue();
 
         // delete content
-        try {
+        try
+        {
             getBinding().getObjectService().deleteContentStream(getTestRepositoryId(), docIdHolder, null, null);
-        } catch (CmisNotSupportedException e) {
+        }
+        catch (CmisNotSupportedException e)
+        {
             warning("deleteContentStream not supported!");
         }
 
@@ -235,7 +251,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         String newVersionDocId = (docIdHolder.getValue() == null ? docIdWorkingCopy : docIdHolder.getValue());
         ContentStream contentStream3 = getContent(newVersionDocId, null);
         assertMimeType(CONTENT_TYPE, contentStream3.getMimeType());
-        if (contentStream3.getBigLength() != null) {
+        if (contentStream3.getBigLength() != null)
+        {
             assertEquals(CONTENT2.length, contentStream3.getBigLength().intValue());
         }
 
@@ -243,7 +260,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         assertContent(CONTENT2, content);
 
         // if it has been checked out, cancel that
-        if (requiresCheckOut) {
+        if (requiresCheckOut)
+        {
             getBinding().getVersioningService().cancelCheckOut(getTestRepositoryId(), docIdWorkingCopy, null);
         }
 
@@ -254,10 +272,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests property updates.
      */
-    public void testUpdateProperties() {
-        if (!isEnabled(TEST_UPDATE_PROPERTIES)) {
-            return;
-        }
+    public void testUpdateProperties()
+    {
+        if (!isEnabled(TEST_UPDATE_PROPERTIES)) { return; }
 
         String name1 = "updateTest1.txt";
         String name2 = "updateTest2.txt";
@@ -291,10 +308,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests delete tree.
      */
-    public void testDeleteTree() {
-        if (!isEnabled(TEST_DELETE_TREE)) {
-            return;
-        }
+    public void testDeleteTree()
+    {
+        if (!isEnabled(TEST_DELETE_TREE)) { return; }
 
         // create a folder tree
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -323,10 +339,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests move object.
      */
-    public void testMoveObject() {
-        if (!isEnabled(TEST_MOVE_OBJECT)) {
-            return;
-        }
+    public void testMoveObject()
+    {
+        if (!isEnabled(TEST_MOVE_OBJECT)) { return; }
 
         // create folders
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -350,10 +365,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Tests copy object.
      */
-    public void testCopyObject() {
-        if (!isEnabled(TEST_COPY_OBJECT)) {
-            return;
-        }
+    public void testCopyObject()
+    {
+        if (!isEnabled(TEST_COPY_OBJECT)) { return; }
 
         // create folders
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -384,12 +398,12 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
     /**
      * Test check-in/check-out.
      */
-    public void testVersioning() {
-        if (!isEnabled(TEST_VERSIONING)) {
-            return;
-        }
+    public void testVersioning()
+    {
+        if (!isEnabled(TEST_VERSIONING)) { return; }
 
-        if (!isVersionable(getDefaultDocumentType())) {
+        if (!isVersionable(getDefaultDocumentType()))
+        {
             warning("Default document type is not versionable!");
             return;
         }
@@ -445,7 +459,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase 
         delete(docId, true);
     }
 
-    private boolean isCheckedOut(String docId) {
+    private boolean isCheckedOut(String docId)
+    {
         ObjectData object = getObject(docId);
         PropertyData<?> isCheckedOut = object.getProperties().getProperties()
                 .get(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
