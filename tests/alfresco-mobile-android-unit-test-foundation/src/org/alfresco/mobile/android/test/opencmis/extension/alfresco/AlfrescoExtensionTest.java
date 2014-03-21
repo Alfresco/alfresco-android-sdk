@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.test.opencmis.extension.alfresco;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +50,9 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 {
 
     public static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
+
     public static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
-    
+
     private Session session;
 
     private Folder rootFolder;
@@ -113,8 +115,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
             {
                 try
                 {
-                   ((org.apache.chemistry.opencmis.client.api.Folder) o).deleteTree(true,
-                            UnfileObject.DELETE, false);
+                    ((org.apache.chemistry.opencmis.client.api.Folder) o).deleteTree(true, UnfileObject.DELETE, false);
                     s.removeObjectFromCache(o.getId());
                 }
                 catch (Exception e)
@@ -252,7 +253,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         alfDoc.addAspect("P:cm:titled", aspectProperties);
 
         alfDoc.refresh();
-        
+
         assertTrue(alfDoc.hasAspect("P:cm:titled"));
         assertEquals(descriptionValue1, (String) alfDoc.getPropertyValue("cm:description"));
 
@@ -265,69 +266,6 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         alfDoc.delete(true);
     }
 
-    public void testTransientDocument()
-    {
-
-        session = getSession();
-
-        // messenger.addTitle("testTransientDocument()");
-        String descriptionValue1 = "Beschreibung";
-        String descriptionValue2 = "My Description";
-        String authorValue = "Mr JUnit Test";
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(PropertyIds.NAME, "test1");
-        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled,P:app:inlineeditable");
-        properties.put("cm:description", descriptionValue1);
-        properties.put("app:editInline", true);
-
-        Document doc = session.getRootFolder().createDocument(properties, null, null);
-
-        // get transient document
-        /*TransientDocument tDoc = doc.getTransientDocument();
-
-        Property<String> descriptionProperty = tDoc.getProperty("cm:description");
-        assertNotNull(descriptionProperty);
-        assertEquals(descriptionValue1, descriptionProperty.getFirstValue());
-
-        TransientAlfrescoDocument taDoc = (TransientAlfrescoDocument) tDoc;
-        taDoc.addAspect("P:cm:author");
-
-        tDoc.setPropertyValue("cm:description", descriptionValue2);
-        tDoc.setPropertyValue("app:editInline", false);
-        tDoc.setPropertyValue("cm:author", authorValue);
-
-        // save and reload
-        ObjectId id = tDoc.save();
-        Document doc2 = (Document) session.getObject(id);
-        doc2.refresh();
-        TransientDocument tDoc2 = doc2.getTransientDocument();
-
-        descriptionProperty = tDoc2.getProperty("cm:description");
-        assertNotNull(descriptionProperty);
-        assertEquals(descriptionValue2, descriptionProperty.getFirstValue());
-
-        Property<String> authorProperty = tDoc2.getProperty("cm:author");
-        assertNotNull(authorProperty);
-        assertEquals(authorValue, authorProperty.getFirstValue());
-
-        TransientAlfrescoDocument taDoc2 = (TransientAlfrescoDocument) tDoc2;
-
-        assertTrue(taDoc2.hasAspect("P:cm:titled"));
-        taDoc2.removeAspect("P:cm:titled");
-        assertFalse(taDoc2.hasAspect("P:cm:titled"));
-
-        // save and reload
-        taDoc2.save();
-        Document doc3 = (Document) session.getObject(id);
-        doc3.refresh();
-
-        assertNull(doc3.getProperty("cm:description"));
-
-        // delete
-        doc2.delete(true);*/
-    }
-
     public void testEXIFAspect()
     {
 
@@ -335,7 +273,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         // messenger.addTitle("testEXIFAspect()");
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(PropertyIds.NAME, "exif.test");
+        properties.put(PropertyIds.NAME, "exif" + new Date().getTime() + ".test");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
 
         AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);
