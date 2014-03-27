@@ -2,20 +2,19 @@
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
-  This file is part of the Alfresco Mobile SDK.
+  Ce fichier fait partie du SDK Alfresco Mobile.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Sous licence Apache Version 2.0 (la « Licence »),
+  vous ne pouvez utiliser ce fichier qu\'à condition de respecter la Licence.
+  Vous pouvez obtenir une copie de la Licence sur
    
    http://www.apache.org/licenses/LICENSE-2.0
   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
+   Sauf si requis par la loi en vigueur ou accord écrit,
+   le logiciel distribué sous cette Licence est distribué « TEL QUEL »,
+   SANS GARANTIES OU CONDITIONS DE QUELQUE NATURE QUE CE SOIT, expresse ou implicite.
+   Consultez la Licence pour les autorisations d\'administration
+   linguistiques spécifiques et les limitations en vertu de la Licence.
 -->
 <resources>
 
@@ -75,24 +74,24 @@
     <string name="org_alfresco_discussions_post_deleted">Discussion {0} supprimée par {1}</string>
     <string name="org_alfresco_discussions_reply_created">{1} a répondu à la discussion {0}</string>
     <string name="org_alfresco_discussions_reply_updated">{1} a mis à jour une réponse à {0}</string>
-    <string name="org_alfresco_calendar_event_created">Evénement de calendrier {0} créé par {1}</string>
-    <string name="org_alfresco_calendar_event_updated">Evénement de calendrier {0} mis à jour par {1}</string>
-    <string name="org_alfresco_calendar_event_deleted">Evénement de calendrier {0} supprimé par {1}</string>
-    <string name="org_alfresco_documentlibrary_file_added">Document {0} ajouté par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_added">Documents {0} ajoutés par {1}</string>
-    <string name="org_alfresco_documentlibrary_file_created">Document {0} créé par {1}</string>
+    <string name="org_alfresco_calendar_event_created">Événement de calendrier {0} créé par {1}</string>
+    <string name="org_alfresco_calendar_event_updated">Événement de calendrier {0} mis à jour par {1}</string>
+    <string name="org_alfresco_calendar_event_deleted">Événement de calendrier {0} supprimé par {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">Fichier {0} ajouté par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">Fichiers {0} ajoutés par {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">Fichier {0} créé par {1}</string>
     <string name="org_alfresco_documentlibrary_file_deleted">{0} a été supprimé par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">Documents {0} supprimés par {1}</string>
-    <string name="org_alfresco_documentlibrary_file_updated">Document {0} mis à jour par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_updated">Documents {0} mis à jour par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">Fichiers {0} supprimés par {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">Fichier {0} mis à jour par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">Fichiers {0} mis à jour par {1}</string>
     <string name="org_alfresco_documentlibrary_folder_added">Dossier {0} ajouté par {1}</string>
     <string name="org_alfresco_documentlibrary_folders_added">Dossiers {0} ajoutés par {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} a été supprimé par {1}</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">Dossiers {0} supprimés par {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">Document {0} extrait sur Google Docs par {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">Document {0} archivé à partir de Google Docs par {1}</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">Document {0} modifié par {1}</string>
-    <string name="org_alfresco_documentlibrary_file_liked">{1} a aimé le document {0}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">Fichier {0} envoyé vers Google Docs par {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">Fichier {0} reçu de Google Docs par {1}</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">Fichier {0} mis à jour par {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} a aimé le fichier {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} a aimé le dossier {0}</string>
     <string name="org_alfresco_wiki_page_created">Page wiki {0} créée par {1}</string>
     <string name="org_alfresco_wiki_page_edited">Page wiki {0} mise à jour par {1}</string>
@@ -162,7 +161,7 @@
     <string name="metadata_prop_composer">Compositeur</string>
     <string name="metadata_prop_engineer">Ingénieur</string>
     <string name="metadata_prop_genre">Genre</string>
-    <string name="metadata_prop_track_number">Numéro de suivi</string>
+    <string name="metadata_prop_track_number">Numéro de piste</string>
     <string name="metadata_prop_release_date">Date de publication</string>
     <string name="metadata_prop_sample_rate">Taux d\'échantillonnage</string>
     <string name="metadata_prop_sample_type">Type d\'échantillonnage</string>
@@ -175,7 +174,7 @@
     <string name="metadata_prop_version_comment">Commentaire</string>
     <string name="metadata_prop_version_current">Version en cours</string>
     <!-- Metadata RESTRICTABLE -->
-    <string name="metadata_aspect_restrictable">Avec restrictions</string>
+    <string name="metadata_aspect_restrictable">Limité</string>
     <string name="metadata_prop_offline_expires_after">Le hors-ligne expire après (heures)</string>
     <!-- Upload/Create Content -->
     <string name="content_app_pick_file">Choisir une application pour sélectionner un fichier</string>
@@ -201,14 +200,14 @@
     <string name="download_error">Un erreur s\'est produite lors du téléchargement.</string>
     <string name="download_progress">Téléchargement en cours &#8230;</string>
     <!-- Empty -->
-    <string name="empty_child">Aucun document trouvé</string>
+    <string name="empty_child">Aucun fichier trouvé</string>
     <string name="empty_site">Aucun site disponible</string>
     <string name="empty_version">Aucun historique de version disponible</string>
     <string name="empty_session">Aucune session disponible</string>
     <string name="empty_actvity">Aucune activité trouvée</string>
     <string name="empty_tag">Aucun tag trouvé</string>
     <string name="empty_comment">Aucun commentaire trouvé</string>
-    <string name="empty_search">Aucun document trouvé</string>
+    <string name="empty_search">Aucun fichier trouvé</string>
     <!-- Size -->
     <string name="file_size_empty">0 octet</string>
     <string name="file_size_bytes">octets</string>
@@ -220,7 +219,7 @@
     <string name="search_hint">Saisissez un terme de recherche</string>
     <!-- Comments -->
     <string name="comments">Commentaires</string>
-    <string name="comment_add_hint">Saisir votre commentaire ici &#8230;</string>
+    <string name="comment_add_hint">Saisissez votre commentaire ici &#8230;</string>
     <!-- Actions -->
     <string name="create">Créer</string>
     <string name="add">Ajouter</string>
