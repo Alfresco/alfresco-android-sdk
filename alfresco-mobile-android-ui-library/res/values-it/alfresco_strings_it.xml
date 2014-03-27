@@ -2,26 +2,26 @@
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
-  This file is part of the Alfresco Mobile SDK.
+  Questo file è parte integrante dell\'Alfresco Mobile SDK.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Concesso con licenza Apache License, versione 2.0 (la "Licenza");
+  non è possibile utilizzare questo file a meno che l\'utilizzo non sia conforme con la licenza.
+  È possibile ottenere una copia della licenza collegandosi al sito Internet 
    
    http://www.apache.org/licenses/LICENSE-2.0
   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+   A meno che diversamente indicato dalla legge o da comunicazione scritta,
+   il software distribuito con licenza viene fornito "COSÌ COM\'È",
+   SENZA GARANZIE O CONDIZIONI DI QUALSIASI TIPO, espresse o implicite.
+   Consultare la licenza per le autorizzazioni di governo e le
+   limitazioni della licenza specifiche per ogni lingua.
 -->
 <resources>
 
     <!-- ************************** -->
     <!-- ALFRESCO SDK MANUAL -->
     <!-- ************************** -->
-    <string name="name">UI libreria</string>
+    <string name="name">Libreria UI</string>
 
     <!-- Relative Date -->
     <string name="relative_date_just_now">ora</string>
@@ -77,22 +77,22 @@
     <string name="org_alfresco_calendar_event_created">Evento calendario {0} creato da {1}</string>
     <string name="org_alfresco_calendar_event_updated">Evento calendario {0} aggiornato da {1}</string>
     <string name="org_alfresco_calendar_event_deleted">Evento calendario {0} eliminato da {1}</string>
-    <string name="org_alfresco_documentlibrary_file_added">Documento {0} aggiunto da {1}</string>
-    <string name="org_alfresco_documentlibrary_files_added">Documenti {0} aggiunti da {1}</string>
-    <string name="org_alfresco_documentlibrary_file_created">Documento {0} creato da {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">File {0} aggiunto da {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">File {0} aggiunti da {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">File {0} creato da {1}</string>
     <string name="org_alfresco_documentlibrary_file_deleted">{0} è stato eliminato da {1}</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">Documenti {0} eliminati da {1}</string>
-    <string name="org_alfresco_documentlibrary_file_updated">Documento {0} aggiornato da {1}</string>
-    <string name="org_alfresco_documentlibrary_files_updated">Documenti {0} aggiornati da {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">File {0} eliminati da {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">File {0} aggiornato da {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">File {0} aggiornati da {1}</string>
     <string name="org_alfresco_documentlibrary_folder_added">Cartella {0} aggiunta da {1}</string>
     <string name="org_alfresco_documentlibrary_folders_added">Cartelle {0} aggiunte da {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} è stato eliminato da {1}</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">Cartelle {0} eliminate da {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">Check out del documento {0} in Google Docs eseguito da {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">Check in del documento {0} da Google Docs eseguito da {1}</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">Documento {0} modificato da {1}</string>
-    <string name="org_alfresco_documentlibrary_file_liked">{1} ha aggiunto &quot;Mi piace&quot; al documento {0}</string>
-    <string name="org_alfresco_documentlibrary_folder_liked">{1} ha aggiunto &quot;Mi piace&quot; alla cartella {0}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">Check out del file {0} in Google Docs eseguito da {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">Check in del file {0} in Google Docs eseguito da {1}</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">File {0} modificato da {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} ha aggiunto "Mi piace" al file {0}</string>
+    <string name="org_alfresco_documentlibrary_folder_liked">{1} ha aggiunto "Mi piace" alla cartella {0}</string>
     <string name="org_alfresco_wiki_page_created">Pagina wiki {0} creata da {1}</string>
     <string name="org_alfresco_wiki_page_edited">Pagina wiki {0} aggiornata da {1}</string>
     <string name="org_alfresco_wiki_page_renamed">Pagina wiki {2} rinominata in {0} da {1}</string>
@@ -171,7 +171,7 @@
     <string name="metadata_prop_version">Versione</string>
     <string name="metadata_prop_version_modification_date">Data di modifica</string>
     <string name="metadata_prop_version_modified_by">Ultima modifica effettuata da</string>
-    <string name="metadata_prop_version_comment">Commento</string>
+    <string name="metadata_prop_version_comment">Commenta</string>
     <string name="metadata_prop_version_current">Versione attuale</string>
     <!-- Metadata RESTRICTABLE -->
     <string name="metadata_aspect_restrictable">Restrictable</string>
@@ -200,14 +200,14 @@
     <string name="download_error">Si è verificato un errore durante l\'operazione di download.</string>
     <string name="download_progress">Download in corso...</string>
     <!-- Empty -->
-    <string name="empty_child">Nessun documento trovato</string>
+    <string name="empty_child">Nessun file trovato</string>
     <string name="empty_site">Nessun sito disponibile</string>
     <string name="empty_version">Nessuna cronologia delle versioni disponibile</string>
     <string name="empty_session">Nessuna sessione disponibile</string>
     <string name="empty_actvity">Nessuna attività trovata</string>
     <string name="empty_tag">Nessun tag trovato</string>
     <string name="empty_comment">Nessun commento trovato</string>
-    <string name="empty_search">Nessun documento trovato</string>
+    <string name="empty_search">Nessun file trovato</string>
     <!-- Size -->
     <string name="file_size_empty">0 byte</string>
     <string name="file_size_bytes">byte</string>

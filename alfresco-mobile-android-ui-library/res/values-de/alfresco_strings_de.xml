@@ -2,20 +2,19 @@
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
-  This file is part of the Alfresco Mobile SDK.
+  Diese Datei ist Teil des Alfresco Mobile-SDK.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Lizenziert unter der Apache-Lizenz, Version 2.0 ("Lizenz");
+  diese Datei darf nur gemäß dieser Lizenz verwendet werden.
+  Eine Kopie dieser Lizenz kann über
    
-   http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0 bezogen werden.
   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
+   Soweit nicht durch geltendes Recht erforderlich oder schriftlich vereinbart,
+   wird die unter dieser Lizenz verteilte Software OHNE MÄNGELGEWÄHR,
+   OHNE GARANTIEN ODER BEDINGUNGEN, weder ausdrücklich noch impliziert, verteilt.
+   Geltende Berechtigungen und Beschränkungen für die jeweilige Sprache
+   unter dieser Lizenz sind der Lizenz zu entnehmen.
 -->
 <resources>
 
@@ -49,14 +48,14 @@
     <!-- ALFRESCO SDK AUTO -->
     <!-- ************************** -->
     <!-- Generic -->
-    <string name="required">Pflichtfeld</string>
+    <string name="required">Erforderlich</string>
     <string name="actions">Aktionen</string>
     <string name="confirm">Bestätigen</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <!-- Listing -->
-    <string name="load_more">Weitere laden...</string>
-    <string name="load_more_progress">Ladevorgang in Bearbeitung...</string>
+    <string name="load_more">Mehr laden...</string>
+    <string name="load_more_progress">Ladevorgang wird durchgeführt&#8230;</string>
     <string name="listing_nodata">Keine Daten.</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -78,21 +77,21 @@
     <string name="org_alfresco_calendar_event_created">{0} Kalenderereignis erzeugt von {1}</string>
     <string name="org_alfresco_calendar_event_updated">{0} Kalenderereignis aktualisiert von {1}</string>
     <string name="org_alfresco_calendar_event_deleted">{0} Kalenderereignis gelöscht von {1}</string>
-    <string name="org_alfresco_documentlibrary_file_added">{0} Dokument hinzugefügt von {1}</string>
-    <string name="org_alfresco_documentlibrary_files_added">{0} Dokumente hinzugefügt von {1}</string>
-    <string name="org_alfresco_documentlibrary_file_created">{0} Dokument angelegt von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">{0} Datei hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">{0} Dateien hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">{0} Datei erstellt von {1}</string>
     <string name="org_alfresco_documentlibrary_file_deleted">{0} wurde gelöscht von {1}</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">{0} Dokumente gelöscht von {1}</string>
-    <string name="org_alfresco_documentlibrary_file_updated">{0} Dokument aktualisiert von {1}</string>
-    <string name="org_alfresco_documentlibrary_files_updated">{0} Dokumente aktualisiert von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{0} Dateien gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">{0} Datei aktualisiert von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{0} Dateien aktualisiert von {1}</string>
     <string name="org_alfresco_documentlibrary_folder_added">{0} Ordner hinzugefügt von {1}</string>
     <string name="org_alfresco_documentlibrary_folders_added">{0} Ordner hinzugefügt von {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} wurde gelöscht von {1}</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">{0} Ordner gelöscht von {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} Dokument von {1} nach Google Docs ausgecheckt</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} Dokument von {1} von Google Docs eingecheckt</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">{0} Dokument bearbeitet von {1}</string>
-    <string name="org_alfresco_documentlibrary_file_liked">{1} gefällt Dokument {0}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} Datei von {1} nach Google Docs ausgecheckt</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} Datei von {1} von Google Docs eingecheckt</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">{0} Datei bearbeitet von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} gefällt Datei {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} gefällt Ordner {0}</string>
     <string name="org_alfresco_wiki_page_created">{0} Wiki-Seite erstellt von {1}</string>
     <string name="org_alfresco_wiki_page_edited">{0} Wiki-Seite aktualisiert von {1}</string>
@@ -115,7 +114,7 @@
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
     <!-- Metadata -->
     <string name="metadata">Eigenschaften</string>
-    <string name="thumbnail">Thumbnail</string>
+    <string name="thumbnail">Miniaturansicht</string>
     <string name="metadata_prop_name">Name</string>
     <string name="metadata_prop_path">Pfad</string>
     <string name="metadata_prop_type">Typ</string>
@@ -129,7 +128,7 @@
     <string name="metadata_aspect_auditable">Audit-fähig</string>
     <string name="metadata_prop_creator">Ersteller</string>
     <string name="metadata_prop_creationdate">Erstellt am</string>
-    <string name="metadata_prop_modifier">Geändert von</string>
+    <string name="metadata_prop_modifier">Bearbeiter</string>
     <string name="metadata_prop_modificationdate">Geändert am</string>
     <!-- Metadata Author -->
     <string name="metadata_aspect_author">Autor</string>
@@ -165,7 +164,7 @@
     <string name="metadata_prop_track_number">Titelnummer</string>
     <string name="metadata_prop_release_date">Veröffentlichungsdatum</string>
     <string name="metadata_prop_sample_rate">Samplerate</string>
-    <string name="metadata_prop_sample_type">Samplingtyp</string>
+    <string name="metadata_prop_sample_type">Sampletyp</string>
     <string name="metadata_prop_channel_type">Kanaltyp</string>
     <string name="metadata_prop_compressor">Kompressor</string>
     <!-- Metadata Version -->
@@ -199,16 +198,16 @@
     <string name="download">Herunterladen</string>
     <string name="download_complete">Download abgeschlossen</string>
     <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten.</string>
-    <string name="download_progress">Download-Vorgang in Bearbeitung...</string>
+    <string name="download_progress">Download wird durchgeführt...</string>
     <!-- Empty -->
-    <string name="empty_child">Kein Dokument gefunden</string>
+    <string name="empty_child">Keine Dateien gefunden</string>
     <string name="empty_site">Keine Sites verfügbar</string>
     <string name="empty_version">Keine Versionshistorie verfügbar</string>
     <string name="empty_session">Keine Sitzung verfügbar</string>
     <string name="empty_actvity">Keine Aktivitäten gefunden</string>
     <string name="empty_tag">Kein Tag gefunden</string>
     <string name="empty_comment">Keine Kommentare gefunden</string>
-    <string name="empty_search">Kein Dokument gefunden</string>
+    <string name="empty_search">Keine Dateien gefunden</string>
     <!-- Size -->
     <string name="file_size_empty">0 Byte</string>
     <string name="file_size_bytes">Bytes</string>
@@ -220,9 +219,9 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <!-- Comments -->
     <string name="comments">Kommentare</string>
-    <string name="comment_add_hint">Kommentar hier eingeben</string>
+    <string name="comment_add_hint">Kommentar hier eingeben&#8230;</string>
     <!-- Actions -->
-    <string name="create">Erzeugen</string>
+    <string name="create">Erstellen</string>
     <string name="add">Hinzufügen</string>
     <string name="like">Gefällt mir</string>
     <string name="open_in">Öffnen mit</string>
