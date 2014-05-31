@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
@@ -29,6 +30,7 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIActivityStreamServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIPersonServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIRatingsServiceImpl;
@@ -210,6 +212,25 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
             }
         }
         return workflowService;
+    }
+    
+
+    @Override
+    public ConfigService getConfigService()
+    {
+        if (configService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            if (hasPublicAPI)
+            {
+                //TODO Different Version if Public API ?
+                this.configService = new OnPremiseConfigServiceImpl(session);
+            }
+            else
+            {
+                this.configService = new OnPremiseConfigServiceImpl((RepositorySession) session);
+            }
+        }
+        return configService;
     }
 
     // ////////////////////////////////////////////////////

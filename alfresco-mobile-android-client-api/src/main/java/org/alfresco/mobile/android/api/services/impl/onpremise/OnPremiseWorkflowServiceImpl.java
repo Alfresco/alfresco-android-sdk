@@ -294,6 +294,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         List<Process> processes = new ArrayList<Process>();
         Map<String, Object> json = new HashMap<String, Object>(0);
         int maxItems = -1;
+        boolean hasMoreItem = false;
         try
         {
             String link = OnPremiseUrlRegistry.getProcessesUrl(session);
@@ -412,6 +413,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     processes.add(ProcessImpl.parseJson((Map<String, Object>) obj));
                 }
+                
+                hasMoreItem = (maxItems == -1) ? false : (jo.size() == maxItems);
             }
         }
         catch (Exception e)
@@ -419,7 +422,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Process>(processes, maxItems == -1, json.size());
+        return new PagingResultImpl<Process>(processes, hasMoreItem, json.size());
     }
 
     /** {@inheritDoc} */
@@ -631,6 +634,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         Map<String, Object> json = new HashMap<String, Object>(0);
         int maxItems = -1;
         int size = 0;
+        boolean hasMoreItem = false;
         try
         {
             UrlBuilder url = new UrlBuilder(link);
@@ -772,6 +776,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     tasks.add(TaskImpl.parseJson((Map<String, Object>) obj));
                 }
+                
+                hasMoreItem = (maxItems == -1) ? false : (size == maxItems);
             }
         }
         catch (Exception e)
@@ -779,7 +785,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, maxItems != -1, size);
+        return new PagingResultImpl<Task>(tasks, hasMoreItem, size);
 
     }
 

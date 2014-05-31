@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.session;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -81,5 +82,4 @@ public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
     {
         return connect(url, username, password, null);
     }
-
 }
