@@ -189,7 +189,7 @@ public interface WorkflowModel
     String KEY_POOLED_REVIEW_JBPM = "jbpm$wf:reviewpooled";
 
     @SuppressWarnings("serial")
-    List<String> JBPM_PROCESS_KEY = new ArrayList<String>(11)
+    List<String> JBPM_PROCESS_KEY = new ArrayList<String>(5)
     {
         {
             add(KEY_REVIEW_JBPM);
@@ -212,7 +212,7 @@ public interface WorkflowModel
     String KEY_POOLED_REVIEW_ACTIVITI = "activiti$activitiReviewPooled";
 
     @SuppressWarnings("serial")
-    List<String> ACTIVITI_PROCESS_KEY = new ArrayList<String>(11)
+    List<String> ACTIVITI_PROCESS_KEY = new ArrayList<String>(5)
     {
         {
             add(KEY_ADHOC_ACTIVITI);
@@ -235,7 +235,7 @@ public interface WorkflowModel
     String KEY_POOLED_REVIEW_KEY_PUBLIC_API = "activitiReviewPooled";
 
     @SuppressWarnings("serial")
-    List<String> PUBLIC_API_PROCESS_KEY = new ArrayList<String>(11)
+    List<String> PUBLIC_API_PROCESS_KEY = new ArrayList<String>(5)
     {
         {
             add(KEY_ADHOC_PUBLIC_API);

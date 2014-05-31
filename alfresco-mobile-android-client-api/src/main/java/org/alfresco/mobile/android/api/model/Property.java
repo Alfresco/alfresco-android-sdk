@@ -41,6 +41,12 @@ public interface Property extends Serializable
      * @return the type
      */
     PropertyType getType();
+    
+    /**
+     * Return the display Name
+     * @return
+     */
+    String getDisplayName();
 
     /**
      * Returns the property value, in the case of a multi-valued property a List

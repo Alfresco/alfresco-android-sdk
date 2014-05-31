@@ -43,6 +43,8 @@ public class PropertyImpl implements Property
 
     private Boolean isMultiValued;
 
+    private String displayName;
+
     /**
      * Use by default for creating property object that wraps an OpenCMIS
      * Property.
@@ -77,6 +79,14 @@ public class PropertyImpl implements Property
         this.type = type;
         this.isMultiValued = isMultiValued;
     }
+    
+    public PropertyImpl(String displayName, Object value, PropertyType type, Boolean isMultiValued)
+    {
+        this.displayName = displayName;
+        this.value = value;
+        this.type = type;
+        this.isMultiValued = isMultiValued;
+    }
 
     /** {@inheritDoc} */
     public boolean isMultiValued()
@@ -100,6 +110,15 @@ public class PropertyImpl implements Property
     {
         if (prop != null) { return (T) prop.getValue(); }
         if (value != null) { return (T) value; }
+        return null;
+    }
+    
+    /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
+    public String getDisplayName()
+    {
+        if (prop != null) { return prop.getDisplayName(); }
+        if (displayName != null) { return displayName; }
         return null;
     }
 
@@ -137,5 +156,4 @@ public class PropertyImpl implements Property
         }
         return result;
     }
-
 }
