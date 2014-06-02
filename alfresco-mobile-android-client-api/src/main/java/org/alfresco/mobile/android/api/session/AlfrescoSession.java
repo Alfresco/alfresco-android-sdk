@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.session;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;

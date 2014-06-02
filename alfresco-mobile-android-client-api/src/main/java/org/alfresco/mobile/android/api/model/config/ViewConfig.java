@@ -1,6 +1,5 @@
 package org.alfresco.mobile.android.api.model.config;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ViewConfig extends Config

@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIActivityStreamServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
-import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIPersonServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIRatingsServiceImpl;

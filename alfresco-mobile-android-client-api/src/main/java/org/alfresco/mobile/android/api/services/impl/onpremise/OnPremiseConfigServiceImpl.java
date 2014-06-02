@@ -22,8 +22,6 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ApplicationConfig;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
-import org.alfresco.mobile.android.api.model.config.ConfigSource;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
