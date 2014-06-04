@@ -1,5 +1,6 @@
 package org.alfresco.mobile.android.api.model.config;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ViewConfig extends Config
@@ -23,7 +24,7 @@ public interface ViewConfig extends Config
      */
     int getChildCount();
 
-    ViewConfig getChildAt(int index);
+    List<ViewConfig> getChildren();
     
-    ViewConfig getChildById(String id);
+    List<String> getForms();
 }

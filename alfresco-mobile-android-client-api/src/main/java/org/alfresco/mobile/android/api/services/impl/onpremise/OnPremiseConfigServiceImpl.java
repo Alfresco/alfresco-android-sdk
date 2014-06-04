@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ActionConfig;
-import org.alfresco.mobile.android.api.model.config.ApplicationConfig;
+import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
@@ -113,14 +113,8 @@ public class OnPremiseConfigServiceImpl extends AbstractConfigServiceImpl
         return null;
     }
 
-    public ApplicationConfig getApplicationConfig()
+    public ProfileConfig getApplicationConfig()
     {
         return null;
-    }
-
-    @Override
-    public boolean hasConfig()
-    {
-        return false;
     }
 }

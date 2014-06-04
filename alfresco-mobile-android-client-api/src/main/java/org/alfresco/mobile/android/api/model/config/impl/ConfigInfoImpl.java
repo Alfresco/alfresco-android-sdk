@@ -3,7 +3,6 @@ package org.alfresco.mobile.android.api.model.config.impl;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -18,11 +17,6 @@ public class ConfigInfoImpl extends ConfigImpl implements ConfigInfo
     
     ConfigInfoImpl()
     {
-    }
-    
-    ConfigInfoImpl(ConfigContext context)
-    {
-        super(context);
     }
     
     /**

@@ -90,6 +90,7 @@ public class RepositorySessionImpl extends RepositorySession
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> param = retrieveSessionParameters();
 
+        // We start
         cmisSession = createSession(sessionFactory, param);
 
         // Check RepositoryInfo for Alfresco Version
@@ -107,7 +108,7 @@ public class RepositorySessionImpl extends RepositorySession
             String version2 = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo()
                     .getProductVersion(), 1);
 
-            Session cmisSession2 = null;
+            Session cmisSessionAlfrescoV4 = null;
 
             if (Integer.parseInt(version2) >= OnPremiseConstant.ALFRESCO_VERSION_4_2)
             {
@@ -121,29 +122,29 @@ public class RepositorySessionImpl extends RepositorySession
                     hasPublicAPI = true;
                     try
                     {
-                        cmisSession2 = createSession(sessionFactory, param);
+                        cmisSessionAlfrescoV4 = createSession(sessionFactory, param);
                     }
                     catch (Exception e)
                     {
-                        cmisSession2 = null;
+                        cmisSessionAlfrescoV4 = null;
                         hasPublicAPI = false;
                     }
                 }
             }
 
-            if (!hasPublicAPI || cmisSession2 == null)
+            if (!hasPublicAPI || cmisSessionAlfrescoV4 == null)
             {
                 param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
                 try
                 {
-                    cmisSession2 = createSession(sessionFactory, param);
+                    cmisSessionAlfrescoV4 = createSession(sessionFactory, param);
                 }
                 catch (Exception e)
                 {
-                    cmisSession2 = null;
+                    cmisSessionAlfrescoV4 = null;
                 }
             }
-            cmisSession = (cmisSession2 != null) ? cmisSession2 : cmisSession;
+            cmisSession = (cmisSessionAlfrescoV4 != null) ? cmisSessionAlfrescoV4 : cmisSession;
         }
 
         // Init Services + Object
@@ -178,6 +179,11 @@ public class RepositorySessionImpl extends RepositorySession
         else
         {
             services = new OnPremiseServiceRegistry(this);
+        }
+
+        if (hasParameter(CONFIGURATION_CONTEXT_ENABLE) && (Boolean) getParameter(CONFIGURATION_CONTEXT_ENABLE))
+        {
+            services.getConfigService().load(null);
         }
     }
 

@@ -419,12 +419,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
             if (param.get(SessionParameter.REPOSITORY_ID) != null)
             {
                 return ((SessionFactoryImpl) sessionFactory).createSession(param, null,
-                        new PassthruAuthenticationProviderImpl(authenticator), null);
+                        new PassthruAuthenticationProviderImpl(authenticator), null, null);
             }
             else
             {
                 return ((SessionFactoryImpl) sessionFactory)
-                        .getRepositories(param, null, new PassthruAuthenticationProviderImpl(authenticator), null)
+                        .getRepositories(param, null, new PassthruAuthenticationProviderImpl(authenticator), null, null)
                         .get(0).createSession();
             }
         }

@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
@@ -26,24 +31,13 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
-import org.alfresco.mobile.android.api.model.config.ActionConfig;
-import org.alfresco.mobile.android.api.model.config.ApplicationConfig;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigSource;
 import org.alfresco.mobile.android.api.model.config.ConfigType;
-import org.alfresco.mobile.android.api.model.config.CreationConfig;
-import org.alfresco.mobile.android.api.model.config.FeatureConfig;
-import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.MenuConfig;
-import org.alfresco.mobile.android.api.model.config.ProcessConfig;
-import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
-import org.alfresco.mobile.android.api.model.config.SearchConfig;
-import org.alfresco.mobile.android.api.model.config.TaskConfig;
-import org.alfresco.mobile.android.api.model.config.ThemeConfig;
-import org.alfresco.mobile.android.api.model.config.ViewConfig;
-import org.alfresco.mobile.android.api.model.config.impl.ConfigContextImpl;
+import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.api.model.config.impl.ConfigInfoImpl;
+import org.alfresco.mobile.android.api.model.config.impl.ConfigurationImpl;
+import org.alfresco.mobile.android.api.model.config.impl.HelperStringConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
@@ -59,6 +53,10 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 {
     private static final String TAG = AbstractConfigServiceImpl.class.getSimpleName();
 
+    private Configuration context;
+
+    protected boolean hasConfig = true;
+
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -72,91 +70,25 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public List<String> getProfiles()
-    {
-        return null;
-    }
-
-    public ConfigContext load(ConfigSource source)
+    public Configuration load(ConfigSource source)
     {
         if (source == null)
         {
             // We try to find the default configuration file
-            return retrieveDefaultConfigContext();
+            context = retrieveDefaultConfigContext();
         }
         else
         {
             // We use the configSource to retrieve the info
         }
-        return null;
-    }
-
-    public RepositoryConfig getRepositoryConfig()
-    {
-        return null;
-    }
-
-    public List<FeatureConfig> getFeatureConfig()
-    {
-        return null;
-    }
-
-    public List<MenuConfig> getMenuConfig(String menuId)
-    {
-        return null;
-    }
-
-    public ViewConfig getViewConfig(String viewId, Node node)
-    {
-        return null;
-
-    }
-
-    public FormConfig getFormConfig(String formId, Node node)
-    {
-        return null;
-    }
-
-    public List<ProcessConfig> getProcessConfig()
-    {
-        return null;
-    }
-
-    public List<TaskConfig> getTaskConfig()
-    {
-        return null;
-    }
-
-    public CreationConfig getCreationConfig()
-    {
-        return null;
-    }
-
-    public List<ActionConfig> getActionConfig(String groupId, Node node)
-    {
-        return null;
-    }
-
-    public SearchConfig getSearchConfig(Node node)
-    {
-        return null;
-    }
-
-    public ThemeConfig getThemeConfig()
-    {
-        return null;
-    }
-
-    public ApplicationConfig getApplicationConfig()
-    {
-        return null;
+        return context;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    protected ConfigContext retrieveDefaultConfigContext()
+    protected Configuration retrieveDefaultConfigContext()
     {
         Node configurationDocument;
         Folder dataDictionaryFolder = null;
@@ -164,7 +96,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         String configurationIdentifier = null;
         long lastModificationTime = -1;
         boolean isBeta = false;
-        ConfigContext configContext = null;
+        Configuration configContext = null;
 
         try
         {
@@ -206,6 +138,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
             }
             else
             {
+                hasConfig = true;
                 // BETA
                 configurationDocument = docService.getChildByPath((Folder) dataDictionaryFolder,
                         ConfigConstants.DATA_DICTIONNARY_MOBILE_PATH);
@@ -217,9 +150,25 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
             }
             if (configurationDocument != null && configurationDocument.isDocument())
             {
+                // Retrieve localization
+                HelperStringConfig localHelper = retrieveLocalizationHelper(docService, dataDictionaryFolder);
+
+                // Retrieve Configuration
+                hasConfig = true;
                 lastModificationTime = configurationDocument.getModifiedAt().getTimeInMillis();
                 ContentStream stream = docService.getContentStream((Document) configurationDocument);
-                Map<String, Object> json = JsonUtils.parseObject(stream.getInputStream(), "UTF-8");
+
+                // Persist if defined by the session
+                InputStream inputStream = stream.getInputStream();
+                if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
+                {
+                    File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
+                    File configFile = new File(configFolder, configurationDocument.getName());
+                    org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
+                    inputStream = new FileInputStream(configFile);
+                }
+
+                Map<String, Object> json = JsonUtils.parseObject(inputStream, "UTF-8");
 
                 ConfigInfo info = null;
                 // Try to retrieve the configInfo if present
@@ -229,10 +178,10 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                 }
                 else if (isBeta)
                 {
-                    //If it's a format from v1.3
+                    // If it's a format from v1.3
                     info = ConfigInfoImpl.from(dataDictionaryIdentifier, configurationIdentifier, lastModificationTime);
                 }
-                configContext = ConfigContextImpl.parseJson(json, info);
+                configContext = ConfigurationImpl.parseJson(session, json, info, localHelper);
             }
         }
         catch (Exception e)
@@ -240,5 +189,67 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
             Log.w(TAG, Log.getStackTraceString(e));
         }
         return configContext;
+    }
+
+    protected HelperStringConfig retrieveLocalizationHelper(DocumentFolderService docService,
+            Folder dataDictionaryFolder)
+    {
+        HelperStringConfig config = null;
+        InputStream inputStream = null;
+        String filename = null;
+        try
+        {
+            // Filename
+            Node messagesDocument = null;
+            if (!Locale.ENGLISH.equals(Locale.getDefault().getLanguage()))
+            {
+                messagesDocument = docService.getChildByPath(dataDictionaryFolder,
+                        HelperStringConfig.getRepositoryLocalizedFilePath());
+                filename =  HelperStringConfig.getLocalizedFileName();
+            }
+
+            if (messagesDocument == null)
+            {
+                messagesDocument = docService.getChildByPath(dataDictionaryFolder,
+                        HelperStringConfig.getDefaultRepositoryLocalizedFilePath());
+                filename =   HelperStringConfig.getDefaultLocalizedFileName();
+            }
+
+            if (messagesDocument != null && messagesDocument.isDocument())
+            {
+                ContentStream stream = docService.getContentStream((Document) messagesDocument);
+                inputStream = stream.getInputStream();
+
+                // Persist if defined by the session
+                if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
+                {
+                    File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
+                    File configFile = new File(configFolder, filename);
+                    org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
+                    inputStream = new FileInputStream(configFile);
+                }
+                config = HelperStringConfig.load(inputStream);
+            }
+        }
+        catch (IOException e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+        finally
+        {
+            org.alfresco.mobile.android.api.utils.IOUtils.closeStream(inputStream);
+        }
+
+        return config;
+    }
+
+    @Override
+    public boolean hasConfig()
+    {
+        return hasConfig;
     }
 }

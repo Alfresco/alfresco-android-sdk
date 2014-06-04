@@ -4,6 +4,8 @@ import java.io.File;
 
 public class ConfigSource
 {
+    private File sourceFile;
+
     /**
      * Constructs a ConfigSource object from the given profile stored in the
      * repository for the given application.
@@ -19,7 +21,7 @@ public class ConfigSource
      */
     public ConfigSource(File file)
     {
-
+        this.sourceFile = file;
     }
 
     /**
@@ -29,6 +31,11 @@ public class ConfigSource
     public ConfigSource(String config)
     {
 
+    }
+
+    public File getSourceFile()
+    {
+        return sourceFile;
     }
 
 }

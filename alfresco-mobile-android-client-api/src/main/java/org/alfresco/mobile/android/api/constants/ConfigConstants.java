@@ -15,6 +15,12 @@ public interface ConfigConstants
     String DATA_DICTIONNARY = "Data Dictionary";
 
     String DATA_DICTIONNARY_MOBILE_CONFIG_PATH = "Mobile/config.json";
+    
+    String DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE = "strings.properties";
+    
+    String MOBILE_LOCALIZATION_FILE_PATTERN = "strings_%s.properties";
+    
+    String DATA_DICTIONNARY_MOBILE_LOCALIZATION_PATH = "Mobile/Messages/";
 
     @SuppressWarnings("serial")
     List<String> DATA_DICTIONNARY_LIST = new ArrayList<String>(8)
@@ -60,12 +66,13 @@ public interface ConfigConstants
 
     String PROP_VISIBILE = "visible";
 
-    
     // ///////////////////////////////////////////////////////////////////////////
     // DEFAULT VIEW
     // ///////////////////////////////////////////////////////////////////////////
-    
+
     String VIEW_ROOT_NAVIGATION_MENU = "rootNavigationMenu";
+
+    String VIEW_NODE_PROPERTIES = "propertiesNodeView";
 
     // ///////////////////////////////////////////////////////////////////////////
     // PARSING
@@ -76,21 +83,56 @@ public interface ConfigConstants
     String TYPE_VALUE = "type";
 
     String LABEL_ID_VALUE = "label-id";
+    
+    String DESCRIPTION_ID_VALUE = "description-id";
 
+
+    //PROFILES
+    String PROFILES_VALUE = "profiles";
+    
+    String DEFAULT_VALUE = "default";
+    
     // CONFIG INFO
     String SCHEMA_VERSION_VALUE = "schema-version";
 
     String SERVICE_VERSION_VALUE = "service-version";
-
+    
     // VIEWS
     String VIEWS_VALUE = "views";
-    
+
     String PARAMS_VALUE = "params";
 
     String VISIBILITY_VALUE = "visibility";
 
     String VISIBLE_VALUE = "visible";
+
+    // EVALUATORS
+    String EVALUATOR = "evaluator";
+
+    String MATCH_ALL_VALUE = "matchAll";
+
+    String MATCH_ANY_VALUE = "matchAny";
     
+    String NEGATE_SYMBOL = "!";
+
+   // EVALUATOR REPOSITORY VERSION
+    String OPERATOR_VALUE = "operator";
+    String EDITION_VALUE = "edition";
+    String MAJORVERSION_VALUE = "majorVersion";
+    String MINORVERSION_VALUE = "minorVersion";
+    String MAINTENANCEVERSION_VALUE = "maintenanceVersion";
+
+    // FORMS
+    String PARAMS_FORMS = "forms";
+
+    String FIELD_GROUPS_VALUE = "field-groups";
+
+    String FIELDS_VALUE = "fields";
+
+    String CONTROL_TYPE_VALUE = "control-type";
+
+    String CONTROL_PARAMS_VALUE = "control-params";
+
 
 
 }

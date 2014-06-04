@@ -1,28 +1,17 @@
 package org.alfresco.mobile.android.api.model.config;
 
 /**
- * Enumeration Constants that represents the confg types available.
+ * Enumeration Constants that represents evaluators types available.
  * 
  * @author Jean Marie Pascal
  */
-public enum ConfigType
+public enum OperatorType
 {
-    INFO("info"), 
-    FEATURES("features"), 
-    MENU("menu"), 
-    VIEWS("views"), 
-    FORMS("forms"), 
-    ACTION_GROUPS("action-groups"), 
-    SEARCH("search"), 
-    WORKFLOW("workflow"), 
-    CREATION("creation"), 
-    APPLICATIONS("applications"), 
-    THEME("theme"), 
-    VIEW_GROUPS("view-groups"), 
-    FIELD_GROUPS("field-groups"), 
-    ACTION_DEFINITIONS("action-definitions"), 
-    EVALUATORS("evaluators"),
-    PROFILES("profiles");
+    INFERIOR("<"), 
+    INFERIOR_OR_EQUAL("<="), 
+    EQUAL("=="), 
+    SUPERIOR_OR_EQUAL(">="), 
+    SUPERIOR(">"); 
 
     /** The value associated to an enum. */
     private final String value;
@@ -32,7 +21,7 @@ public enum ConfigType
      * 
      * @param v the value of the enum.
      */
-    ConfigType(String v)
+    OperatorType(String v)
     {
         value = v;
     }
@@ -53,9 +42,9 @@ public enum ConfigType
      * @param v the value of the enum.
      * @return the property type
      */
-    public static ConfigType fromValue(String v)
+    public static OperatorType fromValue(String v)
     {
-        for (ConfigType c : ConfigType.values())
+        for (OperatorType c : OperatorType.values())
         {
             if (c.value.equalsIgnoreCase(v)) { return c; }
         }

@@ -1,8 +1,12 @@
 package org.alfresco.mobile.android.api.model.config;
 
-public interface ApplicationConfig extends Config
+import java.util.List;
+
+public interface ApplicationConfig
 {
-    public boolean hasViewConfig(String viewId);
-    
-    public ViewConfig getViewConfig(String viewId);
+    List<ProfileConfig> getProfiles();
+
+    ViewConfig getViewConfig(String viewNodeProperties);
+
+    ViewConfig getViewConfig(String profileId, String viewId);
 }
