@@ -12,15 +12,17 @@ public interface ConfigConstants
     // ///////////////////////////////////////////////////////////////////////////
     // DATA DICTIONNARY
     // ///////////////////////////////////////////////////////////////////////////
-    String DATA_DICTIONNARY = "Data Dictionary";
+    String DATA_DICTIONARY = "Data Dictionary";
+    
+    String DEFAULT_APPLICATION_ID = "org.alfresco.mobile.android.application";
+    
+    String CONFIG_APPLICATION_FOLDER_PATH = "Mobile/%s";
+    String CONFIG_FILENAME = "config.json";
+    
+    String CONFIG_LOCALIZATION_FOLDER_PATH = "Messages/";
+    String CONFIG_LOCALIZATION_FILENAME = "strings.properties";
+    String CONFIG_LOCALIZATION_FILENAME_PATTERN = "strings_%s.properties";
 
-    String DATA_DICTIONNARY_MOBILE_CONFIG_PATH = "Mobile/config.json";
-    
-    String DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE = "strings.properties";
-    
-    String MOBILE_LOCALIZATION_FILE_PATTERN = "strings_%s.properties";
-    
-    String DATA_DICTIONNARY_MOBILE_LOCALIZATION_PATH = "Mobile/Messages/";
 
     @SuppressWarnings("serial")
     List<String> DATA_DICTIONNARY_LIST = new ArrayList<String>(8)

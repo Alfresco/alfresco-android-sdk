@@ -1,5 +1,6 @@
 package org.alfresco.mobile.android.api.model.config;
 
+import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
@@ -7,15 +8,15 @@ import org.alfresco.mobile.android.api.model.config.impl.ConfigurationImpl;
 
 public abstract class Configuration
 {
-
     /**
      * Use only for offline access if configuration storage has been enable and load one time.
      * @param source
+     * @param configFolder : If you have activate 
      * @return
      */
-    public static Configuration load(ConfigSource source)
+    public static Configuration load(ConfigSource source, File configFolder)
     {
-        return ConfigurationImpl.load(source);
+        return ConfigurationImpl.load(source, configFolder);
     }
 
     public abstract ConfigInfo getConfigInfo();

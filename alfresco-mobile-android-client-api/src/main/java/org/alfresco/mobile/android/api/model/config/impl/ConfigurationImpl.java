@@ -57,33 +57,54 @@ public class ConfigurationImpl extends Configuration
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static Configuration load(ConfigSource source)
+    public static Configuration load(ConfigSource source, File configFolder)
     {
         Configuration config = null;
+        File configFile = null;
         try
         {
-            if (source.getSourceFile() != null && source.getSourceFile().exists())
+            if (source.getApplicationId() != null)
             {
-                // Find localized strings
-                String filename = ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE;
-                if (!Locale.ENGLISH.equals(Locale.getDefault().getLanguage()))
-                {
-                    filename = String.format(ConfigConstants.MOBILE_LOCALIZATION_FILE_PATTERN, Locale.getDefault()
-                            .getLanguage());
-                }
-                File localizedFile = new File(source.getSourceFile().getParentFile(), filename);
-                HelperStringConfig stringConfig = HelperStringConfig.load(localizedFile);
-
-                FileInputStream inputStream = new FileInputStream(source.getSourceFile());
-                Map<String, Object> json = JsonUtils.parseObject(inputStream, "UTF-8");
-                ConfigInfo info = null;
-                // Try to retrieve the configInfo if present
-                if (json.containsKey(ConfigType.INFO.value()))
-                {
-                    info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigType.INFO.value()));
-                }
-                config = parseJson(null, json, info, stringConfig);
+                configFile = new File(configFolder, source.getApplicationId());
             }
+            else if (source.getSourceFile() != null && source.getSourceFile().exists())
+            {
+                configFile = source.getSourceFile();
+            }
+
+            if (!configFile.exists()) { return null; }
+
+            // Try to find localization
+            String filename = ConfigConstants.CONFIG_LOCALIZATION_FILENAME;
+            if (!Locale.ENGLISH.equals(Locale.getDefault().getLanguage()))
+            {
+                filename = String.format(ConfigConstants.CONFIG_LOCALIZATION_FILENAME_PATTERN, Locale.getDefault()
+                        .getLanguage());
+            }
+            File localizedFile = new File(configFolder, filename);
+            HelperStringConfig stringConfig = HelperStringConfig.load(localizedFile);
+
+            // Try to retrieve configuration data
+            Map<String, Object> json = null;
+            if (source.getSourceAsString() != null)
+            {
+                json = JsonUtils.parseObject(source.getSourceAsString());
+            }
+            else
+            {
+                FileInputStream inputStream = new FileInputStream(configFile);
+                json = JsonUtils.parseObject(inputStream, "UTF-8");
+            }
+
+            // Try to retrieve the configInfo if present
+            ConfigInfo info = null;
+            if (json.containsKey(ConfigType.INFO.value()))
+            {
+                info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigType.INFO.value()));
+            }
+
+            // Finally create the configuration
+            config = parseJson(null, json, info, stringConfig);
         }
         catch (Exception e)
         {
@@ -144,8 +165,7 @@ public class ConfigurationImpl extends Configuration
             }
             configuration.formHelper.addForms(JSONConverter.getList(json.get(ConfigType.FORMS.value())));
         }
-        
-        
+
         // VIEWS
         if (json.containsKey(ConfigType.VIEWS.value()))
         {
@@ -155,7 +175,7 @@ public class ConfigurationImpl extends Configuration
             }
             configuration.viewHelper.addViews(JSONConverter.getList(json.get(ConfigType.VIEWS.value())));
         }
-        
+
         // VIEWS GROUP
         if (json.containsKey(ConfigType.VIEW_GROUPS.value()))
         {
@@ -165,7 +185,7 @@ public class ConfigurationImpl extends Configuration
             }
             configuration.viewHelper.addViewGroups(JSONConverter.getMap(json.get(ConfigType.VIEW_GROUPS.value())));
         }
-        
+
         // PROFILES
         if (json.containsKey(ConfigType.PROFILES.value()))
         {
@@ -175,8 +195,7 @@ public class ConfigurationImpl extends Configuration
             }
             configuration.profileHelper.addProfiles(JSONConverter.getMap(json.get(ConfigType.PROFILES.value())));
         }
-        
-        
+
         // APPLICATIONS
         if (json.containsKey(ConfigType.APPLICATIONS.value()))
         {
@@ -335,6 +354,6 @@ public class ConfigurationImpl extends Configuration
     @Override
     public Configuration swapProfile(String profileId)
     {
-        return ((ApplicationConfigImpl)applicationConfig).swap(profileId, this);
+        return ((ApplicationConfigImpl) applicationConfig).swap(profileId, this);
     }
 }

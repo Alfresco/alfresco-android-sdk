@@ -59,10 +59,10 @@ public class HelperStringConfig
     // ///////////////////////////////////////////////////////////////////////////
     public static String getLocalizedFileName()
     {
-        String filename = ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE;
+        String filename = ConfigConstants.CONFIG_LOCALIZATION_FILENAME;
         if (!Locale.ENGLISH.equals(Locale.getDefault().getLanguage()))
         {
-            filename = String.format(ConfigConstants.MOBILE_LOCALIZATION_FILE_PATTERN, Locale.getDefault()
+            filename = String.format(ConfigConstants.CONFIG_LOCALIZATION_FILENAME_PATTERN, Locale.getDefault()
                     .getLanguage());
         }
         return filename;
@@ -70,18 +70,18 @@ public class HelperStringConfig
     
     public static String getDefaultLocalizedFileName()
     {
-        return ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE;
+        return ConfigConstants.CONFIG_LOCALIZATION_FILENAME;
     }
 
     public static String getRepositoryLocalizedFilePath()
     {
-        return ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_PATH.concat(getLocalizedFileName());
+        return ConfigConstants.CONFIG_LOCALIZATION_FOLDER_PATH.concat(getLocalizedFileName());
     }
 
     public static String getDefaultRepositoryLocalizedFilePath()
     {
-        return ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_PATH
-                .concat(ConfigConstants.DATA_DICTIONNARY_MOBILE_LOCALIZATION_FILE);
+        return ConfigConstants.CONFIG_LOCALIZATION_FOLDER_PATH
+                .concat(ConfigConstants.CONFIG_LOCALIZATION_FILENAME);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

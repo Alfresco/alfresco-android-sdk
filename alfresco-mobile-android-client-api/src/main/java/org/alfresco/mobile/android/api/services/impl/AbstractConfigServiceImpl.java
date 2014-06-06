@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -44,6 +45,7 @@ import org.alfresco.mobile.android.api.services.SearchService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -53,7 +55,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 {
     private static final String TAG = AbstractConfigServiceImpl.class.getSimpleName();
 
-    private Configuration context;
+    private Configuration configuration;
 
     protected boolean hasConfig = true;
 
@@ -72,115 +74,94 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     // ///////////////////////////////////////////////////////////////////////////
     public Configuration load(ConfigSource source)
     {
-        if (source == null)
-        {
-            // We try to find the default configuration file
-            context = retrieveDefaultConfigContext();
-        }
-        else
-        {
-            // We use the configSource to retrieve the info
-        }
-        return context;
+        return retrieveConfiguration(source);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    protected Configuration retrieveDefaultConfigContext()
+    protected Configuration retrieveConfiguration(ConfigSource source)
     {
         Node configurationDocument;
-        Folder dataDictionaryFolder = null;
-        String dataDictionaryIdentifier = null;
-        String configurationIdentifier = null;
+        Folder applicationConfigurationFolder = null;
+        String applicationId = null;
         long lastModificationTime = -1;
         boolean isBeta = false;
         Configuration configContext = null;
-
+        HelperStringConfig localHelper = null;
         try
         {
-            SearchService searchService = session.getServiceRegistry().getSearchService();
+            // Retrieve Application ID
+            applicationId = ConfigConstants.DEFAULT_APPLICATION_ID;
+            if (source != null && !TextUtils.isEmpty(source.getApplicationId()))
+            {
+                applicationId = source.getApplicationId();
+            }
+
+            // Retrieve the application configuration Folder
             DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
+            Folder dataDictionaryFolder = getDataDictionaryFolder();
+            if (dataDictionaryFolder == null){throw new AlfrescoServiceException("Unable to retrieve Data Dictionary Folder");}
+            applicationConfigurationFolder = getApplicationConfigFolder(dataDictionaryFolder, applicationId);
 
-            // We search the datadictionary and next the configuration file.
-            try
+            // Retrieve configuration data
+            if (applicationConfigurationFolder != null)
             {
-                List<Node> nodes = searchService.search(
-                        "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:dictionary\"')",
-                        SearchLanguage.CMIS);
-                if (nodes != null && nodes.size() == 1)
-                {
-                    dataDictionaryFolder = (Folder) nodes.get(0);
-                    dataDictionaryIdentifier = dataDictionaryFolder.getIdentifier();
-                }
-            }
-            catch (Exception e)
-            {
-                // If search doesn't work, we search in brute force
-                for (String dictionaryName : ConfigConstants.DATA_DICTIONNARY_LIST)
-                {
-                    dataDictionaryFolder = (Folder) docService.getChildByPath(dictionaryName);
-                    if (dataDictionaryFolder != null)
-                    {
-                        dataDictionaryIdentifier = dataDictionaryFolder.getIdentifier();
-                        break;
-                    }
-                }
-            }
-
-            // Retrieve the configuration File V1
-            configurationDocument = docService.getChildByPath((Folder) dataDictionaryFolder,
-                    ConfigConstants.DATA_DICTIONNARY_MOBILE_CONFIG_PATH);
-            if (configurationDocument != null)
-            {
-                configurationIdentifier = configurationDocument.getIdentifier();
+                configurationDocument = getApplicationConfigFile(applicationConfigurationFolder);
+                
+                // Retrieve localization Data
+                localHelper = createLocalizationHelper(applicationId, docService,
+                        applicationConfigurationFolder);
             }
             else
             {
-                hasConfig = true;
                 // BETA
-                configurationDocument = docService.getChildByPath((Folder) dataDictionaryFolder,
+                configurationDocument = docService.getChildByPath(dataDictionaryFolder,
                         ConfigConstants.DATA_DICTIONNARY_MOBILE_PATH);
                 if (configurationDocument != null)
                 {
-                    configurationIdentifier = configurationDocument.getIdentifier();
                     isBeta = true;
+                    // Retrieve localization Data
+                    localHelper = createLocalizationHelper(applicationId, docService,
+                            dataDictionaryFolder);
                 }
             }
+            
+            //Prepare & Create Configuration Object
             if (configurationDocument != null && configurationDocument.isDocument())
             {
-                // Retrieve localization
-                HelperStringConfig localHelper = retrieveLocalizationHelper(docService, dataDictionaryFolder);
-
-                // Retrieve Configuration
                 hasConfig = true;
+                
+                // Retrieve Configuration Data
                 lastModificationTime = configurationDocument.getModifiedAt().getTimeInMillis();
                 ContentStream stream = docService.getContentStream((Document) configurationDocument);
 
-                // Persist if defined by the session
+                // Persist if defined by the session parameters
                 InputStream inputStream = stream.getInputStream();
                 if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
                 {
                     File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
-                    File configFile = new File(configFolder, configurationDocument.getName());
+                    File configFile = new File(configFolder, applicationId.concat(configurationDocument.getName()));
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
                     inputStream = new FileInputStream(configFile);
                 }
 
                 Map<String, Object> json = JsonUtils.parseObject(inputStream, "UTF-8");
 
-                ConfigInfo info = null;
                 // Try to retrieve the configInfo if present
+                ConfigInfo info = null;
                 if (json.containsKey(ConfigType.INFO.value()))
                 {
                     info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigType.INFO.value()));
                 }
                 else if (isBeta)
                 {
-                    // If it's a format from v1.3
-                    info = ConfigInfoImpl.from(dataDictionaryIdentifier, configurationIdentifier, lastModificationTime);
+                    // If it's a format from v1.3 TODO Rework it
+                    info = ConfigInfoImpl.from(null, null, lastModificationTime);
                 }
+
+                // Finally create the Configuration Object
                 configContext = ConfigurationImpl.parseJson(session, json, info, localHelper);
             }
         }
@@ -191,8 +172,8 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configContext;
     }
 
-    protected HelperStringConfig retrieveLocalizationHelper(DocumentFolderService docService,
-            Folder dataDictionaryFolder)
+    protected HelperStringConfig createLocalizationHelper(String applicationId, DocumentFolderService docService,
+            Folder applicationFolder)
     {
         HelperStringConfig config = null;
         InputStream inputStream = null;
@@ -201,18 +182,18 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         {
             // Filename
             Node messagesDocument = null;
-            if (!Locale.ENGLISH.equals(Locale.getDefault().getLanguage()))
+            if (!Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage()))
             {
-                messagesDocument = docService.getChildByPath(dataDictionaryFolder,
+                messagesDocument = docService.getChildByPath(applicationFolder,
                         HelperStringConfig.getRepositoryLocalizedFilePath());
-                filename =  HelperStringConfig.getLocalizedFileName();
+                filename = HelperStringConfig.getLocalizedFileName();
             }
 
             if (messagesDocument == null)
             {
-                messagesDocument = docService.getChildByPath(dataDictionaryFolder,
+                messagesDocument = docService.getChildByPath(applicationFolder,
                         HelperStringConfig.getDefaultRepositoryLocalizedFilePath());
-                filename =   HelperStringConfig.getDefaultLocalizedFileName();
+                filename = HelperStringConfig.getDefaultLocalizedFileName();
             }
 
             if (messagesDocument != null && messagesDocument.isDocument())
@@ -224,7 +205,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                 if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
                 {
                     File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
-                    File configFile = new File(configFolder, filename);
+                    File configFile = new File(configFolder, applicationId.concat(filename));
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
                     inputStream = new FileInputStream(configFile);
                 }
@@ -245,6 +226,51 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         }
 
         return config;
+    }
+
+    private Folder getDataDictionaryFolder()
+    {
+        // We search the datadictionary and next the configuration file.
+        Folder dataDictionaryFolder = null;
+        SearchService searchService = session.getServiceRegistry().getSearchService();
+        DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
+
+        try
+        {
+            List<Node> nodes = searchService.search(
+                    "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:dictionary\"')",
+                    SearchLanguage.CMIS);
+            if (nodes != null && nodes.size() == 1)
+            {
+                dataDictionaryFolder = (Folder) nodes.get(0);
+            }
+        }
+        catch (Exception e)
+        {
+            // If search doesn't work, we search in brute force
+            for (String dictionaryName : ConfigConstants.DATA_DICTIONNARY_LIST)
+            {
+                dataDictionaryFolder = (Folder) docService.getChildByPath(dictionaryName);
+                if (dataDictionaryFolder != null)
+                {
+                    break;
+                }
+            }
+        }
+        return dataDictionaryFolder;
+    }
+
+    private Folder getApplicationConfigFolder(Folder dataDictionaryFolder, String applicationId)
+    {
+        DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
+        return (Folder) docService.getChildByPath(dataDictionaryFolder,
+                String.format(ConfigConstants.CONFIG_APPLICATION_FOLDER_PATH, applicationId));
+    }
+
+    private Document getApplicationConfigFile(Folder applicationConfigFolder)
+    {
+        DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
+        return (Document) docService.getChildByPath(applicationConfigFolder, ConfigConstants.CONFIG_FILENAME);
     }
 
     @Override
