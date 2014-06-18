@@ -183,7 +183,7 @@ public class RepositorySessionImpl extends RepositorySession
 
         if (hasParameter(CONFIGURATION_CONTEXT_ENABLE) && (Boolean) getParameter(CONFIGURATION_CONTEXT_ENABLE))
         {
-            services.getConfigService().load(null);
+            services.getConfigService();
         }
     }
 

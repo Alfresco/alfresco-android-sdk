@@ -1,8 +1,26 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -12,11 +30,9 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ActionConfig;
-import org.alfresco.mobile.android.api.model.config.ApplicationConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
-import org.alfresco.mobile.android.api.model.config.ConfigSource;
-import org.alfresco.mobile.android.api.model.config.ConfigType;
-import org.alfresco.mobile.android.api.model.config.Configuration;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
@@ -32,16 +48,17 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import android.text.TextUtils;
 import android.util.Log;
 
-public class ConfigurationImpl extends Configuration
+public class ConfigurationImpl
 {
     private static final String TAG = ConfigurationImpl.class.getSimpleName();
 
     private ConfigInfo info;
 
-    private ApplicationConfig applicationConfig;
-
+    private HelperTypeConfig creationHelper;
+    
     private HelperViewConfig viewHelper;
 
     private HelperFormConfig formHelper;
@@ -57,19 +74,19 @@ public class ConfigurationImpl extends Configuration
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static Configuration load(ConfigSource source, File configFolder)
+    public static ConfigurationImpl load(String applicationId, File sourceFile, String sourceAsString, File configFolder)
     {
-        Configuration config = null;
+        ConfigurationImpl config = null;
         File configFile = null;
         try
         {
-            if (source.getApplicationId() != null)
+            if (!TextUtils.isEmpty(applicationId))
             {
-                configFile = new File(configFolder, source.getApplicationId());
+                configFile = new File(configFolder, applicationId.concat(ConfigConstants.CONFIG_FILENAME));
             }
-            else if (source.getSourceFile() != null && source.getSourceFile().exists())
+            else if (sourceFile != null && sourceFile.exists())
             {
-                configFile = source.getSourceFile();
+                configFile = sourceFile;
             }
 
             if (!configFile.exists()) { return null; }
@@ -86,9 +103,9 @@ public class ConfigurationImpl extends Configuration
 
             // Try to retrieve configuration data
             Map<String, Object> json = null;
-            if (source.getSourceAsString() != null)
+            if (sourceAsString != null)
             {
-                json = JsonUtils.parseObject(source.getSourceAsString());
+                json = JsonUtils.parseObject(sourceAsString);
             }
             else
             {
@@ -98,9 +115,9 @@ public class ConfigurationImpl extends Configuration
 
             // Try to retrieve the configInfo if present
             ConfigInfo info = null;
-            if (json.containsKey(ConfigType.INFO.value()))
+            if (json.containsKey(ConfigTypeIds.INFO.value()))
             {
-                info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigType.INFO.value()));
+                info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigTypeIds.INFO.value()));
             }
 
             // Finally create the configuration
@@ -137,76 +154,80 @@ public class ConfigurationImpl extends Configuration
 
         // We need to load each configuration category by dependencies
         // EVALUATORS
-        if (json.containsKey(ConfigType.EVALUATORS.value()))
+        if (json.containsKey(ConfigTypeIds.EVALUATORS.value()))
         {
             if (configuration.evaluatorHelper == null)
             {
                 configuration.evaluatorHelper = new HelperEvaluatorConfig(configuration, stringHelper);
             }
-            configuration.evaluatorHelper.addEvaluators(JSONConverter.getMap(json.get(ConfigType.EVALUATORS.value())));
+            configuration.evaluatorHelper.addEvaluators(JSONConverter.getMap(json.get(ConfigTypeIds.EVALUATORS.value())));
         }
 
         // FIELDS GROUP
-        if (json.containsKey(ConfigType.FIELD_GROUPS.value()))
+        if (json.containsKey(ConfigTypeIds.FIELD_GROUPS.value()))
         {
             if (configuration.formHelper == null)
             {
                 configuration.formHelper = new HelperFormConfig(configuration, stringHelper);
             }
-            configuration.formHelper.addFieldsGroup(JSONConverter.getMap(json.get(ConfigType.FIELD_GROUPS.value())));
+            configuration.formHelper.addFieldsGroup(JSONConverter.getMap(json.get(ConfigTypeIds.FIELD_GROUPS.value())));
         }
 
         // FORMS
-        if (json.containsKey(ConfigType.FORMS.value()))
+        if (json.containsKey(ConfigTypeIds.FORMS.value()))
         {
             if (configuration.formHelper == null)
             {
                 configuration.formHelper = new HelperFormConfig(configuration, stringHelper);
             }
-            configuration.formHelper.addForms(JSONConverter.getList(json.get(ConfigType.FORMS.value())));
+            configuration.formHelper.addForms(JSONConverter.getList(json.get(ConfigTypeIds.FORMS.value())));
         }
 
         // VIEWS
-        if (json.containsKey(ConfigType.VIEWS.value()))
+        if (json.containsKey(ConfigTypeIds.VIEWS.value()))
         {
             if (configuration.viewHelper == null)
             {
                 configuration.viewHelper = new HelperViewConfig(configuration, stringHelper);
             }
-            configuration.viewHelper.addViews(JSONConverter.getList(json.get(ConfigType.VIEWS.value())));
+            configuration.viewHelper.addViews(JSONConverter.getList(json.get(ConfigTypeIds.VIEWS.value())));
         }
 
         // VIEWS GROUP
-        if (json.containsKey(ConfigType.VIEW_GROUPS.value()))
+        if (json.containsKey(ConfigTypeIds.VIEW_GROUPS.value()))
         {
             if (configuration.viewHelper == null)
             {
                 configuration.viewHelper = new HelperViewConfig(configuration, stringHelper);
             }
-            configuration.viewHelper.addViewGroups(JSONConverter.getMap(json.get(ConfigType.VIEW_GROUPS.value())));
+            configuration.viewHelper.addViewGroups(JSONConverter.getList(json.get(ConfigTypeIds.VIEW_GROUPS.value())));
+        }
+        
+        // CREATION
+        if (json.containsKey(ConfigTypeIds.CREATION.value()))
+        {
+            if (configuration.viewHelper == null)
+            {
+                configuration.viewHelper = new HelperViewConfig(configuration, stringHelper);
+            }
+            configuration.viewHelper.addViewGroups(JSONConverter.getList(json.get(ConfigTypeIds.VIEW_GROUPS.value())));
         }
 
+
         // PROFILES
-        if (json.containsKey(ConfigType.PROFILES.value()))
+        if (json.containsKey(ConfigTypeIds.PROFILES.value()))
         {
             if (configuration.profileHelper == null)
             {
                 configuration.profileHelper = new HelperProfileConfig(configuration, stringHelper);
             }
-            configuration.profileHelper.addProfiles(JSONConverter.getMap(json.get(ConfigType.PROFILES.value())));
-        }
-
-        // APPLICATIONS
-        if (json.containsKey(ConfigType.APPLICATIONS.value()))
-        {
-            configuration.applicationConfig = ApplicationConfigImpl.parse(configuration,
-                    JSONConverter.getList(json.get(ConfigType.APPLICATIONS.value())));
+            configuration.profileHelper.addProfiles(JSONConverter.getMap(json.get(ConfigTypeIds.PROFILES.value())));
         }
 
         return configuration;
     }
 
-    private static LinkedHashMap<String, ViewConfig> prepareBetaViews(Configuration context, Map<String, Object> json)
+    private static LinkedHashMap<String, ViewConfig> prepareBetaViews(ConfigurationImpl context, Map<String, Object> json)
     {
         LinkedHashMap<String, ViewConfig> viewConfigIndex = new LinkedHashMap<String, ViewConfig>(json.size());
         ViewConfig viewConfig = null;
@@ -225,7 +246,6 @@ public class ConfigurationImpl extends Configuration
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
     public ConfigInfo getConfigInfo()
     {
         return info;
@@ -233,7 +253,20 @@ public class ConfigurationImpl extends Configuration
 
     public List<ProfileConfig> getProfiles()
     {
-        return applicationConfig.getProfiles();
+        if (profileHelper == null) { return new ArrayList<ProfileConfig>(0); }
+        return profileHelper.getProfiles();
+    }
+    
+    public ProfileConfig getDefaultProfile()
+    {
+        if (profileHelper == null) { return null; }
+        return profileHelper.getDefaultProfile();
+    }
+    
+    public ProfileConfig getProfile(String profileId)
+    {
+        if (profileHelper == null) { return null; }
+        return (TextUtils.isEmpty(profileId))? getDefaultProfile() :profileHelper.getProfileById(profileId);
     }
 
     public RepositoryConfig getRepositoryConfig()
@@ -251,7 +284,7 @@ public class ConfigurationImpl extends Configuration
         return null;
     }
 
-    public ViewConfig getViewConfig(String viewId, Node node)
+    public ViewConfig getViewConfig(String viewId, ConfigScope scope)
     {
         if (viewHelper == null) { return null; }
         return viewHelper.getViewById(viewId);
@@ -299,12 +332,6 @@ public class ConfigurationImpl extends Configuration
         return null;
     }
 
-    public ApplicationConfig getApplicationConfig()
-    {
-        return applicationConfig;
-    }
-
-    @Override
     public boolean hasLayoutConfig()
     {
         return viewHelper != null;
@@ -349,11 +376,5 @@ public class ConfigurationImpl extends Configuration
         if (id == null) { return id; }
         if (stringHelper == null) { return id; }
         return stringHelper.getString(id);
-    }
-
-    @Override
-    public Configuration swapProfile(String profileId)
-    {
-        return ((ApplicationConfigImpl) applicationConfig).swap(profileId, this);
     }
 }

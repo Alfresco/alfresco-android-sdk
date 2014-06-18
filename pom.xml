@@ -132,6 +132,7 @@
 		<junit.version>4.10</junit.version>
 
 		<!-- Alfresco Configuration -->
+		<slf4j.android.version>1.6.1-RC1</slf4j.android.version>
 		<chemistry.opencmis.version>0.11.0</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.7-ANDROID</alfresco.opencmis.version>
 

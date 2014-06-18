@@ -38,6 +38,21 @@
 							</descriptors>
 						</configuration>
 					</execution>
+					<execution>
+						<id>pack-sdk</id>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+						    <finalName>alfresco-android-sdk-${project.version}</finalName>
+  							<appendAssemblyId>false</appendAssemblyId>
+							<attach>true</attach>
+							<descriptors>
+								<descriptor>src/main/assembly/pack-sdk.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

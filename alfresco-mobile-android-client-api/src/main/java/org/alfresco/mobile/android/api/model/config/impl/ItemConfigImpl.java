@@ -17,38 +17,53 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.FormFieldsGroupConfig;
+import org.alfresco.mobile.android.api.model.config.ItemConfig;
 
-public class FormConfigImpl extends ItemConfigImpl implements FormConfig
+public class ItemConfigImpl implements ItemConfig
 {
-    private String identifier;
+    protected Map<String, Object> configMap;
 
-    private String label;
+    protected String identifier;
 
-    private ArrayList<FormFieldsGroupConfig> children;
+    protected String iconIdentifier;
+
+    protected String label;
+
+    protected String description;
+
+    protected String type;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    FormConfigImpl()
+    ItemConfigImpl()
     {
-        super();
     }
 
-    public FormConfigImpl(String identifier, String label, List<FormFieldsGroupConfig> children)
+    ItemConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+            Map<String, Object> configMap)
     {
+        super();
+        this.configMap = configMap;
         this.identifier = identifier;
+        this.iconIdentifier = iconIdentifier;
         this.label = label;
-        this.children = new ArrayList<FormFieldsGroupConfig>(children);
+        this.description = description;
+        this.type = type;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Object getConfig(String configProperty)
+    {
+        return configMap.get(configProperty);
+    }
+
     @Override
     public String getIdentifier()
     {
@@ -62,15 +77,26 @@ public class FormConfigImpl extends ItemConfigImpl implements FormConfig
     }
 
     @Override
-    public String getLayout()
+    public String getType()
     {
-        return null;
+        return type;
     }
 
     @Override
-    public List<FormFieldsGroupConfig> getGroups()
+    public String getDescription()
     {
-        return children;
+        return description;
     }
 
+    @Override
+    public String getIconIdentifier()
+    {
+        return iconIdentifier;
+    }
+
+    @Override
+    public Map<String, Object> getParameters()
+    {
+        return new LinkedHashMap<String, Object>(configMap);
+    }
 }

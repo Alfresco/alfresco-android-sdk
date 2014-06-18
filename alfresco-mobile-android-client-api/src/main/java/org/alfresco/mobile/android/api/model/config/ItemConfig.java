@@ -17,54 +17,53 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-/**
- * Enumeration Constants that represents evaluators types available.
- * 
- * @author Jean Marie Pascal
- */
-public enum OperatorType
+import java.util.Map;
+
+public interface ItemConfig
 {
-    INFERIOR("<"), 
-    INFERIOR_OR_EQUAL("<="), 
-    EQUAL("=="), 
-    SUPERIOR_OR_EQUAL(">="), 
-    SUPERIOR(">"); 
-
-    /** The value associated to an enum. */
-    private final String value;
+    /**
+     * Returns the unique identifier of the item.
+     * 
+     * @return
+     */
+    String getIdentifier();
 
     /**
-     * Instantiates a new property type.
+     * Returns the label of the item.
      * 
-     * @param v the value of the enum.
+     * @return
      */
-    OperatorType(String v)
-    {
-        value = v;
-    }
+    String getLabel();
 
     /**
-     * Value.
+     * Returns the description of the item.
      * 
-     * @return the string
+     * @return
      */
-    public String value()
-    {
-        return value;
-    }
+    String getDescription();
 
     /**
-     * From value.
+     * Returns the identifier for an icon to use for the item.
      * 
-     * @param v the value of the enum.
-     * @return the property type
+     * @return
      */
-    public static OperatorType fromValue(String v)
-    {
-        for (OperatorType c : OperatorType.values())
-        {
-            if (c.value.equalsIgnoreCase(v)) { return c; }
-        }
-        return null;
-    }
+    String getIconIdentifier();
+
+    /**
+     * Returns the type of the item.
+     * 
+     * @return
+     */
+    String getType();
+
+    /**
+     * Returns the parameters for the item, these will typically depend on the
+     * type of item.
+     * 
+     * @return
+     */
+    Map<String, Object> getParameters();
+
+    //TODO Check if it's still ok ?
+    Object getConfig(String configProperty);
 }

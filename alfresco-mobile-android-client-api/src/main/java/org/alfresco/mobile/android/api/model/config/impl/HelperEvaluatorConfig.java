@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
@@ -9,7 +26,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
-import org.alfresco.mobile.android.api.model.config.ConfigInfo;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.EvaluatorType;
 import org.alfresco.mobile.android.api.model.config.OperatorType;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
@@ -50,13 +67,13 @@ public class HelperEvaluatorConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public boolean evaluateIfEvaluator(Map<String, Object> evaluatorsConfiguration, Bundle extraParameters)
+    public boolean evaluateIfEvaluator(Map<String, Object> evaluatorsConfiguration, ConfigScope extraParameters)
     {
         if (!evaluatorsConfiguration.containsKey(ConfigConstants.EVALUATOR)) { return true; }
         return evaluate(JSONConverter.getString(evaluatorsConfiguration, ConfigConstants.EVALUATOR), extraParameters);
     }
 
-    public boolean evaluate(String evaluatorId, Bundle extraParameters)
+    public boolean evaluate(String evaluatorId, ConfigScope extraParameters)
     {
         if (evaluatorId == null) { return true; }
         return resolveEvaluator(evaluatorId, extraParameters);
@@ -65,7 +82,7 @@ public class HelperEvaluatorConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // EVALUATION
     // ///////////////////////////////////////////////////////////////////////////
-    protected boolean resolveEvaluator(String evaluatorId, Bundle extraParameters)
+    protected boolean resolveEvaluator(String evaluatorId, ConfigScope extraParameters)
     {
         Boolean result = false;
 
@@ -106,7 +123,7 @@ public class HelperEvaluatorConfig extends HelperConfig
         return result;
     }
 
-    protected boolean resolveEvaluator(EvaluatorConfigData evalConfig, Bundle extraParameters)
+    protected boolean resolveEvaluator(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
     {
         Boolean result = false;
 
@@ -148,18 +165,18 @@ public class HelperEvaluatorConfig extends HelperConfig
         RepositoryInfo repoInfo = ((ConfigurationImpl) getConfiguration()).getSession().getRepositoryInfo();
 
         // Edition
-        if (evalConfig.configPropertiesMap.containsKey(ConfigConstants.EDITION_VALUE))
+        if (evalConfig.configMap.containsKey(ConfigConstants.EDITION_VALUE))
         {
             result = repoInfo.getEdition().equalsIgnoreCase(
-                    JSONConverter.getString(evalConfig.configPropertiesMap, ConfigConstants.EDITION_VALUE));
+                    JSONConverter.getString(evalConfig.configMap, ConfigConstants.EDITION_VALUE));
         }
 
         if (!result) { return false; }
 
         OperatorType operator = OperatorType.EQUAL;
-        if (evalConfig.configPropertiesMap.containsKey(ConfigConstants.OPERATOR_VALUE))
+        if (evalConfig.configMap.containsKey(ConfigConstants.OPERATOR_VALUE))
         {
-            operator = OperatorType.fromValue(JSONConverter.getString(evalConfig.configPropertiesMap,
+            operator = OperatorType.fromValue(JSONConverter.getString(evalConfig.configMap,
                     ConfigConstants.OPERATOR_VALUE));
         }
 
@@ -173,34 +190,34 @@ public class HelperEvaluatorConfig extends HelperConfig
         int versionNumber = 0;
         int repoVersionNumber = 0;
         // Major Version
-        if (evalConfig.configPropertiesMap.containsKey(ConfigConstants.MAJORVERSION_VALUE))
+        if (evalConfig.configMap.containsKey(ConfigConstants.MAJORVERSION_VALUE))
         {
-            versionNumber += 100 * JSONConverter.getInteger(evalConfig.configPropertiesMap,
+            versionNumber += 100 * JSONConverter.getInteger(evalConfig.configMap,
                     ConfigConstants.MAJORVERSION_VALUE).intValue();
             repoVersionNumber += 100 * repoInfo.getMajorVersion();
         }
 
         // Minor Version
-        if (evalConfig.configPropertiesMap.containsKey(ConfigConstants.MINORVERSION_VALUE))
+        if (evalConfig.configMap.containsKey(ConfigConstants.MINORVERSION_VALUE))
         {
-            versionNumber += 10 * JSONConverter.getInteger(evalConfig.configPropertiesMap,
+            versionNumber += 10 * JSONConverter.getInteger(evalConfig.configMap,
                     ConfigConstants.MINORVERSION_VALUE).intValue();
             repoVersionNumber += 10 * repoInfo.getMinorVersion();
         }
 
         // Maintenance Version
-        if (evalConfig.configPropertiesMap.containsKey(ConfigConstants.MAINTENANCEVERSION_VALUE))
+        if (evalConfig.configMap.containsKey(ConfigConstants.MAINTENANCEVERSION_VALUE))
         {
             if (repoInfo.getEdition().equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
             {
-                versionNumber += JSONConverter.getInteger(evalConfig.configPropertiesMap,
+                versionNumber += JSONConverter.getInteger(evalConfig.configMap,
                         ConfigConstants.MAINTENANCEVERSION_VALUE).intValue();
                 repoVersionNumber += repoInfo.getMaintenanceVersion();
             }
             else
             {
                 result = evaluate(operator, RepositoryVersionHelper.getVersionString(repoInfo.getVersion(), 2),
-                        JSONConverter.getString(evalConfig.configPropertiesMap,
+                        JSONConverter.getString(evalConfig.configMap,
                                 ConfigConstants.MAINTENANCEVERSION_VALUE));
             }
         }
@@ -248,7 +265,7 @@ public class HelperEvaluatorConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNAL UTILITY CLASS
     // ///////////////////////////////////////////////////////////////////////////
-    protected static class EvaluatorConfigData extends ConfigImpl
+    protected static class EvaluatorConfigData extends ItemConfigImpl
     {
         public String identifier;
 
@@ -297,7 +314,7 @@ public class HelperEvaluatorConfig extends HelperConfig
             }
             else
             {
-                eval.configPropertiesMap = JSONConverter.getMap(json.get(ConfigConstants.PARAMS_VALUE));
+                eval.configMap = JSONConverter.getMap(json.get(ConfigConstants.PARAMS_VALUE));
             }
 
             if (eval.matchOperator != null)

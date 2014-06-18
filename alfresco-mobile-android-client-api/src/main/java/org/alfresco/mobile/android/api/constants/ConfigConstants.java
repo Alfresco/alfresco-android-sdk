@@ -3,6 +3,8 @@ package org.alfresco.mobile.android.api.constants;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.config.EvaluatorType;
+
 public interface ConfigConstants
 {
     // ///////////////////////////////////////////////////////////////////////////
@@ -13,16 +15,18 @@ public interface ConfigConstants
     // DATA DICTIONNARY
     // ///////////////////////////////////////////////////////////////////////////
     String DATA_DICTIONARY = "Data Dictionary";
-    
-    String DEFAULT_APPLICATION_ID = "org.alfresco.mobile.android.application";
-    
-    String CONFIG_APPLICATION_FOLDER_PATH = "Mobile/%s";
-    String CONFIG_FILENAME = "config.json";
-    
-    String CONFIG_LOCALIZATION_FOLDER_PATH = "Messages/";
-    String CONFIG_LOCALIZATION_FILENAME = "strings.properties";
-    String CONFIG_LOCALIZATION_FILENAME_PATTERN = "strings_%s.properties";
 
+    String DEFAULT_APPLICATION_ID = "org.alfresco.mobile.android.application";
+
+    String CONFIG_APPLICATION_FOLDER_PATH = "Mobile/%s";
+
+    String CONFIG_FILENAME = "config.json";
+
+    String CONFIG_LOCALIZATION_FOLDER_PATH = "Messages/";
+
+    String CONFIG_LOCALIZATION_FILENAME = "strings.properties";
+
+    String CONFIG_LOCALIZATION_FILENAME_PATTERN = "strings_%s.properties";
 
     @SuppressWarnings("serial")
     List<String> DATA_DICTIONNARY_LIST = new ArrayList<String>(8)
@@ -85,21 +89,24 @@ public interface ConfigConstants
     String TYPE_VALUE = "type";
 
     String LABEL_ID_VALUE = "label-id";
-    
+
     String DESCRIPTION_ID_VALUE = "description-id";
 
-
-    //PROFILES
+    // PROFILES
     String PROFILES_VALUE = "profiles";
-    
+
     String DEFAULT_VALUE = "default";
-    
+
     // CONFIG INFO
     String SCHEMA_VERSION_VALUE = "schema-version";
 
     String SERVICE_VERSION_VALUE = "service-version";
-    
+
     // VIEWS
+    String ITEMS_VALUE = "items";
+
+    String ITEM_TYPE_VALUE = "item-type";
+
     String VIEWS_VALUE = "views";
 
     String PARAMS_VALUE = "params";
@@ -114,14 +121,18 @@ public interface ConfigConstants
     String MATCH_ALL_VALUE = "matchAll";
 
     String MATCH_ANY_VALUE = "matchAny";
-    
+
     String NEGATE_SYMBOL = "!";
 
-   // EVALUATOR REPOSITORY VERSION
+    // EVALUATOR REPOSITORY VERSION
     String OPERATOR_VALUE = "operator";
+
     String EDITION_VALUE = "edition";
+
     String MAJORVERSION_VALUE = "majorVersion";
+
     String MINORVERSION_VALUE = "minorVersion";
+
     String MAINTENANCEVERSION_VALUE = "maintenanceVersion";
 
     // FORMS
@@ -135,6 +146,52 @@ public interface ConfigConstants
 
     String CONTROL_PARAMS_VALUE = "control-params";
 
+    ///////////////////////////////////////////////////
+    // PARSING ENUM
+    ///////////////////////////////////////////////////
+    enum ViewConfigType
+    {
+        VIEW_ID("view-id"), 
+        VIEW_GROUP("view-group-id"), 
+        VIEW("view");
 
+        /** The value associated to an enum. */
+        private final String value;
+
+        /**
+         * Instantiates a new property type.
+         * 
+         * @param v the value of the enum.
+         */
+        ViewConfigType(String v)
+        {
+            value = v;
+        }
+
+        /**
+         * Value.
+         * 
+         * @return the string
+         */
+        public String value()
+        {
+            return value;
+        }
+
+        /**
+         * From value.
+         * 
+         * @param v the value of the enum.
+         * @return the property type
+         */
+        public static ViewConfigType fromValue(String v)
+        {
+            for (ViewConfigType c : ViewConfigType.values())
+            {
+                if (c.value.equalsIgnoreCase(v)) { return c; }
+            }
+            return null;
+        }
+    }
 
 }

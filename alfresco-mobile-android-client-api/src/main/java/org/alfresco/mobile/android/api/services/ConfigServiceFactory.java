@@ -15,23 +15,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.services.impl.onpremise;
+package org.alfresco.mobile.android.api.services;
 
-import org.alfresco.mobile.android.api.services.impl.AbstractConfigServiceImpl;
+import java.io.File;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.services.impl.OfflineConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
-/**
- * Retrieve information onLine
- * @author Jean Marie Pascal
- */
-public class OnPremiseConfigServiceImpl extends AbstractConfigServiceImpl
+public class ConfigServiceFactory
 {
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // CONSTRUCTOR
-    // ///////////////////////////////////////////////////////////////////////////
-    public OnPremiseConfigServiceImpl(AlfrescoSession session)
+    /**
+     * Returns a concrete implementation of a ConfigService for the given
+     * application identifier that best suits the given parameters and state of
+     * the client i.e. on/offline.
+     * 
+     * @param applicationId
+     * @param parameters
+     * @return
+     */
+    public static ConfigService buildConfigService(String applicationId, Map<String, Object> parameters)
     {
-        super(session);
+        File configFolder = null;
+        if (parameters != null && parameters.containsKey(AlfrescoSession.CONFIGURATION_FOLDER))
+        {
+            configFolder = new File((String) parameters.get(AlfrescoSession.CONFIGURATION_FOLDER));
+        }
+        return new OfflineConfigServiceImpl(applicationId, configFolder);
     }
+
 }

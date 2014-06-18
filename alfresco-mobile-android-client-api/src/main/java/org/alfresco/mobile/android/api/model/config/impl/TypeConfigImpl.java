@@ -17,31 +17,32 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.FormFieldConfig;
+import org.alfresco.mobile.android.api.model.config.TypeConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-public class FormFieldConfigImpl extends ItemConfigImpl implements FormFieldConfig
+public class TypeConfigImpl extends ItemConfigImpl implements TypeConfig
 {
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    FormFieldConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
-            Map<String, Object> configMap)
+    TypeConfigImpl()
     {
-        super(identifier, identifier, label, identifier, type, configMap);
     }
 
-    static FormFieldConfig parse(Map<String, Object> json, ConfigurationImpl configuration)
+    static TypeConfig parse(String identifier, Map<String, Object> json, ConfigurationImpl configuration)
     {
-        String identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        String label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
-        String controlType = JSONConverter.getString(json, ConfigConstants.CONTROL_TYPE_VALUE);
-        Map<String, Object> configMap = (json.containsKey(ConfigConstants.CONTROL_PARAMS_VALUE)) ? JSONConverter
-                .getMap(json.get(ConfigConstants.CONTROL_PARAMS_VALUE)) : new HashMap<String, Object>(0);
-        return new FormFieldConfigImpl(identifier, null, label, null, controlType, configMap);
+        TypeConfigImpl typeConfig = new TypeConfigImpl();
+        typeConfig.identifier = identifier;
+        typeConfig.label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
+        typeConfig.description = configuration.getString(JSONConverter.getString(json, ConfigConstants.DESCRIPTION_ID_VALUE));
+        typeConfig.configMap = json;
+        return typeConfig;
     }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // METHODS
+    // ///////////////////////////////////////////////////////////////////////////
 }

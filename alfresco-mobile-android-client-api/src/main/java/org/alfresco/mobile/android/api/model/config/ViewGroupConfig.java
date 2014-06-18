@@ -17,9 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-public interface ProfileConfig extends ItemConfig
+public interface ViewGroupConfig extends ItemConfig, GroupConfig<ViewConfig>
 {
-    public ViewConfig getViewConfig(String viewId);
 
-    public boolean isDefault();
 }

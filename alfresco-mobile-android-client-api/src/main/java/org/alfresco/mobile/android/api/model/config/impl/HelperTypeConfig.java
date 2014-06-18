@@ -30,7 +30,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.text.TextUtils;
 
-public class HelperViewConfig extends HelperConfig
+public class HelperTypeConfig extends HelperConfig
 {
     private LinkedHashMap<String, Object> jsonViewConfigGroups;
 
@@ -39,12 +39,12 @@ public class HelperViewConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperViewConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    HelperTypeConfig(ConfigurationImpl context, HelperStringConfig localHelper)
     {
         super(context, localHelper);
     }
 
-    HelperViewConfig(ConfigurationImpl context, HelperStringConfig localHelper,
+    HelperTypeConfig(ConfigurationImpl context, HelperStringConfig localHelper,
             LinkedHashMap<String, ViewConfig> viewConfigIndex)
     {
         super(context, localHelper);
