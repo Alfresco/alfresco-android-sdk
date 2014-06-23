@@ -126,7 +126,7 @@
 		<!-- Android Dependencies -->
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
-		<android.maven.plugin.version>3.6.0</android.maven.plugin.version>
+		<android.maven.plugin.version>3.9.0-rc.2</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
