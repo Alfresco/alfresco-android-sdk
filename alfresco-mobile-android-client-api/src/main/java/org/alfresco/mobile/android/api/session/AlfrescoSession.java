@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.session;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -62,16 +61,17 @@ public interface AlfrescoSession extends Parcelable
      * @since 1.3
      */
     String HTTP_ACCEPT_LANGUAGE = "org.alfresco.mobile.http.language";
-    
+
     /**
      * Used by the NetworkHttpInvoker to enable/disable the chunkStreamingMode.
      * Some HTTP server configuration doesn't support this mode. <br/>
-     * By default the mode is disabled.
-     * <b>This parameter can't be changed after the session creation</b>.
+     * By default the mode is disabled. <b>This parameter can't be changed after
+     * the session creation</b>.
      * 
      * @since 1.3
      */
     String HTTP_CHUNK_TRANSFERT = "org.alfresco.mobile.http.transfert.chunk";
+
     // ///////////////////////////////////////////////
     // EXTENSION
     // ///////////////////////////////////////////////
@@ -144,6 +144,30 @@ public interface AlfrescoSession extends Parcelable
      * Default : "/sdcard/Android/data/org.alfresco.mobile.android.sdk/cache"
      */
     String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
+
+    // ///////////////////////////////////////////////
+    // CONFIGURATION
+    // ///////////////////////////////////////////////
+    /**
+     * During the session creation configuration information is loaded if available. <br/> 
+     * Value must be a boolean. Default : false
+     */
+    String CONFIGURATION_INFO_ENABLE = "org.alfresco.mobile.api.configuration.info";
+    
+    /**
+     * During the session creation the configuration context is loaded if available. <br/> 
+     * Value must be a boolean. Default : false
+     */
+    String CONFIGURATION_CONTEXT_ENABLE = "org.alfresco.mobile.api.configuration.context";
+
+    /**
+     * Define the path to the configuration folder. The configuration folder is used to store
+     * configuration file and localization file.<br/>
+     * Value must be String value that represents a valid path inside the
+     * device.<br/>
+     * Default : "/sdcard/Android/data/org.alfresco.mobile.android.sdk/configuration"
+     */
+    String CONFIGURATION_FOLDER = "org.alfresco.mobile.api.configuration.folder";
 
     // ///////////////////////////////////////////////
     // METHODS

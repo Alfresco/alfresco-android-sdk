@@ -19,9 +19,6 @@ package org.alfresco.mobile.android.api.model;
 
 import java.io.Serializable;
 
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
-
 /**
  * Search Parameters provides informations to manage the behaviour of a search.
  * It define how a query search available at SearchService.

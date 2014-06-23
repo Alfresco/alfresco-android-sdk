@@ -1,161 +1,98 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * 
+ * This file is part of the Alfresco Mobile SDK.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
-import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.text.TextUtils;
-
-public class ViewConfigImpl extends ConfigImpl implements ViewConfig
+public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
 {
-    private String identifier;
-
-    private String label;
-
-    private String type;
-
     private LinkedHashMap<String, ViewConfig> childrenIndex;
 
     private ArrayList<ViewConfig> children;
 
+    private ArrayList<String> forms;
+
+    private String evaluatorId;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    ViewConfigImpl(ConfigContext context)
+    public ViewConfigImpl(String identifier, String label, String type, ArrayList<ViewConfig> children,
+            String evaluatorId)
     {
-        super(context);
+        super(identifier, null, label, null, type, null);
+        this.children = (children == null) ? new ArrayList<ViewConfig>(0) : children;
+        this.forms = new ArrayList<String>(0);
+        this.evaluatorId = evaluatorId;
     }
 
-    static ViewConfig parseBeta(ConfigContext context, String type, Map<String, Object> json)
+    public ViewConfigImpl(String identifier, String label, String type, Map<String, Object> properties,
+            LinkedHashMap<String, ViewConfig> childrenIndex, ArrayList<String> forms, String evaluatorId)
     {
-        ViewConfigImpl config = new ViewConfigImpl(context);
-        config.configPropertiesMap = new HashMap<String, Object>(1);
-        config.configPropertiesMap.put(ConfigConstants.VISIBLE_VALUE,
-                JSONConverter.getBoolean(json, ConfigConstants.VISIBLE_VALUE));
-        config.type = type;
-        config.identifier = type;
-
-        return config;
-    }
-
-    static ViewConfig parse(ViewHelper helper, Object object, ConfigInfo info)
-    {
-        if (object instanceof Map)
-        {
-            return parse(helper.getContext(), JSONConverter.getMap(object), info);
-        }
-        else if (object instanceof String)
-        {
-            return helper.getViewById((String) object, info);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    static ViewConfig parse(ViewHelper helper, Map<String, Object> json, ConfigInfo info)
-    {
-        return parse(helper, json, info, null);
-    }
-    
-    static ViewConfig parse(ViewHelper helper, Map<String, Object> json, ConfigInfo info, String identifier)
-    {
-        ViewConfigImpl config = new ViewConfigImpl(helper.getContext());
-        config.identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        if (TextUtils.isEmpty(config.identifier) && !TextUtils.isEmpty(identifier))
-        {
-            config.identifier = identifier;
-        }
-        config.label = JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE);
-        config.type = JSONConverter.getString(json, ConfigConstants.TYPE_VALUE);
-        config.configPropertiesMap = (json.containsKey(ConfigConstants.PARAMS_VALUE)) ? JSONConverter.getMap(json
-                .get(ConfigConstants.PARAMS_VALUE)) : new HashMap<String, Object>(0);
-
-        // Check if it's a group view
-        if (json.containsKey(ConfigConstants.VIEWS_VALUE))
-        {
-            List<Object> childrenObject = JSONConverter.getList(json.get(ConfigConstants.VIEWS_VALUE));
-            LinkedHashMap<String, ViewConfig> childrenViewConfig = new LinkedHashMap<String, ViewConfig>(
-                    childrenObject.size());
-            ViewConfig viewConfig = null;
-            for (Object child : childrenObject)
-            {
-                viewConfig = ViewConfigImpl.parse(helper, child, info);
-                if (viewConfig == null)
-                {
-                    continue;
-                }
-                childrenViewConfig.put(viewConfig.getIdentifier(), viewConfig);
-            }
-            config.childrenIndex = childrenViewConfig;
-            config.children = new ArrayList<ViewConfig>(childrenViewConfig.values());
-        }
-        return config;
-    }
-
-    static ViewConfig parse(ConfigContext context, Map<String, Object> json, ConfigInfo info)
-    {
-        ViewConfigImpl config = new ViewConfigImpl(context);
-        config.identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        config.label = JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE);
-        config.type = JSONConverter.getString(json, ConfigConstants.TYPE_VALUE);
-        config.configPropertiesMap = (json.containsKey(ConfigConstants.PARAMS_VALUE)) ? JSONConverter.getMap(json
-                .get(ConfigConstants.PARAMS_VALUE)) : new HashMap<String, Object>(0);
-        return config;
+        super(identifier, null, label, null, type, properties);
+        this.childrenIndex = (childrenIndex == null) ? new LinkedHashMap<String, ViewConfig>(0) : childrenIndex;
+        this.children = new ArrayList<ViewConfig>(this.childrenIndex.values());
+        this.forms = (forms == null) ? new ArrayList<String>(0) : forms;
+        this.evaluatorId = evaluatorId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public String getIdentifier()
-    {
-        return identifier;
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return label;
-    }
-
-    @Override
-    public String getType()
-    {
-        return type;
-    }
-
-    @Override
-    public Map<String, Object> getParameters()
-    {
-        return configPropertiesMap;
-    }
-
-    @Override
     public int getChildCount()
     {
-        return (childrenIndex == null) ? 0 : childrenIndex.size();
+        return (children == null) ? 0 : children.size();
     }
 
-    @Override
     public ViewConfig getChildAt(int index)
     {
         return (children == null) ? null : children.get(index);
     }
 
-    @Override
     public ViewConfig getChildById(String id)
     {
         return (childrenIndex == null) ? null : childrenIndex.get(id);
     }
 
+    @Override
+    public List<String> getForms()
+    {
+        return forms;
+    }
+    
+    public String getEvaluator()
+    {
+        return evaluatorId;
+    }
+
+    public void setChildren(ArrayList<ViewConfig> children)
+    {
+        this.children = children;
+    }
+
+    @Override
+    public List<ViewConfig> getItems()
+    {
+        return children;
+    }
 }

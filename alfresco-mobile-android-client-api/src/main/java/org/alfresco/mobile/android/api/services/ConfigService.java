@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -21,14 +21,14 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ActionConfig;
-import org.alfresco.mobile.android.api.model.config.ApplicationConfig;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
-import org.alfresco.mobile.android.api.model.config.ConfigSource;
+import org.alfresco.mobile.android.api.model.config.ConfigInfo;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
 import org.alfresco.mobile.android.api.model.config.MenuConfig;
 import org.alfresco.mobile.android.api.model.config.ProcessConfig;
+import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
 import org.alfresco.mobile.android.api.model.config.SearchConfig;
 import org.alfresco.mobile.android.api.model.config.TaskConfig;
@@ -40,69 +40,77 @@ import org.alfresco.mobile.android.api.model.config.ViewConfig;
  */
 public interface ConfigService extends Service
 {
-
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns configuration information like schema, version
+     */
+    public abstract ConfigInfo getConfigInfo();
+
     /**
      * Returns a list of profiles available on the server the client application
      * can select from.
      */
-    public List<String> getProfiles();
+    public abstract List<ProfileConfig> getProfiles();
 
     /**
-     * Retrieves and loads the config represented by the given ConfigSource
-     * object. This method can also be used to re-load configuration.
+     * Returns the default Profile
      */
-    public ConfigContext load(ConfigSource source);
+    public abstract ProfileConfig getProfile();
+
+    /**
+     * Returns the Profile for the given identifier
+     */
+    public abstract ProfileConfig getProfile(String identifier);
 
     /**
      * Returns configuration information about the repository, for example, the
      * Share host and port.
      */
-    public RepositoryConfig getRepositoryConfig();
+    public abstract RepositoryConfig getRepositoryConfig();
 
     /** Returns the feature configuration for the current application. */
-    public List<FeatureConfig> getFeatureConfig();
+    public abstract List<FeatureConfig> getFeatureConfig();
 
     /** Returns the configuration for the menu with the given identifier. */
-    public List<MenuConfig> getMenuConfig(String menuId);
+    public abstract List<MenuConfig> getMenuConfig(String menuId);
 
     /**
      * Returns the configuration for the view with the given identifier and
      * optionally for the given node.
      */
-    public ViewConfig getViewConfig(String viewId, Node node);
+    public abstract boolean hasViewConfig();
+
+    public abstract ViewConfig getViewConfig(String viewId);
+
+    public abstract ViewConfig getViewConfig(String viewId, ConfigScope scope);
 
     /**
      * Returns the configuration for the form with the given identifier and
      * optionally for the given node.
      */
-    public FormConfig getFormConfig(String formId, Node node);
+    public abstract FormConfig getFormConfig(String formId, Node node);
 
     /** Returns the configuration for workflow processes. */
-    public List<ProcessConfig> getProcessConfig();
+    public abstract List<ProcessConfig> getProcessConfig();
 
     /** Returns the configuration for workflow tasks. */
-    public List<TaskConfig> getTaskConfig();
+    public abstract List<TaskConfig> getTaskConfig();
 
     /** Returns the configuration for creation related features. */
-    public CreationConfig getCreationConfig();
+    public abstract CreationConfig getCreationConfig(ConfigScope scope);
 
     /**
      * Returns the list of ActionConfig object representing the actions
      * available in the given group id and optionally for the given node.
      */
-    public List<ActionConfig> getActionConfig(String groupId, Node node);
+    public abstract List<ActionConfig> getActionConfig(String groupId, Node node);
 
     /** Returns the configuration for search related features. */
-    public SearchConfig getSearchConfig(Node node);
+    public abstract SearchConfig getSearchConfig(Node node);
 
     /** Returns branding configuration. */
-    public ThemeConfig getThemeConfig();
-
-    /** Returns application specific configuration. */
-    public ApplicationConfig getApplicationConfig();
-
-    public boolean hasConfig();
+    public abstract ThemeConfig getThemeConfig();
 }
