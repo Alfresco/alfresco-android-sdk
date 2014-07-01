@@ -367,10 +367,10 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
             this.baseUrl = tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, "");
             sessionParameters.put(BASE_URL, tmpBindingUrl.replace(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM, ""));
         }
-        // Binding Automatic
+        // Binding Automatic : Default Public API
         else if (tmpBindingUrl != null && !sessionParameters.containsKey(SessionParameter.ATOMPUB_URL))
         {
-            tmpBindingUrl = tmpBindingUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS);
+            tmpBindingUrl = tmpBindingUrl.concat(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM);
         }
         sessionParameters.put(SessionParameter.ATOMPUB_URL, tmpBindingUrl);
 
