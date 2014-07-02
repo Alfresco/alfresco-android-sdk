@@ -597,4 +597,15 @@ public final class OnPremiseUrlRegistry
         return personIdentifier;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////////////
+    public static final String URL_SERVER_INFO = "api/server";
+    
+    /** @since 1.3.2 */
+    public static String getServerInfo(String baseUrl)
+    {
+        return baseUrl.concat(PREFIX_SERVICE).concat(URL_SERVER_INFO);
+    }
+
 }
