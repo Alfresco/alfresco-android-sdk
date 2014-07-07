@@ -17,31 +17,41 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.FormFieldConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-public class FormFieldConfigImpl extends ItemConfigImpl implements FormFieldConfig
+import android.text.TextUtils;
+
+/**
+ * Parse json data and store it as BaseConfigData. <br/>
+ * Used to create a BaseConfig Object.
+ * 
+ * @author Jean Marie Pascal
+ */
+public class BaseConfigData
 {
+    final String identifier;
+
+    final String label;
+
+    final String description;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    FormFieldConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
-            Map<String, Object> configMap)
+    BaseConfigData(String identifier, Map<String, Object> json, ConfigurationImpl configuration)
     {
-        super(identifier, identifier, label, identifier, type, configMap);
-    }
-
-    static FormFieldConfig parse(Map<String, Object> json, ConfigurationImpl configuration)
-    {
-        String identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        String label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
-        String controlType = JSONConverter.getString(json, ConfigConstants.CONTROL_TYPE_VALUE);
-        Map<String, Object> configMap = (json.containsKey(ConfigConstants.CONTROL_PARAMS_VALUE)) ? JSONConverter
-                .getMap(json.get(ConfigConstants.CONTROL_PARAMS_VALUE)) : new HashMap<String, Object>(0);
-        return new FormFieldConfigImpl(identifier, null, label, null, controlType, configMap);
+        if (!TextUtils.isEmpty(identifier))
+        {
+            this.identifier = identifier;
+        }
+        else
+        {
+            this.identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
+        }
+        this.description = configuration.getString(JSONConverter.getString(json, ConfigConstants.DESCRIPTION_ID_VALUE));
+        this.label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
     }
 }

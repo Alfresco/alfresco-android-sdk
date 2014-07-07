@@ -15,20 +15,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.List;
+import java.util.Map;
 
-public interface FormFieldsGroupConfig extends ItemConfig
+import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public class FormConfigData extends ItemConfigData
 {
+    final String layoutId;
 
-    /** Returns the unique identifier of the group. */
-    String getIdentifier();
-
-    /** Returns the label of the group. */
-    String getLabel();
-
-    /** Returns the fields for the group. */
-    List<FormFieldConfig> getFields();
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    public FormConfigData(String identifier, Map<String, Object> json, ConfigurationImpl configuration)
+    {
+        super(identifier, json, configuration);
+        this.layoutId = JSONConverter.getString(json, ConfigConstants.LAYOUT_VALUE);
+    }
 }

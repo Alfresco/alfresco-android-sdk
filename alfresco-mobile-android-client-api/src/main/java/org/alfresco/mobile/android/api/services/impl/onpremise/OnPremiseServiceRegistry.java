@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
+import java.io.File;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.model.TypeDefinition;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
@@ -26,8 +30,10 @@ import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
+import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.OfflineConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIActivityStreamServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIDocumentFolderServiceImpl;
@@ -46,6 +52,7 @@ import org.apache.http.HttpStatus;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -216,17 +223,34 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
         return workflowService;
     }
 
-    @Override
-    public ConfigService getConfigService()
+    public ModelDefinitionService getModelDefinitionService()
+    {
+        if (typeDefinitionService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            if (hasPublicAPI)
+            {
+                this.typeDefinitionService = new OnPremiseModelDefinitionServiceImpl(session);
+            }
+            else
+            {
+                this.typeDefinitionService = new OnPremiseModelDefinitionServiceImpl((RepositorySession) session);
+            }
+        }
+        return typeDefinitionService;
+    }
+
+    public ConfigService initConfigService()
     {
         try
         {
             if (configService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
             {
-                if (session.getParameter(AlfrescoSession.CONFIGURATION_CONTEXT_ENABLE) != null
-                        && (Boolean) session.getParameter(AlfrescoSession.CONFIGURATION_CONTEXT_ENABLE))
+                if (session.getParameter(ConfigService.CONFIGURATION_APPLICATION_ID) != null
+                        && !TextUtils
+                                .isEmpty((String) session.getParameter(ConfigService.CONFIGURATION_APPLICATION_ID)))
                 {
-                    this.configService = new OnPremiseConfigServiceImpl(session).load(null);
+                    this.configService = new OnPremiseConfigServiceImpl(session).load((String) session
+                            .getParameter(ConfigService.CONFIGURATION_APPLICATION_ID));
                 }
             }
         }
@@ -235,6 +259,32 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
             Log.d(TAG, Log.getStackTraceString(e));
         }
         return configService;
+    }
+
+    @Override
+    public ConfigService getConfigService()
+    {
+        return configService;
+    }
+
+    public static ConfigService getConfigService(Map<String, Object> parameters)
+    {
+        File configFolder = null;
+        if (parameters == null) { return null; }
+        String applicationId;
+        if (parameters.containsKey(ConfigService.CONFIGURATION_APPLICATION_ID))
+        {
+            applicationId = (String) parameters.get(ConfigService.CONFIGURATION_APPLICATION_ID);
+        }
+        else
+        {
+            return null;
+        }
+        if (parameters.containsKey(ConfigService.CONFIGURATION_FOLDER))
+        {
+            configFolder = new File((String) parameters.get(ConfigService.CONFIGURATION_FOLDER));
+        }
+        return new OfflineConfigServiceImpl(applicationId, configFolder);
     }
 
     // ////////////////////////////////////////////////////

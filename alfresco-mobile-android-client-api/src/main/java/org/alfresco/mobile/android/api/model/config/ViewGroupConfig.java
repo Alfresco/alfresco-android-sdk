@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-public interface ViewGroupConfig extends ItemConfig, GroupConfig<ViewConfig>
+/**
+ * Base type for View Group Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
+public interface ViewGroupConfig extends ViewConfig, GroupConfig<ViewConfig>
 {
-
 }

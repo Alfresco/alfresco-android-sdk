@@ -38,9 +38,9 @@ public class ConfigServiceFactory
     public static ConfigService buildConfigService(String applicationId, Map<String, Object> parameters)
     {
         File configFolder = null;
-        if (parameters != null && parameters.containsKey(AlfrescoSession.CONFIGURATION_FOLDER))
+        if (parameters != null && parameters.containsKey(ConfigService.CONFIGURATION_FOLDER))
         {
-            configFolder = new File((String) parameters.get(AlfrescoSession.CONFIGURATION_FOLDER));
+            configFolder = new File((String) parameters.get(ConfigService.CONFIGURATION_FOLDER));
         }
         return new OfflineConfigServiceImpl(applicationId, configFolder);
     }

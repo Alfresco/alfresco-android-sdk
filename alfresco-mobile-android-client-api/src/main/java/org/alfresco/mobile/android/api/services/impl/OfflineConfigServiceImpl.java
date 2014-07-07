@@ -85,7 +85,7 @@ public class OfflineConfigServiceImpl implements ConfigService
     }
     
     @Override
-    public ProfileConfig getProfile()
+    public ProfileConfig getDefaultProfile()
     {
         if (configuration == null) { return null; }
         return configuration.getDefaultProfile();
@@ -137,14 +137,14 @@ public class OfflineConfigServiceImpl implements ConfigService
     public boolean hasViewConfig()
     {
         if (configuration == null) { return false; }
-        return configuration.hasLayoutConfig();
+        return configuration.hasViewConfig();
     }
 
     @Override
-    public FormConfig getFormConfig(String formId, Node node)
+    public FormConfig getFormConfig(String formId, ConfigScope scope)
     {
         if (configuration == null) { return null; }
-        return configuration.getFormConfig(formId, node);
+        return configuration.getFormConfig(formId, scope);
     }
 
     @Override
@@ -207,5 +207,33 @@ public class OfflineConfigServiceImpl implements ConfigService
     {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CreationConfig getCreationConfig()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean hasFormConfig()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public FormConfig getFormConfig(String formId)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

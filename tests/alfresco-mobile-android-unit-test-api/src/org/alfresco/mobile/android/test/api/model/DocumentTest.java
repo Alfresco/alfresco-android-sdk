@@ -31,6 +31,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -179,7 +180,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         for (String aspect : aspects)
         {
             Assert.assertFalse("P: present in aspect " + aspect,
-                    aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+                    aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));
         }
 
         // UpdateDocument

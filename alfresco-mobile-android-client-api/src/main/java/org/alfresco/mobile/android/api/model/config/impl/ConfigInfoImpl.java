@@ -23,19 +23,24 @@ import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-public class ConfigInfoImpl extends ItemConfigImpl implements ConfigInfo
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public class ConfigInfoImpl implements ConfigInfo
 {
     private String schemaVersion;
 
-    private String serviceVersion;
+    private String configVersion;
 
-    private long lastModificationDate;
-
-    
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
     ConfigInfoImpl()
     {
     }
-    
+
     /**
      * Used for default and old version of configuration file from SDK 1.3
      * 
@@ -48,45 +53,35 @@ public class ConfigInfoImpl extends ItemConfigImpl implements ConfigInfo
             long lastModificationTime)
     {
         ConfigInfoImpl config = new ConfigInfoImpl();
-        config.lastModificationDate = lastModificationTime;
-        config.serviceVersion = SCHEMA_VERSION_BETA;
+        config.configVersion = SCHEMA_VERSION_BETA;
         config.schemaVersion = SCHEMA_VERSION_BETA;
         return config;
     }
 
     /**
-     * Parse value like
-     * 
-     * <pre>
-     * {
-     *     “schema-version”: x.x,
-     *     “service-version”: y.y,
-     *     “profile-name”: “<profile-name>”
-     *  }
-     * </pre>
      */
     public static ConfigInfo parseJson(Map<String, Object> json)
     {
         if (json == null) { return null; }
         ConfigInfoImpl config = new ConfigInfoImpl();
-        config.serviceVersion = JSONConverter.getJSONStringValue(ConfigConstants.SERVICE_VERSION_VALUE);
-        config.schemaVersion = JSONConverter.getJSONStringValue(ConfigConstants.SCHEMA_VERSION_VALUE);
+        config.configVersion = JSONConverter.getString(json, ConfigConstants.CONFIG_VERSION_VALUE);
+        config.schemaVersion = JSONConverter.getString(json, ConfigConstants.SCHEMA_VERSION_VALUE);
 
         return config;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHOD
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
     public String getSchemaVersion()
     {
         return schemaVersion;
     }
-
-    public String getServiceVersion()
+    
+    @Override
+    public String getConfigVersion()
     {
-        return serviceVersion;
-    }
-
-    public long getLastModificationDate()
-    {
-        return lastModificationDate;
+        return configVersion;
     }
 }

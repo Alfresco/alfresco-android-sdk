@@ -34,7 +34,11 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.os.Bundle;
 import android.util.Log;
-
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class HelperEvaluatorConfig extends HelperConfig
 {
     private static final String TAG = HelperEvaluatorConfig.class.getSimpleName();
@@ -44,12 +48,12 @@ public class HelperEvaluatorConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public HelperEvaluatorConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    HelperEvaluatorConfig(ConfigurationImpl context, HelperStringConfig localHelper)
     {
         super(context, localHelper);
     }
 
-    public void addEvaluators(Map<String, Object> json)
+    void addEvaluators(Map<String, Object> json)
     {
         evaluatorIndex = new LinkedHashMap<String, EvaluatorConfigData>(json.size());
         EvaluatorConfigData evalConfig = null;

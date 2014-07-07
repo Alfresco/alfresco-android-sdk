@@ -19,45 +19,55 @@ package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * @author Jean Marie Pascal
+ */
 public class HelperConfig
 {
     protected WeakReference<ConfigurationImpl> contextRef;
+
     protected WeakReference<HelperStringConfig> HelperStringRef;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
     HelperConfig(ConfigurationImpl context, HelperStringConfig localHelper)
     {
         contextRef = new WeakReference<ConfigurationImpl>(context);
         HelperStringRef = new WeakReference<HelperStringConfig>(localHelper);
     }
 
-    public ConfigurationImpl getConfiguration()
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    protected ConfigurationImpl getConfiguration()
     {
         if (contextRef == null) { return null; }
         return contextRef.get();
     }
-    
-    public boolean hasConfiguration()
+
+    protected boolean hasConfiguration()
     {
         if (contextRef == null) { return false; }
         return contextRef.get() != null;
     }
 
-    public boolean hasEvaluatorHelper()
+    protected boolean hasEvaluatorHelper()
     {
         if (contextRef == null) { return false; }
         return contextRef.get().getEvaluatorHelper() != null;
     }
-    
-    public HelperEvaluatorConfig getEvaluatorHelper()
+
+    protected HelperEvaluatorConfig getEvaluatorHelper()
     {
         if (contextRef == null) { return null; }
         return contextRef.get().getEvaluatorHelper();
     }
-    
-    public HelperStringConfig getLocaleHelper()
+
+    protected HelperStringConfig getLocaleHelper()
     {
         if (HelperStringRef == null) { return null; }
         return HelperStringRef.get();
     }
-    
+
 }

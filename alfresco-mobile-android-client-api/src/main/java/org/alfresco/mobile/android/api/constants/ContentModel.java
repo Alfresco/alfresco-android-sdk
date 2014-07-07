@@ -114,6 +114,11 @@ public interface ContentModel
     String ASPECT_VERSIONABLE = CONTENT_MODEL_PREFIX.concat(":versionable");
 
     String PROP_VERSION_LABEL = CONTENT_MODEL_PREFIX.concat(":versionLabel");
+    
+    // specific field
+    String PROP_SIZE = "size";
+    
+    String PROP_MIMETYPE = "mimetype";
 
     // Geographic Aspect.
     String ASPECT_GEOGRAPHIC = CONTENT_MODEL_PREFIX.concat(":geographic");

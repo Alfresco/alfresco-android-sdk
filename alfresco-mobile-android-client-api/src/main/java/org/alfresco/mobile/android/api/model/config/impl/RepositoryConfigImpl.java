@@ -17,13 +17,48 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
+import java.util.Map;
 
-public class RepositoryConfigImpl extends ItemConfigImpl implements RepositoryConfig
+import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public class RepositoryConfigImpl implements RepositoryConfig
 {
-    
+    private String shareUrl;
+
+    private String repoCMISUrl;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    static RepositoryConfigImpl parseJson(Map<String, Object> json)
+    {
+        if (json == null || json.isEmpty()) { return null; }
+        RepositoryConfigImpl repoConfig = new RepositoryConfigImpl();
+
+        repoConfig.shareUrl = JSONConverter.getString(json, ConfigConstants.SHARE_URL_VALUE);
+        repoConfig.repoCMISUrl = JSONConverter.getString(json, ConfigConstants.CMIS_URL_VALUE);
+
+        return repoConfig;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
     public String getShareURL()
     {
-        return null;
+        return shareUrl;
+    }
+
+    @Override
+    public String getRepositoryCMISURL()
+    {
+        return repoCMISUrl;
     }
 }

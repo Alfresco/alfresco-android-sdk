@@ -114,7 +114,6 @@ public class PropertyImpl implements Property
     }
     
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     public String getDisplayName()
     {
         if (prop != null) { return prop.getDisplayName(); }

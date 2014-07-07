@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
+/**
+ * Base type for Action Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface ActionConfig extends ItemConfig
 {
 

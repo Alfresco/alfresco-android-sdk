@@ -29,6 +29,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
@@ -376,7 +377,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         List<String> aspects = folder.getAspects();
         for (String aspect : aspects)
         {
-            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));
         }
 
         // Titled + Localized + Geographic

@@ -18,22 +18,48 @@
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.alfresco.mobile.android.api.constants.ConfigConstants.FieldConfigType;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.FieldConfig;
+import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.FormFieldsGroupConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import android.text.TextUtils;
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class HelperFormConfig extends HelperConfig
 {
+    private static final String ASPECTS = "${aspects}";
+
+    private static final String TYPE_PROPERTIES = "${type-properties}";
+
+    private static final String PREFIX_TYPE = "type:";
+
+    private static final String PREFIX_ASPECT = "aspect:";
+
+    /** Contains data from "form". */
     private LinkedHashMap<String, FormConfigData> formConfigIndex;
 
-    private LinkedHashMap<String, FormFieldsGroupConfig> fieldsGroupIndex;
+    /** Contains data from "fields". */
+    private LinkedHashMap<String, FieldConfig> fieldConfigIndex;
+
+    /** Contains data from "field-groups". */
+    private LinkedHashMap<String, Object> jsonFieldConfigGroups;
+
+    /** Contains data from "field-groups". */
+    private ArrayList<String> aspectsOrdering = new ArrayList<String>();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -43,197 +69,330 @@ public class HelperFormConfig extends HelperConfig
         super(context, localHelper);
     }
 
-    HelperFormConfig(ConfigurationImpl context, HelperStringConfig localHelper, LinkedHashMap<String, FormFieldsGroupConfig> viewConfigIndex)
+    HelperFormConfig(ConfigurationImpl context, HelperStringConfig localHelper,
+            LinkedHashMap<String, Object> viewConfigIndex)
     {
         super(context, localHelper);
-        this.fieldsGroupIndex = viewConfigIndex;
+        this.jsonFieldConfigGroups = viewConfigIndex;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // PUBLIC METHODS
+    // INIT
     // ///////////////////////////////////////////////////////////////////////////
-    public FormConfig getViewById(String formId, Node node)
+    void addFields(Map<String, Object> fields)
     {
-        if (formConfigIndex.containsKey(formId))
+        fieldConfigIndex = new LinkedHashMap<String, FieldConfig>(fields.size());
+        FieldConfig fieldConfig = null;
+        for (Entry<String, Object> entry : fields.entrySet())
         {
-            FormConfigData configInternal = formConfigIndex.get(formId);
-            return configInternal.createFormConfig(this, node);
-        }
-        return null;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // INTERNAL METHODS
-    // ///////////////////////////////////////////////////////////////////////////
-    void addFieldsGroup(Map<String, Object> views)
-    {
-        fieldsGroupIndex = new LinkedHashMap<String, FormFieldsGroupConfig>(views.size());
-        FormFieldsGroupConfig viewConfig = null;
-        for (Entry<String, Object> entry : views.entrySet())
-        {
-            viewConfig = FormFieldsGroupConfigImpl.parse(entry.getKey(), JSONConverter.getMap(entry.getValue()), getConfiguration());
-            if (viewConfig == null)
+            fieldConfig = parse(JSONConverter.getMap(entry.getValue()), entry.getKey());
+            if (fieldConfig == null)
             {
                 continue;
             }
-            fieldsGroupIndex.put(viewConfig.getIdentifier(), viewConfig);
+            fieldConfigIndex.put(fieldConfig.getIdentifier(), fieldConfig);
+        }
+
+    }
+
+    void addFieldGroups(Map<String, Object> fieldGroup)
+    {
+        jsonFieldConfigGroups = new LinkedHashMap<String, Object>(fieldGroup.size());
+        String fieldGroupId = null;
+        for (Entry<String, Object> entry : fieldGroup.entrySet())
+        {
+            fieldGroupId = entry.getKey();
+            if (TextUtils.isEmpty(fieldGroupId))
+            {
+                continue;
+            }
+            if (fieldGroupId.startsWith(PREFIX_ASPECT))
+            {
+                aspectsOrdering.add(fieldGroupId);
+            }
+            jsonFieldConfigGroups.put(fieldGroupId, entry.getValue());
         }
 
     }
 
     void addForms(List<Object> json)
     {
+        if (json == null) { return; }
         formConfigIndex = new LinkedHashMap<String, FormConfigData>(json.size());
         FormConfigData formConfig = null;
         for (Object entry : json)
         {
-            formConfig = FormConfigData.parse(JSONConverter.getMap(entry), getConfiguration());
-            if (formConfig == null)
-            {
-                continue;
-            }
-            formConfigIndex.put(formConfig.getIdentifier(), formConfig);
+            formConfig = new FormConfigData(null, JSONConverter.getMap(entry), getConfiguration());
+            formConfigIndex.put(formConfig.identifier, formConfig);
         }
     }
 
-    FormFieldsGroupConfig getFieldGroupsById(String id)
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC METHODS
+    // ///////////////////////////////////////////////////////////////////////////
+    public FormConfig getFormById(String formId, Node node)
     {
-        if (fieldsGroupIndex != null && fieldsGroupIndex.containsKey(id))
+        if (formConfigIndex.containsKey(formId))
         {
-            return fieldsGroupIndex.get(id);
+            FormConfigData configInternal = formConfigIndex.get(formId);
+            return createFormConfig(configInternal, node);
+        }
+        return null;
+    }
+
+    FieldGroupConfig getFieldGroupsById(String id)
+    {
+        if (jsonFieldConfigGroups != null && jsonFieldConfigGroups.containsKey(id))
+        {
+            return (FieldGroupConfig) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id);
         }
         else
         {
             return null;
         }
     }
-    // ///////////////////////////////////////////////////////////////////////////
-    // INTERNAL UTILITY CLASS
-    // ///////////////////////////////////////////////////////////////////////////
-    protected static class FormConfigData extends ItemConfigImpl
+
+    public boolean hasFormConfig()
     {
-        private static final String ASPECTS = "${aspects}";
+        return ((formConfigIndex != null && !formConfigIndex.isEmpty()) || (jsonFieldConfigGroups != null && !jsonFieldConfigGroups
+                .isEmpty()));
+    }
 
-        private static final String TYPE_PROPERTIES = "${type-properties}";
+    public FieldConfig getFieldById(String id)
+    {
+        return getFieldById(id, null);
+    }
 
-        private static final String PREFIX_TYPE = "type:";
+    public FieldConfig getFieldById(String id, ConfigScope scope)
+    {
+        return retrieveConfig(id, scope);
+    }
 
-        private static final String PREFIX_ASPECT = "aspect:";
-
-        private String identifier;
-
-        private String label;
-
-        private ArrayList<String> fieldsGroupId;
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // CONSTRUCTORS
-        // ///////////////////////////////////////////////////////////////////////////
-        FormConfigData()
+    protected FieldConfig retrieveConfig(String id, ConfigScope scope)
+    {
+        FieldConfigImpl config = null;
+        if (jsonFieldConfigGroups != null && jsonFieldConfigGroups.containsKey(id))
         {
-            super();
+            config = (FieldConfigImpl) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id);
         }
-
-        static FormConfigData parse(Map<String, Object> json, ConfigurationImpl configuration)
+        else if (fieldConfigIndex != null && fieldConfigIndex.containsKey(id))
         {
-            FormConfigData config = new FormConfigData();
-            config.identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-            config.label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
-
-            // List of fields
-            if (json.containsKey(ConfigConstants.FIELD_GROUPS_VALUE))
-            {
-                List<Object> childrenObject = JSONConverter.getList(json.get(ConfigConstants.FIELD_GROUPS_VALUE));
-                ArrayList<String> fieldsGroupId = new ArrayList<String>(childrenObject.size());
-                for (Object child : childrenObject)
-                {
-                    if (child instanceof String)
-                    {
-                        fieldsGroupId.add((String) child);
-                    }
-                }
-                config.fieldsGroupId = fieldsGroupId;
-            }
-
-            return config;
+            config = (FieldConfigImpl) fieldConfigIndex.get(id);
         }
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // METHODS
-        // ///////////////////////////////////////////////////////////////////////////
-        public String getIdentifier()
-        {
-            return identifier;
-        }
-
-        public String getLabel()
-        {
-            return label;
-        }
-
-        public String getLayout()
+        else
         {
             return null;
         }
 
-        public List<String> getGroups()
+        // Evaluate
+        if (getEvaluatorHelper() == null)
         {
-            return fieldsGroupId;
+            return (config.getEvaluator() == null) ? config : null;
         }
-
-        public FormConfig createFormConfig(HelperFormConfig formHelper, Node node)
+        else
         {
-            ArrayList<FormFieldsGroupConfig> fieldsGroup = new ArrayList<FormFieldsGroupConfig>(fieldsGroupId.size());
-
-            // We iterate through groupId
-            FormFieldsGroupConfig group = null;
-            for (String groupId : fieldsGroupId)
+            if (!getEvaluatorHelper().evaluate(config.getEvaluator(), scope)) { return null; }
+            if (config instanceof FieldsGroupConfigImpl && ((FieldsGroupConfigImpl) config).getItems() != null
+                    && ((FieldsGroupConfigImpl) config).getItems().size() > 0)
             {
-                if (TYPE_PROPERTIES.equals(groupId))
+                ((FieldsGroupConfigImpl) config).setChildren(evaluateChildren(((FieldsGroupConfigImpl) config)
+                        .getItems()));
+            }
+        }
+        return config;
+    }
+
+    private ArrayList<FieldConfig> evaluateChildren(List<FieldConfig> listConfig)
+    {
+        if (listConfig == null) { return new ArrayList<FieldConfig>(0); }
+        ArrayList<FieldConfig> evaluatedViews = new ArrayList<FieldConfig>(listConfig.size());
+        boolean addViewAsChild = true;
+        for (FieldConfig fieldConfig : listConfig)
+        {
+            if (getEvaluatorHelper() == null)
+            {
+                addViewAsChild = (((FieldConfigImpl) fieldConfig).getEvaluator() == null) ? true : false;
+            }
+            else if (!getEvaluatorHelper().evaluate(((FieldConfigImpl) fieldConfig).getEvaluator(), null))
+            {
+                addViewAsChild = false;
+            }
+
+            if (addViewAsChild)
+            {
+                evaluatedViews.add(fieldConfig);
+                if (fieldConfig instanceof FieldsGroupConfigImpl
+                        && ((FieldsGroupConfigImpl) fieldConfig).getItems() != null
+                        && ((FieldsGroupConfigImpl) fieldConfig).getItems().size() > 0)
                 {
-                    group = formHelper.getFieldGroupsById(getTypeId(node.getType()));
-                    if (group != null)
-                    {
-                        fieldsGroup.add(group);
-                    }
+                    ((FieldsGroupConfigImpl) fieldConfig)
+                            .setChildren(evaluateChildren(((FieldsGroupConfigImpl) fieldConfig).getItems()));
                 }
-                else if (ASPECTS.equals(groupId))
+            }
+            addViewAsChild = true;
+        }
+        return evaluatedViews;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNAL UTILITY CLASS
+    // ///////////////////////////////////////////////////////////////////////////
+    public FormConfig createFormConfig(FormConfigData data, Node node)
+    {
+        ArrayList<FieldGroupConfig> fieldsGroup = new ArrayList<FieldGroupConfig>(data.items.size());
+
+        // We iterate through groupId
+        FieldGroupConfig fieldConfig = null;
+        for (Object itemObject : data.items)
+        {
+            Map<String, Object> props = JSONConverter.getMap(itemObject);
+            String typeId = JSONConverter.getString(props, FieldConfigType.FIELD_GROUP_ID.value());
+
+            if (TYPE_PROPERTIES.equals(typeId) && node != null)
+            {
+                fieldConfig = getFieldGroupsById(getTypeId(node.getType()));
+                if (fieldConfig != null)
                 {
-                    for (String aspect : node.getAspects())
-                    {
-                        group = formHelper.getFieldGroupsById(getAspectId(aspect));
-                        if (group != null)
-                        {
-                            fieldsGroup.add(group);
-                        }
-                    }
+                    fieldsGroup.add(fieldConfig);
                 }
-                else
+            }
+            else if (ASPECTS.equals(typeId) && node != null)
+            {
+                for (String aspectName : aspectsOrdering)
                 {
-                    group = formHelper.getFieldGroupsById(groupId);
-                    if (group != null)
+                    if (!node.hasAspect(aspectName.replaceFirst(PREFIX_ASPECT, "")))
                     {
-                        fieldsGroup.add(group);
+                        continue;
+                    }
+                    fieldConfig = getFieldGroupsById(aspectName);
+                    if (fieldConfig != null)
+                    {
+                        fieldsGroup.add(fieldConfig);
                     }
                 }
             }
-
-            FormConfig config = new FormConfigImpl(identifier, label, fieldsGroup);
-
-            return config;
+            else
+            {
+                fieldConfig = (FieldGroupConfig) parse(itemObject);
+                if (fieldConfig != null)
+                {
+                    fieldsGroup.add(fieldConfig);
+                }
+            }
         }
 
-        // ///////////////////////////////////////////////////////////////////////////
-        // INTERNALS
-        // ///////////////////////////////////////////////////////////////////////////
-        private String getTypeId(String typeId)
-        {
-            return PREFIX_TYPE.concat(typeId);
-        }
+        FormConfig config = new FormConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description,
+                data.type, data.properties, fieldsGroup, data.evaluatorId, data.layoutId);
 
-        private String getAspectId(String typeId)
+        return config;
+    }
+
+    private String getTypeId(String typeId)
+    {
+        return PREFIX_TYPE.concat(typeId);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // V1.0
+    // ///////////////////////////////////////////////////////////////////////////
+    protected FieldConfig parse(Object object)
+    {
+        if (object instanceof Map)
         {
-            return PREFIX_ASPECT.concat(typeId);
+            Map<String, Object> viewMap = JSONConverter.getMap(object);
+            if (viewMap.containsKey(ConfigConstants.ITEM_TYPE_VALUE))
+            {
+
+                FieldConfigType type = FieldConfigType.fromValue(JSONConverter.getString(viewMap,
+                        ConfigConstants.ITEM_TYPE_VALUE));
+
+                if (type == null)
+                {
+                    type = FieldConfigType.FIELD;
+                }
+
+                switch (type)
+                {
+                    case FIELD_ID:
+                        return getFieldById((String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_ID.value()));
+                    case FIELD_GROUP_ID:
+                        return getFieldById((String) JSONConverter.getString(viewMap,
+                                FieldConfigType.FIELD_GROUP_ID.value()));
+                    case FIELD_GROUP:
+                        return parse(JSONConverter.getMap(JSONConverter.getMap(object).get(
+                                FieldConfigType.FIELD_GROUP.value())));
+                    case FIELD:
+                    default:
+                        // inline definition
+                        return parse(JSONConverter
+                                .getMap(JSONConverter.getMap(object).get(ConfigConstants.FIELD_VALUE)));
+                }
+            }
+            else
+            {
+                return parse(JSONConverter.getMap(object), null);
+            }
+        }
+        else if (object instanceof String)
+        {
+            return getFieldById((String) object);
+        }
+        else
+        {
+            return null;
         }
     }
+
+    protected FieldConfig parse(Map<String, Object> json, String identifier)
+    {
+        ItemConfigData data = new ItemConfigData(identifier, json, getConfiguration());
+        String modelIdentifier = JSONConverter.getString(json, ConfigConstants.MODEL_ID_VALUE);
+
+        // Forms
+        ArrayList<String> formsId = null;
+        if (json.containsKey(ConfigConstants.PARAMS_FORMS))
+        {
+            List<Object> listFormId = JSONConverter.getList(json.get(ConfigConstants.PARAMS_FORMS));
+            formsId = new ArrayList<String>(listFormId.size());
+            for (Object formId : listFormId)
+            {
+                if (formId instanceof String)
+                {
+                    formsId.add((String) formId);
+                }
+            }
+        }
+        else
+        {
+            formsId = new ArrayList<String>(0);
+        }
+
+        // Check if it's a group view
+        LinkedHashMap<String, FieldConfig> childrenIndex = null;
+        if (json.containsKey(ConfigConstants.ITEMS_VALUE))
+        {
+            List<Object> childrenObject = JSONConverter.getList(json.get(ConfigConstants.ITEMS_VALUE));
+            LinkedHashMap<String, FieldConfig> childrenViewConfig = new LinkedHashMap<String, FieldConfig>(
+                    childrenObject.size());
+            FieldConfig fieldConfig = null;
+            for (Object child : childrenObject)
+            {
+                fieldConfig = parse(child);
+                if (fieldConfig == null)
+                {
+                    continue;
+                }
+                childrenViewConfig.put(fieldConfig.getIdentifier(), fieldConfig);
+            }
+            childrenIndex = childrenViewConfig;
+            return new FieldsGroupConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description,
+                    data.type, data.properties, childrenIndex, formsId, data.evaluatorId, modelIdentifier);
+        }
+        else
+        {
+            return new FieldConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type,
+                    data.properties, formsId, data.evaluatorId, modelIdentifier);
+        }
+    }
+
 }

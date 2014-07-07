@@ -18,81 +18,49 @@
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
-
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
 {
-    private LinkedHashMap<String, ViewConfig> childrenIndex;
+    protected String evaluatorId;
 
-    private ArrayList<ViewConfig> children;
-
-    private ArrayList<String> forms;
-
-    private String evaluatorId;
+    protected ArrayList<String> forms;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public ViewConfigImpl(String identifier, String label, String type, ArrayList<ViewConfig> children,
-            String evaluatorId)
+    ViewConfigImpl(String identifier, String label, String type, String evaluatorId)
     {
         super(identifier, null, label, null, type, null);
-        this.children = (children == null) ? new ArrayList<ViewConfig>(0) : children;
-        this.forms = new ArrayList<String>(0);
         this.evaluatorId = evaluatorId;
     }
 
-    public ViewConfigImpl(String identifier, String label, String type, Map<String, Object> properties,
-            LinkedHashMap<String, ViewConfig> childrenIndex, ArrayList<String> forms, String evaluatorId)
+    ViewConfigImpl(String identifier, String iconIdentifier, String label, String description, String type, Map<String, Object> properties,
+           ArrayList<String> forms, String evaluatorId)
     {
-        super(identifier, null, label, null, type, properties);
-        this.childrenIndex = (childrenIndex == null) ? new LinkedHashMap<String, ViewConfig>(0) : childrenIndex;
-        this.children = new ArrayList<ViewConfig>(this.childrenIndex.values());
-        this.forms = (forms == null) ? new ArrayList<String>(0) : forms;
+        super(identifier, iconIdentifier, label, description, type, properties);
         this.evaluatorId = evaluatorId;
+        this.forms = (forms == null) ? new ArrayList<String>(0) : forms;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public int getChildCount()
-    {
-        return (children == null) ? 0 : children.size();
-    }
-
-    public ViewConfig getChildAt(int index)
-    {
-        return (children == null) ? null : children.get(index);
-    }
-
-    public ViewConfig getChildById(String id)
-    {
-        return (childrenIndex == null) ? null : childrenIndex.get(id);
-    }
-
-    @Override
-    public List<String> getForms()
-    {
-        return forms;
-    }
-    
     public String getEvaluator()
     {
         return evaluatorId;
     }
-
-    public void setChildren(ArrayList<ViewConfig> children)
-    {
-        this.children = children;
-    }
-
+    
     @Override
-    public List<ViewConfig> getItems()
+    public List<String> getForms()
     {
-        return children;
+        return forms;
     }
 }

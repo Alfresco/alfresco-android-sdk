@@ -17,7 +17,32 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-
-public interface FormFieldConfig extends ItemConfig
+/**
+ * Base type for All Configuration.
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public interface BaseConfig
 {
+    /**
+     * Returns the unique identifier of the item.
+     * 
+     * @return
+     */
+    String getIdentifier();
+
+    /**
+     * Returns the label of the item.
+     * 
+     * @return
+     */
+    String getLabel();
+
+    /**
+     * Returns the description of the item.
+     * 
+     * @return
+     */
+    String getDescription();
 }

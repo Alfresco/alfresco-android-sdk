@@ -16,8 +16,6 @@ public interface ConfigConstants
     // ///////////////////////////////////////////////////////////////////////////
     String DATA_DICTIONARY = "Data Dictionary";
 
-    String DEFAULT_APPLICATION_ID = "org.alfresco.mobile.android.application";
-
     String CONFIG_APPLICATION_FOLDER_PATH = "Mobile/%s";
 
     String CONFIG_FILENAME = "config.json";
@@ -78,7 +76,9 @@ public interface ConfigConstants
 
     String VIEW_ROOT_NAVIGATION_MENU = "rootNavigationMenu";
 
-    String VIEW_NODE_PROPERTIES = "propertiesNodeView";
+    String VIEW_NODE_PROPERTIES = "view-properties";
+    
+    String VIEW_EDIT_PROPERTIES = "edit-properties";
 
     // ///////////////////////////////////////////////////////////////////////////
     // PARSING
@@ -92,6 +92,8 @@ public interface ConfigConstants
 
     String DESCRIPTION_ID_VALUE = "description-id";
 
+    String ICON_ID_VALUE = "icon-id";
+
     // PROFILES
     String PROFILES_VALUE = "profiles";
 
@@ -100,12 +102,14 @@ public interface ConfigConstants
     // CONFIG INFO
     String SCHEMA_VERSION_VALUE = "schema-version";
 
-    String SERVICE_VERSION_VALUE = "service-version";
+    String CONFIG_VERSION_VALUE = "config-version";
 
     // VIEWS
     String ITEMS_VALUE = "items";
 
     String ITEM_TYPE_VALUE = "item-type";
+
+    String VIEW_VALUE = "view";
 
     String VIEWS_VALUE = "views";
 
@@ -141,19 +145,37 @@ public interface ConfigConstants
     String FIELD_GROUPS_VALUE = "field-groups";
 
     String FIELDS_VALUE = "fields";
+    
+    String FIELD_VALUE = "field";
 
     String CONTROL_TYPE_VALUE = "control-type";
 
     String CONTROL_PARAMS_VALUE = "control-params";
+    
+    String MODEL_ID_VALUE = "model-id"; 
+    
+    String LAYOUT_VALUE = "layout";
 
-    ///////////////////////////////////////////////////
+    // REPOSITORY
+    String SHARE_URL_VALUE = "share-url";
+
+    String CMIS_URL_VALUE = "cmis-url";
+
+    // CREATION
+    String MIME_TYPES_VALUE = "mime-types";
+
+    String DOCUMENT_TYPES_VALUE = "document-types";
+
+    String FOLDER_TYPES_VALUE = "folder-types";
+
+    String ROOTVIEW_ID_VALUE = "root-view-id";
+
+    // /////////////////////////////////////////////////
     // PARSING ENUM
-    ///////////////////////////////////////////////////
+    // /////////////////////////////////////////////////
     enum ViewConfigType
     {
-        VIEW_ID("view-id"), 
-        VIEW_GROUP("view-group-id"), 
-        VIEW("view");
+        VIEW_ID("view-id"), VIEW_GROUP("view-group-id"), VIEW("view");
 
         /** The value associated to an enum. */
         private final String value;
@@ -187,6 +209,52 @@ public interface ConfigConstants
         public static ViewConfigType fromValue(String v)
         {
             for (ViewConfigType c : ViewConfigType.values())
+            {
+                if (c.value.equalsIgnoreCase(v)) { return c; }
+            }
+            return null;
+        }
+    }
+
+    // /////////////////////////////////////////////////
+    // PARSING ENUM
+    // /////////////////////////////////////////////////
+    enum FieldConfigType
+    {
+        FIELD_ID("field-id"), FIELD_GROUP_ID("field-group-id"), FIELD_GROUP("field-group"), FIELD("field");
+
+        /** The value associated to an enum. */
+        private final String value;
+
+        /**
+         * Instantiates a new property type.
+         * 
+         * @param v the value of the enum.
+         */
+        FieldConfigType(String v)
+        {
+            value = v;
+        }
+
+        /**
+         * Value.
+         * 
+         * @return the string
+         */
+        public String value()
+        {
+            return value;
+        }
+
+        /**
+         * From value.
+         * 
+         * @param v the value of the enum.
+         * @return the property type
+         */
+        public static FieldConfigType fromValue(String v)
+        {
+            for (FieldConfigType c : FieldConfigType.values())
             {
                 if (c.value.equalsIgnoreCase(v)) { return c; }
             }

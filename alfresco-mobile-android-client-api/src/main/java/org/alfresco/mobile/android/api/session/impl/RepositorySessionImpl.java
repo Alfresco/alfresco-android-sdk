@@ -192,6 +192,7 @@ public class RepositorySessionImpl extends RepositorySession
         else
         {
             services = new OnPremiseServiceRegistry(this);
+            ((OnPremiseServiceRegistry) services).initConfigService();
         }
     }
 

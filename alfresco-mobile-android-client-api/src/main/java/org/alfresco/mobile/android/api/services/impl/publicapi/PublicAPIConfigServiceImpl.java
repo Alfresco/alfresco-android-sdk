@@ -9,10 +9,4 @@ public class PublicAPIConfigServiceImpl extends AbstractConfigServiceImpl
     {
         super(session);
     }
-
-    @Override
-    public boolean hasConfig()
-    {
-        return false;
-    }
 }

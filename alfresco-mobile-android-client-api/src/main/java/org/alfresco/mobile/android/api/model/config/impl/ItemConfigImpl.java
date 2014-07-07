@@ -21,18 +21,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ItemConfig;
-
-public class ItemConfigImpl implements ItemConfig
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public class ItemConfigImpl extends BaseConfigImpl implements ItemConfig
 {
     protected Map<String, Object> configMap;
 
-    protected String identifier;
-
     protected String iconIdentifier;
-
-    protected String label;
-
-    protected String description;
 
     protected String type;
 
@@ -46,12 +44,9 @@ public class ItemConfigImpl implements ItemConfig
     ItemConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
             Map<String, Object> configMap)
     {
-        super();
+        super(identifier, label, description);
         this.configMap = configMap;
-        this.identifier = identifier;
         this.iconIdentifier = iconIdentifier;
-        this.label = label;
-        this.description = description;
         this.type = type;
     }
 
@@ -59,33 +54,15 @@ public class ItemConfigImpl implements ItemConfig
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Object getConfig(String configProperty)
+    public Object getParameter(String configProperty)
     {
         return configMap.get(configProperty);
-    }
-
-    @Override
-    public String getIdentifier()
-    {
-        return identifier;
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return label;
     }
 
     @Override
     public String getType()
     {
         return type;
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return description;
     }
 
     @Override

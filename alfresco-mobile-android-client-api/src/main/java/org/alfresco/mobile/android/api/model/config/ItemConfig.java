@@ -18,30 +18,14 @@
 package org.alfresco.mobile.android.api.model.config;
 
 import java.util.Map;
-
-public interface ItemConfig
+/**
+ *  Base type for Item Configuration.
+ *
+ * @author Jean Marie Pascal
+ *
+ */
+public interface ItemConfig extends BaseConfig
 {
-    /**
-     * Returns the unique identifier of the item.
-     * 
-     * @return
-     */
-    String getIdentifier();
-
-    /**
-     * Returns the label of the item.
-     * 
-     * @return
-     */
-    String getLabel();
-
-    /**
-     * Returns the description of the item.
-     * 
-     * @return
-     */
-    String getDescription();
-
     /**
      * Returns the identifier for an icon to use for the item.
      * 
@@ -64,6 +48,12 @@ public interface ItemConfig
      */
     Map<String, Object> getParameters();
 
-    //TODO Check if it's still ok ?
-    Object getConfig(String configProperty);
+    /**
+     * Returns the value of the parameter with the given key or null if it
+     * doesn’t exist.
+     * 
+     * @param key
+     * @return
+     */
+    Object getParameter(String key);
 }

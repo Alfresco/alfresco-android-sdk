@@ -16,9 +16,18 @@
  *  limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
-
-public interface RepositoryConfig extends ItemConfig
+/**
+ *  Base type for Repository Configuration.
+ *  
+ * @author Jean Marie Pascal
+ *
+ */
+public interface RepositoryConfig
 {
     /** Returns the protocol being used for Share. */
     String getShareURL();
+
+    /** Returns the URL to be used to access CMIS services. */
+    String getRepositoryCMISURL();
+
 }

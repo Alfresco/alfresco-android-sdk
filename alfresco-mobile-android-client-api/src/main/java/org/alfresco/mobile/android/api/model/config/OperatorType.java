@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.api.model.config;
 
 /**
- * Enumeration Constants that represents evaluators types available.
+ * Enumeration Constants that represents evaluator operator types available.
  * 
  * @author Jean Marie Pascal
  */

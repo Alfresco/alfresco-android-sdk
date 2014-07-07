@@ -54,6 +54,7 @@ import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 
 import android.text.TextUtils;
@@ -86,7 +87,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     public ConfigService load(String appId)
     {
         this.configuration = retrieveConfiguration(appId);
-        return this;
+        return (configuration != null) ? this : null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -95,6 +96,8 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     @SuppressWarnings("unchecked")
     protected ConfigurationImpl retrieveConfiguration(String appId)
     {
+        if (TextUtils.isEmpty(appId)) { return null; }
+
         Node configurationDocument;
         Folder applicationConfigurationFolder = null;
         String applicationId = null;
@@ -105,11 +108,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         try
         {
             // Retrieve Application ID
-            applicationId = ConfigConstants.DEFAULT_APPLICATION_ID;
-            if (!TextUtils.isEmpty(appId))
-            {
-                applicationId = appId;
-            }
+            applicationId = appId;
 
             // Retrieve the application configuration Folder
             DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
@@ -150,9 +149,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 
                 // Persist if defined by the session parameters
                 InputStream inputStream = stream.getInputStream();
-                if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
+                if (session.getParameter(CONFIGURATION_FOLDER) != null)
                 {
-                    File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
+                    File configFolder = new File((String) session.getParameter(CONFIGURATION_FOLDER));
                     File configFile = new File(configFolder, applicationId.concat(configurationDocument.getName()));
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
                     inputStream = new FileInputStream(configFile);
@@ -213,9 +212,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                 inputStream = stream.getInputStream();
 
                 // Persist if defined by the session
-                if (session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER) != null)
+                if (session.getParameter(CONFIGURATION_FOLDER) != null)
                 {
-                    File configFolder = new File((String) session.getParameter(AlfrescoSession.CONFIGURATION_FOLDER));
+                    File configFolder = new File((String) session.getParameter(CONFIGURATION_FOLDER));
                     File configFile = new File(configFolder, applicationId.concat(filename));
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
                     inputStream = new FileInputStream(configFile);
@@ -285,14 +284,8 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // CONFIGURATION
+    // INFO
     // ///////////////////////////////////////////////////////////////////////////
-    public boolean hasConfig()
-    {
-        if (configuration == null) { return false; }
-        return configuration != null;
-    }
-
     @Override
     public ConfigInfo getConfigInfo()
     {
@@ -300,20 +293,23 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getConfigInfo();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PROFILES
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ProfileConfig> getProfiles()
     {
         if (configuration == null) { return null; }
         return configuration.getProfiles();
     }
-    
+
     @Override
-    public ProfileConfig getProfile()
+    public ProfileConfig getDefaultProfile()
     {
         if (configuration == null) { return null; }
         return configuration.getDefaultProfile();
     }
-    
+
     @Override
     public ProfileConfig getProfile(String profileId)
     {
@@ -321,20 +317,34 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getProfile(profileId);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // REPOSITORY
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public RepositoryConfig getRepositoryConfig()
     {
-        if (configuration == null) { return null; }
-        return configuration.getRepositoryConfig();
+        return (configuration == null) ? null : configuration.getRepositoryConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<FeatureConfig> getFeatureConfig()
     {
-        if (configuration == null) { return null; }
-        return configuration.getFeatureConfig();
+        return (configuration == null) ? null : configuration.getFeatureConfig();
     }
 
+    @Override
+    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFeatureConfig(scope);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<MenuConfig> getMenuConfig(String menuId)
     {
@@ -342,6 +352,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getMenuConfig(menuId);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // VIEWS
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public ViewConfig getViewConfig(String viewId, ConfigScope scope)
     {
@@ -360,16 +373,36 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     public boolean hasViewConfig()
     {
         if (configuration == null) { return false; }
-        return configuration.hasLayoutConfig();
+        return configuration.hasViewConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FORMS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean hasFormConfig()
+    {
+        if (configuration == null) { return false; }
+        return configuration.hasFormConfig();
+    };
+
+    @Override
+    public FormConfig getFormConfig(String formId)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFormConfig(formId, null);
     }
 
     @Override
-    public FormConfig getFormConfig(String formId, Node node)
+    public FormConfig getFormConfig(String formId, ConfigScope scope)
     {
         if (configuration == null) { return null; }
-        return configuration.getFormConfig(formId, node);
+        return configuration.getFormConfig(formId, scope);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // WORKFLOW
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ProcessConfig> getProcessConfig()
     {
@@ -384,13 +417,26 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getTaskConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CREATION
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public CreationConfig getCreationConfig(ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getCreationConfig(scope);
+    }
+
+    @Override
+    public CreationConfig getCreationConfig()
     {
         if (configuration == null) { return null; }
         return configuration.getCreationConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ActionConfig> getActionConfig(String groupId, Node node)
     {
@@ -398,6 +444,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getActionConfig(groupId, node);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // SEARCH
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public SearchConfig getSearchConfig(Node node)
     {
@@ -405,6 +454,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration.getSearchConfig(node);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // THEME
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public ThemeConfig getThemeConfig()
     {

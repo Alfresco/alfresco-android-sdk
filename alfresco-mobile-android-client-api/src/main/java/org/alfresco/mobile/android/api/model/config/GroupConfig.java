@@ -1,8 +1,13 @@
 package org.alfresco.mobile.android.api.model.config;
 
 import java.util.List;
-
-public interface GroupConfig<T>
+/**
+ *  Base type for Group Configuration.
+ *
+ * @author Jean Marie Pascal
+ *
+ */
+public interface GroupConfig<T> extends ItemConfig
 {
     /**
      * Returns a list of GroupConfig or ItemConfig objects.

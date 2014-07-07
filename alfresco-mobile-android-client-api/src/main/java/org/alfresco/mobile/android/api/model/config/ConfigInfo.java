@@ -17,14 +17,19 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-public interface ConfigInfo extends ItemConfig
+/**
+ * Base type for Information Configuration.
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public interface ConfigInfo
 {
-    // TODO ADD Version Number & Version Schema
     String SCHEMA_VERSION_BETA = "0.0";
 
+    /** Returns the schema version of the configuration file.*/
     String getSchemaVersion();
 
-    String getServiceVersion();
-
-    long getLastModificationDate();
+    /** Returns the version of the configuration file. This is reserved for future use i.e. once a back-end service is available. */
+    String getConfigVersion();
 }

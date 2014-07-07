@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 005-014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version .0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *  
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,14 +22,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.ConfigConstants.ViewConfigType;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.GroupConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.text.TextUtils;
-
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class HelperViewConfig extends HelperConfig
 {
     private LinkedHashMap<String, Object> jsonViewConfigGroups;
@@ -54,13 +62,13 @@ public class HelperViewConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////////////////////////////////////
-    void addViews(List<Object> views)
+    void addViews(Map<String,Object> views)
     {
         viewConfigIndex = new LinkedHashMap<String, ViewConfig>(views.size());
         ViewConfig viewConfig = null;
-        for (Object object : views)
+        for (Entry<String, Object> entry : views.entrySet())
         {
-            viewConfig = parse(JSONConverter.getMap(object));
+            viewConfig = parse(JSONConverter.getMap(entry.getValue()), entry.getKey());
             if (viewConfig == null)
             {
                 continue;
@@ -88,12 +96,22 @@ public class HelperViewConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasViewConfig()
+    {
+        return ((jsonViewConfigGroups != null && !jsonViewConfigGroups.isEmpty())  || (viewConfigIndex != null && !viewConfigIndex.isEmpty()));
+    }
+    
     public ViewConfig getViewById(String id)
     {
-        return retrieveConfig(id);
+        return getViewById(id, null);
+    }
+    
+    public ViewConfig getViewById(String id, ConfigScope scope)
+    {
+        return retrieveConfig(id, scope);
     }
 
-    protected ViewConfig retrieveConfig(String id)
+    protected ViewConfig retrieveConfig(String id, ConfigScope scope)
     {
         ViewConfigImpl config = null;
         if (jsonViewConfigGroups != null && jsonViewConfigGroups.containsKey(id))
@@ -116,16 +134,18 @@ public class HelperViewConfig extends HelperConfig
         }
         else
         {
-            if (!getEvaluatorHelper().evaluate(config.getEvaluator(), null)) { return null; }
-            if (config.getItems() != null && config.getItems().size() > 0)
+            if (!getEvaluatorHelper().evaluate(config.getEvaluator(), scope)) { return null; }
+            if (config instanceof ViewGroupConfigImpl && ((ViewGroupConfigImpl) config).getItems() != null
+                    && ((ViewGroupConfigImpl) config).getItems().size() > 0)
             {
-                config.setChildren(evaluateChildren(config.getItems()));
+                ((ViewGroupConfigImpl) config).setChildren(evaluateChildren(((ViewGroupConfigImpl) config).getItems()));
             }
         }
         return config;
 
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<ViewConfig> evaluateChildren(List<ViewConfig> listConfig)
     {
         if (listConfig == null) { return new ArrayList<ViewConfig>(0); }
@@ -145,9 +165,11 @@ public class HelperViewConfig extends HelperConfig
             if (addViewAsChild)
             {
                 evaluatedViews.add(viewConfig);
-                if (viewConfig.getItems() != null && viewConfig.getItems().size() > 0)
+                if (viewConfig instanceof ViewGroupConfig && ((GroupConfig<ViewConfig>) viewConfig).getItems() != null
+                        && ((GroupConfig<ViewConfig>) viewConfig).getItems().size() > 0)
                 {
-                    ((ViewConfigImpl) viewConfig).setChildren(evaluateChildren(viewConfig.getItems()));
+                    ((ViewGroupConfigImpl) viewConfig).setChildren(evaluateChildren(((ViewGroupConfigImpl) viewConfig)
+                            .getItems()));
                 }
             }
             addViewAsChild = true;
@@ -162,13 +184,12 @@ public class HelperViewConfig extends HelperConfig
     {
         Map<String, Object> props = new HashMap<String, Object>(1);
         props.put(ConfigConstants.VISIBLE_VALUE, JSONConverter.getBoolean(json, ConfigConstants.VISIBLE_VALUE));
-
-        return new ViewConfigImpl(type, null, type, props, null, null, null);
+        return new ViewConfigImpl(type, null, null, null, type, props, null, null);
     }
 
     protected static ViewConfig createBetaRootMenu(String defaultMenuLabel, ArrayList<ViewConfig> configs)
     {
-        return new ViewConfigImpl(null, defaultMenuLabel, null, configs, null);
+        return new ViewGroupConfigImpl(null, defaultMenuLabel, null, configs, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -198,16 +219,15 @@ public class HelperViewConfig extends HelperConfig
                     case VIEW_GROUP:
                         // View is defined inside the view group registry
                         return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_GROUP.value()));
-
                     case VIEW:
                     default:
                         // inline definition
-                        return parse(JSONConverter.getMap(object));
+                        return parse(JSONConverter.getMap(JSONConverter.getMap(object).get(ConfigConstants.VIEW_VALUE)));
                 }
             }
             else
             {
-                return parse(JSONConverter.getMap(object));
+                return parse(JSONConverter.getMap(object), null);
             }
         }
         else if (object instanceof String)
@@ -222,20 +242,7 @@ public class HelperViewConfig extends HelperConfig
 
     protected ViewConfig parse(Map<String, Object> json, String identifier)
     {
-        String identifierFromData = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        if (TextUtils.isEmpty(identifierFromData) && !TextUtils.isEmpty(identifier))
-        {
-            identifierFromData = identifier;
-        }
-        String label = JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE);
-        String type = JSONConverter.getString(json, ConfigConstants.TYPE_VALUE);
-
-        // Evaluator
-        String eval = JSONConverter.getString(json, ConfigConstants.EVALUATOR);
-
-        // Parameters
-        Map<String, Object> properties = (json.containsKey(ConfigConstants.PARAMS_VALUE)) ? JSONConverter.getMap(json
-                .get(ConfigConstants.PARAMS_VALUE)) : new HashMap<String, Object>(0);
+        ItemConfigData data = new ItemConfigData(identifier, json, getConfiguration());
 
         // Forms
         ArrayList<String> formsId = null;
@@ -274,25 +281,13 @@ public class HelperViewConfig extends HelperConfig
                 childrenViewConfig.put(viewConfig.getIdentifier(), viewConfig);
             }
             childrenIndex = childrenViewConfig;
+            return new ViewGroupConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties,
+                    childrenIndex, formsId, data.evaluatorId);
         }
-        return new ViewConfigImpl(identifierFromData, label, type, properties, childrenIndex, formsId, eval);
+        else
+        {
+            return new ViewConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties,
+                    formsId, data.evaluatorId);
+        }
     }
-
-    /**
-     * Simple parse. Doesnt parse children.
-     * 
-     * @param json
-     * @return
-     */
-    protected static ViewConfig parse(Map<String, Object> json)
-    {
-        String identifier = JSONConverter.getString(json, ConfigConstants.ID_VALUE);
-        String label = JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE);
-        String type = JSONConverter.getString(json, ConfigConstants.TYPE_VALUE);
-        Map<String, Object> properties = (json.containsKey(ConfigConstants.PARAMS_VALUE)) ? JSONConverter.getMap(json
-                .get(ConfigConstants.PARAMS_VALUE)) : new HashMap<String, Object>(0);
-        String eval = JSONConverter.getString(json, ConfigConstants.EVALUATOR);
-        return new ViewConfigImpl(identifier, label, type, properties, null, null, eval);
-    }
-
 }

@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
+/**
+ * Base type for Theme Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface ThemeConfig extends ItemConfig
-{ 
+{
 
 }
