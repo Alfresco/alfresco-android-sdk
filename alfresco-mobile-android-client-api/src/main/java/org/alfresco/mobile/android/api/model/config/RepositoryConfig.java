@@ -28,6 +28,6 @@ public interface RepositoryConfig
     String getShareURL();
 
     /** Returns the URL to be used to access CMIS services. */
-    String getRepositoryCMISURL();
+    String getCMISURL();
 
 }

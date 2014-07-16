@@ -18,7 +18,10 @@
 package org.alfresco.mobile.android.test.api.config;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -27,6 +30,8 @@ import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
+import org.alfresco.mobile.android.api.model.config.ItemConfig;
+import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
@@ -93,11 +98,9 @@ public class FormConfigTest extends AlfrescoSDKTestCase
         Assert.assertNull(configService.getFeatureConfig());
         Assert.assertFalse(configService.hasViewConfig());
         Assert.assertNull(configService.getCreationConfig());
-        Assert.assertTrue(configService.hasFormConfig());
 
         // /////////////////////////////////////////////////////////////////////
         // FORM
-        Assert.assertTrue(configService.hasFormConfig());
 
         // Retrieve form without Node Object.
         // We obtain the configuration but without children
@@ -212,11 +215,9 @@ public class FormConfigTest extends AlfrescoSDKTestCase
         Assert.assertNull(configService.getFeatureConfig());
         Assert.assertFalse(configService.hasViewConfig());
         Assert.assertNull(configService.getCreationConfig());
-        Assert.assertTrue(configService.hasFormConfig());
 
         // /////////////////////////////////////////////////////////////////////
         // FORM
-        Assert.assertTrue(configService.hasFormConfig());
 
         // Retrieve form without Node Object.
         FormConfig formConfig = configService.getFormConfig(FORM_CUSTOM_ID);
@@ -287,7 +288,6 @@ public class FormConfigTest extends AlfrescoSDKTestCase
 
         // Let's retrieve some information
         ConfigService configService = alfsession.getServiceRegistry().getConfigService();
-        Assert.assertTrue(configService.hasFormConfig());
 
         // /////////////////////////////////////////////////////////////////////
         // FORM
@@ -348,6 +348,90 @@ public class FormConfigTest extends AlfrescoSDKTestCase
             else
             {
                 Assert.fail();
+            }
+        }
+    }
+
+    /**
+     * This test illustrates the validation part a form configuration.<br/>
+     * Messages are activated.<br/>
+     * Configuration File is stored in APPLICATION_ID_TEST_FORMS folder.
+     */
+    public void testRetrieveValidationFieldForm()
+    {
+        // /////////////////////////////////////////////////////////////////////
+        // Create a session with correct configuration info
+        HashMap<String, Serializable> sessionParameters = new HashMap<String, Serializable>();
+        sessionParameters.put(ConfigService.CONFIGURATION_APPLICATION_ID, APPLICATION_ID_TEST_FORMS);
+        alfsession = createRepositorySession(sessionParameters);
+
+        // ConfigService exists
+        Assert.assertNotNull(alfsession);
+        Assert.assertNotNull(alfsession.getServiceRegistry().getConfigService());
+        ConfigService configService = alfsession.getServiceRegistry().getConfigService();
+
+        // //////////////////////////////////////////////////////////////////////////////
+        // Retrieve form with Node Object.
+        String imageFilePath = getSampleDataPath(alfsession) + PATH_IMAGE_DOC;
+        Document doc = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
+                .getChildByPath(imageFilePath);
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put(ConfigScope.NODE, doc);
+        ConfigScope scope = new ConfigScope(configService.getDefaultProfile().getIdentifier(), props);
+        FormConfig formConfig = configService.getFormConfig(FORM_DEFAULT_ID, scope);
+        Assert.assertNotNull(formConfig);
+        Assert.assertEquals(3, formConfig.getGroups().size());
+
+        FieldGroupConfig dublinCoreGroupConfig = null;
+
+        for (FieldGroupConfig fieldGroupConfig : formConfig.getGroups())
+        {
+            if ("type:cm:content".equals(fieldGroupConfig.getIdentifier()))
+            {
+                Assert.assertEquals(10, fieldGroupConfig.getItems().size());
+            }
+            else if ("aspect:cm:dublincore".equals(fieldGroupConfig.getIdentifier()))
+            {
+                Assert.assertEquals(8, fieldGroupConfig.getItems().size());
+                dublinCoreGroupConfig = fieldGroupConfig;
+            }
+            else if ("aspect:cm:geographic".equals(fieldGroupConfig.getIdentifier()))
+            {
+                Assert.assertEquals(2, fieldGroupConfig.getItems().size());
+            }
+        }
+
+        // Retrieve validation
+        ValidationConfig validationConfig = null;
+        for (FieldConfig fieldConfig : dublinCoreGroupConfig.getItems())
+        {
+            if ("cm:dcsource".equals(fieldConfig.getIdentifier()))
+            {
+                List<ValidationConfig> rules = fieldConfig.getValidationRules();
+                Assert.assertNotNull(rules);
+                Assert.assertEquals(1, rules.size());
+
+                validationConfig = rules.get(0);
+                Assert.assertEquals("com.alfresco.client.validation.stringLength", validationConfig.getType());
+                Assert.assertNotNull(validationConfig.getErrorMessage());
+                Assert.assertEquals(1, ((BigInteger)validationConfig.getParameter("min")).intValue());
+                Assert.assertEquals(5, ((BigInteger)validationConfig.getParameter("max")).intValue());
+            }
+            else if ("cm:subject".equals(fieldConfig.getIdentifier()))
+            {
+                List<ValidationConfig> rules = fieldConfig.getValidationRules();
+                Assert.assertNotNull(rules);
+                Assert.assertEquals(1, rules.size());
+
+                validationConfig = rules.get(0);
+                Assert.assertEquals("com.alfresco.client.validation.mandatory", validationConfig.getType());
+                Assert.assertNotNull(validationConfig.getErrorMessage());
+            }
+            else
+            {
+                List<ValidationConfig> rules = fieldConfig.getValidationRules();
+                Assert.assertNotNull(rules);
+                Assert.assertEquals(0, rules.size());
             }
         }
     }

@@ -22,13 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
-import org.alfresco.mobile.android.api.model.config.ViewConfig;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-
-import android.text.TextUtils;
 /**
  * 
  * @author Jean Marie Pascal
@@ -53,7 +48,7 @@ public class FieldsGroupConfigImpl extends FieldConfigImpl implements FieldGroup
     FieldsGroupConfigImpl(String identifier,  String iconIdentifier, String label, String description, String type, Map<String, Object> properties,
             LinkedHashMap<String, FieldConfig> childrenIndex, ArrayList<String> forms, String evaluatorId, String modelIdentifier)
     {
-        super(identifier, iconIdentifier, label, description, type, properties, forms, evaluatorId, modelIdentifier);
+        super(identifier, iconIdentifier, label, description, type, properties, forms, evaluatorId, modelIdentifier, null);
         this.childrenIndex = (childrenIndex == null) ? new LinkedHashMap<String, FieldConfig>(0) : childrenIndex;
         this.children = new ArrayList<FieldConfig>(this.childrenIndex.values());
     }

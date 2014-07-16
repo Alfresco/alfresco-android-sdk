@@ -491,7 +491,14 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!isStringNull(type))
             {
-                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
+                if (ContentModel.TYPE_CONTENT.equals(type))
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
+                }
+                else
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
+                }
             }
 
             tmpProperties = convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());

@@ -17,54 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
-import java.util.List;
 
 /**
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public interface AspectDefinition 
+public interface AspectDefinition extends ModelDefinition
 {
-    /**
-     * Returns the name of the type i.e. “cm:content”.
-     * 
-     * @return
-     */
-    public String getName();
-
-    /**
-     * Returns the title of the type.
-     * 
-     * @return
-     */
-    public String getTitle();
-
-    /**
-     * Returns the description of the type.
-     * 
-     * @return
-     */
-    public String getDescription();
-
-    /**
-     * The name of the parent type, null if the type doesn’t have a parent.
-     * 
-     * @return
-     */
-    public String getParent();
-
-    /**
-     * Returns the definition of each property defined for the type.
-     * 
-     * @return
-     */
-    public List<PropertyDefinition> getPropertyDefinitions();
-
-    /**
-     * Returns the definition of the given property i.e. “cm:name”.
-     * 
-     * @param property
-     * @return
-     */
-    public PropertyDefinition getPropertyDefiniton(String property);
 }

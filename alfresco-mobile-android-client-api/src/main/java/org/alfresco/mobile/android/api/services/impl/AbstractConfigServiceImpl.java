@@ -380,13 +380,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     // FORMS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public boolean hasFormConfig()
-    {
-        if (configuration == null) { return false; }
-        return configuration.hasFormConfig();
-    };
-
-    @Override
     public FormConfig getFormConfig(String formId)
     {
         if (configuration == null) { return null; }

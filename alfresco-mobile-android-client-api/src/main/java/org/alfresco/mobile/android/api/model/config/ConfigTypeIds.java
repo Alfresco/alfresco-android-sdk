@@ -40,6 +40,7 @@ public enum ConfigTypeIds
     FIELD_GROUPS("field-groups"), 
     ACTION_DEFINITIONS("action-definitions"), 
     EVALUATORS("evaluators"),
+    VALIDATION_RULES("validation-rules"),
     PROFILES("profiles");
 
     /** The value associated to an enum. */

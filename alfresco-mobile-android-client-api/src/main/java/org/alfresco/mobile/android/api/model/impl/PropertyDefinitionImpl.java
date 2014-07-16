@@ -166,6 +166,6 @@ public class PropertyDefinitionImpl implements PropertyDefinition
             }
             return list;
         }
-        return new ArrayList(0);
+        return new ArrayList<Map<String, Object>>(0);
     }
 }

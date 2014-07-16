@@ -34,6 +34,8 @@ public class ItemConfigImpl extends BaseConfigImpl implements ItemConfig
 
     protected String type;
 
+    private String evaluatorId;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -41,18 +43,24 @@ public class ItemConfigImpl extends BaseConfigImpl implements ItemConfig
     {
     }
 
-    ItemConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+    ItemConfigImpl(String identifier, String iconIdentifier, String label, String description, String type, String evaluatorId,
             Map<String, Object> configMap)
     {
         super(identifier, label, description);
         this.configMap = configMap;
         this.iconIdentifier = iconIdentifier;
         this.type = type;
+        this.evaluatorId = evaluatorId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
+    public String getEvaluator()
+    {
+        return evaluatorId;
+    }
+    
     @Override
     public Object getParameter(String configProperty)
     {

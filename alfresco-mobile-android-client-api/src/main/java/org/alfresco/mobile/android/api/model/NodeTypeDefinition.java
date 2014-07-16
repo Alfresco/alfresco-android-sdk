@@ -15,22 +15,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model;
 
 import java.util.List;
-/**
- * Base type for Form Configuration.
- * 
- * @author Jean Marie Pascal
- *
- */
-public interface FormConfig extends ItemConfig
-{
-    /**
-     * Returns the layout the client application should use to render the form.
-     */
-    public String getLayout();
 
-    /** Returns the groups for the form. */
-    public List<FieldGroupConfig> getGroups();
+
+/**
+ * @since 1.4
+ * @author Jean Marie Pascal
+ */
+public interface NodeTypeDefinition extends ModelDefinition
+{
+    /** Returns the list of mandatory aspects defined for the type. */
+    public List<String> getMandatoryAspects();
+    
 }

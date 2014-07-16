@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import org.alfresco.mobile.android.api.model.AspectDefinition;
-import org.alfresco.mobile.android.api.model.TypeDefinition;
 import org.alfresco.mobile.android.api.services.impl.AbstractModelDefinitionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 

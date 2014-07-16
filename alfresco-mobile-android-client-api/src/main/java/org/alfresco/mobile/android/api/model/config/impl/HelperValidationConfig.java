@@ -17,48 +17,50 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
+import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-/**
- * 
- * @author Jean Marie Pascal
- *
- */
-public class RepositoryConfigImpl implements RepositoryConfig
-{
-    private String shareUrl;
 
-    private String repoCMISUrl;
+/**
+ * @author Jean Marie Pascal
+ */
+public class HelperValidationConfig extends HelperConfig
+{
+    private LinkedHashMap<String, ValidationConfig> validationConfigIndex;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    static RepositoryConfigImpl parseJson(Map<String, Object> json)
+    HelperValidationConfig(ConfigurationImpl context, HelperStringConfig localHelper)
     {
-        if (json == null || json.isEmpty()) { return null; }
-        RepositoryConfigImpl repoConfig = new RepositoryConfigImpl();
+        super(context, localHelper);
+    }
 
-        repoConfig.shareUrl = JSONConverter.getString(json, ConfigConstants.SHARE_URL_VALUE);
-        repoConfig.repoCMISUrl = JSONConverter.getString(json, ConfigConstants.CMIS_URL_VALUE);
-
-        return repoConfig;
+    // ///////////////////////////////////////////////////////////////////////////
+    // INIT
+    // ///////////////////////////////////////////////////////////////////////////
+    void addValidation(Map<String, Object> validations)
+    {
+        validationConfigIndex = new LinkedHashMap<String, ValidationConfig>(validations.size());
+        ValidationConfigData data = null;
+        for (Entry<String, Object> entry : validations.entrySet())
+        {
+            data = new ValidationConfigData(entry.getKey(), JSONConverter.getMap(entry.getValue()), getConfiguration());
+            validationConfigIndex.put(data.identifier, new ValidationConfigImpl(data.identifier, data.iconIdentifier,
+                    data.label, data.description, data.type, data.properties, data.errorId));
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public String getShareURL()
+    public ValidationConfig getValidationRuleById(String id)
     {
-        return shareUrl;
+        if (validationConfigIndex == null || validationConfigIndex.isEmpty()) { return null; }
+        return validationConfigIndex.get(id);
     }
 
-    @Override
-    public String getCMISURL()
-    {
-        return repoCMISUrl;
-    }
 }

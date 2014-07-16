@@ -668,6 +668,18 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(new BigInteger("22"), modifiedDoc.getProperty("fdk:long").getValue());
             Assert.assertEquals(0,
                     new BigDecimal("1522.56").compareTo((BigDecimal) modifiedDoc.getProperty("fdk:double").getValue()));
+            
+            
+            
+            //TEST RESET
+            properties.clear();
+            properties.put("fdk:int", null);
+            properties.put("fdk:long", null);
+            properties.put("fdk:double", null);
+            modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
+            Assert.assertNull(modifiedDoc.getProperty("fdk:int").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:long").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:double").getValue());
 
         }
 

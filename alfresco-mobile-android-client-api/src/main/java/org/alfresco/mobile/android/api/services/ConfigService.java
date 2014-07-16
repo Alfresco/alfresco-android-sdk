@@ -68,14 +68,19 @@ public interface ConfigService extends Service
      */
     String CONFIGURATION_FOLDER = "org.alfresco.mobile.api.configuration.folder";
 
-    // TODO Define availability of those value
     /**
      * During the session creation configuration information is loaded if
      * available. <br/>
-     * Value must be a boolean. Default : false
+     * Value must be a String. Default : null
      */
-    String CONFIGURATION_INFO_ENABLE = "org.alfresco.mobile.api.configuration.info";
+    String CONFIGURATION_INIT = "org.alfresco.mobile.api.configuration.init";
+    
+    String CONFIGURATION_INIT_IF_UPDATED  = "org.alfresco.mobile.api.configuration.init.newer";
+    String CONFIGURATION_INIT_DEFAULT = "org.alfresco.mobile.api.configuration.init.default";
+    String CONFIGURATION_INIT_NONE = "org.alfresco.mobile.api.configuration.init.none";
 
+    String CONFIGURATION_VERSION_ID = "org.alfresco.mobile.api.configuration.version.id";
+     
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
@@ -140,9 +145,6 @@ public interface ConfigService extends Service
 
     // ///////////////////////////////////////////////////////////////////////////
     // FORMS
-    /** Determines whether any form config is present.*/
-    boolean hasFormConfig();
-
     /** Returns the configuration for the form with the given identifier.*/
     FormConfig getFormConfig(String formId);
     

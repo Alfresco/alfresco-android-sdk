@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,18 +25,20 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.ConfigConstants.FieldConfigType;
+import org.alfresco.mobile.android.api.constants.ConfigConstants.ValidationConfigType;
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
+import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.text.TextUtils;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class HelperFormConfig extends HelperConfig
 {
@@ -85,7 +86,7 @@ public class HelperFormConfig extends HelperConfig
         FieldConfig fieldConfig = null;
         for (Entry<String, Object> entry : fields.entrySet())
         {
-            fieldConfig = parse(JSONConverter.getMap(entry.getValue()), entry.getKey());
+            fieldConfig = parse(JSONConverter.getMap(entry.getValue()), entry.getKey(), null);
             if (fieldConfig == null)
             {
                 continue;
@@ -140,11 +141,11 @@ public class HelperFormConfig extends HelperConfig
         return null;
     }
 
-    FieldGroupConfig getFieldGroupsById(String id)
+    FieldGroupConfig getFieldGroupsById(String id, ConfigScope scope)
     {
         if (jsonFieldConfigGroups != null && jsonFieldConfigGroups.containsKey(id))
         {
-            return (FieldGroupConfig) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id);
+            return (FieldGroupConfig) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id, scope);
         }
         else
         {
@@ -158,10 +159,10 @@ public class HelperFormConfig extends HelperConfig
                 .isEmpty()));
     }
 
-    public FieldConfig getFieldById(String id)
-    {
-        return getFieldById(id, null);
-    }
+    /*
+     * public FieldConfig getFieldById(String id) { return getFieldById(id,
+     * null); }
+     */
 
     public FieldConfig getFieldById(String id, ConfigScope scope)
     {
@@ -173,7 +174,7 @@ public class HelperFormConfig extends HelperConfig
         FieldConfigImpl config = null;
         if (jsonFieldConfigGroups != null && jsonFieldConfigGroups.containsKey(id))
         {
-            config = (FieldConfigImpl) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id);
+            config = (FieldConfigImpl) parse(JSONConverter.getMap(jsonFieldConfigGroups.get(id)), id, scope);
         }
         else if (fieldConfigIndex != null && fieldConfigIndex.containsKey(id))
         {
@@ -241,19 +242,53 @@ public class HelperFormConfig extends HelperConfig
     {
         ArrayList<FieldGroupConfig> fieldsGroup = new ArrayList<FieldGroupConfig>(data.items.size());
 
+        ConfigScope scope = new ConfigScope(null);
+        scope.add(ConfigScope.NODE, node);
+
         // We iterate through groupId
         FieldGroupConfig fieldConfig = null;
         for (Object itemObject : data.items)
         {
             Map<String, Object> props = JSONConverter.getMap(itemObject);
+
+            // Evaluate
+            String evaluatorId = JSONConverter.getString(props, ConfigConstants.EVALUATOR);
+            if (!TextUtils.isEmpty(evaluatorId))
+            {
+                if (!getEvaluatorHelper().evaluate(evaluatorId, scope))
+                {
+                    continue;
+                }
+            }
+
+            // Parse Type
             String typeId = JSONConverter.getString(props, FieldConfigType.FIELD_GROUP_ID.value());
 
             if (TYPE_PROPERTIES.equals(typeId) && node != null)
             {
-                fieldConfig = getFieldGroupsById(getTypeId(node.getType()));
+                fieldConfig = getFieldGroupsById(getTypeId(node.getType()), scope);
                 if (fieldConfig != null)
                 {
                     fieldsGroup.add(fieldConfig);
+                }
+                else
+                {
+                    // TODO Reconsidering this part after discussion about it
+                    // do we display default cm:content / cm:folder if no custom
+                    // type defined inside the configuration ?
+                    if (node.isDocument())
+                    {
+                        fieldConfig = getFieldGroupsById(getTypeId(ContentModel.TYPE_CONTENT), scope);
+                    }
+                    else if (node.isFolder())
+                    {
+                        fieldConfig = getFieldGroupsById(getTypeId(ContentModel.TYPE_FOLDER), scope);
+                    }
+                    
+                    if (fieldConfig != null)
+                    {
+                        fieldsGroup.add(fieldConfig);
+                    }
                 }
             }
             else if (ASPECTS.equals(typeId) && node != null)
@@ -264,7 +299,7 @@ public class HelperFormConfig extends HelperConfig
                     {
                         continue;
                     }
-                    fieldConfig = getFieldGroupsById(aspectName);
+                    fieldConfig = getFieldGroupsById(aspectName, scope);
                     if (fieldConfig != null)
                     {
                         fieldsGroup.add(fieldConfig);
@@ -273,7 +308,7 @@ public class HelperFormConfig extends HelperConfig
             }
             else
             {
-                fieldConfig = (FieldGroupConfig) parse(itemObject);
+                fieldConfig = (FieldGroupConfig) parse(itemObject, scope);
                 if (fieldConfig != null)
                 {
                     fieldsGroup.add(fieldConfig);
@@ -295,11 +330,19 @@ public class HelperFormConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // V1.0
     // ///////////////////////////////////////////////////////////////////////////
-    protected FieldConfig parse(Object object)
+    protected FieldConfig parse(Object object, ConfigScope scope)
     {
         if (object instanceof Map)
         {
             Map<String, Object> viewMap = JSONConverter.getMap(object);
+
+            // Evaluate
+            String evaluatorId = JSONConverter.getString(viewMap, ConfigConstants.EVALUATOR);
+            if (!TextUtils.isEmpty(evaluatorId))
+            {
+                if (!getEvaluatorHelper().evaluate(evaluatorId, scope)) { return null; }
+            }
+
             if (viewMap.containsKey(ConfigConstants.ITEM_TYPE_VALUE))
             {
 
@@ -314,28 +357,32 @@ public class HelperFormConfig extends HelperConfig
                 switch (type)
                 {
                     case FIELD_ID:
-                        return getFieldById((String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_ID.value()));
+                        return getFieldById(
+                                (String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_ID.value()), scope);
                     case FIELD_GROUP_ID:
-                        return getFieldById((String) JSONConverter.getString(viewMap,
-                                FieldConfigType.FIELD_GROUP_ID.value()));
+                        return getFieldById(
+                                (String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_GROUP_ID.value()),
+                                scope);
                     case FIELD_GROUP:
-                        return parse(JSONConverter.getMap(JSONConverter.getMap(object).get(
-                                FieldConfigType.FIELD_GROUP.value())));
+                        return parse(
+                                JSONConverter.getMap(JSONConverter.getMap(object).get(
+                                        FieldConfigType.FIELD_GROUP.value())), scope);
                     case FIELD:
                     default:
                         // inline definition
-                        return parse(JSONConverter
-                                .getMap(JSONConverter.getMap(object).get(ConfigConstants.FIELD_VALUE)));
+                        return parse(
+                                JSONConverter.getMap(JSONConverter.getMap(object).get(ConfigConstants.FIELD_VALUE)),
+                                scope);
                 }
             }
             else
             {
-                return parse(JSONConverter.getMap(object), null);
+                return parse(JSONConverter.getMap(object), null, scope);
             }
         }
         else if (object instanceof String)
         {
-            return getFieldById((String) object);
+            return getFieldById((String) object, scope);
         }
         else
         {
@@ -343,29 +390,10 @@ public class HelperFormConfig extends HelperConfig
         }
     }
 
-    protected FieldConfig parse(Map<String, Object> json, String identifier)
+    protected FieldConfig parse(Map<String, Object> json, String identifier, ConfigScope scope)
     {
         ItemConfigData data = new ItemConfigData(identifier, json, getConfiguration());
         String modelIdentifier = JSONConverter.getString(json, ConfigConstants.MODEL_ID_VALUE);
-
-        // Forms
-        ArrayList<String> formsId = null;
-        if (json.containsKey(ConfigConstants.PARAMS_FORMS))
-        {
-            List<Object> listFormId = JSONConverter.getList(json.get(ConfigConstants.PARAMS_FORMS));
-            formsId = new ArrayList<String>(listFormId.size());
-            for (Object formId : listFormId)
-            {
-                if (formId instanceof String)
-                {
-                    formsId.add((String) formId);
-                }
-            }
-        }
-        else
-        {
-            formsId = new ArrayList<String>(0);
-        }
 
         // Check if it's a group view
         LinkedHashMap<String, FieldConfig> childrenIndex = null;
@@ -377,7 +405,7 @@ public class HelperFormConfig extends HelperConfig
             FieldConfig fieldConfig = null;
             for (Object child : childrenObject)
             {
-                fieldConfig = parse(child);
+                fieldConfig = parse(child, scope);
                 if (fieldConfig == null)
                 {
                     continue;
@@ -386,12 +414,59 @@ public class HelperFormConfig extends HelperConfig
             }
             childrenIndex = childrenViewConfig;
             return new FieldsGroupConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description,
-                    data.type, data.properties, childrenIndex, formsId, data.evaluatorId, modelIdentifier);
+                    data.type, data.properties, childrenIndex, null, data.evaluatorId, modelIdentifier);
         }
         else
         {
+            // VALIDATION
+            List<ValidationConfig> validations = null;
+            if (json.containsKey(ConfigConstants.VALIDATION_VALUE))
+            {
+                List<Object> rules = JSONConverter.getList(json.get(ConfigConstants.VALIDATION_VALUE));
+                validations = new ArrayList<ValidationConfig>(rules.size());
+                ValidationConfig validation = null;
+                for (Object object : rules)
+                {
+                    Map<String, Object> rule = JSONConverter.getMap(object);
+                    if (rule.containsKey(ConfigConstants.ITEM_TYPE_VALUE))
+                    {
+                        ValidationConfigType type = ValidationConfigType.fromValue(JSONConverter.getString(rule,
+                                ConfigConstants.ITEM_TYPE_VALUE));
+
+                        if (type == null)
+                        {
+                            type = ValidationConfigType.VALIDATION_RULE;
+                        }
+
+                        switch (type)
+                        {
+                            case VALIDATION_RULE_ID:
+                                validation = getConfiguration().getValidationHelper().getValidationRuleById(
+                                        (String) JSONConverter.getString(rule,
+                                                ValidationConfigType.VALIDATION_RULE_ID.value()));
+                                break;
+                            case VALIDATION_RULE:
+                            default:
+                                // inline definition
+                                ValidationConfigData dataValidationInfo = new ValidationConfigData(null,
+                                        JSONConverter.getMap(object), getConfiguration());
+                                validation = new ValidationConfigImpl(dataValidationInfo.identifier,
+                                        dataValidationInfo.iconIdentifier, dataValidationInfo.label,
+                                        dataValidationInfo.description, dataValidationInfo.type,
+                                        dataValidationInfo.properties, dataValidationInfo.errorId);
+                                break;
+                        }
+                    }
+
+                    if (validation != null)
+                    {
+                        validations.add(validation);
+                    }
+                }
+            }
+
             return new FieldConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type,
-                    data.properties, formsId, data.evaluatorId, modelIdentifier);
+                    data.properties, null, data.evaluatorId, modelIdentifier, validations);
         }
     }
 

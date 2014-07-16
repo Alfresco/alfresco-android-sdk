@@ -18,21 +18,29 @@
 package org.alfresco.mobile.android.api.model.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
-import org.alfresco.mobile.android.api.model.TypeDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
+import org.alfresco.mobile.android.api.model.PropertyDefinition;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
-import org.apache.chemistry.opencmis.commons.data.CmisExtensionElement;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
 /**
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class TypeDefinitionImpl extends BaseDefinitionImpl implements TypeDefinition
+public class NodeTypeDefinitionImpl extends ModelDefinitionImpl implements NodeTypeDefinition
 {
     private static final long serialVersionUID = 1L;
+
+    protected Map<String, ModelDefinition> aspectModel;
+
+    private HashMap<String, PropertyDefinition> propertiesIndex;
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -40,7 +48,7 @@ public class TypeDefinitionImpl extends BaseDefinitionImpl implements TypeDefini
     /**
      * Instantiates a new tag impl.
      */
-    public TypeDefinitionImpl()
+    public NodeTypeDefinitionImpl()
     {
     }
 
@@ -49,35 +57,57 @@ public class TypeDefinitionImpl extends BaseDefinitionImpl implements TypeDefini
      * 
      * @param value the value of the tag
      */
-    public TypeDefinitionImpl(ObjectType typeDefinition)
+    public NodeTypeDefinitionImpl(ObjectType typeDefinition)
     {
         this.typeDefinition = typeDefinition;
+    }
+
+    public NodeTypeDefinitionImpl(ObjectType typeDefinition, Map<String, ModelDefinition> aspectModels)
+    {
+        this.typeDefinition = typeDefinition;
+        this.aspectModel = aspectModels;
+
+        // Init Properties
+        propertiesIndex = new HashMap<String, PropertyDefinition>();
+        if (aspectModel != null)
+        {
+            ModelDefinition aspectDefinition = null;
+            for (Entry<String, ModelDefinition> aspectDefinitionEntry : aspectModel.entrySet())
+            {
+                aspectDefinition = aspectDefinitionEntry.getValue();
+                for (String propertyName : aspectDefinition.getPropertyNames())
+                {
+                    propertiesIndex.put(propertyName, aspectDefinition.getPropertyDefinition(propertyName));
+                }
+            }
+        }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ////////////////////////////////////////////////////////////////////////////////////
+    public List<String> getMandatoryAspects(){
+        return ((aspectModel != null) ? new ArrayList<String>(aspectModel.keySet()) : new ArrayList<String>(0));
+    }
+    
+    public Map<String, ModelDefinition> getAspectsDefinition()
+    {
+        return (aspectModel != null) ? aspectModel : new HashMap<String, ModelDefinition>(0);
+    }
 
     @Override
-    public List<String> getMandatoryAspects()
+    public PropertyDefinition getPropertyDefinition(String propertyKey)
     {
-        List<String> mandatoryAspects = null;
-        if (typeDefinition != null)
+        PropertyDefinition def = super.getPropertyDefinition(propertyKey);
+        if (def != null)
         {
-            for (CmisExtensionElement extension : typeDefinition.getExtensions())
-            {
-                if ("mandatoryAspects".equals(extension.getName()))
-                {
-                    mandatoryAspects = new ArrayList<String>(extension.getChildren().size());
-                    for (CmisExtensionElement aspectExtension : extension.getChildren())
-                    {
-                        mandatoryAspects.add(aspectExtension.getValue());
-                    }
-                    break;
-                }
-            }
+            return def;
         }
-        return (mandatoryAspects != null) ? mandatoryAspects : new ArrayList<String>(0);
+        else
+        {
+            if (propertiesIndex == null) { return null; }
+            return propertiesIndex.get(propertyKey);
+        }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////

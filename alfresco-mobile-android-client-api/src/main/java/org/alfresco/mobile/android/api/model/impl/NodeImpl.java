@@ -255,6 +255,7 @@ public class NodeImpl implements Node
         }
         else if (aspects != null)
         {
+            if (!aspects.contains(tmpAspectName)) { return aspects.contains(aspectName); }
             return aspects.contains(tmpAspectName);
         }
         else
@@ -266,23 +267,28 @@ public class NodeImpl implements Node
     /** {@inheritDoc} */
     public List<String> getAspects()
     {
-        AlfrescoAspects alf = (AlfrescoAspects) object;
-        Collection<ObjectType> c = alf.getAspects();
-        ArrayList<String> list = new ArrayList<String>(c.size());
-        for (ObjectType objectType : c)
+        if (object != null)
         {
-            if (objectType.getId() != null && !objectType.getId().isEmpty())
+            AlfrescoAspects alf = (AlfrescoAspects) object;
+            Collection<ObjectType> c = alf.getAspects();
+            ArrayList<String> list = new ArrayList<String>(c.size());
+            for (ObjectType objectType : c)
             {
-                list.add(objectType.getId().replaceFirst(ModelMappingUtils.CMISPREFIX_ASPECTS, ""));
+                if (objectType.getId() != null && !objectType.getId().isEmpty())
+                {
+                    list.add(objectType.getId().replaceFirst(ModelMappingUtils.CMISPREFIX_ASPECTS, ""));
+                }
             }
+            return list;
         }
-        return list;
+        else if (aspects != null) { return aspects; }
+        return new ArrayList<String>(0);
     }
 
     @Override
     public boolean hasAllProperties()
     {
-         return hasAllProperties; 
+        return hasAllProperties;
     }
 
     // ////////////////////////////////////////////////////

@@ -17,20 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-import java.util.List;
+
 /**
- * Base type for Form Configuration.
+ * Base type for Field Configuration.
  * 
  * @author Jean Marie Pascal
  *
  */
-public interface FormConfig extends ItemConfig
+public interface ValidationConfig extends ItemConfig
 {
-    /**
-     * Returns the layout the client application should use to render the form.
-     */
-    public String getLayout();
-
-    /** Returns the groups for the form. */
-    public List<FieldGroupConfig> getGroups();
+    /** Returns the error message to display when this validation rule fails. */
+    String getErrorMessage();
 }

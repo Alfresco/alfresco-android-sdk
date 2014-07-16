@@ -47,7 +47,7 @@ public class FormConfigImpl extends ItemConfigImpl implements FormConfig
     public FormConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
             Map<String, Object> properties, List<FieldGroupConfig> children, String evaluatorId, String layoutId)
     {
-        super(identifier, iconIdentifier, label, description, type, properties);
+        super(identifier, iconIdentifier, label, description, type, evaluatorId, properties);
         this.children = new ArrayList<FieldGroupConfig>(children);
         this.evaluatorId = evaluatorId;
         this.layoutId = layoutId;

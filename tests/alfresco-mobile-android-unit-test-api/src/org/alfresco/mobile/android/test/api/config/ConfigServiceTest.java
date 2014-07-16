@@ -163,7 +163,7 @@ public class ConfigServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(url);
         Assert.assertTrue(url.endsWith("share"));
 
-        url = configService.getRepositoryConfig().getRepositoryCMISURL();
+        url = configService.getRepositoryConfig().getCMISURL();
         Assert.assertNotNull(url);
         if (hasPublicAPI())
         {
@@ -329,8 +329,6 @@ public class ConfigServiceTest extends AlfrescoSDKTestCase
         
         // /////////////////////////////////////////////////////////////////////
         // FORM
-        Assert.assertTrue(configService.hasFormConfig());
-        
         //Form config
         FormConfig formConfig = configService.getFormConfig(FORM_DEFAULT_ID);
         Assert.assertNotNull(formConfig);
@@ -426,7 +424,6 @@ public class ConfigServiceTest extends AlfrescoSDKTestCase
         Assert.assertNull(configService.getFeatureConfig());
         Assert.assertFalse(configService.hasViewConfig());
         Assert.assertNull(configService.getCreationConfig());
-        Assert.assertFalse(configService.hasFormConfig());
     }
 
     /**
@@ -452,7 +449,6 @@ public class ConfigServiceTest extends AlfrescoSDKTestCase
         Assert.assertNull(configService.getFeatureConfig());
         Assert.assertFalse(configService.hasViewConfig());
         Assert.assertNull(configService.getCreationConfig());
-        Assert.assertFalse(configService.hasFormConfig());
     }
 
     /**

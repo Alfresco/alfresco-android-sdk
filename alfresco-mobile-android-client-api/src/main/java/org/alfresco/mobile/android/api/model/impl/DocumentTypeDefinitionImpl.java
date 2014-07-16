@@ -15,22 +15,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model.impl;
 
-import java.util.List;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.model.DocumentTypeDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
+
 /**
- * Base type for Form Configuration.
- * 
+ * @since 1.4
  * @author Jean Marie Pascal
- *
  */
-public interface FormConfig extends ItemConfig
+public class DocumentTypeDefinitionImpl extends NodeTypeDefinitionImpl implements DocumentTypeDefinition
 {
-    /**
-     * Returns the layout the client application should use to render the form.
-     */
-    public String getLayout();
+    private static final long serialVersionUID = 1L;
+    
+    DocumentTypeDefinitionImpl()
+    {
+        super();
+    }
 
-    /** Returns the groups for the form. */
-    public List<FieldGroupConfig> getGroups();
+    public DocumentTypeDefinitionImpl(ObjectType typeDefinition)
+    {
+       super(typeDefinition);
+    }
+
+    public DocumentTypeDefinitionImpl(ObjectType typeDefinition, Map<String, ModelDefinition> aspectModels)
+    {
+        super(typeDefinition, aspectModels);
+    }
+
 }

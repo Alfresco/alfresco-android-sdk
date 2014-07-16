@@ -25,7 +25,7 @@ import org.apache.chemistry.opencmis.client.api.ObjectType;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class AspectDefinitionImpl extends BaseDefinitionImpl implements AspectDefinition
+public class AspectDefinitionImpl extends ModelDefinitionImpl implements AspectDefinition
 {
     private static final long serialVersionUID = 1L;
 

@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.EvaluatorType;
@@ -32,12 +33,11 @@ import org.alfresco.mobile.android.api.model.config.OperatorType;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
-import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class HelperEvaluatorConfig extends HelperConfig
 {
@@ -55,6 +55,7 @@ public class HelperEvaluatorConfig extends HelperConfig
 
     void addEvaluators(Map<String, Object> json)
     {
+        if (json == null) { return; }
         evaluatorIndex = new LinkedHashMap<String, EvaluatorConfigData>(json.size());
         EvaluatorConfigData evalConfig = null;
         for (Entry<String, Object> entry : json.entrySet())
@@ -144,6 +145,12 @@ public class HelperEvaluatorConfig extends HelperConfig
             case IS_REPOSITORY_VERSION:
                 result = evaluateRepositoryVersion(evalConfig);
                 break;
+            case NODE_TYPE:
+                result = evaluateNodeType(evalConfig, extraParameters);
+                break;
+            case HAS_ASPECT:
+                result = evaluateHasAspect(evalConfig, extraParameters);
+                break;
             default:
                 break;
         }
@@ -155,7 +162,47 @@ public class HelperEvaluatorConfig extends HelperConfig
 
     // ///////////////////////////////////////////////////////////////////////////
     // EVALUATION REGISTRY
-    // ///////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
+    private Boolean evaluateHasAspect(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
+    {
+        if (extraParameters == null || extraParameters.getContextValue(ConfigScope.NODE) == null)
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a node object.");
+            return false;
+        }
+
+        String aspectName = (String) evalConfig.getParameter(ConfigConstants.ASPECT_NAME_VALUE);
+        if (TextUtils.isEmpty(aspectName))
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a typeName value.");
+            return false;
+        }
+
+        Node node = (Node) extraParameters.getContextValue(ConfigScope.NODE);
+
+        return node.hasAspect(aspectName);
+    }
+    
+    private Boolean evaluateNodeType(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
+    {
+        if (extraParameters == null || extraParameters.getContextValue(ConfigScope.NODE) == null)
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a node object.");
+            return false;
+        }
+
+        String typeName = (String) evalConfig.getParameter(ConfigConstants.TYPE_NAME_VALUE);
+        if (TextUtils.isEmpty(typeName))
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a typeName value.");
+            return false;
+        }
+
+        Node node = (Node) extraParameters.getContextValue(ConfigScope.NODE);
+
+        return typeName.equalsIgnoreCase(node.getType());
+    }
+
     private boolean evaluateRepositoryVersion(EvaluatorConfigData evalConfig)
     {
         boolean result = true;
@@ -196,16 +243,16 @@ public class HelperEvaluatorConfig extends HelperConfig
         // Major Version
         if (evalConfig.configMap.containsKey(ConfigConstants.MAJORVERSION_VALUE))
         {
-            versionNumber += 100 * JSONConverter.getInteger(evalConfig.configMap,
-                    ConfigConstants.MAJORVERSION_VALUE).intValue();
+            versionNumber += 100 * JSONConverter.getInteger(evalConfig.configMap, ConfigConstants.MAJORVERSION_VALUE)
+                    .intValue();
             repoVersionNumber += 100 * repoInfo.getMajorVersion();
         }
 
         // Minor Version
         if (evalConfig.configMap.containsKey(ConfigConstants.MINORVERSION_VALUE))
         {
-            versionNumber += 10 * JSONConverter.getInteger(evalConfig.configMap,
-                    ConfigConstants.MINORVERSION_VALUE).intValue();
+            versionNumber += 10 * JSONConverter.getInteger(evalConfig.configMap, ConfigConstants.MINORVERSION_VALUE)
+                    .intValue();
             repoVersionNumber += 10 * repoInfo.getMinorVersion();
         }
 
@@ -221,8 +268,7 @@ public class HelperEvaluatorConfig extends HelperConfig
             else
             {
                 result = evaluate(operator, RepositoryVersionHelper.getVersionString(repoInfo.getVersion(), 2),
-                        JSONConverter.getString(evalConfig.configMap,
-                                ConfigConstants.MAINTENANCEVERSION_VALUE));
+                        JSONConverter.getString(evalConfig.configMap, ConfigConstants.MAINTENANCEVERSION_VALUE));
             }
         }
 

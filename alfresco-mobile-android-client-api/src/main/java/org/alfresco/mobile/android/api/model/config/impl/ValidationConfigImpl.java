@@ -17,50 +17,39 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 /**
  * 
  * @author Jean Marie Pascal
  *
  */
-public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
+public class ValidationConfigImpl extends ItemConfigImpl implements ValidationConfig
 {
-    protected String evaluatorId;
-
-    protected ArrayList<String> forms;
+    private String errorMessage;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    ViewConfigImpl(String identifier, String label, String type, String evaluatorId)
+    ValidationConfigImpl(String identifier, String label, String type, String evaluatorId)
     {
-        super(identifier, null, label, null, type, evaluatorId, null);
-        this.evaluatorId = evaluatorId;
+        super(identifier, null, label, null, type, null, null);
     }
 
-    ViewConfigImpl(String identifier, String iconIdentifier, String label, String description, String type, Map<String, Object> properties,
-           ArrayList<String> forms, String evaluatorId)
+    ValidationConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+            Map<String, Object> properties, String errorId)
     {
-        super(identifier, iconIdentifier, label, description, type, evaluatorId, properties);
-        this.evaluatorId = evaluatorId;
-        this.forms = (forms == null) ? new ArrayList<String>(0) : forms;
+        super(identifier, iconIdentifier, label, description, type, null, properties);
+        this.errorMessage = errorId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public String getEvaluator()
-    {
-        return evaluatorId;
-    }
-    
     @Override
-    public List<String> getForms()
+    public String getErrorMessage()
     {
-        return forms;
+        return errorMessage;
     }
 }

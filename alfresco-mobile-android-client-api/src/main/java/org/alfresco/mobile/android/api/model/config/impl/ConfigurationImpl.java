@@ -69,6 +69,8 @@ public class ConfigurationImpl
     private HelperFormConfig formHelper;
 
     private HelperEvaluatorConfig evaluatorHelper;
+    
+    private HelperValidationConfig validationHelper;
 
     private HelperStringConfig stringHelper;
 
@@ -172,6 +174,19 @@ public class ConfigurationImpl
             configuration.evaluatorHelper
                     .addEvaluators(JSONConverter.getMap(json.get(ConfigTypeIds.EVALUATORS.value())));
         }
+        
+        
+        // VALIDATION
+        if (json.containsKey(ConfigTypeIds.VALIDATION_RULES.value()))
+        {
+            if (configuration.validationHelper == null)
+            {
+                configuration.validationHelper = new HelperValidationConfig(configuration, stringHelper);
+            }
+            configuration.validationHelper
+                    .addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES.value())));
+        }
+        
         
         // FIELDS
         if (json.containsKey(ConfigTypeIds.FIELDS.value()))
@@ -449,6 +464,13 @@ public class ConfigurationImpl
     {
         if (evaluatorHelper == null) { return null; }
         return evaluatorHelper;
+    }
+    
+    
+    HelperValidationConfig getValidationHelper()
+    {
+        if (validationHelper == null) { return null; }
+        return validationHelper;
     }
 
     public AlfrescoSession getSession()

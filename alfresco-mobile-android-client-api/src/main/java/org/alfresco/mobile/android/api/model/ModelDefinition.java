@@ -17,13 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public interface TypeDefinition
+public interface ModelDefinition extends Serializable
 {
     /**
      * Returns the name of the type i.e. “cm:content”.
@@ -54,25 +55,17 @@ public interface TypeDefinition
     public String getParent();
 
     /**
-     * Returns the definition of each property defined for the type.
+     * Returns the list of property name defined for the type.
      * 
      * @return
      */
-    public List<PropertyDefinition> getPropertyDefinitions();
+    public List<String> getPropertyNames();
 
     /**
-     * Returns the definition of the given property i.e. “cm:name”.
-     * 
-     * @param property
+     * Returns the propertyDefinition for the specified property Name
+     * @param propertyName
      * @return
      */
-    public PropertyDefinition getPropertyDefiniton(String property);
-    
-    /**
-     * Returns the list of mandatory aspects.
-     * 
-     * @return
-     */
-    public List<String> getMandatoryAspects();
+    public PropertyDefinition getPropertyDefinition(String propertyName);
 
 }

@@ -20,20 +20,19 @@ package org.alfresco.mobile.android.api.services.impl.onpremise;
 import java.io.File;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.TypeDefinition;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.TaggingService;
-import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.AbstractServiceRegistry;
-import org.alfresco.mobile.android.api.services.impl.OfflineConfigServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.ConfigServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIActivityStreamServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPICommentServiceImpl;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIDocumentFolderServiceImpl;
@@ -284,7 +283,7 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
         {
             configFolder = new File((String) parameters.get(ConfigService.CONFIGURATION_FOLDER));
         }
-        return new OfflineConfigServiceImpl(applicationId, configFolder);
+        return new ConfigServiceImpl(applicationId, configFolder);
     }
 
     // ////////////////////////////////////////////////////

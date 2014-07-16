@@ -20,45 +20,22 @@ package org.alfresco.mobile.android.api.model.config.impl;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 /**
  * 
  * @author Jean Marie Pascal
  *
  */
-public class RepositoryConfigImpl implements RepositoryConfig
+public class ValidationConfigData extends ItemConfigData
 {
-    private String shareUrl;
-
-    private String repoCMISUrl;
+    final String errorId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    static RepositoryConfigImpl parseJson(Map<String, Object> json)
+    public ValidationConfigData(String identifier, Map<String, Object> json, ConfigurationImpl configuration)
     {
-        if (json == null || json.isEmpty()) { return null; }
-        RepositoryConfigImpl repoConfig = new RepositoryConfigImpl();
-
-        repoConfig.shareUrl = JSONConverter.getString(json, ConfigConstants.SHARE_URL_VALUE);
-        repoConfig.repoCMISUrl = JSONConverter.getString(json, ConfigConstants.CMIS_URL_VALUE);
-
-        return repoConfig;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // PUBLIC METHODS
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public String getShareURL()
-    {
-        return shareUrl;
-    }
-
-    @Override
-    public String getCMISURL()
-    {
-        return repoCMISUrl;
+        super(identifier, json, configuration);
+        this.errorId = configuration.getString(JSONConverter.getString(json, ConfigConstants.ERROR_ID_VALUE));
     }
 }

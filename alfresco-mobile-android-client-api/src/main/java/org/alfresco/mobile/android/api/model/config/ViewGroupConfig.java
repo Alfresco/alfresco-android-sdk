@@ -22,6 +22,6 @@ package org.alfresco.mobile.android.api.model.config;
  * 
  * @author Jean Marie Pascal
  */
-public interface ViewGroupConfig extends ViewConfig, GroupConfig<ViewConfig>
+public interface ViewGroupConfig extends GroupConfig<ViewConfig>
 {
 }

@@ -80,8 +80,7 @@ public class CreationConfigImpl implements CreationConfig
             json = JSONConverter.getMap(object);
             ItemConfigData data = new ItemConfigData(null, json, configuration);
 
-            listItems.add(new ViewConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties, null,
-                    data.evaluatorId));
+            listItems.add(new ItemConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.evaluatorId, data.properties));
         }
         return listItems;
     }

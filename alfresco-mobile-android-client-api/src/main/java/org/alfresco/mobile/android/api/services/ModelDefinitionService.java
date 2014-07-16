@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
-import org.alfresco.mobile.android.api.model.AspectDefinition;
-import org.alfresco.mobile.android.api.model.TypeDefinition;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
 
 
 /**
@@ -33,15 +35,16 @@ public interface ModelDefinitionService extends Service
      * @return
      * @exception  if the type is null or unknown.
      */
-    public TypeDefinition getDocumentTypeDefinition(String type);
-    
+    public NodeTypeDefinition getDocumentTypeDefinition(String type);
+    public NodeTypeDefinition getDocumentTypeDefinition(Document doc);
+
     /**
      * Returns the type definition for the given Aspect type
      * @param type
      * @return
      * @exception  if the aspect is null or unknown.
      */
-    public AspectDefinition getAspectDefinition(String aspect);
+    public ModelDefinition getAspectDefinition(String aspect);
 
     /**
      * Returns the type definition for the given Folder type
@@ -49,7 +52,8 @@ public interface ModelDefinitionService extends Service
      * @return
      * @exception  if the type is null or unknown.
      */
-    public TypeDefinition getFolderTypeDefinition(String type);
+    public NodeTypeDefinition getFolderTypeDefinition(String type);
+    public NodeTypeDefinition getFolderTypeDefinition(Folder folder);
 
     /**
      * Returns the type definition for the given Task type
@@ -57,5 +61,6 @@ public interface ModelDefinitionService extends Service
      * @return
      * @exception  if the type is null or unknown.
      */
-    public TypeDefinition getTaskTypeDefinition(String type);
+    public ModelDefinition getTaskTypeDefinition(String type);
+
 }

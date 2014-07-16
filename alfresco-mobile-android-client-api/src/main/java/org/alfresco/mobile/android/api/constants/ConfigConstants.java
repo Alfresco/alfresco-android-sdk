@@ -77,7 +77,7 @@ public interface ConfigConstants
     String VIEW_ROOT_NAVIGATION_MENU = "rootNavigationMenu";
 
     String VIEW_NODE_PROPERTIES = "view-properties";
-    
+
     String VIEW_EDIT_PROPERTIES = "edit-properties";
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -138,6 +138,10 @@ public interface ConfigConstants
     String MINORVERSION_VALUE = "minorVersion";
 
     String MAINTENANCEVERSION_VALUE = "maintenanceVersion";
+    
+    String TYPE_NAME_VALUE = "typeName";
+    
+    String ASPECT_NAME_VALUE = "aspectName";
 
     // FORMS
     String PARAMS_FORMS = "forms";
@@ -145,15 +149,15 @@ public interface ConfigConstants
     String FIELD_GROUPS_VALUE = "field-groups";
 
     String FIELDS_VALUE = "fields";
-    
+
     String FIELD_VALUE = "field";
 
     String CONTROL_TYPE_VALUE = "control-type";
 
     String CONTROL_PARAMS_VALUE = "control-params";
-    
-    String MODEL_ID_VALUE = "model-id"; 
-    
+
+    String MODEL_ID_VALUE = "model-id";
+
     String LAYOUT_VALUE = "layout";
 
     // REPOSITORY
@@ -170,12 +174,44 @@ public interface ConfigConstants
 
     String ROOTVIEW_ID_VALUE = "root-view-id";
 
+    // VALIDATION
+    String VALIDATION_VALUE = "validation";
+
+    String VALIDATION_RULES_VALUE = "validation-rules";
+
+    String ERROR_ID_VALUE = "error-id";
+
+    String MIN_VALUE = "min";
+
+    String MAX_VALUE = "max";
+    
+    String PATTERN_VALUE = "pattern";
+    
+    //FIELDS
+    String MIN_DATE_VALUE = "minDate";
+
+    String MAX_DATE_VALUE = "maxDate";
+    
+    String SHOW_TIME_VALUE = "showTime";
+    
+    String SHOW_MULTIPLE_LINES_VALUE = "showMultipleLines";
+    
+    String READ_ONLY_VALUE = "readOnly";
+    
+    String SECRET_VALUE = "secret";
+
+    String AUTHORITY_VALUE = "authority";
+
+    String ALLOW_MULTIPLE_SELECTION_VALUE = "allowMultipleSelection";
+    
+    String OUTPUT_VALUE = "outputValue";
+
     // /////////////////////////////////////////////////
     // PARSING ENUM
     // /////////////////////////////////////////////////
     enum ViewConfigType
     {
-        VIEW_ID("view-id"), VIEW_GROUP("view-group-id"), VIEW("view");
+        VIEW_ID("view-id"), VIEW_GROUP_ID("view-group-id"), VIEW("view");
 
         /** The value associated to an enum. */
         private final String value;
@@ -226,35 +262,49 @@ public interface ConfigConstants
         /** The value associated to an enum. */
         private final String value;
 
-        /**
-         * Instantiates a new property type.
-         * 
-         * @param v the value of the enum.
-         */
         FieldConfigType(String v)
         {
             value = v;
         }
 
-        /**
-         * Value.
-         * 
-         * @return the string
-         */
         public String value()
         {
             return value;
         }
 
-        /**
-         * From value.
-         * 
-         * @param v the value of the enum.
-         * @return the property type
-         */
         public static FieldConfigType fromValue(String v)
         {
             for (FieldConfigType c : FieldConfigType.values())
+            {
+                if (c.value.equalsIgnoreCase(v)) { return c; }
+            }
+            return null;
+        }
+    }
+
+    // /////////////////////////////////////////////////
+    // PARSING ENUM
+    // /////////////////////////////////////////////////
+    enum ValidationConfigType
+    {
+        VALIDATION_RULE_ID("validation-rule-id"), VALIDATION_RULE("validation-rule");
+
+        /** The value associated to an enum. */
+        private final String value;
+
+        ValidationConfigType(String v)
+        {
+            value = v;
+        }
+
+        public String value()
+        {
+            return value;
+        }
+
+        public static ValidationConfigType fromValue(String v)
+        {
+            for (ValidationConfigType c : ValidationConfigType.values())
             {
                 if (c.value.equalsIgnoreCase(v)) { return c; }
             }

@@ -32,7 +32,7 @@ public class FeatureConfigImpl extends ItemConfigImpl implements FeatureConfig
     // ///////////////////////////////////////////////////////////////////////////
     FeatureConfigImpl(ItemConfigData data)
     {
-        super(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties);
+        super(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.evaluatorId, data.properties);
     }
 
     static FeatureConfig parse(Map<String, Object> json, ConfigurationImpl configuration)

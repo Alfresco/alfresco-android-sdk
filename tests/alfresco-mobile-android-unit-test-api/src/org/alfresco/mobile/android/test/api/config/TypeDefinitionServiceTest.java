@@ -25,10 +25,9 @@ import java.util.Map.Entry;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.model.AspectDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.PropertyDefinition;
 import org.alfresco.mobile.android.api.model.PropertyType;
-import org.alfresco.mobile.android.api.model.TypeDefinition;
 import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -65,10 +64,10 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
     public void testRetrieveDocumentTypeDefinition()
     {
         // Retrieve TypeDefinitionService
-        TypeDefinition typeDefinition = null;
+        ModelDefinition typeDefinition = null;
         try
         {
-            typeDefinition = typeDefintionService.getDocumentTypeDefinition(null);
+            typeDefinition = typeDefintionService.getDocumentTypeDefinition((String) null);
             Assert.fail();
         }
         catch (Exception e)
@@ -83,7 +82,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Document", typeDefinition.getTitle());
         Assert.assertEquals("Document Type", typeDefinition.getDescription());
         Assert.assertNull(typeDefinition.getParent());
-        Assert.assertNotNull(typeDefinition.getPropertyDefinitions());
+        Assert.assertNotNull(typeDefinition.getPropertyNames());
 
         // Properties
         validateAlfrescoDocumentProperties(typeDefinition, true);
@@ -93,10 +92,10 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
     public void testRetrieveFolderTypeDefinition()
     {
         // Retrieve TypeDefinitionService
-        TypeDefinition typeDefinition = null;
+        ModelDefinition typeDefinition = null;
         try
         {
-            typeDefinition = typeDefintionService.getFolderTypeDefinition(null);
+            typeDefinition = typeDefintionService.getFolderTypeDefinition((String) null);
             Assert.fail();
         }
         catch (Exception e)
@@ -111,7 +110,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Folder", typeDefinition.getTitle());
         Assert.assertEquals("Folder Type", typeDefinition.getDescription());
         Assert.assertNull(typeDefinition.getParent());
-        Assert.assertNotNull(typeDefinition.getPropertyDefinitions());
+        Assert.assertNotNull(typeDefinition.getPropertyNames());
 
         // Properties
         validateAlfrescoDocumentProperties(typeDefinition, false);
@@ -121,7 +120,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
     public void testRetrieveAspectDefinition()
     {
         // Retrieve TypeDefinitionService
-        AspectDefinition aspectDef = null;
+        ModelDefinition aspectDef = null;
         try
         {
             aspectDef = typeDefintionService.getAspectDefinition(null);
@@ -139,7 +138,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Titled", aspectDef.getTitle());
         Assert.assertEquals("Titled", aspectDef.getDescription());
         Assert.assertEquals("cmisext:aspects", aspectDef.getParent());
-        Assert.assertNotNull(aspectDef.getPropertyDefinitions());
+        Assert.assertNotNull(aspectDef.getPropertyNames());
 
         validateAspectDefinition(aspectDef, ContentModel.PROP_TITLE, ContentModel.PROP_TITLE, "Title", "Content Title",
                 PropertyType.STRING, false, false, false, null);
@@ -153,7 +152,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Author", aspectDef.getTitle());
         Assert.assertEquals("Author", aspectDef.getDescription());
         Assert.assertEquals("cmisext:aspects", aspectDef.getParent());
-        Assert.assertNotNull(aspectDef.getPropertyDefinitions());
+        Assert.assertNotNull(aspectDef.getPropertyNames());
 
         validateAspectDefinition(aspectDef, ContentModel.PROP_AUTHOR, ContentModel.PROP_AUTHOR, "Author", "Author",
                 PropertyType.STRING, false, false, false, null);
@@ -165,7 +164,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Geographic", aspectDef.getTitle());
         Assert.assertEquals("Geographic", aspectDef.getDescription());
         Assert.assertEquals("cmisext:aspects", aspectDef.getParent());
-        Assert.assertNotNull(aspectDef.getPropertyDefinitions());
+        Assert.assertNotNull(aspectDef.getPropertyNames());
 
         validateAspectDefinition(aspectDef, ContentModel.PROP_LATITUDE, ContentModel.PROP_LATITUDE, "Latitude",
                 "Latitude", PropertyType.DECIMAL, false, false, false, null);
@@ -180,7 +179,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Subset of the standard xmpDM Audio metadata", aspectDef.getDescription());
         Assert.assertEquals("cmisext:aspects", aspectDef.getParent());
 
-        Assert.assertNotNull(aspectDef.getPropertyDefinitions());
+        Assert.assertNotNull(aspectDef.getPropertyNames());
         validateAspectDefinition(aspectDef, ContentModel.PROP_ARTIST, ContentModel.PROP_ARTIST, "Artist",
                 "Artist who performed the work", PropertyType.STRING, false, false, false, null);
         validateAspectDefinition(aspectDef, ContentModel.PROP_ENGINEER, ContentModel.PROP_ENGINEER, "Engineer",
@@ -217,7 +216,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("Subset of the standard EXIF metadata", aspectDef.getDescription());
         Assert.assertEquals("cmisext:aspects", aspectDef.getParent());
 
-        Assert.assertNotNull(aspectDef.getPropertyDefinitions());
+        Assert.assertNotNull(aspectDef.getPropertyNames());
         validateAspectDefinition(aspectDef, ContentModel.PROP_PIXELX_DIMENSION, ContentModel.PROP_PIXELX_DIMENSION,
                 "Image Width", "The width of the image in pixels", PropertyType.INTEGER, false, false, false, null);
         validateAspectDefinition(aspectDef, ContentModel.PROP_ISO_SPEED, ContentModel.PROP_ISO_SPEED, "ISO Speed",
@@ -263,7 +262,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
     public void testRetrieveTypeDefinitionfdkEverything()
     {
         // Retrieve TypeDefinitionService on cm:content
-        TypeDefinition typeDefinition = typeDefintionService.getDocumentTypeDefinition("fdk:everything");
+        ModelDefinition typeDefinition = typeDefintionService.getDocumentTypeDefinition("fdk:everything");
         Assert.assertNotNull(typeDefinition);
         Assert.assertEquals("fdk:everything", typeDefinition.getName());
         if (hasPublicAPI())
@@ -277,7 +276,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
             Assert.assertEquals("D:fdk:everything", typeDefinition.getDescription());
         }
         Assert.assertEquals(BaseTypeId.CMIS_DOCUMENT.value(), typeDefinition.getParent());
-        Assert.assertNotNull(typeDefinition.getPropertyDefinitions());
+        Assert.assertNotNull(typeDefinition.getPropertyNames());
 
         validatePropertyDefinition(typeDefinition, "fdk:mandatory", "fdk:mandatory", "fdk:mandatory", "fdk:mandatory",
                 PropertyType.STRING, true, false, null);
@@ -332,19 +331,17 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
 
         // ///////////////////////////////////////////////////////
         // Mandatory Aspect
-        if (isAlfrescoV4())
-        {
-            Assert.assertNotNull(typeDefinition.getMandatoryAspects());
-            Assert.assertEquals(3, typeDefinition.getMandatoryAspects().size());
-            for (String aspectName : typeDefinition.getMandatoryAspects())
-            {
-                Assert.assertTrue(MANDATORY_ASPECTS.contains(aspectName));
-            }
-        }
+        /*
+         * if (isAlfrescoV4()) {
+         * Assert.assertNotNull(typeDefinition.getMandatoryAspects());
+         * Assert.assertEquals(3, typeDefinition.getMandatoryAspects().size());
+         * for (String aspectName : typeDefinition.getMandatoryAspects()) {
+         * Assert.assertTrue(MANDATORY_ASPECTS.contains(aspectName)); } }
+         */
 
         // ///////////////////////////////////////////////////////
         // Choice / Default Value
-        PropertyDefinition propertyDefinition = typeDefinition.getPropertyDefiniton("fdk:listConstraint");
+        PropertyDefinition propertyDefinition = typeDefinition.getPropertyDefinition("fdk:listConstraint");
         Assert.assertNotNull(propertyDefinition);
         Assert.assertEquals(3, propertyDefinition.getAllowableValues().size());
         for (Map<String, Object> map : propertyDefinition.getAllowableValues())
@@ -355,13 +352,12 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
                 Assert.assertNotNull(entry);
                 Assert.assertTrue(LIST_CONSTRAINTS.contains(entry.getKey()));
                 Assert.assertTrue(entry.getValue() instanceof List);
-                Assert.assertEquals(1, ((List)entry.getValue()).size());
-                Assert.assertTrue(LIST_CONSTRAINTS.contains(((List)entry.getValue()).get(0)));
+                Assert.assertEquals(1, ((List) entry.getValue()).size());
+                Assert.assertTrue(LIST_CONSTRAINTS.contains(((List) entry.getValue()).get(0)));
             }
         }
-        
-        
-        propertyDefinition = typeDefinition.getPropertyDefiniton("fdk:capitalCity");
+
+        propertyDefinition = typeDefinition.getPropertyDefinition("fdk:capitalCity");
         Assert.assertNotNull(propertyDefinition);
         Assert.assertEquals(5, propertyDefinition.getAllowableValues().size());
         for (Map<String, Object> map : propertyDefinition.getAllowableValues())
@@ -372,8 +368,8 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
                 Assert.assertNotNull(entry);
                 Assert.assertTrue(CAPITAL_CITY.contains(entry.getKey()));
                 Assert.assertTrue(entry.getValue() instanceof List);
-                Assert.assertEquals(1, ((List)entry.getValue()).size());
-                Assert.assertTrue(CAPITAL_CITY.contains(((List)entry.getValue()).get(0)));
+                Assert.assertEquals(1, ((List) entry.getValue()).size());
+                Assert.assertTrue(CAPITAL_CITY.contains(((List) entry.getValue()).get(0)));
             }
         }
     }
@@ -381,7 +377,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
     // ////////////////////////////////////////////////////////////////////////////////////
     // UTILS
     // ////////////////////////////////////////////////////////////////////////////////////
-    private void validateAlfrescoDocumentProperties(TypeDefinition typeDefinition, boolean isDocument)
+    private void validateAlfrescoDocumentProperties(ModelDefinition typeDefinition, boolean isDocument)
     {
         validatePropertyDefinition(typeDefinition, ContentModel.PROP_NAME, ContentModel.PROP_NAME, "Name", "Name",
                 PropertyType.STRING, true, false, false, null);
@@ -408,7 +404,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         }
     }
 
-    private void validateCMISDocumentProperties(TypeDefinition typeDefinition, boolean isDocument)
+    private void validateCMISDocumentProperties(ModelDefinition typeDefinition, boolean isDocument)
     {
         // COMMON PROPERTIES
         validatePropertyDefinition(typeDefinition, PropertyIds.NAME, PropertyIds.NAME, "Name", "Name",
@@ -509,18 +505,18 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
 
     }
 
-    private void validatePropertyDefinition(TypeDefinition typeDefinition, String id, String name, String title,
+    private void validatePropertyDefinition(ModelDefinition typeDefinition, String id, String name, String title,
             String description, PropertyType type, boolean isRequired, boolean isMultiValued, Object defaultValue)
     {
         validatePropertyDefinition(typeDefinition, id, name, title, description, type, isRequired, false,
                 isMultiValued, defaultValue);
     }
 
-    private void validatePropertyDefinition(TypeDefinition typeDefinition, String id, String name, String title,
+    private void validatePropertyDefinition(ModelDefinition typeDefinition, String id, String name, String title,
             String description, PropertyType type, boolean isRequired, boolean isReadOnly, boolean isMultiValued,
             Object defaultValue)
     {
-        PropertyDefinition definition = typeDefinition.getPropertyDefiniton(id);
+        PropertyDefinition definition = typeDefinition.getPropertyDefinition(id);
         Assert.assertEquals(definition.getName() + "[name]", name, definition.getName());
         Assert.assertEquals(definition.getName() + "[title]", title, definition.getTitle());
         Assert.assertEquals(definition.getName() + "[description]", description, definition.getDescription());
@@ -535,11 +531,11 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
                 (definition.getDefaultValue() instanceof List) ? null : definition.getDefaultValue());
     }
 
-    private void validateAspectDefinition(AspectDefinition aspectDefinition, String id, String name, String title,
+    private void validateAspectDefinition(ModelDefinition aspectDefinition, String id, String name, String title,
             String description, PropertyType type, boolean isRequired, boolean isReadOnly, boolean isMultiValued,
             Object defaultValue)
     {
-        PropertyDefinition definition = aspectDefinition.getPropertyDefiniton(id);
+        PropertyDefinition definition = aspectDefinition.getPropertyDefinition(id);
         Assert.assertEquals(definition.getName() + "[name]", name, definition.getName());
         Assert.assertEquals(definition.getName() + "[title]", title, definition.getTitle());
         Assert.assertEquals(definition.getName() + "[description]", description, definition.getDescription());
@@ -573,7 +569,7 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
             add("Computer");
         }
     };
-    
+
     @SuppressWarnings("serial")
     private static final List<String> CAPITAL_CITY = new ArrayList<String>()
     {

@@ -15,22 +15,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model.impl;
 
-import java.util.List;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.model.FolderTypeDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
+
 /**
- * Base type for Form Configuration.
- * 
+ * @since 1.4
  * @author Jean Marie Pascal
- *
  */
-public interface FormConfig extends ItemConfig
+public class FolderTypeDefinitionImpl extends NodeTypeDefinitionImpl implements FolderTypeDefinition
 {
-    /**
-     * Returns the layout the client application should use to render the form.
-     */
-    public String getLayout();
+    private static final long serialVersionUID = 1L;
+    
+    FolderTypeDefinitionImpl()
+    {
+        super();
+    }
 
-    /** Returns the groups for the form. */
-    public List<FieldGroupConfig> getGroups();
+    public FolderTypeDefinitionImpl(ObjectType typeDefinition)
+    {
+       super(typeDefinition);
+    }
+
+    public FolderTypeDefinitionImpl(ObjectType typeDefinition, Map<String, ModelDefinition> aspectModels)
+    {
+        super(typeDefinition, aspectModels);
+    }
 }

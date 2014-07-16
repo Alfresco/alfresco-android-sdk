@@ -75,7 +75,6 @@ public class HelperViewConfig extends HelperConfig
             }
             viewConfigIndex.put(viewConfig.getIdentifier(), viewConfig);
         }
-
     }
 
     void addViewGroups(List<Object> viewsGroup)
@@ -216,9 +215,9 @@ public class HelperViewConfig extends HelperConfig
                     case VIEW_ID:
                         // View is defined inside the views registry
                         return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_ID.value()));
-                    case VIEW_GROUP:
+                    case VIEW_GROUP_ID:
                         // View is defined inside the view group registry
-                        return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_GROUP.value()));
+                        return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_GROUP_ID.value()));
                     case VIEW:
                     default:
                         // inline definition

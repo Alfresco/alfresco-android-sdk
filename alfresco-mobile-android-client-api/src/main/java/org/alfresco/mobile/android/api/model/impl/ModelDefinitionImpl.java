@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.PropertyDefinition;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 
@@ -32,13 +34,13 @@ import android.text.TextUtils;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class BaseDefinitionImpl implements Serializable
+public class ModelDefinitionImpl implements ModelDefinition
 {
     private static final long serialVersionUID = 1L;
 
     protected org.apache.chemistry.opencmis.commons.definitions.TypeDefinition typeDefinition;
 
-    protected List<PropertyDefinition> properties;
+    //protected Map<String, PropertyDefinition> propertiesIndex;
 
     // ////////////////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -46,7 +48,7 @@ public class BaseDefinitionImpl implements Serializable
     /**
      * Instantiates a new tag impl.
      */
-    public BaseDefinitionImpl()
+    public ModelDefinitionImpl()
     {
     }
 
@@ -55,7 +57,7 @@ public class BaseDefinitionImpl implements Serializable
      * 
      * @param value the value of the tag
      */
-    public BaseDefinitionImpl(ObjectType typeDefinition)
+    public ModelDefinitionImpl(ObjectType typeDefinition)
     {
         this.typeDefinition = typeDefinition;
     }
@@ -109,22 +111,15 @@ public class BaseDefinitionImpl implements Serializable
         return null;
     }
 
-    public List<PropertyDefinition> getPropertyDefinitions()
+    @Override
+    public List<String> getPropertyNames()
     {
-        if (properties != null) { return properties; }
-        if (properties == null && typeDefinition != null && typeDefinition.getPropertyDefinitions() != null)
-        {
-            properties = new ArrayList<PropertyDefinition>(typeDefinition.getPropertyDefinitions().size());
-            for (Entry<String, org.apache.chemistry.opencmis.commons.definitions.PropertyDefinition<?>> entry : typeDefinition
-                    .getPropertyDefinitions().entrySet())
-            {
-                properties.add(new PropertyDefinitionImpl(entry.getValue()));
-            }
-        }
-        return properties;
+        if (typeDefinition == null || typeDefinition.getPropertyDefinitions() == null) { return new ArrayList<String>(); }
+        return new ArrayList<String>(typeDefinition.getPropertyDefinitions().keySet());      
     }
-
-    public PropertyDefinition getPropertyDefiniton(String propertyKey)
+    
+    @Override
+    public PropertyDefinition getPropertyDefinition(String propertyKey)
     {
         if (TextUtils.isEmpty(propertyKey)){return null;}
         boolean isCmis = propertyKey.startsWith("cmis:");
@@ -134,7 +129,7 @@ public class BaseDefinitionImpl implements Serializable
                 typeDefinition.getPropertyDefinitions().get(prop)); }
         return null;
     }
-
+    
     // ////////////////////////////////////////////////////////////////////////////////////
     // Internal Utils
     // ////////////////////////////////////////////////////////////////////////////////////
