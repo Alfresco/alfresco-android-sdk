@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.alfresco.cmis.client.AlfrescoAspects;
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
@@ -128,16 +129,16 @@ public class NodeImpl implements Node
         if (getPropertyValue(PropertyIds.OBJECT_TYPE_ID) != null)
         {
             if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
+                    .startsWith(ModelMappingUtils.CMISPREFIX_DOCUMENT))
             {
                 return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+                        ModelMappingUtils.CMISPREFIX_DOCUMENT, "");
             }
             else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER))
+                    .startsWith(ModelMappingUtils.CMISPREFIX_FOLDER))
             {
                 return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
+                        ModelMappingUtils.CMISPREFIX_FOLDER, "");
             }
             else if (BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
             {
@@ -185,7 +186,7 @@ public class NodeImpl implements Node
     {
         // Match specific alfresco metadata name to its translated cmis version
         // if necessary.
-        return getProp(AbstractDocumentFolderServiceImpl.getPropertyName(name));
+        return getProp(ModelMappingUtils.getPropertyName(name));
     }
 
     /** {@inheritDoc} */
@@ -243,9 +244,9 @@ public class NodeImpl implements Node
     public boolean hasAspect(String aspectName)
     {
         String tmpAspectName = aspectName;
-        if (!aspectName.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS))
+        if (!aspectName.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS))
         {
-            tmpAspectName = AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS + aspectName;
+            tmpAspectName = ModelMappingUtils.CMISPREFIX_ASPECTS + aspectName;
         }
         if (object != null)
         {
@@ -254,6 +255,7 @@ public class NodeImpl implements Node
         }
         else if (aspects != null)
         {
+            if (!aspects.contains(tmpAspectName)) { return aspects.contains(aspectName); }
             return aspects.contains(tmpAspectName);
         }
         else
@@ -265,23 +267,28 @@ public class NodeImpl implements Node
     /** {@inheritDoc} */
     public List<String> getAspects()
     {
-        AlfrescoAspects alf = (AlfrescoAspects) object;
-        Collection<ObjectType> c = alf.getAspects();
-        ArrayList<String> list = new ArrayList<String>(c.size());
-        for (ObjectType objectType : c)
+        if (object != null)
         {
-            if (objectType.getId() != null && !objectType.getId().isEmpty())
+            AlfrescoAspects alf = (AlfrescoAspects) object;
+            Collection<ObjectType> c = alf.getAspects();
+            ArrayList<String> list = new ArrayList<String>(c.size());
+            for (ObjectType objectType : c)
             {
-                list.add(objectType.getId().replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS, ""));
+                if (objectType.getId() != null && !objectType.getId().isEmpty())
+                {
+                    list.add(objectType.getId().replaceFirst(ModelMappingUtils.CMISPREFIX_ASPECTS, ""));
+                }
             }
+            return list;
         }
-        return list;
+        else if (aspects != null) { return aspects; }
+        return new ArrayList<String>(0);
     }
 
     @Override
     public boolean hasAllProperties()
     {
-         return hasAllProperties; 
+        return hasAllProperties;
     }
 
     // ////////////////////////////////////////////////////

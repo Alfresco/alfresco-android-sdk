@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
+/**
+ * Base type for Task Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface TaskConfig extends ItemConfig
 {
 

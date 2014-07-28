@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
+/**
+ * Base type for Search Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
 public interface SearchConfig extends ItemConfig
 {
 

@@ -17,7 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-public interface FeatureConfig extends ItemConfig
+/**
+ * Base type for Feature Configuration.
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public interface FeatureConfig extends ItemConfig 
 {
 
 }

@@ -18,13 +18,14 @@
 package org.alfresco.mobile.android.api.model.config;
 
 /**
- * Enumeration Constants that represents the confg types available.
+ * Enumeration Constants that represents the root configuration types available.
  * 
  * @author Jean Marie Pascal
  */
 public enum ConfigTypeIds
 {
-    INFO("info"), 
+    INFO("info"),
+    REPOSITORY("repository"), 
     FEATURES("features"), 
     MENU("menu"), 
     VIEWS("views"), 
@@ -35,9 +36,11 @@ public enum ConfigTypeIds
     CREATION("creation"), 
     THEME("theme"), 
     VIEW_GROUPS("view-groups"), 
+    FIELDS("fields"), 
     FIELD_GROUPS("field-groups"), 
     ACTION_DEFINITIONS("action-definitions"), 
     EVALUATORS("evaluators"),
+    VALIDATION_RULES("validation-rules"),
     PROFILES("profiles");
 
     /** The value associated to an enum. */

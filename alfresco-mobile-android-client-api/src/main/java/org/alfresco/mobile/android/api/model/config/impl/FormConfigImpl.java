@@ -19,17 +19,22 @@ package org.alfresco.mobile.android.api.model.config.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.FormFieldsGroupConfig;
-
+import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class FormConfigImpl extends ItemConfigImpl implements FormConfig
 {
-    private String identifier;
+    private ArrayList<FieldGroupConfig> children;
 
-    private String label;
-
-    private ArrayList<FormFieldsGroupConfig> children;
+    protected String evaluatorId;
+    
+    protected String layoutId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -39,36 +44,26 @@ public class FormConfigImpl extends ItemConfigImpl implements FormConfig
         super();
     }
 
-    public FormConfigImpl(String identifier, String label, List<FormFieldsGroupConfig> children)
+    public FormConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+            Map<String, Object> properties, List<FieldGroupConfig> children, String evaluatorId, String layoutId)
     {
-        this.identifier = identifier;
-        this.label = label;
-        this.children = new ArrayList<FormFieldsGroupConfig>(children);
+        super(identifier, iconIdentifier, label, description, type, evaluatorId, properties);
+        this.children = new ArrayList<FieldGroupConfig>(children);
+        this.evaluatorId = evaluatorId;
+        this.layoutId = layoutId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public String getIdentifier()
-    {
-        return identifier;
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return label;
-    }
-
-    @Override
     public String getLayout()
     {
-        return null;
+        return layoutId;
     }
 
     @Override
-    public List<FormFieldsGroupConfig> getGroups()
+    public List<FieldGroupConfig> getGroups()
     {
         return children;
     }

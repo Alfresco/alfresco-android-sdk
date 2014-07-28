@@ -16,7 +16,12 @@
  *  limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
-
+/**
+ *  Base type for Menu Configuration.
+ *  
+ * @author Jean Marie Pascal
+ *
+ */
 public interface MenuConfig extends ItemConfig
 {
 

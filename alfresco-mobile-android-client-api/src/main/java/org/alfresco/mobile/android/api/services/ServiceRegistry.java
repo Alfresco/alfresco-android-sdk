@@ -90,5 +90,12 @@ public interface ServiceRegistry extends Parcelable
      * @since 1.4
      */
     ConfigService getConfigService();
+    
+    /**
+     * Returns the TypeDefinitionService instance for the session.
+     * 
+     * @since 1.4
+     */
+    ModelDefinitionService getModelDefinitionService();
 
 }

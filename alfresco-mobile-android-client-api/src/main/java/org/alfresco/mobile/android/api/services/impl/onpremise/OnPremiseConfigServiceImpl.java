@@ -22,6 +22,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 /**
  * Retrieve information onLine
+ * @since 1.4
  * @author Jean Marie Pascal
  */
 public class OnPremiseConfigServiceImpl extends AbstractConfigServiceImpl

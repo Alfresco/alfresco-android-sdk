@@ -17,32 +17,52 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.Map;
+import org.alfresco.mobile.android.api.model.config.BaseConfig;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.TypeConfig;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-
-public class TypeConfigImpl extends ItemConfigImpl implements TypeConfig
+/**
+ * @author Jean Marie Pascal
+ */
+public class BaseConfigImpl implements BaseConfig
 {
+    protected String identifier;
+
+    protected String label;
+
+    protected String description;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    TypeConfigImpl()
+    BaseConfigImpl()
     {
     }
 
-    static TypeConfig parse(String identifier, Map<String, Object> json, ConfigurationImpl configuration)
+    BaseConfigImpl(String identifier, String label, String description)
     {
-        TypeConfigImpl typeConfig = new TypeConfigImpl();
-        typeConfig.identifier = identifier;
-        typeConfig.label = configuration.getString(JSONConverter.getString(json, ConfigConstants.LABEL_ID_VALUE));
-        typeConfig.description = configuration.getString(JSONConverter.getString(json, ConfigConstants.DESCRIPTION_ID_VALUE));
-        typeConfig.configMap = json;
-        return typeConfig;
+        super();
+        this.identifier = identifier;
+        this.label = label;
+        this.description = description;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public String getIdentifier()
+    {
+        return identifier;
+    }
+
+    @Override
+    public String getLabel()
+    {
+        return label;
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return description;
+    }
 }

@@ -26,7 +26,11 @@ import java.util.Properties;
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 
 import android.util.Log;
-
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class HelperStringConfig
 {
     private static final String TAG = HelperStringConfig.class.getSimpleName();
@@ -36,7 +40,7 @@ public class HelperStringConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    static HelperStringConfig load(File file)
+    public static HelperStringConfig load(File file)
     {
         HelperStringConfig config = null;
         try

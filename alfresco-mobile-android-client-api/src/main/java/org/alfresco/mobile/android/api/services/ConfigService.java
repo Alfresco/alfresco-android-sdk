@@ -40,77 +40,152 @@ import org.alfresco.mobile.android.api.model.config.ViewConfig;
  */
 public interface ConfigService extends Service
 {
+    // ///////////////////////////////////////////////
+    // CONFIGURATION CONSTANTS
+    // ///////////////////////////////////////////////
+    /**
+     * Define the applicationId to preload inside the configuration object.<br/>
+     * Value must be String value that represents a valid application Identifier<br/>
+     * Default : empty string.
+     */
+    String CONFIGURATION_APPLICATION_ID = "org.alfresco.mobile.api.configuration.application.id";
+
+    /**
+     * Define the profileId to preload inside the configuration object.<br/>
+     * Can’t be used without CONFIGURATION_APPLICATION_ID <br/>
+     * Value must be String value that represents a valid profile Identifier
+     * Default : empty string.
+     */
+    String CONFIGURATION_PROFILE_ID = "org.alfresco.mobile.api.configuration.profile.id";
+
+    /**
+     * Define the path to the configuration folder. The configuration folder is
+     * used to store configuration file and localization file.<br/>
+     * Value must be String value that represents a valid path inside the
+     * device.<br/>
+     * Default :
+     * "/sdcard/Android/data/org.alfresco.mobile.android.sdk/configuration"
+     */
+    String CONFIGURATION_FOLDER = "org.alfresco.mobile.api.configuration.folder";
+
+    /**
+     * During the session creation configuration information is loaded if
+     * available. <br/>
+     * Value must be a String. Default : null
+     */
+    String CONFIGURATION_INIT = "org.alfresco.mobile.api.configuration.init";
+    
+    String CONFIGURATION_INIT_IF_UPDATED  = "org.alfresco.mobile.api.configuration.init.newer";
+    String CONFIGURATION_INIT_DEFAULT = "org.alfresco.mobile.api.configuration.init.default";
+    String CONFIGURATION_INIT_NONE = "org.alfresco.mobile.api.configuration.init.none";
+
+    String CONFIGURATION_VERSION_ID = "org.alfresco.mobile.api.configuration.version.id";
+     
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // INFO
     /**
      * Returns configuration information like schema, version
      */
-    public abstract ConfigInfo getConfigInfo();
+    ConfigInfo getConfigInfo();
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PROFILES
     /**
      * Returns a list of profiles available on the server the client application
      * can select from.
      */
-    public abstract List<ProfileConfig> getProfiles();
+    List<ProfileConfig> getProfiles();
 
     /**
-     * Returns the default Profile
+     * Returns the default profile.
      */
-    public abstract ProfileConfig getProfile();
+    ProfileConfig getDefaultProfile();
 
     /**
      * Returns the Profile for the given identifier
      */
-    public abstract ProfileConfig getProfile(String identifier);
+    ProfileConfig getProfile(String identifier);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // REPOSITORY
     /**
      * Returns configuration information about the repository, for example, the
      * Share host and port.
      */
-    public abstract RepositoryConfig getRepositoryConfig();
+    RepositoryConfig getRepositoryConfig();
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    /** Returns the feature configuration for the current application. */
+    List<FeatureConfig> getFeatureConfig();
 
     /** Returns the feature configuration for the current application. */
-    public abstract List<FeatureConfig> getFeatureConfig();
+    List<FeatureConfig> getFeatureConfig(ConfigScope scope);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
     /** Returns the configuration for the menu with the given identifier. */
-    public abstract List<MenuConfig> getMenuConfig(String menuId);
+    List<MenuConfig> getMenuConfig(String menuId);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // VIEWS
     /**
      * Returns the configuration for the view with the given identifier and
      * optionally for the given node.
      */
-    public abstract boolean hasViewConfig();
+    boolean hasViewConfig();
 
-    public abstract ViewConfig getViewConfig(String viewId);
+    ViewConfig getViewConfig(String viewId);
 
-    public abstract ViewConfig getViewConfig(String viewId, ConfigScope scope);
+    ViewConfig getViewConfig(String viewId, ConfigScope scope);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FORMS
+    /** Returns the configuration for the form with the given identifier.*/
+    FormConfig getFormConfig(String formId);
+    
     /**
      * Returns the configuration for the form with the given identifier and
      * optionally for the given node.
      */
-    public abstract FormConfig getFormConfig(String formId, Node node);
+    FormConfig getFormConfig(String formId, ConfigScope scope);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // WORKFLOW
     /** Returns the configuration for workflow processes. */
-    public abstract List<ProcessConfig> getProcessConfig();
+    List<ProcessConfig> getProcessConfig();
 
     /** Returns the configuration for workflow tasks. */
-    public abstract List<TaskConfig> getTaskConfig();
+    List<TaskConfig> getTaskConfig();
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CREATION
+    /** Returns the configuration for creation related features. */
+    CreationConfig getCreationConfig();
 
     /** Returns the configuration for creation related features. */
-    public abstract CreationConfig getCreationConfig(ConfigScope scope);
+    CreationConfig getCreationConfig(ConfigScope scope);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
     /**
      * Returns the list of ActionConfig object representing the actions
      * available in the given group id and optionally for the given node.
      */
-    public abstract List<ActionConfig> getActionConfig(String groupId, Node node);
+    List<ActionConfig> getActionConfig(String groupId, Node node);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // SEARCH
     /** Returns the configuration for search related features. */
-    public abstract SearchConfig getSearchConfig(Node node);
+    SearchConfig getSearchConfig(Node node);
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // THEME
     /** Returns branding configuration. */
-    public abstract ThemeConfig getThemeConfig();
+    ThemeConfig getThemeConfig();
+
 }

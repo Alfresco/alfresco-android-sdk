@@ -51,23 +51,34 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import android.text.TextUtils;
 import android.util.Log;
 
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class ConfigurationImpl
 {
     private static final String TAG = ConfigurationImpl.class.getSimpleName();
 
     private ConfigInfo info;
 
-    private HelperTypeConfig creationHelper;
-    
+    private HelperCreationConfig creationHelper;
+
     private HelperViewConfig viewHelper;
 
     private HelperFormConfig formHelper;
 
     private HelperEvaluatorConfig evaluatorHelper;
+    
+    private HelperValidationConfig validationHelper;
 
     private HelperStringConfig stringHelper;
 
     private HelperProfileConfig profileHelper;
+
+    private HelperFeatureConfig featureHelper;
+
+    private RepositoryConfig repositoryConfig;
 
     private WeakReference<AlfrescoSession> session;
 
@@ -117,7 +128,7 @@ public class ConfigurationImpl
             ConfigInfo info = null;
             if (json.containsKey(ConfigTypeIds.INFO.value()))
             {
-                info = ConfigInfoImpl.parseJson((Map<String, Object>) json.get(ConfigTypeIds.INFO.value()));
+                info = ConfigInfoImpl.parseJson(JSONConverter.getMap(json.get(ConfigTypeIds.INFO.value())));
             }
 
             // Finally create the configuration
@@ -160,7 +171,31 @@ public class ConfigurationImpl
             {
                 configuration.evaluatorHelper = new HelperEvaluatorConfig(configuration, stringHelper);
             }
-            configuration.evaluatorHelper.addEvaluators(JSONConverter.getMap(json.get(ConfigTypeIds.EVALUATORS.value())));
+            configuration.evaluatorHelper
+                    .addEvaluators(JSONConverter.getMap(json.get(ConfigTypeIds.EVALUATORS.value())));
+        }
+        
+        
+        // VALIDATION
+        if (json.containsKey(ConfigTypeIds.VALIDATION_RULES.value()))
+        {
+            if (configuration.validationHelper == null)
+            {
+                configuration.validationHelper = new HelperValidationConfig(configuration, stringHelper);
+            }
+            configuration.validationHelper
+                    .addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES.value())));
+        }
+        
+        
+        // FIELDS
+        if (json.containsKey(ConfigTypeIds.FIELDS.value()))
+        {
+            if (configuration.formHelper == null)
+            {
+                configuration.formHelper = new HelperFormConfig(configuration, stringHelper);
+            }
+            configuration.formHelper.addFields(JSONConverter.getMap(json.get(ConfigTypeIds.FIELDS.value())));
         }
 
         // FIELDS GROUP
@@ -170,7 +205,7 @@ public class ConfigurationImpl
             {
                 configuration.formHelper = new HelperFormConfig(configuration, stringHelper);
             }
-            configuration.formHelper.addFieldsGroup(JSONConverter.getMap(json.get(ConfigTypeIds.FIELD_GROUPS.value())));
+            configuration.formHelper.addFieldGroups(JSONConverter.getMap(json.get(ConfigTypeIds.FIELD_GROUPS.value())));
         }
 
         // FORMS
@@ -190,7 +225,7 @@ public class ConfigurationImpl
             {
                 configuration.viewHelper = new HelperViewConfig(configuration, stringHelper);
             }
-            configuration.viewHelper.addViews(JSONConverter.getList(json.get(ConfigTypeIds.VIEWS.value())));
+            configuration.viewHelper.addViews(JSONConverter.getMap(json.get(ConfigTypeIds.VIEWS.value())));
         }
 
         // VIEWS GROUP
@@ -202,32 +237,48 @@ public class ConfigurationImpl
             }
             configuration.viewHelper.addViewGroups(JSONConverter.getList(json.get(ConfigTypeIds.VIEW_GROUPS.value())));
         }
-        
+
         // CREATION
         if (json.containsKey(ConfigTypeIds.CREATION.value()))
         {
-            if (configuration.viewHelper == null)
+            configuration.creationHelper = new HelperCreationConfig(configuration, stringHelper);
+            if (!configuration.creationHelper.addCreationConfig(JSONConverter.getMap(json.get(ConfigTypeIds.CREATION
+                    .value()))))
             {
-                configuration.viewHelper = new HelperViewConfig(configuration, stringHelper);
+                configuration.creationHelper = null;
             }
-            configuration.viewHelper.addViewGroups(JSONConverter.getList(json.get(ConfigTypeIds.VIEW_GROUPS.value())));
         }
 
+        // CONFIGURATION
+        if (json.containsKey(ConfigTypeIds.REPOSITORY.value()))
+        {
+            configuration.repositoryConfig = RepositoryConfigImpl.parseJson(JSONConverter.getMap(json
+                    .get(ConfigTypeIds.REPOSITORY.value())));
+        }
+
+        // FEATURES
+        if (json.containsKey(ConfigTypeIds.FEATURES.value()))
+        {
+            configuration.featureHelper = new HelperFeatureConfig(configuration, stringHelper);
+            if (!configuration.featureHelper
+                    .addFeatures(JSONConverter.getList(json.get(ConfigTypeIds.FEATURES.value()))))
+            {
+                configuration.featureHelper = null;
+            }
+        }
 
         // PROFILES
         if (json.containsKey(ConfigTypeIds.PROFILES.value()))
         {
-            if (configuration.profileHelper == null)
-            {
-                configuration.profileHelper = new HelperProfileConfig(configuration, stringHelper);
-            }
+            configuration.profileHelper = new HelperProfileConfig(configuration, stringHelper);
             configuration.profileHelper.addProfiles(JSONConverter.getMap(json.get(ConfigTypeIds.PROFILES.value())));
         }
 
         return configuration;
     }
 
-    private static LinkedHashMap<String, ViewConfig> prepareBetaViews(ConfigurationImpl context, Map<String, Object> json)
+    private static LinkedHashMap<String, ViewConfig> prepareBetaViews(ConfigurationImpl context,
+            Map<String, Object> json)
     {
         LinkedHashMap<String, ViewConfig> viewConfigIndex = new LinkedHashMap<String, ViewConfig>(json.size());
         ViewConfig viewConfig = null;
@@ -251,43 +302,71 @@ public class ConfigurationImpl
         return info;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PROFILES
+    // ///////////////////////////////////////////////////////////////////////////
     public List<ProfileConfig> getProfiles()
     {
         if (profileHelper == null) { return new ArrayList<ProfileConfig>(0); }
         return profileHelper.getProfiles();
     }
-    
+
     public ProfileConfig getDefaultProfile()
     {
         if (profileHelper == null) { return null; }
         return profileHelper.getDefaultProfile();
     }
-    
+
     public ProfileConfig getProfile(String profileId)
     {
         if (profileHelper == null) { return null; }
-        return (TextUtils.isEmpty(profileId))? getDefaultProfile() :profileHelper.getProfileById(profileId);
+        return (TextUtils.isEmpty(profileId)) ? null : profileHelper.getProfileById(profileId);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // REPOSITORY
+    // ///////////////////////////////////////////////////////////////////////////
     public RepositoryConfig getRepositoryConfig()
     {
-        return null;
+        if (repositoryConfig == null) { return null; }
+        return repositoryConfig;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
     public List<FeatureConfig> getFeatureConfig()
     {
-        return null;
+        if (featureHelper == null) { return null; }
+        return featureHelper.getFeatureConfig();
     }
 
+    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
+    {
+        if (featureHelper == null) { return null; }
+        return featureHelper.getFeatureConfig(scope);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
     public List<MenuConfig> getMenuConfig(String menuId)
     {
         return null;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // VIEWS
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasViewConfig()
+    {
+        return viewHelper != null && viewHelper.hasViewConfig();
+    }
+
     public ViewConfig getViewConfig(String viewId, ConfigScope scope)
     {
         if (viewHelper == null) { return null; }
-        return viewHelper.getViewById(viewId);
+        return viewHelper.getViewById(viewId, scope);
     }
 
     public ViewConfig getViewConfig(String viewId)
@@ -296,12 +375,28 @@ public class ConfigurationImpl
         return viewHelper.getViewById(viewId);
     }
 
-    public FormConfig getFormConfig(String formId, Node node)
+    // ///////////////////////////////////////////////////////////////////////////
+    // FORMS
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasFormConfig()
+    {
+        return formHelper != null && formHelper.hasFormConfig();
+    }
+    
+    public FormConfig getFormConfig(String formId, ConfigScope scope)
     {
         if (formHelper == null) { return null; }
-        return formHelper.getViewById(formId, node);
+        Node node = null;
+        if (scope != null && scope.getContextValue(ConfigScope.NODE) != null)
+        {
+            node = (Node) scope.getContextValue(ConfigScope.NODE);
+        }
+        return formHelper.getFormById(formId, node);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // WORKFLOW
+    // ///////////////////////////////////////////////////////////////////////////
     public List<ProcessConfig> getProcessConfig()
     {
         return null;
@@ -312,29 +407,43 @@ public class ConfigurationImpl
         return null;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CREATION
+    // ///////////////////////////////////////////////////////////////////////////
     public CreationConfig getCreationConfig()
     {
-        return null;
+        if (creationHelper == null) { return null; }
+        return creationHelper.getCreationConfig();
     }
 
+    public CreationConfig getCreationConfig(ConfigScope scope)
+    {
+        if (creationHelper == null) { return null; }
+        return creationHelper.getCreationConfig(scope);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
     public List<ActionConfig> getActionConfig(String groupId, Node node)
     {
         return null;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // SEARCH
+    // ///////////////////////////////////////////////////////////////////////////
     public SearchConfig getSearchConfig(Node node)
     {
         return null;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // THEME
+    // ///////////////////////////////////////////////////////////////////////////
     public ThemeConfig getThemeConfig()
     {
         return null;
-    }
-
-    public boolean hasLayoutConfig()
-    {
-        return viewHelper != null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -355,6 +464,13 @@ public class ConfigurationImpl
     {
         if (evaluatorHelper == null) { return null; }
         return evaluatorHelper;
+    }
+    
+    
+    HelperValidationConfig getValidationHelper()
+    {
+        if (validationHelper == null) { return null; }
+        return validationHelper;
     }
 
     public AlfrescoSession getSession()
@@ -377,4 +493,7 @@ public class ConfigurationImpl
         if (stringHelper == null) { return id; }
         return stringHelper.getString(id);
     }
+
+  
+
 }

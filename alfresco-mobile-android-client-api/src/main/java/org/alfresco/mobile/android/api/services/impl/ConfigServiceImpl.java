@@ -45,31 +45,32 @@ import android.os.Parcel;
  * 
  * @author Jean Marie Pascal
  */
-public class OfflineConfigServiceImpl implements ConfigService
+public class ConfigServiceImpl implements ConfigService
 {
-
-    private static final String TAG = OfflineConfigServiceImpl.class.getSimpleName();
+    private static final String TAG = ConfigServiceImpl.class.getSimpleName();
 
     private ConfigurationImpl configuration;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
-
-    public OfflineConfigServiceImpl(String appId, File configFolder)
+    public ConfigServiceImpl()
+    {
+    }
+    
+    public ConfigServiceImpl(String appId, File configFolder)
     {
         this.configuration = ConfigurationImpl.load(appId, null, null, configFolder);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // CONFIGURATION
+    // INFO
     // ///////////////////////////////////////////////////////////////////////////
-    public boolean hasConfig()
+    public boolean hasConfiguration()
     {
-        if (configuration == null) { return false; }
-        return configuration != null;
+        return (configuration != null) ;
     }
-
+    
     @Override
     public ConfigInfo getConfigInfo()
     {
@@ -77,20 +78,23 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getConfigInfo();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PROFILES
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ProfileConfig> getProfiles()
     {
         if (configuration == null) { return null; }
         return configuration.getProfiles();
     }
-    
+
     @Override
-    public ProfileConfig getProfile()
+    public ProfileConfig getDefaultProfile()
     {
         if (configuration == null) { return null; }
         return configuration.getDefaultProfile();
     }
-    
+
     @Override
     public ProfileConfig getProfile(String profileId)
     {
@@ -98,20 +102,34 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getProfile(profileId);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // REPOSITORY
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public RepositoryConfig getRepositoryConfig()
     {
-        if (configuration == null) { return null; }
-        return configuration.getRepositoryConfig();
+        return (configuration == null) ? null : configuration.getRepositoryConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FEATURE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<FeatureConfig> getFeatureConfig()
     {
-        if (configuration == null) { return null; }
-        return configuration.getFeatureConfig();
+        return (configuration == null) ? null : configuration.getFeatureConfig();
     }
 
+    @Override
+    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFeatureConfig(scope);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<MenuConfig> getMenuConfig(String menuId)
     {
@@ -119,6 +137,9 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getMenuConfig(menuId);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // VIEWS
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public ViewConfig getViewConfig(String viewId, ConfigScope scope)
     {
@@ -137,16 +158,29 @@ public class OfflineConfigServiceImpl implements ConfigService
     public boolean hasViewConfig()
     {
         if (configuration == null) { return false; }
-        return configuration.hasLayoutConfig();
+        return configuration.hasViewConfig();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FORMS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public FormConfig getFormConfig(String formId)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getFormConfig(formId, null);
     }
 
     @Override
-    public FormConfig getFormConfig(String formId, Node node)
+    public FormConfig getFormConfig(String formId, ConfigScope scope)
     {
         if (configuration == null) { return null; }
-        return configuration.getFormConfig(formId, node);
+        return configuration.getFormConfig(formId, scope);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // WORKFLOW
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ProcessConfig> getProcessConfig()
     {
@@ -161,13 +195,26 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getTaskConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CREATION
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public CreationConfig getCreationConfig(ConfigScope scope)
+    {
+        if (configuration == null) { return null; }
+        return configuration.getCreationConfig(scope);
+    }
+
+    @Override
+    public CreationConfig getCreationConfig()
     {
         if (configuration == null) { return null; }
         return configuration.getCreationConfig();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public List<ActionConfig> getActionConfig(String groupId, Node node)
     {
@@ -175,6 +222,9 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getActionConfig(groupId, node);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // SEARCH
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public SearchConfig getSearchConfig(Node node)
     {
@@ -182,6 +232,9 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getSearchConfig(node);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // THEME
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public ThemeConfig getThemeConfig()
     {
@@ -189,23 +242,25 @@ public class OfflineConfigServiceImpl implements ConfigService
         return configuration.getThemeConfig();
     }
 
-    @Override
+    // ////////////////////////////////////////////////////
+    // CACHING
+    // ////////////////////////////////////////////////////
     public void clear()
     {
-        // TODO Auto-generated method stub
+        // Must be implemented in subclass.
     }
 
+    // ////////////////////////////////////////////////////
+    // Save State - serialization / deserialization
+    // ////////////////////////////////////////////////////
     @Override
     public int describeContents()
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(Parcel dest, int arg1)
     {
-        // TODO Auto-generated method stub
-
     }
 }

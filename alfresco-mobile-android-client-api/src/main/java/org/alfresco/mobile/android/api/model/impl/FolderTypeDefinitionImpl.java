@@ -15,9 +15,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model.impl;
 
+import java.util.Map;
 
-public interface FormFieldConfig extends ItemConfig
+import org.alfresco.mobile.android.api.model.FolderTypeDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
+
+/**
+ * @since 1.4
+ * @author Jean Marie Pascal
+ */
+public class FolderTypeDefinitionImpl extends NodeTypeDefinitionImpl implements FolderTypeDefinition
 {
+    private static final long serialVersionUID = 1L;
+    
+    FolderTypeDefinitionImpl()
+    {
+        super();
+    }
+
+    public FolderTypeDefinitionImpl(ObjectType typeDefinition)
+    {
+       super(typeDefinition);
+    }
+
+    public FolderTypeDefinitionImpl(ObjectType typeDefinition, Map<String, ModelDefinition> aspectModels)
+    {
+        super(typeDefinition, aspectModels);
+    }
 }

@@ -17,7 +17,29 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
 
-public interface CreationConfig extends ItemConfig
+import java.util.List;
+
+/**
+ * Base type for Creation Configuration.
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
+public interface CreationConfig
 {
+    /** Returns the list of mimetypes the application should allow creation of. */
+    List<ItemConfig> getCreatableMimeTypes();
+
+    /**
+     * Returns the list of content types the application should allow creation
+     * of.
+     */
+    List<ItemConfig> getCreatableDocumentTypes();
+
+    /**
+     * Returns the list of folder types the application should allow creation
+     * of.
+     */
+    List<ItemConfig> getCreatableFolderTypes();
 
 }

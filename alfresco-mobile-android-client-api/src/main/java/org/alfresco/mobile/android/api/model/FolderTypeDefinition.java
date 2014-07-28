@@ -15,20 +15,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model;
 
-import java.util.List;
 
-public interface FormFieldsGroupConfig extends ItemConfig
+
+/**
+ * @since 1.4
+ * @author Jean Marie Pascal
+ */
+public interface FolderTypeDefinition extends NodeTypeDefinition
 {
-
-    /** Returns the unique identifier of the group. */
-    String getIdentifier();
-
-    /** Returns the label of the group. */
-    String getLabel();
-
-    /** Returns the fields for the group. */
-    List<FormFieldConfig> getFields();
-
+    
 }

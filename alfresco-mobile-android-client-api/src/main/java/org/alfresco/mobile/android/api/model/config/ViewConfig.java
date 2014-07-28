@@ -19,12 +19,12 @@ package org.alfresco.mobile.android.api.model.config;
 
 import java.util.List;
 
-public interface ViewConfig extends ItemConfig, GroupConfig<ViewConfig>
+/**
+ * Base type for View Configuration.
+ * 
+ * @author Jean Marie Pascal
+ */
+public interface ViewConfig extends ItemConfig
 {
-    /**
-     * Returns the child view for this view.
-     * 
-     * @return empty list if no children
-     */
     List<String> getForms();
 }

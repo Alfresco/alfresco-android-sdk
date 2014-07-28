@@ -31,6 +31,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -179,7 +180,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         for (String aspect : aspects)
         {
             Assert.assertFalse("P: present in aspect " + aspect,
-                    aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+                    aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));
         }
 
         // UpdateDocument
@@ -667,6 +668,18 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(new BigInteger("22"), modifiedDoc.getProperty("fdk:long").getValue());
             Assert.assertEquals(0,
                     new BigDecimal("1522.56").compareTo((BigDecimal) modifiedDoc.getProperty("fdk:double").getValue()));
+            
+            
+            
+            //TEST RESET
+            properties.clear();
+            properties.put("fdk:int", null);
+            properties.put("fdk:long", null);
+            properties.put("fdk:double", null);
+            modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
+            Assert.assertNull(modifiedDoc.getProperty("fdk:int").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:long").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:double").getValue());
 
         }
 

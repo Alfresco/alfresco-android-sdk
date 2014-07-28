@@ -25,7 +25,11 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-
+/**
+ * 
+ * @author Jean Marie Pascal
+ *
+ */
 public class HelperProfileConfig extends HelperConfig
 {
     private LinkedHashMap<String, ProfileConfig> profilesIndex;

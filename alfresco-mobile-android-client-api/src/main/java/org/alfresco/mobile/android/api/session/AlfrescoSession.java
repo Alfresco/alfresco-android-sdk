@@ -146,30 +146,6 @@ public interface AlfrescoSession extends Parcelable
     String CACHE_FOLDER = "org.alfresco.mobile.cache.folder";
 
     // ///////////////////////////////////////////////
-    // CONFIGURATION
-    // ///////////////////////////////////////////////
-    /**
-     * During the session creation configuration information is loaded if available. <br/> 
-     * Value must be a boolean. Default : false
-     */
-    String CONFIGURATION_INFO_ENABLE = "org.alfresco.mobile.api.configuration.info";
-    
-    /**
-     * During the session creation the configuration context is loaded if available. <br/> 
-     * Value must be a boolean. Default : false
-     */
-    String CONFIGURATION_CONTEXT_ENABLE = "org.alfresco.mobile.api.configuration.context";
-
-    /**
-     * Define the path to the configuration folder. The configuration folder is used to store
-     * configuration file and localization file.<br/>
-     * Value must be String value that represents a valid path inside the
-     * device.<br/>
-     * Default : "/sdcard/Android/data/org.alfresco.mobile.android.sdk/configuration"
-     */
-    String CONFIGURATION_FOLDER = "org.alfresco.mobile.api.configuration.folder";
-
-    // ///////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////
 

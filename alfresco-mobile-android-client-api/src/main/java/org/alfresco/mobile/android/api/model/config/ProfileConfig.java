@@ -16,10 +16,17 @@
  *  limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config;
-
-public interface ProfileConfig extends ItemConfig
+/**
+ *  Base type for Profile Configuration.
+ *  
+ * @author Jean Marie Pascal
+ *
+ */
+public interface ProfileConfig extends BaseConfig 
 {
-    public ViewConfig getViewConfig(String viewId);
-
+    /** Returns true if the profile is the default profile for the specified user.*/
     public boolean isDefault();
+    
+    /** Returns the id of the view or view group that acts as the entry point of the client. */
+    public String getRootViewId();
 }
