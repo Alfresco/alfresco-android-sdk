@@ -79,12 +79,12 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
 import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.apache.http.HttpStatus;
+
 import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_ASPECTS;
 import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_DOCUMENT;
 import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_FOLDER;
 import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_TO_CMIS;
 import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_ASPECTS;
-
 import android.util.Log;
 
 /**
@@ -705,14 +705,31 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // UPDATE
     // ////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    public Node addAspects(Node node, List<String> aspects)
+    {
+        return updateProperties(node, null, aspects, false);
+    }
 
     /** {@inheritDoc} */
     public Node updateProperties(Node node, Map<String, Serializable> properties)
     {
+        return updateProperties(node, properties, null, true);
+    }
+
+    /** {@inheritDoc} */
+    public Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects)
+    {
+        return updateProperties(node, properties, aspects, true);
+    }
+    
+    /** {@inheritDoc} */
+    protected Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects, boolean propertiesRequired)
+    {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
 
-        if (isMapNull(properties)) { throw new IllegalArgumentException(String.format(
+        if (propertiesRequired && isMapNull(properties)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "properties")); }
 
         try
@@ -735,7 +752,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             // Check Custom Aspects
             tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
-                    addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), node.getAspects()));
+                    addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), node.getAspects(), aspects));
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -1098,9 +1115,21 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return tmpProperties;
     }
 
-    private static String addAspects(String objectId, List<String> aspects)
+    private static String addAspects(String objectId, List<String> nodeAspects)
+    {
+        return addAspects(objectId, nodeAspects, null);
+    }
+
+    private static String addAspects(String objectId, List<String> nodeAspects, List<String> aspectToApplied)
     {
         String objectIdWithAspects = objectId;
+
+        Set<String> aspects = new HashSet<String>(nodeAspects);
+        if (aspectToApplied != null)
+        {
+            aspects.addAll(aspectToApplied);
+        }
+
         for (String aspect : aspects)
         {
             if (!objectIdWithAspects.contains(aspect))
