@@ -1007,7 +1007,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** Static Map of all sorting possibility for DocumentFolderService. */
     @SuppressWarnings("serial")
-    private static Map<String, String> sortingMap = new HashMap<String, String>()
+    static Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
             put(SORT_PROPERTY_NAME, PropertyIds.NAME);
@@ -1025,7 +1025,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param modifier
      * @return
      */
-    private String getSorting(String sortingKey, boolean modifier)
+    static String getSorting(String sortingKey, boolean modifier)
     {
         String s;
         if (sortingMap.containsKey(sortingKey))
