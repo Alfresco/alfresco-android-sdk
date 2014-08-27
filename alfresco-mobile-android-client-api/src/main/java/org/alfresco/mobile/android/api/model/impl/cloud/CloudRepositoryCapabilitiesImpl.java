@@ -36,4 +36,22 @@ public class CloudRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilit
         capabilities.put(CAPABILITY_LIKE, true);
         capabilities.put(CAPABILITY_COMMENTS_COUNT, true);
     }
+
+    @Override
+    public boolean doesSupportPublicAPI()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean doesSupportActivitiWorkflowEngine()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean doesSupportJBPMWorkflowEngine()
+    {
+        return false;
+    }
 }

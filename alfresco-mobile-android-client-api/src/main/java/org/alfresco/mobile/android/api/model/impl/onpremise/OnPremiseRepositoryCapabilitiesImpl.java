@@ -26,10 +26,10 @@ import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities
  * 
  * @author Jean Marie PASCAL
  */
-public class OnPremiseRepositoryCapabilitiesImpl  extends AbstractRepositoryCapabilities
+public class OnPremiseRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilities
 {
     private static final long serialVersionUID = 1L;
-    
+
     private RepositoryInfo repositoryInfo;
 
     /**
@@ -72,4 +72,28 @@ public class OnPremiseRepositoryCapabilitiesImpl  extends AbstractRepositoryCapa
         return (repositoryInfo.getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 
+    @Override
+    public boolean doesSupportPublicAPI()
+    {
+        return ((OnPremiseRepositoryInfoImpl) repositoryInfo).hasPublicAPI;
+    }
+
+    @Override
+    public boolean doesSupportActivitiWorkflowEngine()
+    {
+        return (repositoryInfo.getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
+    }
+
+    @Override
+    public boolean doesSupportJBPMWorkflowEngine()
+    {
+        if (doesSupportPublicAPI())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
