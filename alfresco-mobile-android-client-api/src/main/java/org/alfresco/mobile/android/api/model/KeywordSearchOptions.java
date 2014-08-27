@@ -27,11 +27,18 @@ import java.io.Serializable;
  */
 public class KeywordSearchOptions implements Serializable
 {
-    
+
+    public static final String TYPENAME_DOCUMENT = "cmis:document";
+
+    public static final String TYPENAME_FOLDER = "cmis:folder";
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** The root folder. Any search with folder defined must have results as child/descendants from this folder.  */
+    /**
+     * The root folder. Any search with folder defined must have results as
+     * child/descendants from this folder.
+     */
     private Folder folder = null;
 
     /** Include descendants flag. */
@@ -43,6 +50,9 @@ public class KeywordSearchOptions implements Serializable
     /** Exact match flag. */
     private boolean isExactMatch = Boolean.FALSE;
 
+    /** Type of search. */
+    private String typeName;
+
     /**
      * Instantiates a new keyword search options.
      */
@@ -53,7 +63,8 @@ public class KeywordSearchOptions implements Serializable
     /**
      * Base constructor for a KeywordSearchOptions.
      * 
-     * @param folder : Relative folder from where a search start. Default is null.
+     * @param folder : Relative folder from where a search start. Default is
+     *            null.
      * @param doesIncludeDescendants : Default is true.
      * @param doesIncludeContent : Default is true.
      * @param isExactMatch : Default is false.
@@ -71,7 +82,7 @@ public class KeywordSearchOptions implements Serializable
     /**
      * Returns the folder the search should be restricted to, if null is
      * returned the whole repository is searched. Default is null.
-     *
+     * 
      * @return the relative folder
      */
     public Folder getFolder()
@@ -81,7 +92,7 @@ public class KeywordSearchOptions implements Serializable
 
     /**
      * Sets the folder.
-     *
+     * 
      * @param inFolder Sets the folder the the search should be restricted to.
      */
     public void setFolder(Folder inFolder)
@@ -93,8 +104,9 @@ public class KeywordSearchOptions implements Serializable
      * Determines whether the search should also search in child folders, only
      * applies if the search is restricted to a specific folder. Default is
      * true.
-     *
-     * @return true, if the search must be restrict on all descendants of a specific folder.
+     * 
+     * @return true, if the search must be restrict on all descendants of a
+     *         specific folder.
      */
     public boolean doesIncludeDescendants()
     {
@@ -114,7 +126,7 @@ public class KeywordSearchOptions implements Serializable
     /**
      * Determines whether the keyword search should only search for exact
      * matches. Default is false.
-     *
+     * 
      * @return true, if the search must be restrict on exact keywords matches.
      */
     public boolean isExactMatch()
@@ -124,7 +136,7 @@ public class KeywordSearchOptions implements Serializable
 
     /**
      * Sets the exact match.
-     *
+     * 
      * @param exactMatch the new exact match
      */
     public void setExactMatch(boolean exactMatch)
@@ -135,7 +147,7 @@ public class KeywordSearchOptions implements Serializable
     /**
      * Determines whether the keyword search should search in the content as
      * well as the name, title and description properties. Default is true.
-     *
+     * 
      * @return true, if the search must search into content.
      */
     public boolean doesIncludeContent()
@@ -145,11 +157,34 @@ public class KeywordSearchOptions implements Serializable
 
     /**
      * Specifies whether the search should include child folders.
-     *
+     * 
      * @param doesIncludeContent the new does include content
      */
     public void setDoesIncludeContent(boolean doesIncludeContent)
     {
         this.doesIncludeContent = doesIncludeContent;
     }
+
+    /**
+     * Returns the type name to use in the keyword search, “cmis:document” by
+     * default.
+     * 
+     * @since 1.4
+     * @return
+     */
+    public String getTypeName()
+    {
+        return typeName;
+    }
+
+    /**
+     * Sets the type name to be used in the keyword search.
+     * 
+     * @since 1.4
+     */
+    public void setTypeName(String typeName)
+    {
+        this.typeName = typeName;
+    }
+
 }
