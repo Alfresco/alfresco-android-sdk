@@ -157,7 +157,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         }
         return definition;
     }
-
+    
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
@@ -603,7 +603,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     /** {@inheritDoc} */
-    public Task unClaimTask(Task task)
+    public Task unclaimTask(Task task)
     {
         return updateTask(task, null, PublicAPIConstant.UNCLAIMED_VALUE);
     }
@@ -721,7 +721,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // VARIABLES
     // ////////////////////////////////////////////////////////////////
     /** {@inheritDoc} */
-    private Map<String, Property> getVariables(Task task)
+    public Map<String, Property> getVariables(Task task)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -746,7 +746,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
      * @param process
      * @return
      */
-    private Map<String, Property> getVariables(Process process)
+    public Map<String, Property> getVariables(Process process)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
@@ -884,6 +884,59 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         return resultTask;
     }
 
+    @Override
+    public Process updateVariables(Process process, Map<String, Serializable> variables)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        
+        if (isMapNull(variables)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "variables")); }
+
+        Process resultProcess = process;
+        try
+        {
+            String link = PublicAPIUrlRegistry.getProcessVariablesUrl(session, process.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+            
+            Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
+            if (variables != null)
+            {
+                internalVariables.putAll(variables);
+            }
+            // prepare json data
+            JSONArray ja = new JSONArray();
+            JSONObject jo;
+            for (Entry<String, Serializable> entry : internalVariables.entrySet())
+            {
+                jo = new JSONObject();
+                jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                jo.put(PublicAPIConstant.VALUE, entry.getValue());
+                //jo.put(PublicAPIConstant.SCOPE_VALUE, "global");
+                ja.add(jo);
+            }
+            
+            final JsonDataWriter dataWriter = new JsonDataWriter(ja);
+
+            // send
+            post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            resultProcess = refresh(process);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+        
+        return resultProcess;
+    }
+    
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
@@ -1215,5 +1268,4 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-
 }
