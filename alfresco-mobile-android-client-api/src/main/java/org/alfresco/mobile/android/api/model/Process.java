@@ -147,4 +147,10 @@ public interface Process extends Serializable
      */
     <T> T getVariableValue(String name);
 
+    /**
+     * Returns true if the task has completed.
+     * 
+     * @since 1.4
+     */
+    boolean hasCompleted();
 }

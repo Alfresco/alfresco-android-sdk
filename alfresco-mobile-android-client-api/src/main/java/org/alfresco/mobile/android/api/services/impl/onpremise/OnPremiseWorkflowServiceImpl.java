@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
@@ -413,7 +414,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     processes.add(ProcessImpl.parseJson((Map<String, Object>) obj));
                 }
-                
+
                 hasMoreItem = (maxItems == -1) ? false : (jo.size() == maxItems);
             }
         }
@@ -480,6 +481,19 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
 
         return getProcess(process.getIdentifier());
+    }
+
+    @Override
+    public Map<String, Property> getVariables(Process process)
+    {
+        try
+        {
+            return refresh(process).getVariables();
+        }
+        catch (Exception e)
+        {
+            return new HashMap<String, Property>(0);
+        }
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -770,13 +784,13 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     Map<String, Object> jso = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
                     jo = (List<Object>) jso.get(OnPremiseConstant.TASKS_VALUE);
                 }
-                
+
                 size = jo.size();
                 for (Object obj : jo)
                 {
                     tasks.add(TaskImpl.parseJson((Map<String, Object>) obj));
                 }
-                
+
                 hasMoreItem = (maxItems == -1) ? false : (size == maxItems);
             }
         }
@@ -922,7 +936,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     /** {@inheritDoc} */
-    public Task unClaimTask(Task task)
+    public Task unclaimTask(Task task)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -989,9 +1003,28 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return updatedTask;
     }
 
+    @Override
+    public Map<String, Property> getVariables(Task task)
+    {
+        try
+        {
+            return refresh(task).getVariables();
+        }
+        catch (Exception e)
+        {
+            return new HashMap<String, Property>(0);
+        }
+    }
+
     // ////////////////////////////////////////////////////////////////
     // VARIABLES
-    // ////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////
+    @Override
+    public Process updateVariables(Process process, Map<String, Serializable> variables)
+    {
+        throw new UnsupportedOperationException(Messagesl18n.getString("ErrorCodeRegistry.WORKFLOW_UPDATE_UNSUPPORTED"));
+    }
+
     /** {@inheritDoc} */
     public Task updateVariables(Task task, Map<String, Serializable> variables)
     {
@@ -1064,7 +1097,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         String url = OnPremiseUrlRegistry.getWorkflowDiagram(session, processId);
         return new UrlBuilder(url);
     }
-    
+
     /** {@inheritDoc} */
     public ContentStream getProcessDiagram(Process process)
     {

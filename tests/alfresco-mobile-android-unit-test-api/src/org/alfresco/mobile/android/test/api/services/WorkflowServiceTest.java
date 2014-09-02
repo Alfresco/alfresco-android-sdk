@@ -245,6 +245,28 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(proc.getInitiatorIdentifier(), adhocProcess.getInitiatorIdentifier());
         Assert.assertEquals(proc.getPriority(), adhocProcess.getPriority());
 
+        // UPDATE PROCESS VARIABLES
+        Map<String, Serializable> updateVariable = new HashMap<String, Serializable>();
+        updateVariable.put(WorkflowModel.PROP_WORKFLOW_PRIORITY, WorkflowModel.PRIORITY_LOW);
+        if (hasPublicAPI())
+        {
+            Process processUpdated = workflowService.updateVariables(adhocProcess, updateVariable);
+            Assert.assertEquals(WorkflowModel.PRIORITY_LOW,
+                    processUpdated.getVariables().get(WorkflowModel.PROP_WORKFLOW_PRIORITY).getValue());
+        }
+        else
+        {
+            try
+            {
+                workflowService.updateVariables(adhocProcess, updateVariable);
+                Assert.fail();
+            }
+            catch (Exception e)
+            {
+                Assert.assertTrue(true);
+            }
+        }
+
         //
         // TASKS
         //
@@ -829,7 +851,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
 
         // UnClaim Task & check it's unassigned
-        Task unClaimedTask = workflowService.unClaimTask(claimedTask);
+        Task unClaimedTask = workflowService.unclaimTask(claimedTask);
         Assert.assertNotNull(unClaimedTask);
         Assert.assertNull(unClaimedTask.getAssigneeIdentifier());
         Assert.assertEquals(taskInProgress.getIdentifier(), unClaimedTask.getIdentifier());
@@ -1374,7 +1396,15 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 break;
             }
         }
-        return def;
+
+        // Added since 1.4
+        ProcessDefinition def2 = workflowService.getProcessDefinitionByKey(key);
+        Assert.assertEquals(def.getIdentifier(), def2.getIdentifier());
+        Assert.assertEquals(def.getKey(), def2.getKey());
+        Assert.assertEquals(def.getName(), def2.getName());
+        Assert.assertEquals(def.getVersion(), def2.getVersion());
+
+        return def2;
     }
 
     protected Process startAdhocWorkflow(String description, int priority)
@@ -1392,6 +1422,13 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 break;
             }
         }
+
+        // Added since 1.4
+        ProcessDefinition def2 = workflowService.getProcessDefinitionByKey(adhocKey);
+        Assert.assertEquals(def.getIdentifier(), def2.getIdentifier());
+        Assert.assertEquals(def.getKey(), def2.getKey());
+        Assert.assertEquals(def.getName(), def2.getName());
+        Assert.assertEquals(def.getVersion(), def2.getVersion());
 
         // Start Process : Prepare Variables
         Map<String, Serializable> variables = new HashMap<String, Serializable>();

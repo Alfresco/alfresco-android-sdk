@@ -91,8 +91,8 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     public PagingResult<Node> keywordSearch(String keywords, KeywordSearchOptions options, ListingContext listingContext)
 
     {
-        String statement = createQuery(keywords, options.doesIncludeContent(), options.isExactMatch(),
-                options.getFolder(), options.doesIncludeDescendants(), listingContext);
+        String statement = createQuery(keywords, options.getTypeName(), options.doesIncludeContent(),
+                options.isExactMatch(), options.getFolder(), options.doesIncludeDescendants(), listingContext);
         return search(statement, SearchLanguage.CMIS, listingContext);
     }
 
@@ -123,7 +123,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                 tmpStatement += getSorting(listingContext.getSortProperty(), listingContext.isSortAscending());
             }
 
-            //Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
+            // Log.d(TAG, maxItems + " " + skipCount + " " + tmpStatement);
 
             // fetch the data
             ObjectList resultList = discoveryService.query(session.getRepositoryInfo().getIdentifier(), tmpStatement,
@@ -142,7 +142,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
                     }
                     page.add(convertNode(objectFactory.convertObject(objectData, ctxt), false));
                 }
-                //Log.d(TAG, "Query Result :" + page.size());
+                // Log.d(TAG, "Query Result :" + page.size());
                 return new PagingResultImpl<Node>(page, resultList.hasMoreItems(),
                         (resultList.getNumItems() == null) ? -1 : resultList.getNumItems().intValue());
             }
@@ -165,6 +165,12 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     private static final String QUERY_DOCUMENT_TITLED = "SELECT d.* FROM cmis:document as d JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE ";
 
     private static final String QUERY_DOCUMENT = "SELECT * FROM cmis:document WHERE ";
+
+    private static final String QUERY_FOLDER_TITLED = "SELECT d.* FROM cmis:folder as d JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE ";
+
+    private static final String QUERY_FOLDER = "SELECT * FROM cmis:folder WHERE ";
+
+    private static final String QUERY_DEFAULT = "SELECT * FROM %s WHERE ";
 
     private static final String PARAM_NODEREF = "{noderef}";
 
@@ -189,6 +195,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
     /**
      * Internal utility method to create a cmis query based on keywords.
      * 
+     * @param typeName
      * @param keywords : List of keywords to search
      * @param fulltext : Define if the search must include content inside
      *            document. (fulltext search)
@@ -197,18 +204,42 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
      * @since 1.1 the query has been simplified. it doesn't cover anymore
      *        cm:titled
      */
-    private static String createQuery(String query, boolean fulltext, boolean isExact, Folder f, boolean descendants,
-            ListingContext listingContext)
+    private static String createQuery(String query, String typeName, boolean fulltext, boolean isExact, Folder f,
+            boolean descendants, ListingContext listingContext)
     {
         List<String> keywords = Arrays.asList(TextUtils.split(query.trim(), "\\s+"));
 
-        String startStatement = QUERY_DOCUMENT;
+        // Check if we use aspect. In this case we need a JOIN
+        boolean hasAspect = false;
         if (listingContext != null
                 && listingContext.getSortProperty() != null
                 && (SORT_PROPERTY_TITLE.equals(listingContext.getSortProperty()) || SORT_PROPERTY_DESCRIPTION
                         .equals(listingContext.getSortProperty())))
         {
-            startStatement = QUERY_DOCUMENT_TITLED;
+            hasAspect = true;
+        }
+
+        // Prepare the query
+        String startStatement = QUERY_DOCUMENT;
+        if (KeywordSearchOptions.TYPENAME_DOCUMENT.equals(typeName))
+        {
+            startStatement = QUERY_DOCUMENT;
+            if (hasAspect)
+            {
+                startStatement = QUERY_DOCUMENT_TITLED;
+            }
+        }
+        else if (KeywordSearchOptions.TYPENAME_FOLDER.equals(typeName))
+        {
+            startStatement = QUERY_FOLDER;
+            if (hasAspect)
+            {
+                startStatement = QUERY_FOLDER_TITLED;
+            }
+        }
+        else
+        {
+            startStatement = String.format(QUERY_DEFAULT, typeName);
         }
 
         StringBuilder sb = new StringBuilder(startStatement);
@@ -265,7 +296,7 @@ public class SearchServiceImpl extends AlfrescoService implements SearchService
             sb.append(")");
         }
 
-        //Log.d(TAG, "Query :" + sb.toString());
+        // Log.d(TAG, "Query :" + sb.toString());
         return sb.toString();
     }
 

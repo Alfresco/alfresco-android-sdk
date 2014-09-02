@@ -334,4 +334,10 @@ public class ProcessImpl implements Process
         if (variables.get(name) != null) { return variables.get(name).getValue(); }
         return null;
     }
+
+    @Override
+    public boolean hasCompleted()
+    {
+        return (endedAt != null);
+    }
 }

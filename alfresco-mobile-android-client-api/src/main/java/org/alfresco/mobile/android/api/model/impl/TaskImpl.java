@@ -437,4 +437,10 @@ public class TaskImpl implements Task
             this.isMultiValued = isMultiValued;
         }
     }
+    
+    @Override
+    public boolean hasCompleted()
+    {
+        return (endedAt != null);
+    }
 }

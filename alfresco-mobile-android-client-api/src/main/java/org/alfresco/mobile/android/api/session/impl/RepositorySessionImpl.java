@@ -145,7 +145,7 @@ public class RepositorySessionImpl extends RepositorySession
                 creationException); }
 
         // If Session Object available we populate other info & capabilities
-        repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
+        repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo(), hasPublicAPI);
 
         // On cmisatom binding sometimes the edition is not well formated. In
         // this case we use service/cmis binding. MOBSDK-508
