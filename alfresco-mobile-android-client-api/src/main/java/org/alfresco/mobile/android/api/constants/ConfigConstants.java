@@ -122,9 +122,9 @@ public interface ConfigConstants
     // EVALUATORS
     String EVALUATOR = "evaluator";
 
-    String MATCH_ALL_VALUE = "matchAll";
+    String MATCH_ALL_VALUE = "match-all";
 
-    String MATCH_ANY_VALUE = "matchAny";
+    String MATCH_ANY_VALUE = "match-any";
 
     String NEGATE_SYMBOL = "!";
 

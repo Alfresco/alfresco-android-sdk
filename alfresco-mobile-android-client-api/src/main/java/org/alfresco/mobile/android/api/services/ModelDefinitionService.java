@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
+import org.alfresco.mobile.android.api.model.TaskTypeDefinition;
 
 
 /**
@@ -61,6 +62,6 @@ public interface ModelDefinitionService extends Service
      * @return
      * @exception  if the type is null or unknown.
      */
-    public ModelDefinition getTaskTypeDefinition(String type);
+    public TaskTypeDefinition getTaskTypeDefinition(String type);
 
 }

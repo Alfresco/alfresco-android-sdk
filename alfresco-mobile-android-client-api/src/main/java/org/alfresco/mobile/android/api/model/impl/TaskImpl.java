@@ -230,20 +230,22 @@ public class TaskImpl implements Task
     {
         Map<String, Property> properties = new HashMap<String, Property>(data.size());
         VariableType variableType;
+        String translatedKey = null;
 
         GregorianCalendar g = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
 
         for (Entry<String, Object> entry : data.entrySet())
         {
-            variableType = VARIABLE_TYPE.get(entry.getKey());
+            translatedKey = entry.getKey().replace("_", ":");
+            variableType = VARIABLE_TYPE.get(translatedKey);
             if (variableType != null)
             {
                 // Empty case
                 if (entry.getValue() == null
                         || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty()))
                 {
-                    properties.put(entry.getKey(), new PropertyImpl(null, variableType.propertyType,
+                    properties.put(translatedKey, new PropertyImpl(null, variableType.propertyType,
                             variableType.isMultiValued));
                     continue;
                 }
@@ -254,15 +256,15 @@ public class TaskImpl implements Task
                     case DATETIME:
                         g = new GregorianCalendar();
                         g.setTime(DateUtils.parseDate((String) entry.getValue(), sdf));
-                        properties.put(entry.getKey(), new PropertyImpl(g, variableType.propertyType,
+                        properties.put(translatedKey, new PropertyImpl(g, variableType.propertyType,
                                 variableType.isMultiValued));
                         break;
                     case INTEGER:
-                        properties.put(entry.getKey(), new PropertyImpl(((BigInteger) entry.getValue()).intValue(),
+                        properties.put(translatedKey, new PropertyImpl(((BigInteger) entry.getValue()).intValue(),
                                 variableType.propertyType, variableType.isMultiValued));
                         break;
                     default:
-                        properties.put(entry.getKey(), new PropertyImpl(entry.getValue(), variableType.propertyType,
+                        properties.put(translatedKey, new PropertyImpl(entry.getValue(), variableType.propertyType,
                                 variableType.isMultiValued));
                         break;
                 }

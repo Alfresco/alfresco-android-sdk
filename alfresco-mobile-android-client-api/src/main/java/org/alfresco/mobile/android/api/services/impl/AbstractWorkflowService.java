@@ -150,4 +150,19 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     {
         return getTasks((ListingContext) null).getList();
     }
+    
+
+    // ////////////////////////////////////////////////////////////////
+    // CONSTANTS NAMES UTILS
+    // ////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    protected static String encodeKey(String key)
+    {
+        return key.replace(":", "_");
+    }
+    
+    protected static String decodeKey(String key)
+    {
+        return key.replace("_", ":");
+    }
 }
