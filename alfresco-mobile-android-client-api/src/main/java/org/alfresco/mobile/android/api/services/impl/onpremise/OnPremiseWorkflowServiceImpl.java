@@ -68,6 +68,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.animation.TranslateAnimation;
 
 /**
  * Specific implementation of WorkflowService for OnPremise API.
@@ -230,15 +231,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // VARIABLES
             if (variables != null && !variables.isEmpty())
             {
+                String translatedKey = null;
                 for (Entry<String, Serializable> entry : variables.entrySet())
                 {
-                    if (ALFRESCO_TO_WORKFLOW.containsKey(entry.getKey()))
+                    translatedKey = encodeKey(entry.getKey());
+                    if (ALFRESCO_TO_WORKFLOW.containsKey(translatedKey))
                     {
-                        jo.put(ALFRESCO_TO_WORKFLOW.get(entry.getKey()), entry.getValue());
+                        jo.put(ALFRESCO_TO_WORKFLOW.get(translatedKey), entry.getValue());
                     }
                     else
                     {
-                        jo.put(entry.getKey(), entry.getValue());
+                        jo.put(translatedKey, entry.getValue());
                     }
                 }
             }
@@ -872,11 +875,13 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // VARIABLES
             if (internalVariables != null && !internalVariables.isEmpty())
             {
+                String translatedKey = null;
                 for (Entry<String, Serializable> entry : internalVariables.entrySet())
                 {
-                    if (ALFRESCO_TO_WORKFLOW.containsKey(entry.getKey()))
+                    translatedKey = encodeKey(entry.getKey());
+                    if (ALFRESCO_TO_WORKFLOW.containsKey(translatedKey))
                     {
-                        jo.put(ALFRESCO_TO_WORKFLOW.get(entry.getKey()), entry.getValue());
+                        jo.put(ALFRESCO_TO_WORKFLOW.get(translatedKey), entry.getValue());
                     }
                 }
             }
@@ -1047,15 +1052,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // VARIABLES
             if (internalVariables != null && !internalVariables.isEmpty())
             {
+                String translatedKey = null;
                 for (Entry<String, Serializable> entry : internalVariables.entrySet())
                 {
-                    if (ALFRESCO_TO_WORKFLOW.containsKey(entry.getKey()))
+                    translatedKey = encodeKey(entry.getKey());
+                    if (ALFRESCO_TO_WORKFLOW.containsKey(translatedKey))
                     {
-                        jo.put(ALFRESCO_TO_WORKFLOW.get(entry.getKey()), entry.getValue());
+                        jo.put(ALFRESCO_TO_WORKFLOW.get(translatedKey), entry.getValue());
                     }
                     else
                     {
-                        jo.put(entry.getKey(), entry.getValue());
+                        jo.put(translatedKey, entry.getValue());
                     }
                 }
             }
@@ -1182,21 +1189,24 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     private static final Map<String, String> ALFRESCO_TO_WORKFLOW = new HashMap<String, String>();
     static
     {
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION,
-                FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_DESCRIPTION));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE,
-                FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_DUE_DATE));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_PRIORITY,
-                FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_PRIORITY));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS,
-                FORM_PREFIX.concat(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_COMMENT, FORM_PREFIX.concat(WorkflowModel.PROP_COMMENT));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_STATUS, FORM_PREFIX.concat(WorkflowModel.PROP_STATUS));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_REVIEW_OUTCOME,
-                FORM_PREFIX.concat(WorkflowModel.PROP_REVIEW_OUTCOME));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_TRANSITIONS_VALUE, WorkflowModel.PROP_TRANSITIONS_VALUE);
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT,
-                FORM_PREFIX.concat(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_WORKFLOW_DESCRIPTION),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_WORKFLOW_DESCRIPTION)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_WORKFLOW_DUE_DATE),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_WORKFLOW_DUE_DATE)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_WORKFLOW_PRIORITY),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_WORKFLOW_PRIORITY)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_COMMENT),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_COMMENT)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_STATUS),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_STATUS)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_REVIEW_OUTCOME),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_REVIEW_OUTCOME)));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_TRANSITIONS_VALUE),
+                encodeKey(WorkflowModel.PROP_TRANSITIONS_VALUE));
+        ALFRESCO_TO_WORKFLOW.put(encodeKey(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT),
+                FORM_PREFIX.concat(encodeKey(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT)));
     }
 
     // ////////////////////////////////////////////////////

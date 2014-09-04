@@ -51,112 +51,112 @@ public interface WorkflowModel
     // PROPERTIES
     // /////////////////////////////////////////////////////////////
     // package folder constants
-    String TYPE_PACKAGE = BPM_MODEL_PREFIX.concat("_package");
+    String TYPE_PACKAGE = BPM_MODEL_PREFIX.concat(":package");
 
-    String ASSOC_PACKAGE_CONTAINS = BPM_MODEL_PREFIX.concat("_packageContains");
+    String ASSOC_PACKAGE_CONTAINS = BPM_MODEL_PREFIX.concat(":packageContains");
 
     // task constants
-    String TYPE_TASK = BPM_MODEL_PREFIX.concat("_task");
+    String TYPE_TASK = BPM_MODEL_PREFIX.concat(":task");
 
-    String PROP_TASK_ID = BPM_MODEL_PREFIX.concat("_taskId");
+    String PROP_TASK_ID = BPM_MODEL_PREFIX.concat(":taskId");
 
-    String PROP_START_DATE = BPM_MODEL_PREFIX.concat("_startDate");
+    String PROP_START_DATE = BPM_MODEL_PREFIX.concat(":startDate");
 
-    String PROP_DUE_DATE = BPM_MODEL_PREFIX.concat("_dueDate");
+    String PROP_DUE_DATE = BPM_MODEL_PREFIX.concat(":dueDate");
 
-    String PROP_COMPLETION_DATE = BPM_MODEL_PREFIX.concat("_completionDate");
+    String PROP_COMPLETION_DATE = BPM_MODEL_PREFIX.concat(":completionDate");
 
-    String PROP_PRIORITY = BPM_MODEL_PREFIX.concat("_priority");
+    String PROP_PRIORITY = BPM_MODEL_PREFIX.concat(":priority");
 
-    String PROP_STATUS = BPM_MODEL_PREFIX.concat("_status");
+    String PROP_STATUS = BPM_MODEL_PREFIX.concat(":status");
 
-    String PROP_PERCENT_COMPLETE = BPM_MODEL_PREFIX.concat("_percentComplete");
+    String PROP_PERCENT_COMPLETE = BPM_MODEL_PREFIX.concat(":percentComplete");
 
-    String PROP_COMPLETED_ITEMS = BPM_MODEL_PREFIX.concat("_completedItems");
+    String PROP_COMPLETED_ITEMS = BPM_MODEL_PREFIX.concat(":completedItems");
 
-    String PROP_COMMENT = BPM_MODEL_PREFIX.concat("_comment");
+    String PROP_COMMENT = BPM_MODEL_PREFIX.concat(":comment");
 
-    String ASSOC_POOLED_ACTORS = BPM_MODEL_PREFIX.concat("_pooledActors");
+    String ASSOC_POOLED_ACTORS = BPM_MODEL_PREFIX.concat(":pooledActors");
 
     // workflow task contstants
-    String TYPE_WORKFLOW_TASK = BPM_MODEL_PREFIX.concat("_workflowTask");
+    String TYPE_WORKFLOW_TASK = BPM_MODEL_PREFIX.concat(":workflowTask");
 
-    String PROP_CONTEXT = BPM_MODEL_PREFIX.concat("_context");
+    String PROP_CONTEXT = BPM_MODEL_PREFIX.concat(":context");
 
-    String PROP_DESCRIPTION = BPM_MODEL_PREFIX.concat("_description");
+    String PROP_DESCRIPTION = BPM_MODEL_PREFIX.concat(":description");
 
-    String PROP_OUTCOME = BPM_MODEL_PREFIX.concat("_outcome");
+    String PROP_OUTCOME = BPM_MODEL_PREFIX.concat(":outcome");
 
-    String PROP_PACKAGE_ACTION_GROUP = BPM_MODEL_PREFIX.concat("_packageActionGroup");
+    String PROP_PACKAGE_ACTION_GROUP = BPM_MODEL_PREFIX.concat(":packageActionGroup");
 
-    String PROP_PACKAGE_ITEM_ACTION_GROUP = BPM_MODEL_PREFIX.concat("_packageItemActionGroup");
+    String PROP_PACKAGE_ITEM_ACTION_GROUP = BPM_MODEL_PREFIX.concat(":packageItemActionGroup");
 
-    String PROP_HIDDEN_TRANSITIONS = BPM_MODEL_PREFIX.concat("_hiddenTransitions");
+    String PROP_HIDDEN_TRANSITIONS = BPM_MODEL_PREFIX.concat(":hiddenTransitions");
 
-    String PROP_REASSIGNABLE = BPM_MODEL_PREFIX.concat("_reassignable");
+    String PROP_REASSIGNABLE = BPM_MODEL_PREFIX.concat(":reassignable");
 
-    String ASSOC_PACKAGE = BPM_MODEL_PREFIX.concat("_package");
+    String ASSOC_PACKAGE = BPM_MODEL_PREFIX.concat(":package");
 
     // Start task contstants
-    String TYPE_START_TASK = BPM_MODEL_PREFIX.concat("_startTask");
+    String TYPE_START_TASK = BPM_MODEL_PREFIX.concat(":startTask");
 
-    String PROP_WORKFLOW_DESCRIPTION = BPM_MODEL_PREFIX.concat("_workflowDescription");
+    String PROP_WORKFLOW_DESCRIPTION = BPM_MODEL_PREFIX.concat(":workflowDescription");
 
-    String PROP_WORKFLOW_PRIORITY = BPM_MODEL_PREFIX.concat("_workflowPriority");
+    String PROP_WORKFLOW_PRIORITY = BPM_MODEL_PREFIX.concat(":workflowPriority");
 
-    String PROP_WORKFLOW_DUE_DATE = BPM_MODEL_PREFIX.concat("_workflowDueDate");
+    String PROP_WORKFLOW_DUE_DATE = BPM_MODEL_PREFIX.concat(":workflowDueDate");
 
-    String PROP_ASSIGNEE = BPM_MODEL_PREFIX.concat("_assignee");
+    String PROP_ASSIGNEE = BPM_MODEL_PREFIX.concat(":assignee");
 
-    String ASSOC_ASSIGNEE = BPM_MODEL_PREFIX.concat("_assignee");
+    String ASSOC_ASSIGNEE = BPM_MODEL_PREFIX.concat(":assignee");
 
-    String ASSOC_ASSIGNEES = BPM_MODEL_PREFIX.concat("_assignees");
+    String ASSOC_ASSIGNEES = BPM_MODEL_PREFIX.concat(":assignees");
 
-    String ASSOC_GROUP_ASSIGNEE = BPM_MODEL_PREFIX.concat("_groupAssignee");
+    String ASSOC_GROUP_ASSIGNEE = BPM_MODEL_PREFIX.concat(":groupAssignee");
 
-    String ASSOC_GROUP_ASSIGNEES = BPM_MODEL_PREFIX.concat("_groupAssignees");
+    String ASSOC_GROUP_ASSIGNEES = BPM_MODEL_PREFIX.concat(":groupAssignees");
 
     // Activiti Task Constants
-    String TYPE_ACTIVTI_TASK = BPM_MODEL_PREFIX.concat("_activitiOutcomeTask");
+    String TYPE_ACTIVTI_TASK = BPM_MODEL_PREFIX.concat(":activitiOutcomeTask");
 
-    String PROP_OUTCOME_PROPERTY_NAME = BPM_MODEL_PREFIX.concat("_outcomePropertyName");
-
-    // Activiti Start Task Constants
-    String TYPE_ACTIVTI_START_TASK = BPM_MODEL_PREFIX.concat("_activitiStartTask");
+    String PROP_OUTCOME_PROPERTY_NAME = BPM_MODEL_PREFIX.concat(":outcomePropertyName");
 
     // Activiti Start Task Constants
-    String ASPECT_END_AUTOMATICALLY = BPM_MODEL_PREFIX.concat("_endAutomatically");
+    String TYPE_ACTIVTI_START_TASK = BPM_MODEL_PREFIX.concat(":activitiStartTask");
+
+    // Activiti Start Task Constants
+    String ASPECT_END_AUTOMATICALLY = BPM_MODEL_PREFIX.concat(":endAutomatically");
 
     // workflow package
-    String ASPECT_WORKFLOW_PACKAGE = BPM_MODEL_PREFIX.concat("_workflowPackage");
+    String ASPECT_WORKFLOW_PACKAGE = BPM_MODEL_PREFIX.concat(":workflowPackage");
 
-    String PROP_IS_SYSTEM_PACKAGE = BPM_MODEL_PREFIX.concat("_isSystemPackage");
+    String PROP_IS_SYSTEM_PACKAGE = BPM_MODEL_PREFIX.concat(":isSystemPackage");
 
-    String PROP_WORKFLOW_DEFINITION_ID = BPM_MODEL_PREFIX.concat("_workflowDefinitionId");
+    String PROP_WORKFLOW_DEFINITION_ID = BPM_MODEL_PREFIX.concat(":workflowDefinitionId");
 
-    String PROP_WORKFLOW_DEFINITION_NAME = BPM_MODEL_PREFIX.concat("_workflowDefinitionName");
+    String PROP_WORKFLOW_DEFINITION_NAME = BPM_MODEL_PREFIX.concat(":workflowDefinitionName");
 
-    String PROP_WORKFLOW_INSTANCE_ID = BPM_MODEL_PREFIX.concat("_workflowInstanceId");
+    String PROP_WORKFLOW_INSTANCE_ID = BPM_MODEL_PREFIX.concat(":workflowInstanceId");
 
     // workflow definition
-    String TYPE_WORKFLOW_DEF = BPM_MODEL_PREFIX.concat("_workflowDefinition");
+    String TYPE_WORKFLOW_DEF = BPM_MODEL_PREFIX.concat(":workflowDefinition");
 
-    String PROP_WORKFLOW_DEF_ENGINE_ID = BPM_MODEL_PREFIX.concat("_engineId");
+    String PROP_WORKFLOW_DEF_ENGINE_ID = BPM_MODEL_PREFIX.concat(":engineId");
 
-    String PROP_WORKFLOW_DEF_NAME = BPM_MODEL_PREFIX.concat("_definitionName");
+    String PROP_WORKFLOW_DEF_NAME = BPM_MODEL_PREFIX.concat(":definitionName");
 
-    String PROP_WORKFLOW_DEF_DEPLOYED = BPM_MODEL_PREFIX.concat("_definitionDeployed");
+    String PROP_WORKFLOW_DEF_DEPLOYED = BPM_MODEL_PREFIX.concat(":definitionDeployed");
 
-    String PROP_SEND_EMAIL_NOTIFICATIONS = BPM_MODEL_PREFIX.concat("_sendEMailNotifications");
+    String PROP_SEND_EMAIL_NOTIFICATIONS = BPM_MODEL_PREFIX.concat(":sendEMailNotifications");
 
     // //////////////////////////////////////////////////////////////
     // WORKFLOW MODEL
     // /////////////////////////////////////////////////////////////
-    String PROP_REVIEW_OUTCOME = WF_MODEL_PREFIX.concat("_reviewOutcome");
+    String PROP_REVIEW_OUTCOME = WF_MODEL_PREFIX.concat(":reviewOutcome");
 
-    String PROP_REQUIRED_APPROVE_PERCENT = WF_MODEL_PREFIX.concat("_requiredApprovePercent");
+    String PROP_REQUIRED_APPROVE_PERCENT = WF_MODEL_PREFIX.concat(":requiredApprovePercent");
 
-    String PROP_NOTIFYME = WF_MODEL_PREFIX.concat("_notifyMe");
+    String PROP_NOTIFYME = WF_MODEL_PREFIX.concat(":notifyMe");
 
     // //////////////////////////////////////////////////////////////
     // TRANSITION
@@ -338,13 +338,13 @@ public interface WorkflowModel
     // //////////////////////////////////////////////////////////////
     // EXTRA PROPERTIES CONTENT MODEL
     // /////////////////////////////////////////////////////////////
-    String PROP_OWNER = ContentModel.CONTENT_MODEL_PREFIX.concat("_owner");
+    String PROP_OWNER = ContentModel.CONTENT_MODEL_PREFIX.concat(":owner");
 
-    String PROP_NAME = ContentModel.CONTENT_MODEL_PREFIX.concat("_name");
+    String PROP_NAME = ContentModel.CONTENT_MODEL_PREFIX.concat(":name");
 
-    String PROP_CONTENT = ContentModel.CONTENT_MODEL_PREFIX.concat("_content");
+    String PROP_CONTENT = ContentModel.CONTENT_MODEL_PREFIX.concat(":content");
 
-    String PROP_CREATED = ContentModel.CONTENT_MODEL_PREFIX.concat("_created");
+    String PROP_CREATED = ContentModel.CONTENT_MODEL_PREFIX.concat(":created");
 
     // //////////////////////////////////////////////////////////////
     // EXTRA PROPERTIES

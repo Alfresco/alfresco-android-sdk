@@ -27,10 +27,12 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
+import org.alfresco.mobile.android.api.model.TaskTypeDefinition;
 import org.alfresco.mobile.android.api.model.impl.AspectDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentTypeDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.FolderTypeDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.NodeTypeDefinitionImpl;
+import org.alfresco.mobile.android.api.model.impl.TaskTypeDefinitionImpl;
 import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
@@ -103,9 +105,9 @@ public abstract class AbstractModelDefinitionService extends AlfrescoService imp
     }
 
     @Override
-    public ModelDefinition getTaskTypeDefinition(String type)
+    public TaskTypeDefinition getTaskTypeDefinition(String type)
     {
-        return (NodeTypeDefinition) getTypeDefinition(TASK, type);
+        return (TaskTypeDefinition) getTypeDefinition(TASK, type);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +165,8 @@ public abstract class AbstractModelDefinitionService extends AlfrescoService imp
                 return new DocumentTypeDefinitionImpl(cmisSession.getTypeDefinition(type), aspectModels);
             case FOLDER:
                 return new FolderTypeDefinitionImpl(cmisSession.getTypeDefinition(type), aspectModels);
+            case TASK:
+                return new TaskTypeDefinitionImpl(cmisSession.getTypeDefinition(type), aspectModels);
             default:
                 break;
         }

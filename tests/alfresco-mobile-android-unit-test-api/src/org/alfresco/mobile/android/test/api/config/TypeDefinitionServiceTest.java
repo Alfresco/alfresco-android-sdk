@@ -116,6 +116,40 @@ public class TypeDefinitionServiceTest extends AlfrescoSDKTestCase
         validateAlfrescoDocumentProperties(typeDefinition, false);
         validateCMISDocumentProperties(typeDefinition, false);
     }
+    
+    public void testRetrieveTaskTypeDefinition()
+    {
+        // Retrieve TypeDefinitionService
+        ModelDefinition typeDefinition = null;
+        try
+        {
+            typeDefinition = typeDefintionService.getTaskTypeDefinition((String) null);
+            Assert.fail();
+        }
+        catch (Exception e)
+        {
+            Assert.assertNull(typeDefinition);
+        }
+
+        // Retrieve TypeDefinitionService on cm:content
+        typeDefinition = typeDefintionService.getTaskTypeDefinition("bpm:activitiOutcomeTask");
+        Assert.assertNotNull(typeDefinition);
+        Assert.assertEquals("bpm:activitiOutcomeTask", typeDefinition.getName());
+        Assert.assertEquals("bpm:activitiOutcomeTask", typeDefinition.getTitle());
+        Assert.assertEquals("D:bpm:activitiOutcomeTask", typeDefinition.getDescription());
+        Assert.assertNotNull(typeDefinition.getParent());
+        Assert.assertEquals("bpm:workflowTask", typeDefinition.getParent());
+        Assert.assertNotNull(typeDefinition.getPropertyNames());
+        
+        // Default Properties
+        validateAlfrescoDocumentProperties(typeDefinition, true);
+        validateCMISDocumentProperties(typeDefinition, true);
+        
+        //BPM Properties
+        validatePropertyDefinition(typeDefinition, ContentModel.PROP_NAME, ContentModel.PROP_NAME, "Name", "Name",
+                PropertyType.STRING, true, false, false, null);
+        
+    }
 
     public void testRetrieveAspectDefinition()
     {
