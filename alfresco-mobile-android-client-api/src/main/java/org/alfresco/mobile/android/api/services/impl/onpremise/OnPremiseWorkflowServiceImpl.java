@@ -981,7 +981,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
             // prepare json data
             JSONObject jobject = new JSONObject();
-            jobject.put(WorkflowModel.PROP_OWNER, assigneeId);
+            jobject.put(encodeKey(WorkflowModel.PROP_OWNER), assigneeId);
             final JsonDataWriter dataWriter = new JsonDataWriter(jobject);
 
             // send

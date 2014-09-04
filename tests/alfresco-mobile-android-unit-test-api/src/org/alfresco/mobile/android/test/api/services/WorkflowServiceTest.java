@@ -1397,6 +1397,9 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             }
         }
 
+        //Error case when key doesn't exist.
+        if(def == null){ return def;}
+        
         // Added since 1.4
         ProcessDefinition def2 = workflowService.getProcessDefinitionByKey(key);
         Assert.assertEquals(def.getIdentifier(), def2.getIdentifier());

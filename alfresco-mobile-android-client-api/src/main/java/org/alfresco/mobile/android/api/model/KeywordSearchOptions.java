@@ -51,7 +51,7 @@ public class KeywordSearchOptions implements Serializable
     private boolean isExactMatch = Boolean.FALSE;
 
     /** Type of search. */
-    private String typeName;
+    private String typeName = TYPENAME_DOCUMENT;
 
     /**
      * Instantiates a new keyword search options.
