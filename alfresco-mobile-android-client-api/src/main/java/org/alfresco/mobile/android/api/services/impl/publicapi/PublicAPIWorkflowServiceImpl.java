@@ -188,7 +188,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey())
                         || WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
                 {
-                    variablesJson.put(WorkflowModel.PROP_ASSIGNEE, assignees.get(0).getIdentifier());
+                    variablesJson.put(encodeKey(WorkflowModel.PROP_ASSIGNEE), assignees.get(0).getIdentifier());
                 }
                 else
                 {
@@ -200,7 +200,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                         variablesAssignees.add(p.getIdentifier());
                         // guids.add(p.getIdentifier());
                     }
-                    variablesJson.put(WorkflowModel.ASSOC_ASSIGNEES, variablesAssignees);
+                    variablesJson.put(encodeKey(WorkflowModel.ASSOC_ASSIGNEES), variablesAssignees);
                 }
             }
 
@@ -209,7 +209,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 for (Entry<String, Serializable> entry : variables.entrySet())
                 {
-                    variablesJson.put(entry.getKey(), entry.getValue());
+                    variablesJson.put(encodeKey(entry.getKey()), entry.getValue());
                 }
                 jo.put(PublicAPIConstant.VARIABLES_VALUE, variablesJson);
             }
@@ -657,7 +657,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                     for (Entry<String, Serializable> entry : variables.entrySet())
                     {
                         jv = new JSONObject();
-                        jv.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                        jv.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                         jv.put(PublicAPIConstant.VALUE, entry.getValue());
                         jv.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
                         ja.add(jv);
@@ -783,7 +783,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Object entry : response.getEntries())
             {
                 data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-                variables.put((String) data.get(PublicAPIConstant.NAME_VALUE), parseProperty(data));
+                variables.put(decodeKey((String) data.get(PublicAPIConstant.NAME_VALUE)), parseProperty(data));
             }
         }
         catch (Exception e)
@@ -820,7 +820,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Entry<String, Serializable> entry : internalVariables.entrySet())
             {
                 jo = new JSONObject();
-                jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                 jo.put(PublicAPIConstant.VALUE, entry.getValue());
                 jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
                 ja.add(jo);
@@ -861,7 +861,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
             // prepare json data
             JSONObject jo = new JSONObject();
-            jo.put(PublicAPIConstant.NAME_VALUE, key);
+            jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(key));
             jo.put(PublicAPIConstant.VALUE, value);
             jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
@@ -910,7 +910,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Entry<String, Serializable> entry : internalVariables.entrySet())
             {
                 jo = new JSONObject();
-                jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                 jo.put(PublicAPIConstant.VALUE, entry.getValue());
                 //jo.put(PublicAPIConstant.SCOPE_VALUE, "global");
                 ja.add(jo);
