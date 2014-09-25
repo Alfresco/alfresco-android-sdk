@@ -617,9 +617,39 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         if (isObjectNull(assignee)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "assignee")); }
 
-        Map<String, Serializable> variables = new HashMap<String, Serializable>(1);
-        variables.put(PublicAPIConstant.ASSIGNEE_VALUE, assignee.getIdentifier());
-        return updateVariables(task, variables);
+        Task resultTask = task;
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getTaskUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+            url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.ASSIGNEE_VALUE);
+
+            // Prepare JSON Object
+            JSONObject jo = new JSONObject();
+            jo.put(PublicAPIConstant.ASSIGNEE_VALUE, assignee.getIdentifier());
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            Response resp = put(url, dataWriter.getContentType(), null, new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
+                    .get(PublicAPIConstant.ENTRY_VALUE);
+            resultTask = TaskImpl.parsePublicAPIJson(data);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return resultTask;
     }
 
     /**
