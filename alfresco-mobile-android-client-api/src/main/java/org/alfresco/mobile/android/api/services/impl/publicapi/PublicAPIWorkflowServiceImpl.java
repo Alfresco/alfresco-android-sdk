@@ -1119,29 +1119,29 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             switch ((Integer) filter.getFilterValue(FILTER_KEY_DUE))
             {
                 case FILTER_DUE_TODAY:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
 
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
                     break;
                 case FILTER_DUE_TOMORROW:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
 
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_7DAYS:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
 
                     calendar.add(Calendar.DAY_OF_MONTH, 7);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_OVERDUE:
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_NODATE:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "LIKE");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "LIKE");
                     break;
                 default:
                     break;
