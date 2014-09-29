@@ -44,7 +44,7 @@ public interface OnPremiseConstant
     String ALFRESCO_EDITION_UNKNOWN = "unknown";
 
     String THIRD_CMIS_EDITION = "thirdcmis";
-
+    
     String EDITION_VALUE = "edition";
     
     // VERSION NUMBER

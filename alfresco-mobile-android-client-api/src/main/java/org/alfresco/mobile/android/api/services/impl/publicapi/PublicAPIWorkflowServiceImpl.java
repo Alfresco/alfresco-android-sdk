@@ -617,9 +617,39 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         if (isObjectNull(assignee)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "assignee")); }
 
-        Map<String, Serializable> variables = new HashMap<String, Serializable>(1);
-        variables.put(PublicAPIConstant.ASSIGNEE_VALUE, assignee.getIdentifier());
-        return updateVariables(task, variables);
+        Task resultTask = task;
+        try
+        {
+            // Prepare URL
+            String link = PublicAPIUrlRegistry.getTaskUrl(session, task.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+            url.addParameter(PublicAPIConstant.SELECT_VALUE, PublicAPIConstant.ASSIGNEE_VALUE);
+
+            // Prepare JSON Object
+            JSONObject jo = new JSONObject();
+            jo.put(PublicAPIConstant.ASSIGNEE_VALUE, assignee.getIdentifier());
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(jo);
+
+            // send
+            Response resp = put(url, dataWriter.getContentType(), null, new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+
+            Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+            Map<String, Object> data = (Map<String, Object>) ((Map<String, Object>) json)
+                    .get(PublicAPIConstant.ENTRY_VALUE);
+            resultTask = TaskImpl.parsePublicAPIJson(data);
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return resultTask;
     }
 
     /**
@@ -1142,29 +1172,29 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             switch ((Integer) filter.getFilterValue(FILTER_KEY_DUE))
             {
                 case FILTER_DUE_TODAY:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
 
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
                     break;
                 case FILTER_DUE_TOMORROW:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
 
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_7DAYS:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), ">");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), ">");
 
                     calendar.add(Calendar.DAY_OF_MONTH, 7);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_OVERDUE:
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "<");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "<");
                     break;
                 case FILTER_DUE_NODATE:
-                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.format(calendar), "LIKE");
+                    addPredicate(sb, PublicAPIConstant.DUEAT_VALUE, DateUtils.formatISO(calendar), "LIKE");
                     break;
                 default:
                     break;

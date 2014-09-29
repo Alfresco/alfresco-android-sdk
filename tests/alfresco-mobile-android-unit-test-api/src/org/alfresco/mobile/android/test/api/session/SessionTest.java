@@ -122,8 +122,8 @@ public class SessionTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
         }
 
-        // Edition Informations : Community
-        Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY, alfsession.getRepositoryInfo().getEdition());
+        // Edition Informations : Community by default
+        Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN, alfsession.getRepositoryInfo().getEdition());
 
         // Edition Version number
         Assert.assertNotNull(alfsession.getRepositoryInfo().getVersion());
