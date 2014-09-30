@@ -174,8 +174,6 @@ public class RepositorySessionImpl extends RepositorySession
         // Retrieve Root Node
         rootNode = new FolderImpl(cmisSession.getRootFolder());
 
-        // TODO Other capabilities
-
         // Retrieve Service Registry & Services
         initServices();
     }
