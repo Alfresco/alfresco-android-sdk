@@ -1040,6 +1040,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         if (VARIABLE_TYPES.containsKey((String) data.get(PublicAPIConstant.TYPE_VALUE)))
         {
+            //TODO Replace _ by :
             PropertyType type = VARIABLE_TYPES.get((String) data.get(PublicAPIConstant.TYPE_VALUE));
             // Other case
             switch (type)
