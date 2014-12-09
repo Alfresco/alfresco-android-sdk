@@ -186,18 +186,8 @@ public class RepositorySessionImpl extends RepositorySession
         else
         {
             services = new OnPremiseServiceRegistry(this);
-            /*boolean initConfiguration = true;
-            if (getParameter(ConfigService.CONFIGURATION_INIT) != null
-                    && ConfigService.CONFIGURATION_INIT_NONE
-                            .equals((String) getParameter(ConfigService.CONFIGURATION_INIT)))
-            {
-                initConfiguration = false;
-            }
-            if (initConfiguration)
-            {
-                ((OnPremiseServiceRegistry) services).initConfigService();
-            }*/
         }
+        ((OnPremiseServiceRegistry) services).init();
     }
 
     public boolean hasPublicAPI()
