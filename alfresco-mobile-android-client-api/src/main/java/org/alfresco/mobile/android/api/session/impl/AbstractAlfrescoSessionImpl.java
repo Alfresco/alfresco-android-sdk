@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
-import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -332,8 +331,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(HTTP_INVOKER_CLASSNAME, SessionParameter.HTTP_INVOKER_CLASS);
         
         //ConfigService
-        addParameterIfExist(ConfigService.CONFIGURATION_APPLICATION_ID, ConfigService.CONFIGURATION_APPLICATION_ID);
-        addParameterIfExist(ConfigService.CONFIGURATION_FOLDER, ConfigService.CONFIGURATION_APPLICATION_ID);
+        //addParameterIfExist(ConfigService.CONFIGURATION_APPLICATION_ID, ConfigService.CONFIGURATION_APPLICATION_ID);
+        //addParameterIfExist(ConfigService.CONFIGURATION_FOLDER, ConfigService.CONFIGURATION_APPLICATION_ID);
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)

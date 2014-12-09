@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.test.api.config;
+package org.alfresco.mobile.android.test.api.services;
 
 import java.util.ArrayList;
 import java.util.List;
