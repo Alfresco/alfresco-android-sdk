@@ -21,14 +21,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
-import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
-import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseServiceRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
@@ -42,13 +39,10 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
-import org.apache.http.HttpStatus;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -192,18 +186,8 @@ public class RepositorySessionImpl extends RepositorySession
         else
         {
             services = new OnPremiseServiceRegistry(this);
-            boolean initConfiguration = true;
-            if (getParameter(ConfigService.CONFIGURATION_INIT) != null
-                    && ConfigService.CONFIGURATION_INIT_NONE
-                            .equals((String) getParameter(ConfigService.CONFIGURATION_INIT)))
-            {
-                initConfiguration = false;
-            }
-            if (initConfiguration)
-            {
-                ((OnPremiseServiceRegistry) services).initConfigService();
-            }
         }
+        ((OnPremiseServiceRegistry) services).init();
     }
 
     public boolean hasPublicAPI()
