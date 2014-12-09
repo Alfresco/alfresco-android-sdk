@@ -18,8 +18,12 @@
 package org.alfresco.mobile.android.api.model.impl.onpremise;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.OperatorType;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.AbstractRepositoryCapabilities;
+import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+
+import android.text.TextUtils;
 
 /**
  * OnPremise implementation of repositoryCapabilities
@@ -94,6 +98,117 @@ public class OnPremiseRepositoryCapabilitiesImpl extends AbstractRepositoryCapab
         else
         {
             return true;
+        }
+    }
+
+    @Override
+    public boolean doesSupportMyFiles()
+    {
+        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) { return false; }
+
+        return evaluateRepositoryVersion(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE, OperatorType.SUPERIOR_OR_EQUAL,
+                4, 2, null)
+                || evaluateRepositoryVersion(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY,
+                        OperatorType.SUPERIOR_OR_EQUAL, 4, 2, "e");
+    }
+
+    @Override
+    public boolean doesSupportSharedFiles()
+    {
+        if (!((OnPremiseRepositoryInfoImpl) repositoryInfo).isAlfrescoProduct()) { return false; }
+        return evaluateRepositoryVersion(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE, OperatorType.SUPERIOR_OR_EQUAL,
+                4, 2, null)
+                || evaluateRepositoryVersion(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY,
+                        OperatorType.SUPERIOR_OR_EQUAL, 4, 2, "e");
+    }
+
+    public boolean evaluateRepositoryVersion(String edition, OperatorType operatorValue, Integer majorVersion,
+            Integer minorVersion, String maintenanceVersion)
+    {
+        boolean result = true;
+
+        // Edition
+        if (!TextUtils.isEmpty(edition))
+        {
+            result = repositoryInfo.getEdition().equalsIgnoreCase(edition);
+        }
+
+        if (!result) { return false; }
+
+        OperatorType operator = OperatorType.EQUAL;
+        if (operatorValue != null)
+        {
+            operator = operatorValue;
+        }
+
+        int versionNumber = 0;
+        int repoVersionNumber = 0;
+        // Major Version
+        if (majorVersion != null)
+        {
+            versionNumber += 100 * majorVersion;
+            repoVersionNumber += 100 * repositoryInfo.getMajorVersion();
+        }
+
+        // Minor Version
+        if (minorVersion != null)
+        {
+            versionNumber += 10 * minorVersion;
+            repoVersionNumber += 10 * repositoryInfo.getMinorVersion();
+        }
+
+        // Maintenance Version
+        if (maintenanceVersion != null)
+        {
+            if (OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE.equals(repositoryInfo.getEdition()))
+            {
+                versionNumber += Integer.parseInt(maintenanceVersion);
+                repoVersionNumber += repositoryInfo.getMaintenanceVersion();
+            }
+            else
+            {
+                return evaluate(operator, RepositoryVersionHelper.getVersionString(repositoryInfo.getVersion(), 2),
+                        maintenanceVersion);
+            }
+        }
+
+        result = evaluate(operator, repoVersionNumber, versionNumber);
+
+        return result;
+    }
+
+    private boolean evaluate(OperatorType operator, int value, int valueExpected)
+    {
+        switch (operator)
+        {
+            case INFERIOR:
+                return value < valueExpected;
+            case INFERIOR_OR_EQUAL:
+                return value <= valueExpected;
+            case SUPERIOR_OR_EQUAL:
+                return value >= valueExpected;
+            case SUPERIOR:
+                return value > valueExpected;
+            default:
+                return value == valueExpected;
+        }
+    }
+
+    private boolean evaluate(OperatorType operator, String value, String valueExpected)
+    {
+        int compareValue = value.compareTo(valueExpected);
+        switch (operator)
+        {
+            case INFERIOR:
+                return compareValue < 0;
+            case INFERIOR_OR_EQUAL:
+                return compareValue <= 0;
+            case SUPERIOR_OR_EQUAL:
+                return compareValue >= 0;
+            case SUPERIOR:
+                return compareValue > 0;
+            default:
+                return compareValue == 0;
         }
     }
 }

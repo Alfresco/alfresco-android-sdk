@@ -26,10 +26,10 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.OperatorType;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.EvaluatorType;
-import org.alfresco.mobile.android.api.model.config.OperatorType;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 

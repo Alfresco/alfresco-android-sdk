@@ -86,4 +86,21 @@ public interface RepositoryCapabilities extends Serializable
      */
     boolean doesSupportJBPMWorkflowEngine();
 
+    /**
+     * Returns true if the server connected to supports the shared files
+     * feature.
+     * 
+     * @since 1.4
+     * @return true if the shared files feature is supported.
+     */
+    boolean doesSupportMyFiles();
+
+    /**
+     * Returns true if the server connected to supports the my files feature.
+     * 
+     * @since 1.4
+     * @return true if my files feature is supported.
+     */
+    boolean doesSupportSharedFiles();
+
 }

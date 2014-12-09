@@ -54,4 +54,16 @@ public class CloudRepositoryCapabilitiesImpl extends AbstractRepositoryCapabilit
     {
         return false;
     }
+    
+    @Override
+    public boolean doesSupportMyFiles()
+    {
+        return false;
+    }
+    
+    @Override
+    public boolean doesSupportSharedFiles()
+    {
+        return false;
+    }
 }
