@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.api.model.config;
+package org.alfresco.mobile.android.api.model;
 
 /**
  * Enumeration Constants that represents evaluator operator types available.

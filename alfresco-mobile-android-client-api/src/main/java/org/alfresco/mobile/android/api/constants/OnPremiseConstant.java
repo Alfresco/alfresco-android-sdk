@@ -50,6 +50,8 @@ public interface OnPremiseConstant
     // VERSION NUMBER
     int ALFRESCO_VERSION_4_2 = 2;
 
+    int ALFRESCO_VERSION_5 = 5;
+
     int ALFRESCO_VERSION_4 = 4;
 
     int ALFRESCO_VERSION_3 = 3;
