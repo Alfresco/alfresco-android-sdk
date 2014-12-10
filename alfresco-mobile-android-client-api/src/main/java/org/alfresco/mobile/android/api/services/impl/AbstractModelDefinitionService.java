@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.model.TaskTypeDefinition;
 import org.alfresco.mobile.android.api.model.impl.AspectDefinitionImpl;
 import org.alfresco.mobile.android.api.model.impl.DocumentTypeDefinitionImpl;
@@ -108,6 +109,12 @@ public abstract class AbstractModelDefinitionService extends AlfrescoService imp
     public TaskTypeDefinition getTaskTypeDefinition(String type)
     {
         return (TaskTypeDefinition) getTypeDefinition(TASK, type);
+    }
+    
+    @Override
+    public TaskTypeDefinition getTaskTypeDefinition(Task task)
+    {
+        return (TaskTypeDefinition) getTypeDefinition(TASK, task.getKey());
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
