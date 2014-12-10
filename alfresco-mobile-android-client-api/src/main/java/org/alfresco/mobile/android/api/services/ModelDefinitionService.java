@@ -21,8 +21,8 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.NodeTypeDefinition;
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.model.TaskTypeDefinition;
-
 
 /**
  * @since 1.4
@@ -32,36 +32,66 @@ public interface ModelDefinitionService extends Service
 {
     /**
      * Returns the type definition for the given Document type
+     * 
      * @param type
      * @return
-     * @exception  if the type is null or unknown.
+     * @exception if the type is null or unknown.
      */
     public NodeTypeDefinition getDocumentTypeDefinition(String type);
+
+    /**
+     * Returns the complete type definition for the given Document, the returned
+     * definition will also include all properties from all applied aspects.
+     * 
+     * @param doc
+     * @return
+     */
     public NodeTypeDefinition getDocumentTypeDefinition(Document doc);
 
     /**
      * Returns the type definition for the given Aspect type
+     * 
      * @param type
      * @return
-     * @exception  if the aspect is null or unknown.
+     * @exception if the aspect is null or unknown.
      */
     public ModelDefinition getAspectDefinition(String aspect);
 
     /**
      * Returns the type definition for the given Folder type
+     * 
      * @param type
      * @return
-     * @exception  if the type is null or unknown.
+     * @exception if the type is null or unknown.
      */
     public NodeTypeDefinition getFolderTypeDefinition(String type);
+
+    /**
+     * Returns the type definition for the given Folder, the returned definition
+     * will also include all properties from all applied aspects.
+     * 
+     * @param folder
+     * @return
+     */
     public NodeTypeDefinition getFolderTypeDefinition(Folder folder);
 
     /**
-     * Returns the type definition for the given Task type
+     * Returns the type definition for the given task type.
+     * 
      * @param type
      * @return
-     * @exception  if the type is null or unknown.
+     * @exception if the type is null or unknown.
      */
     public TaskTypeDefinition getTaskTypeDefinition(String type);
+
+    /**
+     * Returns the type definition for the given Task, the returned definition
+     * will also include all properties from all applied aspects.
+     * 
+     * @param type
+     * @return
+     * @exception if the type is null or unknown.
+     */
+    public TaskTypeDefinition getTaskTypeDefinition(Task task);
 
 }
