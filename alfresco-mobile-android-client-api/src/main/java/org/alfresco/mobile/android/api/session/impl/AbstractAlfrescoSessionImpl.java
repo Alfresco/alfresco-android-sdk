@@ -332,8 +332,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         
         //Hook for ConfigService
         //CF. ConfigService.
+        addParameterIfExist("org.alfresco.mobile.api.configuration.init", "org.alfresco.mobile.api.configuration.init");
         addParameterIfExist("org.alfresco.mobile.api.configuration.folder", "org.alfresco.mobile.api.configuration.folder");
-        addParameterIfExist("org.alfresco.mobile.api.configuration.application.id", "org.alfresco.mobile.api.configuration.application.id");
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)

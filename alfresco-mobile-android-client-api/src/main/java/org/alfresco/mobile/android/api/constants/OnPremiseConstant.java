@@ -321,6 +321,8 @@ public interface OnPremiseConstant
     String SKIP_COUNT_VALUE = "skipCount";
 
     String MAX_ITEMS_VALUE = "maxItems";
+    
+    String MAX_RESULTS_VALUE = "maxResults";
 
     // WORKFLOW
     String VERSION_VALUE = "version";
