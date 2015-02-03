@@ -144,7 +144,7 @@ public class PublicAPIPersonServiceImpl extends AbstractPersonService
 
             if (listingContext != null)
             {
-                url.addParameter(OnPremiseConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+                url.addParameter(OnPremiseConstant.MAX_RESULTS_VALUE, listingContext.getMaxItems());
             }
 
             // send and parse

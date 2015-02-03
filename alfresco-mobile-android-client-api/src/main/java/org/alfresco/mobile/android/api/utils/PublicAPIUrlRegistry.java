@@ -67,7 +67,7 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
-            + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
+            + "?where=(EXISTS(target/file)%20OR%20EXISTS(target/folder))";
 
     /** @since 1.1.0 */
     public static final String PREFERENCE_FAVOURITE = URL_USER_PREFERENCE + "/{nodeId}";
