@@ -321,6 +321,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(SessionParameter.READ_TIMEOUT, SessionParameter.READ_TIMEOUT);
         addParameterIfExist(SessionParameter.PROXY_USER, SessionParameter.PROXY_USER);
         addParameterIfExist(SessionParameter.PROXY_PASSWORD, SessionParameter.PROXY_PASSWORD);
+        addParameterIfExist(SessionParameter.CLIENT_COMPRESSION, SessionParameter.CLIENT_COMPRESSION);
         addParameterIfExist(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
                 SessionParameter.AUTHENTICATION_PROVIDER_CLASS);
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
