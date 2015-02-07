@@ -788,6 +788,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     changeTokenHolder, objectFactory.convertProperties(tmpProperties,
                             cmisSession.getTypeDefinition(nodeType), null, updatebility), null);
 
+            cmisSession.removeObjectFromCache(objectId);
+
             return getChildById(objectId);
         }
         catch (CmisRuntimeException e)
@@ -849,6 +851,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             objectService.setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
                     changeTokenHolder, c, null);
+
+            cmisSession.removeObjectFromCache(content.getIdentifier());
 
             newContent = (Document) getNodeByIdentifier(content.getIdentifier());
 

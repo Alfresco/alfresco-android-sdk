@@ -243,7 +243,6 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /**
      * Allow to retrieve specific cancel join site url.
      * 
-     * @param site : Site
      * @return URl to cancel a join request.
      */
     protected abstract String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest);
