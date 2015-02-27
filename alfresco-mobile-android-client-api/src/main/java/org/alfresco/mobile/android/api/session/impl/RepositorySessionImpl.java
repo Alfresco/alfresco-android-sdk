@@ -37,6 +37,7 @@ import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
@@ -113,6 +114,10 @@ public class RepositorySessionImpl extends RepositorySession
             catch (Exception err)
             {
                 creationException = err;
+                if (err.getCause() instanceof CmisUnauthorizedException)
+                {
+                    break;
+                }
                 hasPublicAPI = false;
             }
 
