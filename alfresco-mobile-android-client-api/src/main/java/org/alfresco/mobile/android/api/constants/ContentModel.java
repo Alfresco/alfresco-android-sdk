@@ -120,6 +120,9 @@ public interface ContentModel
     
     String PROP_MIMETYPE = "mimetype";
 
+    /** Folder only. */
+    String PROP_PATH = "path";
+
     // Geographic Aspect.
     String ASPECT_GEOGRAPHIC = CONTENT_MODEL_PREFIX.concat(":geographic");
 

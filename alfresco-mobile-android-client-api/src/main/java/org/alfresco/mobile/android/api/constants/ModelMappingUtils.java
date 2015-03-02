@@ -64,6 +64,7 @@ public class ModelMappingUtils
         ALFRESCO_TO_CMIS.put(ContentModel.PROP_VERSION_LABEL, PropertyIds.VERSION_LABEL);
         ALFRESCO_TO_CMIS.put(ContentModel.PROP_SIZE, PropertyIds.CONTENT_STREAM_LENGTH);
         ALFRESCO_TO_CMIS.put(ContentModel.PROP_MIMETYPE, PropertyIds.CONTENT_STREAM_MIME_TYPE);
+        ALFRESCO_TO_CMIS.put(ContentModel.PROP_PATH, PropertyIds.PATH);
     }
     
     /**
@@ -80,6 +81,7 @@ public class ModelMappingUtils
         CMIS_TO_ALFRESCO.put(PropertyIds.VERSION_LABEL, ContentModel.PROP_VERSION_LABEL);
         CMIS_TO_ALFRESCO.put(PropertyIds.CONTENT_STREAM_LENGTH, ContentModel.PROP_SIZE);
         CMIS_TO_ALFRESCO.put(PropertyIds.CONTENT_STREAM_MIME_TYPE, ContentModel.PROP_MIMETYPE);
+        CMIS_TO_ALFRESCO.put(PropertyIds.PATH, ContentModel.PROP_PATH);
     }
 
     /**
