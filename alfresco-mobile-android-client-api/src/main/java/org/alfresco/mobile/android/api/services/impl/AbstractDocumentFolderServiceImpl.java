@@ -17,6 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_ASPECTS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_TO_CMIS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_ASPECTS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_DOCUMENT;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_FOLDER;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -40,6 +46,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.PermissionsImpl;
@@ -80,11 +87,6 @@ import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
 import org.apache.http.HttpStatus;
 
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_ASPECTS;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_DOCUMENT;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_FOLDER;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_TO_CMIS;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_ASPECTS;
 import android.util.Log;
 
 /**
@@ -722,9 +724,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     {
         return updateProperties(node, properties, aspects, true);
     }
-    
+
     /** {@inheritDoc} */
-    protected Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects, boolean propertiesRequired)
+    protected Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects,
+            boolean propertiesRequired)
     {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
@@ -771,10 +774,14 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             updatebility.add(Updatability.READWRITE);
 
             // check if checked out
-            Boolean isCheckedOut = (Boolean) node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT).getValue();
-            if ((isCheckedOut != null) && isCheckedOut.booleanValue())
+            Property property = node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
+            if (property != null)
             {
-                updatebility.add(Updatability.WHENCHECKEDOUT);
+                Boolean isCheckedOut = (Boolean) property.getValue();
+                if ((isCheckedOut != null) && isCheckedOut.booleanValue())
+                {
+                    updatebility.add(Updatability.WHENCHECKEDOUT);
+                }
             }
 
             String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
