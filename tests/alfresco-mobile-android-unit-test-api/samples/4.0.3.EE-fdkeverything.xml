@@ -10,9 +10,7 @@
 	<atom:title>D:fdk:everything</atom:title>
 	<app:edited>2014-07-11T12:40:38Z</app:edited>
 	<atom:updated>2014-07-11T12:40:38Z</atom:updated>
-	<cmisra:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:ns3="http://docs.oasis-open.org/ns/cmis/messaging/200908/"
-		xsi:type="cmis:cmisTypeDocumentDefinitionType">
+    <cmisra:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cmis:cmisTypeDocumentDefinitionType">
 		<cmis:id>D:fdk:everything</cmis:id>
 		<cmis:localName>everything</cmis:localName>
 		<cmis:localNamespace>http://www.alfresco.org/model/fdk/1.0

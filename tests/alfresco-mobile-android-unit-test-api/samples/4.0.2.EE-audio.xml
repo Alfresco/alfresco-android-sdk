@@ -10,9 +10,7 @@
 	<atom:title>Audio</atom:title>
 	<app:edited>2014-07-11T13:09:27Z</app:edited>
 	<atom:updated>2014-07-11T13:09:27Z</atom:updated>
-	<cmisra:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:ns3="http://docs.oasis-open.org/ns/cmis/messaging/200908/"
-		xsi:type="cmis:cmisTypePolicyDefinitionType">
+    <cmisra:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cmis:cmisTypePolicyDefinitionType">
 		<cmis:id>P:audio:audio</cmis:id>
 		<cmis:localName>audio</cmis:localName>
 		<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0

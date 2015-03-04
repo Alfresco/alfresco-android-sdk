@@ -40,7 +40,6 @@ import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 import android.content.Context;
-import android.os.storage.StorageManager;
 import android.util.Log;
 
 public class StorageManagerTest extends AlfrescoSDKTestCase

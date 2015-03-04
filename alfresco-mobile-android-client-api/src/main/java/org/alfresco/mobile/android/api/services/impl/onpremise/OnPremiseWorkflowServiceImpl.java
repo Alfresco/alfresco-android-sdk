@@ -68,7 +68,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.animation.TranslateAnimation;
 
 /**
  * Specific implementation of WorkflowService for OnPremise API.
