@@ -1949,5 +1949,4 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertFalse(folder.hasAllProperties());
         Assert.assertTrue(docfolderservice.isFavorite(folder));
     }
-    
 }

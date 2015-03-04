@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
@@ -379,6 +380,32 @@ public interface DocumentFolderService extends Service
      *             during the process.
      */
     Node updateProperties(Node node, Map<String, Serializable> properties);
+
+    /**
+     * Updates the properties for the given node and applies the given aspects.
+     * Can accept Alfresco Content Model Properties id or cmis properties id.
+     * 
+     * @param node : Node to update
+     * @param properties : Properties to update.
+     * @param aspects : list of aspects to apply
+     * @since 1.4
+     * @return Returns Newly update node.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
+     */
+    Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects);
+
+    /**
+     * Adds the given aspects to the given node.
+     * 
+     * @param node Node to update
+     * @param aspects : list of aspects to apply
+     * @since 1.4
+     * @return Returns Newly update node.
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
+     */
+    Node addAspects(Node node, List<String> aspects);
 
     /**
      * Updates the content on the given document using the provided local file.

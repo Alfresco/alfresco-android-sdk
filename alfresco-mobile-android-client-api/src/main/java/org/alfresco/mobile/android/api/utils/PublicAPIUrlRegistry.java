@@ -67,7 +67,7 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.2.0 */
     public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
-            + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
+            + "?where=(EXISTS(target/file)%20OR%20EXISTS(target/folder))";
 
     /** @since 1.1.0 */
     public static final String PREFERENCE_FAVOURITE = URL_USER_PREFERENCE + "/{nodeId}";
@@ -377,6 +377,9 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String URL_ITEMS_PROCESS = URL_PROCESS + "/items";
+    
+    /** @since 1.4.0 */
+    public static final String URL_PROCESS_VARIABLES = URL_PROCESS + "/variables";
 
     /** @since 1.3.0 */
     public static final String URL_TASKS = "tasks";
@@ -439,9 +442,9 @@ public class PublicAPIUrlRegistry
     }
 
     /** @since 1.3.0 */
-    public static String getProcessVariablesUrl(AlfrescoSession session, String taskId)
+    public static String getProcessItemsVariableUrl(AlfrescoSession session, String processId)
     {
-        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, taskId)).toString();
+        return createWorkflowPrefix(session).append(URL_ITEMS_PROCESS.replace(VARIABLE_PROCESSID, processId)).toString();
     }
 
     /** @since 1.3.0 */
@@ -467,6 +470,13 @@ public class PublicAPIUrlRegistry
     {
         return createWorkflowPrefix(session).append(
                 URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
+    }
+    
+    /** @since 1.4.0 */
+    public static String getProcessVariablesUrl(AlfrescoSession session, String processId)
+    {
+        return createWorkflowPrefix(session).append(
+                URL_PROCESS_VARIABLES.replace(VARIABLE_PROCESSID, processId)).toString();
     }
 
     /** @since 1.3.0 */

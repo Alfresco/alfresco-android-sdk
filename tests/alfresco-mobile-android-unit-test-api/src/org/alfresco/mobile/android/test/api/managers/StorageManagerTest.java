@@ -28,6 +28,7 @@ import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -37,8 +38,8 @@ import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 
+import android.content.Context;
 import android.util.Log;
 
 public class StorageManagerTest extends AlfrescoSDKTestCase
@@ -70,7 +71,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(AlfrescoSession.EXTRACT_METADATA, true);
         settings.put(AlfrescoSession.CACHE_FOLDER,
-                StorageManager.getCacheDir(getInstrumentation().getTargetContext(), "AlfrescoMobileTest").getPath());
+                getCacheDir(getInstrumentation().getTargetContext(), "AlfrescoMobileTest").getPath());
 
         alfsession = createRepositorySession(settings);
 
@@ -104,7 +105,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
         createDocumentFromAsset(unitTestFolder, "android.jpg");
         Document doc = (Document) docfolderservice.getChildByPath(unitTestFolder, "android.jpg");
         // Retrieve Content
-        //Log.d(TAG, "Download Content");
+        // Log.d(TAG, "Download Content");
         cf = docfolderservice.getContent(doc);
         Assert.assertNotNull(cf);
         Assert.assertTrue(cf.getMimeType().contains(doc.getContentStreamMimeType()));
@@ -118,8 +119,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     {
         initSessionWithParams();
 
-        File customCacheFolder = StorageManager.getCacheDir(getInstrumentation().getTargetContext(),
-                "AlfrescoMobileTest");
+        File customCacheFolder = getCacheDir(getInstrumentation().getTargetContext(), "AlfrescoMobileTest");
 
         // ///////////////////////////////////////////////////////////////////////////
         // Get Person Avatar File
@@ -191,7 +191,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        //Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
+        // Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
         File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
     }
@@ -199,7 +199,7 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
     @Override
     protected void tearDown() throws Exception
     {
-        //Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
+        // Log.d(TAG, "[CODE CLEAN] - Delete Cache Folder");
         File f = new File(AbstractAlfrescoSessionImpl.DEFAULT_CACHE_FOLDER_PATH);
         delete(f);
         super.tearDown();
@@ -216,5 +216,43 @@ public class StorageManagerTest extends AlfrescoSDKTestCase
             }
         }
         if (!f.delete()) { throw new FileNotFoundException("Failed to delete file: " + f); }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILITIES
+    // ///////////////////////////////////////////////////////////////////////////
+    public static File getCacheDir(Context context, String extendedPath)
+    {
+        File folder = null;
+        try
+        {
+            folder = createFolder(context.getCacheDir(), extendedPath);
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return folder;
+    }
+
+    protected static File createFolder(File f, String extendedPath)
+    {
+        File tmpFolder = null;
+        tmpFolder = new File(f, extendedPath);
+        if (!tmpFolder.exists())
+        {
+            tmpFolder.mkdirs();
+            try
+            {
+                new File(tmpFolder, ".nomedia").createNewFile();
+            }
+            catch (IOException e)
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+            }
+        }
+
+        return tmpFolder;
     }
 }

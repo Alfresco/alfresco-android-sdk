@@ -29,19 +29,17 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
-import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
@@ -376,7 +374,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         List<String> aspects = folder.getAspects();
         for (String aspect : aspects)
         {
-            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));
         }
 
         // Titled + Localized + Geographic

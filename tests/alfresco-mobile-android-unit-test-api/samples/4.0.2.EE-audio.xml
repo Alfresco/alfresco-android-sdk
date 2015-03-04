@@ -1,0 +1,414 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<atom:entry xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/"
+	xmlns:cmisra="http://docs.oasis-open.org/ns/cmis/restatom/200908/"
+	xmlns:app="http://www.w3.org/2007/app">
+	<atom:author>
+		<atom:name>unknown</atom:name>
+	</atom:author>
+	<atom:id>http://chemistry.apache.org/UDphdWRpbzphdWRpbw==</atom:id>
+	<atom:title>Audio</atom:title>
+	<app:edited>2014-07-11T13:09:27Z</app:edited>
+	<atom:updated>2014-07-11T13:09:27Z</atom:updated>
+    <cmisra:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cmis:cmisTypePolicyDefinitionType">
+		<cmis:id>P:audio:audio</cmis:id>
+		<cmis:localName>audio</cmis:localName>
+		<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+		</cmis:localNamespace>
+		<cmis:displayName>Audio</cmis:displayName>
+		<cmis:queryName>audio:audio</cmis:queryName>
+		<cmis:description>Subset of the standard xmpDM Audio metadata
+		</cmis:description>
+		<cmis:baseId>cmis:policy</cmis:baseId>
+		<cmis:parentId>P:cmisext:aspects</cmis:parentId>
+		<cmis:creatable>false</cmis:creatable>
+		<cmis:fileable>false</cmis:fileable>
+		<cmis:queryable>true</cmis:queryable>
+		<cmis:fulltextIndexed>true</cmis:fulltextIndexed>
+		<cmis:includedInSupertypeQuery>true</cmis:includedInSupertypeQuery>
+		<cmis:controllablePolicy>false</cmis:controllablePolicy>
+		<cmis:controllableACL>false</cmis:controllableACL>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:artist</cmis:id>
+			<cmis:localName>artist</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Artist</cmis:displayName>
+			<cmis:queryName>audio:artist</cmis:queryName>
+			<cmis:description>Artist who performed the work</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:engineer</cmis:id>
+			<cmis:localName>engineer</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Engineer</cmis:displayName>
+			<cmis:queryName>audio:engineer</cmis:queryName>
+			<cmis:description>Recording Engineer</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:compressor</cmis:id>
+			<cmis:localName>compressor</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Compressor</cmis:displayName>
+			<cmis:queryName>audio:compressor</cmis:queryName>
+			<cmis:description>Audio Compressor Used, such as MP3 or FLAC
+			</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:album</cmis:id>
+			<cmis:localName>album</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Album</cmis:displayName>
+			<cmis:queryName>audio:album</cmis:queryName>
+			<cmis:description>Album</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:composer</cmis:id>
+			<cmis:localName>composer</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Composer</cmis:displayName>
+			<cmis:queryName>audio:composer</cmis:queryName>
+			<cmis:description>Composer who composed the work</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:channelType</cmis:id>
+			<cmis:localName>channelType</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Channel Type</cmis:displayName>
+			<cmis:queryName>audio:channelType</cmis:queryName>
+			<cmis:description>Audio Channel Type, typically one of Mono, Stereo,
+				5.1 or 7.1</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:sampleType</cmis:id>
+			<cmis:localName>sampleType</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Sample Type</cmis:displayName>
+			<cmis:queryName>audio:sampleType</cmis:queryName>
+			<cmis:description>Audio Sample Type, typically one of 8Int, 16Int,
+				32Int or 32Float</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>audio:genre</cmis:id>
+			<cmis:localName>genre</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Genre</cmis:displayName>
+			<cmis:queryName>audio:genre</cmis:queryName>
+			<cmis:description>Genre of the music</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyIntegerDefinition>
+			<cmis:id>audio:sampleRate</cmis:id>
+			<cmis:localName>sampleRate</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Sample Rate</cmis:displayName>
+			<cmis:queryName>audio:sampleRate</cmis:queryName>
+			<cmis:description>Sample Rate</cmis:description>
+			<cmis:propertyType>integer</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyIntegerDefinition>
+		<cmis:propertyIntegerDefinition>
+			<cmis:id>audio:trackNumber</cmis:id>
+			<cmis:localName>trackNumber</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Track Number</cmis:displayName>
+			<cmis:queryName>audio:trackNumber</cmis:queryName>
+			<cmis:description>Track Number of the work in the Album
+			</cmis:description>
+			<cmis:propertyType>integer</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyIntegerDefinition>
+		<cmis:propertyDateTimeDefinition>
+			<cmis:id>audio:releaseDate</cmis:id>
+			<cmis:localName>releaseDate</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/audio/1.0
+			</cmis:localNamespace>
+			<cmis:displayName>Release Date</cmis:displayName>
+			<cmis:queryName>audio:releaseDate</cmis:queryName>
+			<cmis:description>Release Date</cmis:description>
+			<cmis:propertyType>datetime</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>false</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyDateTimeDefinition>
+		<cmis:propertyIdDefinition>
+			<cmis:id>cmis:objectTypeId</cmis:id>
+			<cmis:localName>objectTypeId</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Object Type Id</cmis:displayName>
+			<cmis:queryName>cmis:objectTypeId</cmis:queryName>
+			<cmis:description>Id of the object’s type</cmis:description>
+			<cmis:propertyType>id</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>oncreate</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>true</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyIdDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>cmis:lastModifiedBy</cmis:id>
+			<cmis:localName>lastModifiedBy</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Last Modified By</cmis:displayName>
+			<cmis:queryName>cmis:lastModifiedBy</cmis:queryName>
+			<cmis:description>The authority who last modified this object
+			</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>cmis:policyText</cmis:id>
+			<cmis:localName>policyText</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Policy Text</cmis:displayName>
+			<cmis:queryName>cmis:policyText</cmis:queryName>
+			<cmis:description>The policy text</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>true</cmis:required>
+			<cmis:queryable>false</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>cmis:name</cmis:id>
+			<cmis:localName>name</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Name</cmis:displayName>
+			<cmis:queryName>cmis:name</cmis:queryName>
+			<cmis:description>Name</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readwrite</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>cmis:createdBy</cmis:id>
+			<cmis:localName>createdBy</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Created by</cmis:displayName>
+			<cmis:queryName>cmis:createdBy</cmis:queryName>
+			<cmis:description>The authority who created this object
+			</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyIdDefinition>
+			<cmis:id>cmis:objectId</cmis:id>
+			<cmis:localName>objectId</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Object Id</cmis:displayName>
+			<cmis:queryName>cmis:objectId</cmis:queryName>
+			<cmis:description>The unique object id (a node ref)
+			</cmis:description>
+			<cmis:propertyType>id</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyIdDefinition>
+		<cmis:propertyDateTimeDefinition>
+			<cmis:id>cmis:creationDate</cmis:id>
+			<cmis:localName>creationDate</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Creation Date</cmis:displayName>
+			<cmis:queryName>cmis:creationDate</cmis:queryName>
+			<cmis:description>The object creation date</cmis:description>
+			<cmis:propertyType>datetime</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyDateTimeDefinition>
+		<cmis:propertyStringDefinition>
+			<cmis:id>cmis:changeToken</cmis:id>
+			<cmis:localName>changeToken</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Change token</cmis:displayName>
+			<cmis:queryName>cmis:changeToken</cmis:queryName>
+			<cmis:description>Change Token</cmis:description>
+			<cmis:propertyType>string</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>false</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyStringDefinition>
+		<cmis:propertyIdDefinition>
+			<cmis:id>cmis:baseTypeId</cmis:id>
+			<cmis:localName>baseTypeId</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Base Type Id</cmis:displayName>
+			<cmis:queryName>cmis:baseTypeId</cmis:queryName>
+			<cmis:description>Id of the base object type for the object
+			</cmis:description>
+			<cmis:propertyType>id</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyIdDefinition>
+		<cmis:propertyIdDefinition>
+			<cmis:id>alfcmis:nodeRef</cmis:id>
+			<cmis:localName>nodeRef</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/alfcmis
+			</cmis:localNamespace>
+			<cmis:displayName>Alfresco Node Ref</cmis:displayName>
+			<cmis:queryName>alfcmis:nodeRef</cmis:queryName>
+			<cmis:description>Alfresco Node Ref</cmis:description>
+			<cmis:propertyType>id</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>false</cmis:queryable>
+			<cmis:orderable>false</cmis:orderable>
+		</cmis:propertyIdDefinition>
+		<cmis:propertyDateTimeDefinition>
+			<cmis:id>cmis:lastModificationDate</cmis:id>
+			<cmis:localName>lastModificationDate</cmis:localName>
+			<cmis:localNamespace>http://www.alfresco.org/model/cmis/1.0/cs01
+			</cmis:localNamespace>
+			<cmis:displayName>Last Modified Date</cmis:displayName>
+			<cmis:queryName>cmis:lastModificationDate</cmis:queryName>
+			<cmis:description>The date this object was last modified
+			</cmis:description>
+			<cmis:propertyType>datetime</cmis:propertyType>
+			<cmis:cardinality>single</cmis:cardinality>
+			<cmis:updatability>readonly</cmis:updatability>
+			<cmis:inherited>true</cmis:inherited>
+			<cmis:required>false</cmis:required>
+			<cmis:queryable>true</cmis:queryable>
+			<cmis:orderable>true</cmis:orderable>
+		</cmis:propertyDateTimeDefinition>
+	</cmisra:type>
+	<atom:link rel="service"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23?repositoryId=62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23"
+		type="application/atomsvc+xml" />
+	<atom:link rel="self"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/type?id=P%3Aaudio%3Aaudio"
+		type="application/atom+xml;type=entry" cmisra:id="P:audio:audio" />
+	<atom:link rel="enclosure"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/type?id=P%3Aaudio%3Aaudio"
+		type="application/atom+xml;type=entry" />
+	<atom:link rel="up"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/type?id=P%3Acmisext%3Aaspects"
+		type="application/atom+xml;type=entry" />
+	<atom:link rel="down"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/types?typeId=P%3Aaudio%3Aaudio"
+		type="application/atom+xml;type=feed" />
+	<atom:link rel="down"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/typedesc?typeId=P%3Aaudio%3Aaudio"
+		type="application/cmistree+xml" />
+	<atom:link rel="describedby"
+		href="http://hostname:port/alfresco/cmisatom/62e5f6d6-7c82-47f8-ad45-c2cbcc5a4e23/type?id=cmis%3Apolicy"
+		type="application/atom+xml;type=entry" />
+</atom:entry>

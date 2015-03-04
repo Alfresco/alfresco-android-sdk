@@ -46,9 +46,11 @@ public interface OnPremiseConstant
     String THIRD_CMIS_EDITION = "thirdcmis";
     
     String EDITION_VALUE = "edition";
-
+    
     // VERSION NUMBER
     int ALFRESCO_VERSION_4_2 = 2;
+
+    int ALFRESCO_VERSION_5 = 5;
 
     int ALFRESCO_VERSION_4 = 4;
 
@@ -319,6 +321,8 @@ public interface OnPremiseConstant
     String SKIP_COUNT_VALUE = "skipCount";
 
     String MAX_ITEMS_VALUE = "maxItems";
+    
+    String MAX_RESULTS_VALUE = "maxResults";
 
     // WORKFLOW
     String VERSION_VALUE = "version";
@@ -415,5 +419,4 @@ public interface OnPremiseConstant
     String OUTCOME_VALUE = "outcome";
 
     String TASKS_VALUE = "tasks";
-
 }

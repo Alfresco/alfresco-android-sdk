@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
@@ -58,6 +59,8 @@ import android.os.Parcelable;
  */
 public class OnPremiseServiceRegistry extends AbstractServiceRegistry
 {
+    private static final String TAG = OnPremiseServiceRegistry.class.getSimpleName();
+
     private boolean hasPublicAPI = false;
 
     public OnPremiseServiceRegistry(AlfrescoSession session)
@@ -75,6 +78,11 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
                 this.documentFolderService = new OnPremiseDocumentFolderServiceImpl(session);
             }
         }
+    }
+
+    public void init()
+    {
+        // TODO Implement in derived class
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -185,11 +193,11 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
             {
                 try
                 {
-                  //Detect if workflow public API is present
+                    // Detect if workflow public API is present
                     UrlBuilder builder = new UrlBuilder(PublicAPIUrlRegistry.getProcessDefinitionsUrl(session));
-                    Response resp = NetworkHttpInvoker
-                            .invokeGET(builder, ((RepositorySessionImpl) session).getCmisSession().getBinding()
-                                    .getAuthenticationProvider().getHTTPHeaders(session.getBaseUrl()));
+                    Response resp = NetworkHttpInvoker.invokeGET(builder,
+                            ((RepositorySessionImpl) session).getCmisSession().getBinding().getAuthenticationProvider()
+                                    .getHTTPHeaders(session.getBaseUrl()));
                     if (resp.getResponseCode() == HttpStatus.SC_OK)
                     {
                         this.workflowService = new PublicAPIWorkflowServiceImpl(session);
@@ -210,6 +218,22 @@ public class OnPremiseServiceRegistry extends AbstractServiceRegistry
             }
         }
         return workflowService;
+    }
+
+    public ModelDefinitionService getModelDefinitionService()
+    {
+        if (typeDefinitionService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
+        {
+            if (hasPublicAPI)
+            {
+                this.typeDefinitionService = new OnPremiseModelDefinitionServiceImpl(session);
+            }
+            else
+            {
+                this.typeDefinitionService = new OnPremiseModelDefinitionServiceImpl((RepositorySession) session);
+            }
+        }
+        return typeDefinitionService;
     }
 
     // ////////////////////////////////////////////////////

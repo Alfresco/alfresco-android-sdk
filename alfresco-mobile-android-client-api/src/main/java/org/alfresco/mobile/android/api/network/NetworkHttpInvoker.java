@@ -98,7 +98,7 @@ public class NetworkHttpInvoker implements HttpInvoker
         try
         {
             // log before connect
-            //Log.d("URL", url.toString());
+            Log.d("URL", url.toString());
             if (LOG.isDebugEnabled())
             {
                 LOG.debug(method + " " + url);

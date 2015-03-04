@@ -321,6 +321,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(SessionParameter.READ_TIMEOUT, SessionParameter.READ_TIMEOUT);
         addParameterIfExist(SessionParameter.PROXY_USER, SessionParameter.PROXY_USER);
         addParameterIfExist(SessionParameter.PROXY_PASSWORD, SessionParameter.PROXY_PASSWORD);
+        addParameterIfExist(SessionParameter.CLIENT_COMPRESSION, SessionParameter.CLIENT_COMPRESSION);
         addParameterIfExist(SessionParameter.AUTHENTICATION_PROVIDER_CLASS,
                 SessionParameter.AUTHENTICATION_PROVIDER_CLASS);
         addParameterIfExist(AlfrescoSession.AUTHENTICATOR_CLASSNAME, AlfrescoSession.AUTHENTICATOR_CLASSNAME);
@@ -329,6 +330,11 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         addParameterIfExist(HTTP_CHUNK_TRANSFERT, HTTP_CHUNK_TRANSFERT);
         addParameterIfExist(ONPREMISE_TRUSTMANAGER_CLASSNAME, ONPREMISE_TRUSTMANAGER_CLASSNAME);
         addParameterIfExist(HTTP_INVOKER_CLASSNAME, SessionParameter.HTTP_INVOKER_CLASS);
+        
+        //Hook for ConfigService
+        //CF. ConfigService.
+        addParameterIfExist("org.alfresco.mobile.api.configuration.init", "org.alfresco.mobile.api.configuration.init");
+        addParameterIfExist("org.alfresco.mobile.api.configuration.folder", "org.alfresco.mobile.api.configuration.folder");
     }
 
     private void addParameterIfExist(String keySettings, String keyParameters)
@@ -419,12 +425,12 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
             if (param.get(SessionParameter.REPOSITORY_ID) != null)
             {
                 return ((SessionFactoryImpl) sessionFactory).createSession(param, null,
-                        new PassthruAuthenticationProviderImpl(authenticator), null);
+                        new PassthruAuthenticationProviderImpl(authenticator), null, null);
             }
             else
             {
                 return ((SessionFactoryImpl) sessionFactory)
-                        .getRepositories(param, null, new PassthruAuthenticationProviderImpl(authenticator), null)
+                        .getRepositories(param, null, new PassthruAuthenticationProviderImpl(authenticator), null, null)
                         .get(0).createSession();
             }
         }

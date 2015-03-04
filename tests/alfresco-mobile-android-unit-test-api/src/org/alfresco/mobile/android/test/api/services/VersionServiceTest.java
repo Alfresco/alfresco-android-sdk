@@ -254,6 +254,166 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
             cmisDoc = (AlfrescoDocument) cmisDoc.getObjectOfLatestVersion(false);
         }
     }
+    
+    
+    /**
+     * @since 1.4
+     */
+    public void testCheckInCheckOut()
+    {
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // Init data
+        // ///////////////////////////////////////////////////////////////////////////
+
+        // Create sample folder
+        Map<String, Serializable> properties = new HashMap<String, Serializable>();
+        Folder folder = createNewFolder(alfsession, unitTestFolder, SAMPLE_FOLDER_NAME, properties);
+
+        // Create 1 Document with content
+        createDocuments(folder, 1);
+        Document doc = (Document) docfolderservice.getChildren(folder).get(0);
+
+        // Check Version 
+        // ///////////////////////////////////////////////////////////////////////////
+        List<Document> versions = versionService.getVersions(doc);
+
+        Assert.assertNotNull(versions);
+        Assert.assertEquals(1, versions.size());
+        
+        Document vDocument = versions.get(0);
+        Assert.assertNotNull(vDocument);
+        Assert.assertEquals("1.0", vDocument.getVersionLabel());
+        Assert.assertTrue(vDocument.isLatestVersion());
+        Assert.assertEquals("Initial Version", vDocument.getVersionComment());
+        
+        // CheckOut
+        // ///////////////////////////////////////////////////////////////////////////
+        Document checkedOutDocument = versionService.checkout(doc);
+        
+        Assert.assertFalse(doc.getIdentifier().equals(checkedOutDocument.getIdentifier()));
+        Assert.assertTrue(checkedOutDocument.getIdentifier().contains("pwc"));
+        
+        // Cancel CheckOut
+        // ///////////////////////////////////////////////////////////////////////////
+        versionService.cancelCheckout(checkedOutDocument);
+        
+        // Check Version 
+        // ///////////////////////////////////////////////////////////////////////////
+        versions = versionService.getVersions(doc);
+
+        Assert.assertNotNull(versions);
+        Assert.assertEquals(1, versions.size());
+        
+        vDocument = versions.get(0);
+        Assert.assertNotNull(vDocument);
+        Assert.assertEquals("1.0", vDocument.getVersionLabel());
+        Assert.assertTrue(vDocument.isLatestVersion());
+        Assert.assertEquals("Initial Version", vDocument.getVersionComment());
+        
+        
+        // Check In Major
+        // ///////////////////////////////////////////////////////////////////////////
+        checkedOutDocument = versionService.checkout(doc);
+        Assert.assertFalse(doc.getIdentifier().equals(checkedOutDocument.getIdentifier()));
+        Assert.assertTrue(checkedOutDocument.getIdentifier().contains("pwc"));
+        
+        Document checkedInDocument = versionService.checkin(checkedOutDocument, true, createContentFile("Hello!"), null, "V2");
+        Assert.assertEquals("2.0", checkedInDocument.getVersionLabel());
+        Assert.assertEquals("V2", checkedInDocument.getVersionComment());
+        Assert.assertTrue(checkedInDocument.getContentStreamLength() != doc.getContentStreamLength() );
+        Assert.assertTrue(checkedInDocument.isLatestVersion());
+        
+        // Check In Minor
+        // ///////////////////////////////////////////////////////////////////////////
+        try
+        {
+            checkedOutDocument = versionService.checkout(doc);
+            Assert.fail();
+        }
+        catch (Exception e)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        checkedOutDocument = versionService.checkout(checkedInDocument);
+        Assert.assertFalse(doc.getIdentifier().equals(checkedOutDocument.getIdentifier()));
+        Assert.assertTrue(checkedOutDocument.getIdentifier().contains("pwc"));
+        
+        checkedInDocument = versionService.checkin(checkedOutDocument, false, createContentFile("Hello!"), null, "V2.1");
+        Assert.assertEquals("2.1", checkedInDocument.getVersionLabel());
+        Assert.assertEquals("V2.1", checkedInDocument.getVersionComment());
+        Assert.assertTrue(checkedInDocument.getContentStreamLength() != doc.getContentStreamLength() );
+        Assert.assertTrue(checkedInDocument.isLatestVersion());
+
+    }
+    
+    /**
+     * @since 1.4
+     */
+    public void testCheckedOutDocuments()
+    {
+        // Create Root Test Folder
+        Folder unitTestFolder = createUnitTestFolder(alfsession);
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // Init data
+        // ///////////////////////////////////////////////////////////////////////////
+
+        // Create sample folder
+        Map<String, Serializable> properties = new HashMap<String, Serializable>();
+        Folder folder = createNewFolder(alfsession, unitTestFolder, SAMPLE_FOLDER_NAME, properties);
+
+        // Create 3 Document with content
+        createDocuments(folder, 3);
+        
+        //Check out all documents
+        Map<String, Document> index = new HashMap<String, Document>(3);
+        List<Node> docs = docfolderservice.getChildren(folder);
+        Document checkoutDoc = null;
+        for (Node node : docs)
+        {
+            checkoutDoc = versionService.checkout((Document) node);
+            index.put(checkoutDoc.getIdentifier(), checkoutDoc);
+        }
+        
+        //Retrieve all checkOut documents
+        List<Document> checkOutDocuments = versionService.getCheckedOutDocuments();
+        for (Document document : checkOutDocuments)
+        {
+            Assert.assertTrue(index.containsKey(document.getIdentifier()));
+        }
+        
+        //Retrieve all checkOut documents
+        ListingContext lc = new ListingContext();
+        lc.setMaxItems(1);
+        PagingResult<Document> pagingDocuments = versionService.getCheckedOutDocuments(lc);
+        Assert.assertTrue(pagingDocuments.hasMoreItems());
+        Assert.assertEquals(-1, pagingDocuments.getTotalItems());
+        Assert.assertFalse(pagingDocuments.getList().isEmpty());
+        for (Document document : pagingDocuments.getList())
+        {
+            Assert.assertTrue(index.containsKey(document.getIdentifier()));
+        }
+        
+        //Cancel Everything
+        for (Node node : docs)
+        {
+            versionService.cancelCheckout((Document) node);
+        }
+        
+        //Retrieve all checkOut documents
+        checkOutDocuments = versionService.getCheckedOutDocuments();
+        Assert.assertTrue(checkOutDocuments.isEmpty());
+        
+        pagingDocuments = versionService.getCheckedOutDocuments(lc);
+        Assert.assertFalse(pagingDocuments.hasMoreItems());
+        Assert.assertEquals(-1, pagingDocuments.getTotalItems());
+        Assert.assertTrue(pagingDocuments.getList().isEmpty());
+    }
+    
 
     /**
      * Test to check VersionService methods error case.

@@ -122,6 +122,9 @@ public class SessionTest extends AlfrescoSDKTestCase
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
         }
 
+        // Edition Informations : Community by default
+        Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN, alfsession.getRepositoryInfo().getEdition());
+
         // Edition Version number
         Assert.assertNotNull(alfsession.getRepositoryInfo().getVersion());
         if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
@@ -257,11 +260,25 @@ public class SessionTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(alfsession.getRepositoryInfo().getCapabilities().doesSupportCommentsCount());
             Assert.assertTrue(alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes());
+            if (alfsession.getRepositoryInfo().getMajorVersion() == OnPremiseConstant.ALFRESCO_VERSION_4
+                    && alfsession.getRepositoryInfo().getMinorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4_2
+                    || alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_5)
+            {
+                Assert.assertTrue(alfsession.getRepositoryInfo().getCapabilities().doesSupportMyFiles());
+                Assert.assertTrue(alfsession.getRepositoryInfo().getCapabilities().doesSupportSharedFiles());
+            }
+            else
+            {
+                Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportMyFiles());
+                Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportSharedFiles());
+            }
         }
         else
         {
             Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportCommentsCount());
             Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes());
+            Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportMyFiles());
+            Assert.assertFalse(alfsession.getRepositoryInfo().getCapabilities().doesSupportSharedFiles());
         }
 
         // /////////////////////

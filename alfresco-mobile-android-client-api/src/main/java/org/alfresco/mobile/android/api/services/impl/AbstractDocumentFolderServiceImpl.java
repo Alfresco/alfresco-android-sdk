@@ -17,6 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_ASPECTS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_TO_CMIS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_ASPECTS;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_DOCUMENT;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_FOLDER;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -40,6 +46,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.PermissionsImpl;
@@ -54,7 +61,6 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
@@ -152,7 +158,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (childObjects != null)
             {
-                ////Log.d(TAG, "childObjects : " + childObjects.size());
+                // //Log.d(TAG, "childObjects : " + childObjects.size());
                 for (ObjectInFolderData objectData : childObjects)
                 {
                     if (objectData.getObject() != null)
@@ -432,7 +438,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             String newId = objectService.createFolder(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), null, null, null, null);
 
             if (newId == null) { return null; }
@@ -487,7 +493,14 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!isStringNull(type))
             {
-                tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
+                if (ContentModel.TYPE_CONTENT.equals(type))
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_DOCUMENT.value());
+                }
+                else
+                {
+                    tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, CMISPREFIX_DOCUMENT + type);
+                }
             }
 
             tmpProperties = convertProps(tmpProperties, BaseTypeId.CMIS_DOCUMENT.value());
@@ -509,7 +522,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
 
             String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
 
             // EXTRACT METADATA + Generate Thumbnails
@@ -538,7 +551,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            //Log.d(TAG, Log.getStackTraceString(e));
+            // Log.d(TAG, Log.getStackTraceString(e));
             convertException(e);
         }
         return null;
@@ -560,7 +573,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getActionQueue(session));
             url.addParameter(OnPremiseConstant.PARAM_ASYNC, true);
-            //Log.d("URL", url.toString());
+            // Log.d("URL", url.toString());
 
             // prepare json data
             JSONObject jo = new JSONObject();
@@ -580,7 +593,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (response.getResponseCode() == HttpStatus.SC_OK)
             {
-                //Log.d(TAG, "Metadata extraction : ok");
+                // Log.d(TAG, "Metadata extraction : ok");
             }
         }
         catch (Exception e)
@@ -604,7 +617,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         {
             UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailUrl(session, identifier));
             url.addParameter(OnPremiseConstant.PARAM_AS, true);
-            //Log.d("URL", url.toString());
+            // Log.d("URL", url.toString());
 
             // prepare json data
             JSONObject jo = new JSONObject();
@@ -694,14 +707,32 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // UPDATE
     // ////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    public Node addAspects(Node node, List<String> aspects)
+    {
+        return updateProperties(node, null, aspects, false);
+    }
 
     /** {@inheritDoc} */
     public Node updateProperties(Node node, Map<String, Serializable> properties)
     {
+        return updateProperties(node, properties, null, true);
+    }
+
+    /** {@inheritDoc} */
+    public Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects)
+    {
+        return updateProperties(node, properties, aspects, true);
+    }
+
+    /** {@inheritDoc} */
+    protected Node updateProperties(Node node, Map<String, Serializable> properties, List<String> aspects,
+            boolean propertiesRequired)
+    {
         if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
 
-        if (isMapNull(properties)) { throw new IllegalArgumentException(String.format(
+        if (propertiesRequired && isMapNull(properties)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "properties")); }
 
         try
@@ -724,7 +755,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             // Check Custom Aspects
             tmpProperties.put(PropertyIds.OBJECT_TYPE_ID,
-                    addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), node.getAspects()));
+                    addAspects((String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID), node.getAspects(), aspects));
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
@@ -743,22 +774,28 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             updatebility.add(Updatability.READWRITE);
 
             // check if checked out
-            Boolean isCheckedOut = (Boolean) node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT).getValue();
-            if ((isCheckedOut != null) && isCheckedOut.booleanValue())
+            Property property = node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
+            if (property != null)
             {
-                updatebility.add(Updatability.WHENCHECKEDOUT);
+                Boolean isCheckedOut = (Boolean) property.getValue();
+                if ((isCheckedOut != null) && isCheckedOut.booleanValue())
+                {
+                    updatebility.add(Updatability.WHENCHECKEDOUT);
+                }
             }
 
             String nodeType = node.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString();
             // tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, nodeType);
 
-            //Retrieve Cmis Object to retrieve second type
-            //TODO !
-            
+            // Retrieve Cmis Object to retrieve second type
+            // TODO !
+
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
                     changeTokenHolder, objectFactory.convertProperties(tmpProperties,
                             cmisSession.getTypeDefinition(nodeType), null, updatebility), null);
+
+            cmisSession.removeObjectFromCache(objectId);
 
             return getChildById(objectId);
         }
@@ -778,7 +815,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         catch (Exception e)
         {
-            //Log.d(TAG, Log.getStackTraceString(e));
+            // Log.d(TAG, Log.getStackTraceString(e));
             // In case where a null value is provided (definition type property
             // is not null)
             if (e.getMessage() != null && e.getMessage().contains("cannot be null or empty."))
@@ -821,6 +858,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             objectService.setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
                     changeTokenHolder, c, null);
+
+            cmisSession.removeObjectFromCache(content.getIdentifier());
 
             newContent = (Document) getNodeByIdentifier(content.getIdentifier());
 
@@ -979,7 +1018,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /** Static Map of all sorting possibility for DocumentFolderService. */
     @SuppressWarnings("serial")
-    private static Map<String, String> sortingMap = new HashMap<String, String>()
+    static Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
             put(SORT_PROPERTY_NAME, PropertyIds.NAME);
@@ -997,7 +1036,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * @param modifier
      * @return
      */
-    private String getSorting(String sortingKey, boolean modifier)
+    static String getSorting(String sortingKey, boolean modifier)
     {
         String s;
         if (sortingMap.containsKey(sortingKey))
@@ -1080,16 +1119,28 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             }
         }
 
-        //Log.d(TAG, objectId);
+        // Log.d(TAG, objectId);
 
         tmpProperties.put(PropertyIds.OBJECT_TYPE_ID, objectId);
 
         return tmpProperties;
     }
 
-    private static String addAspects(String objectId, List<String> aspects)
+    private static String addAspects(String objectId, List<String> nodeAspects)
+    {
+        return addAspects(objectId, nodeAspects, null);
+    }
+
+    private static String addAspects(String objectId, List<String> nodeAspects, List<String> aspectToApplied)
     {
         String objectIdWithAspects = objectId;
+
+        Set<String> aspects = new HashSet<String>(nodeAspects);
+        if (aspectToApplied != null)
+        {
+            aspects.addAll(aspectToApplied);
+        }
+
         for (String aspect : aspects)
         {
             if (!objectIdWithAspects.contains(aspect))
@@ -1101,124 +1152,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return objectIdWithAspects;
     }
 
-    // ////////////////////////////////////////////////////////////////
-    // Manage mapping between Alfresco ContentModel and CMIS Property
-    // ///////////////////////////////////////////////////////////////
-
-    /** Alfresco OpenCMIS extension prefix for all aspects. */
-    public static final String CMISPREFIX_ASPECTS = "P:";
-
-    public static final String CMISPREFIX_DOCUMENT = "D:";
-
-    public static final String CMISPREFIX_FOLDER = "F:";
-
-    /** All CMIS properties identifier in one list. */
-    private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();
-    static
-    {
-        CMISMODEL_KEYS.add(PropertyIds.NAME);
-        CMISMODEL_KEYS.add(PropertyIds.OBJECT_ID);
-        CMISMODEL_KEYS.add(PropertyIds.OBJECT_TYPE_ID);
-        CMISMODEL_KEYS.add(PropertyIds.BASE_TYPE_ID);
-        CMISMODEL_KEYS.add(PropertyIds.CREATED_BY);
-        CMISMODEL_KEYS.add(PropertyIds.CREATION_DATE);
-        CMISMODEL_KEYS.add(PropertyIds.LAST_MODIFIED_BY);
-        CMISMODEL_KEYS.add(PropertyIds.LAST_MODIFICATION_DATE);
-        CMISMODEL_KEYS.add(PropertyIds.CHANGE_TOKEN);
-        CMISMODEL_KEYS.add(PropertyIds.IS_IMMUTABLE);
-        CMISMODEL_KEYS.add(PropertyIds.IS_LATEST_VERSION);
-        CMISMODEL_KEYS.add(PropertyIds.IS_MAJOR_VERSION);
-        CMISMODEL_KEYS.add(PropertyIds.IS_LATEST_MAJOR_VERSION);
-        CMISMODEL_KEYS.add(PropertyIds.VERSION_LABEL);
-        CMISMODEL_KEYS.add(PropertyIds.VERSION_SERIES_ID);
-        CMISMODEL_KEYS.add(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
-        CMISMODEL_KEYS.add(PropertyIds.VERSION_SERIES_CHECKED_OUT_BY);
-        CMISMODEL_KEYS.add(PropertyIds.VERSION_SERIES_CHECKED_OUT_ID);
-        CMISMODEL_KEYS.add(PropertyIds.CHECKIN_COMMENT);
-        CMISMODEL_KEYS.add(PropertyIds.CONTENT_STREAM_LENGTH);
-        CMISMODEL_KEYS.add(PropertyIds.CONTENT_STREAM_MIME_TYPE);
-        CMISMODEL_KEYS.add(PropertyIds.CONTENT_STREAM_FILE_NAME);
-        CMISMODEL_KEYS.add(PropertyIds.CONTENT_STREAM_ID);
-        CMISMODEL_KEYS.add(PropertyIds.PARENT_ID);
-        CMISMODEL_KEYS.add(PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS);
-        CMISMODEL_KEYS.add(PropertyIds.SOURCE_ID);
-        CMISMODEL_KEYS.add(PropertyIds.TARGET_ID);
-        CMISMODEL_KEYS.add(PropertyIds.POLICY_TEXT);
-    }
-
-    /**
-     * List of Properties Mapping CMIS to Alfresco
-     */
-    private static final Map<String, String> ALFRESCO_TO_CMIS = new HashMap<String, String>();
-    static
-    {
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_NAME, PropertyIds.NAME);
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_CREATED, PropertyIds.CREATION_DATE);
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_CREATOR, PropertyIds.CREATED_BY);
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_MODIFIED, PropertyIds.LAST_MODIFICATION_DATE);
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_MODIFIER, PropertyIds.LAST_MODIFIED_BY);
-        ALFRESCO_TO_CMIS.put(ContentModel.PROP_VERSION_LABEL, PropertyIds.VERSION_LABEL);
-    }
-
-    /**
-     * List of all aspect that are currently supported by SDK services.
-     */
-    private static final Map<String, String> ALFRESCO_ASPECTS = new HashMap<String, String>();
-    static
-    {
-
-        // TITLE
-        ALFRESCO_ASPECTS.put(ContentModel.PROP_TITLE, CMISPREFIX_ASPECTS + ContentModel.ASPECT_TITLED);
-        ALFRESCO_ASPECTS.put(ContentModel.PROP_DESCRIPTION, CMISPREFIX_ASPECTS + ContentModel.ASPECT_TITLED);
-
-        // TAGS
-        ALFRESCO_ASPECTS.put(ContentModel.PROP_TAGS, CMISPREFIX_ASPECTS + ContentModel.ASPECT_TAGGABLE);
-
-        // GEOGRAPHIC
-        for (String prop : ContentModel.ASPECT_GEOGRAPHIC_PROPS)
-        {
-            ALFRESCO_ASPECTS.put(prop, CMISPREFIX_ASPECTS + ContentModel.ASPECT_GEOGRAPHIC);
-        }
-
-        // EXIF
-        for (String prop : ContentModel.ASPECT_EXIF_PROPS)
-        {
-            ALFRESCO_ASPECTS.put(prop, CMISPREFIX_ASPECTS + ContentModel.ASPECT_EXIF);
-        }
-
-        // AUDIO
-        for (String prop : ContentModel.ASPECT_AUDIO_PROPS)
-        {
-            ALFRESCO_ASPECTS.put(prop, CMISPREFIX_ASPECTS + ContentModel.ASPECT_AUDIO);
-        }
-
-        // AUTHOR
-        ALFRESCO_ASPECTS.put(ContentModel.PROP_AUTHOR, CMISPREFIX_ASPECTS + ContentModel.ASPECT_AUTHOR);
-        
-        // RESTRICTABLE
-        for (String prop : ContentModel.ASPECT_RESTRICTABLE_PROPS)
-        {
-            ALFRESCO_ASPECTS.put(prop, CMISPREFIX_ASPECTS + ContentModel.ASPECT_RESTRICTABLE);
-        }
-    }
-
-    /**
-     * Return the equivalent CMIS property name for a specific alfresco property
-     * name.
-     * 
-     * @param name name of the property.
-     * @return the same if equivalent doesnt exist.
-     */
-    public static String getPropertyName(String name)
-    {
-        String tmpName = name;
-        if (ALFRESCO_TO_CMIS.containsKey(tmpName))
-        {
-            tmpName = ALFRESCO_TO_CMIS.get(tmpName);
-        }
-        return tmpName;
-    }
-    
     @Override
     public Node refreshNode(Node node)
     {
