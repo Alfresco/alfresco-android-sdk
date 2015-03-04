@@ -103,7 +103,6 @@ public class CommentImpl implements Comment
      * @param json : json response that contains data from the repository
      * @return Comment that contains informations about the comment.
      */
-    @SuppressWarnings("unchecked")
     public static CommentImpl parsePublicAPIJson(Map<String, Object> json)
     {
         CommentImpl comment = new CommentImpl();
@@ -116,7 +115,8 @@ public class CommentImpl implements Comment
         comment.content = JSONConverter.getString(json, CloudConstant.CONTENT_VALUE);
         comment.creationDate = JSONConverter.getString(json, CloudConstant.CREATEDAT_VALUE);
         comment.modificationDate = JSONConverter.getString(json, CloudConstant.MODIFIEDAT_VALUE);
-        comment.author = PersonImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.CREATEDBY_VALUE));
+
+        comment.author = createPerson(json.get(CloudConstant.CREATEDBY_VALUE));
         comment.isUpdated = JSONConverter.getBoolean(json, CloudConstant.EDITED_VALUE);
 
         if (json.containsKey(CloudConstant.CANEDIT_VALUE))
@@ -129,6 +129,23 @@ public class CommentImpl implements Comment
         }
 
         return comment;
+    }
+
+    //Related to MOBSDK-720 
+    private static Person createPerson(Object json)
+    {
+        if (json instanceof Map)
+        {
+            return PersonImpl.parsePublicAPIJson(JSONConverter.getMap(json));
+        }
+        else if (json instanceof String)
+        {
+            return PersonImpl.parsePublicAPIJson((String) json);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /** {@inheritDoc} */
@@ -154,7 +171,7 @@ public class CommentImpl implements Comment
     {
         GregorianCalendar g = null;
         if (creationDate != null)
-        { 
+        {
             Date d = DateUtils.parseDate(creationDate);
             if (d != null)
             {
@@ -213,7 +230,7 @@ public class CommentImpl implements Comment
     {
         return delete;
     }
-    
+
     public Person getCreatedByPerson()
     {
         return author;

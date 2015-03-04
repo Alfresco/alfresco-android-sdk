@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.services.impl.cloud;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SiteService;
@@ -118,6 +119,12 @@ public class CloudServiceRegistry extends AbstractServiceRegistry
             this.workflowService = new CloudWorkflowServiceImpl((CloudSession) session);
         }
         return workflowService;
+    }
+    
+    @Override
+    public ModelDefinitionService getModelDefinitionService()
+    {
+        throw new UnsupportedOperationException("This method is not supported for Alfresco Cloud");
     }
     
     // ////////////////////////////////////////////////////

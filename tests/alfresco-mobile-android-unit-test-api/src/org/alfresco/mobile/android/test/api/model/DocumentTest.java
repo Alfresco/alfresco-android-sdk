@@ -31,6 +31,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -179,7 +180,7 @@ public class DocumentTest extends AlfrescoSDKTestCase
         for (String aspect : aspects)
         {
             Assert.assertFalse("P: present in aspect " + aspect,
-                    aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+                    aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));
         }
 
         // UpdateDocument
@@ -668,6 +669,16 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertEquals(0,
                     new BigDecimal("1522.56").compareTo((BigDecimal) modifiedDoc.getProperty("fdk:double").getValue()));
 
+            // TEST RESET
+            properties.clear();
+            properties.put("fdk:int", null);
+            properties.put("fdk:long", null);
+            properties.put("fdk:double", null);
+            modifiedDoc = (Document) docfolderservice.updateProperties(customDoc, properties);
+            Assert.assertNull(modifiedDoc.getProperty("fdk:int").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:long").getValue());
+            Assert.assertNull(modifiedDoc.getProperty("fdk:double").getValue());
+
         }
 
     }
@@ -685,10 +696,10 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
             List<String> aspects = new ArrayList<String>(1);
             aspects.add(ContentModel.ASPECT_TITLED);
-            
+
             // CUSTOM TYPE
             properties.put(PropertyIds.OBJECT_TYPE_ID, "D:fdk:everything");
-            
+
             Document customDoc = null;
             try
             {
@@ -842,8 +853,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Folder customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
 
-            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customFolder2);
-            
+            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+                    .refreshNode(customFolder2);
+
             // Check Aspects
             Assert.assertNotNull(customFolder2.getAspects());
             Assert.assertTrue(customFolder2.hasAspect(ContentModel.ASPECT_TITLED));
@@ -872,8 +884,9 @@ public class DocumentTest extends AlfrescoSDKTestCase
             // UpdateProperties
             customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
                     .updateProperties(customFolder, propertiesM);
-            
-            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService().refreshNode(customFolder2);
+
+            customFolder2 = (Folder) alfsession.getServiceRegistry().getDocumentFolderService()
+                    .refreshNode(customFolder2);
 
             // Check Aspects
             Assert.assertNotNull(customFolder2.getAspects());
@@ -909,5 +922,76 @@ public class DocumentTest extends AlfrescoSDKTestCase
             Assert.assertFalse(customFolder.hasAspect("fdk:exif"));
             Assert.assertEquals("fdk:custom_folder", customFolder.getType());
         }
+    }
+
+    /**
+     * @since 1.4
+     */
+    public void testUpdatePropertiesWithAspects()
+    {
+        Folder folder = createUnitTestFolder(alfsession);
+        Assert.assertNotNull(folder);
+
+        // Add one document
+        HashMap<String, Serializable> properties = new HashMap<String, Serializable>();
+        properties.put(ContentModel.PROP_TITLE, SAMPLE_DOC_NAME);
+        properties.put(ContentModel.PROP_DESCRIPTION, SAMPLE_FOLDER_DESCRIPTION);
+        Document document = alfsession.getServiceRegistry().getDocumentFolderService()
+                .createDocument(folder, "updateProperties.txt", properties, null, null);
+
+        // Check Aspects
+        Assert.assertNotNull(document.getAspects());
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_TITLED));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_AUDIO));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_GEOGRAPHIC));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_EXIF));
+
+        // Add Audio Aspect
+        List<String> aspectsToApply = new ArrayList<String>(1);
+        aspectsToApply.add(ContentModel.ASPECT_AUDIO);
+        document = (Document) alfsession.getServiceRegistry().getDocumentFolderService().addAspects(document, aspectsToApply);
+
+        // Check Aspects
+        Assert.assertNotNull(document.getAspects());
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_TITLED));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_AUDIO));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_GEOGRAPHIC));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_EXIF));
+
+        // Add 2 Aspects
+        aspectsToApply.clear();
+        aspectsToApply.add(ContentModel.ASPECT_GEOGRAPHIC);
+        aspectsToApply.add(ContentModel.ASPECT_EXIF);
+        document = (Document) alfsession.getServiceRegistry().getDocumentFolderService().addAspects(document, aspectsToApply);
+        
+        // Check Aspects
+        Assert.assertNotNull(document.getAspects());
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_TITLED));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_AUDIO));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_GEOGRAPHIC));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_EXIF));
+        
+        //Create another Document
+        document = alfsession.getServiceRegistry().getDocumentFolderService()
+                .createDocument(folder, "addAspects.txt", properties, null, null);
+        
+        //Check Aspects
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_TITLED));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_AUDIO));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_GEOGRAPHIC));
+        Assert.assertFalse(document.hasAspect(ContentModel.ASPECT_EXIF));
+        
+        //Add 3 aspects 
+        properties.clear();
+        properties.put(ContentModel.PROP_ARTIST, "Artist");
+        document = (Document) alfsession.getServiceRegistry().getDocumentFolderService()
+                .updateProperties(document, properties, aspectsToApply);
+        
+        // Check Aspects
+        Assert.assertNotNull(document.getAspects());
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_TITLED));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_AUDIO));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_GEOGRAPHIC));
+        Assert.assertTrue(document.hasAspect(ContentModel.ASPECT_EXIF));
     }
 }

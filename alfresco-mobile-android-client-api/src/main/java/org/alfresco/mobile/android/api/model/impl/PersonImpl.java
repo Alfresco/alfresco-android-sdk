@@ -159,10 +159,9 @@ public class PersonImpl implements Person
     @SuppressWarnings("unchecked")
     public static PersonImpl parsePublicAPIJson(Map<String, Object> json, boolean hasAllProperties)
     {
-        PersonImpl person = new PersonImpl();
-
         if (json == null) { return null; }
 
+        PersonImpl person = new PersonImpl();
         person.avatarIdentifier = JSONConverter.getString(json, CloudConstant.AVATARID_VALUE);
         person.username = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         person.firstName = JSONConverter.getString(json, CloudConstant.FIRSTNAME_VALUE);
@@ -182,6 +181,17 @@ public class PersonImpl implements Person
                 props.get(CloudConstant.LOCATION_VALUE));
 
         person.hasAllProperties = hasAllProperties;
+
+        return person;
+    }
+    
+    static Person parsePublicAPIJson(String identifier)
+    {
+        if (identifier == null) { return null; }
+        
+        PersonImpl person = new PersonImpl();
+        person.username = identifier;
+        person.hasAllProperties = false;
 
         return person;
     }
@@ -308,5 +318,4 @@ public class PersonImpl implements Person
     {
         return hasAllProperties;
     }
-
 }

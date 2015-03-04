@@ -57,6 +57,34 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     {
         return getProcessDefinitions(null).getList();
     }
+    
+    @Override
+    public ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey)
+    {
+        if (isStringNull(processDefinitionKey)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processDefinitionKey")); }
+
+        ProcessDefinition def = null;
+
+        try
+        {
+            List<ProcessDefinition> definitions = getProcessDefinitions();
+            for (ProcessDefinition processDefinition : definitions)
+            {
+                if (processDefinitionKey.equals(processDefinition.getKey()))
+                {
+                    def = processDefinition;
+                    break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+
+        return def;
+    }
 
     // ////////////////////////////////////////////////////////////////
     // PROCESS
@@ -121,5 +149,20 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     public List<Task> getTasks()
     {
         return getTasks((ListingContext) null).getList();
+    }
+    
+
+    // ////////////////////////////////////////////////////////////////
+    // CONSTANTS NAMES UTILS
+    // ////////////////////////////////////////////////////////////////
+    /** {@inheritDoc} */
+    protected static String encodeKey(String key)
+    {
+        return key.replace(":", "_");
+    }
+    
+    protected static String decodeKey(String key)
+    {
+        return key.replace("_", ":");
     }
 }

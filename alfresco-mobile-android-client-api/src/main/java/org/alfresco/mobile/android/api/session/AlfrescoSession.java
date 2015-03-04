@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.session;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -62,16 +61,17 @@ public interface AlfrescoSession extends Parcelable
      * @since 1.3
      */
     String HTTP_ACCEPT_LANGUAGE = "org.alfresco.mobile.http.language";
-    
+
     /**
      * Used by the NetworkHttpInvoker to enable/disable the chunkStreamingMode.
      * Some HTTP server configuration doesn't support this mode. <br/>
-     * By default the mode is disabled.
-     * <b>This parameter can't be changed after the session creation</b>.
+     * By default the mode is disabled. <b>This parameter can't be changed after
+     * the session creation</b>.
      * 
      * @since 1.3
      */
     String HTTP_CHUNK_TRANSFERT = "org.alfresco.mobile.http.transfert.chunk";
+
     // ///////////////////////////////////////////////
     // EXTENSION
     // ///////////////////////////////////////////////

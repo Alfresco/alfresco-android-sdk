@@ -607,5 +607,4 @@ public final class OnPremiseUrlRegistry
     {
         return baseUrl.concat(PREFIX_SERVICE).concat(URL_SERVER_INFO);
     }
-
 }

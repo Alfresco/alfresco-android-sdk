@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Node;
 
 /**

@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.api.services.impl;
 import org.alfresco.mobile.android.api.services.ActivityStreamService;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.services.ModelDefinitionService;
 import org.alfresco.mobile.android.api.services.PersonService;
 import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.services.SearchService;
@@ -61,6 +62,8 @@ public abstract class AbstractServiceRegistry implements ServiceRegistry
     protected PersonService personService;
     
     protected WorkflowService workflowService;
+    
+    protected ModelDefinitionService typeDefinitionService;
 
     public AbstractServiceRegistry(AlfrescoSession session)
     {
