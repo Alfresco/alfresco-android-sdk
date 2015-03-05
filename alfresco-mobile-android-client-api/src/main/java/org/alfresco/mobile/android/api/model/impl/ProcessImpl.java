@@ -74,6 +74,11 @@ public class ProcessImpl implements Process
 
     private static final String SUFFIX_WORKFLOW_DEFINITION = "api/workflow-definitions/";
 
+    private static final String PROP_WORKFLOW_PRIORITY_ENCODED = WorkflowModel.PROP_WORKFLOW_PRIORITY.replaceAll(":", "_");
+    private static final String PROP_WORKFLOW_DESCRIPTION_ENCODED = WorkflowModel.PROP_WORKFLOW_DESCRIPTION.replaceAll(":", "_");
+    private static final String PROP_WORKFLOW_DUE_DATE_ENCODED = WorkflowModel.PROP_WORKFLOW_DUE_DATE.replaceAll(":", "_");
+
+
     /**
      * Parse Json Response from Alfresco REST API to create a process Definition
      * Object.
@@ -215,19 +220,19 @@ public class ProcessImpl implements Process
             for (Map<String, Object> item : jo)
             {
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_PRIORITY.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_PRIORITY_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     process.priority = JSONConverter.getInteger(item, PublicAPIConstant.VALUE).intValue();
                 }
 
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_DESCRIPTION.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_DESCRIPTION_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     process.description = JSONConverter.getString(item, PublicAPIConstant.VALUE);
                 }
 
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_DUE_DATE.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_DUE_DATE_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     String dueDateValue = JSONConverter.getString(item, PublicAPIConstant.VALUE);
                     if (dueDateValue != null)
