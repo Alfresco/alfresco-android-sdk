@@ -103,6 +103,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
         List<ProcessDefinition> definitions = new ArrayList<ProcessDefinition>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getProcessDefinitionsUrl(session);
@@ -111,6 +112,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             // send and parse
@@ -129,7 +131,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<ProcessDefinition>(definitions, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<ProcessDefinition>(definitions, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +160,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         }
         return definition;
     }
-    
+
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
@@ -262,6 +265,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Process> processes = new ArrayList<Process>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getProcessesUrl(session);
@@ -275,9 +279,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
-
-            Log.d(TAG, url.toString());
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -295,7 +298,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Process>(processes, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Process>(processes, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     /** {@inheritDoc} */
@@ -330,6 +334,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Task> tasks = new ArrayList<Task>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier());
@@ -353,6 +358,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             // send and parse
@@ -371,7 +377,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Task>(tasks, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     @Override
@@ -522,6 +529,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Task> tasks = new ArrayList<Task>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getTasksUrl(session);
@@ -538,6 +546,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             Log.d(TAG, url.toString());
@@ -558,7 +567,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Task>(tasks, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     /** {@inheritDoc} */
@@ -919,7 +929,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
-        
+
         if (isMapNull(variables)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "variables")); }
 
@@ -928,7 +938,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         {
             String link = PublicAPIUrlRegistry.getProcessVariablesUrl(session, process.getIdentifier());
             UrlBuilder url = new UrlBuilder(link);
-            
+
             Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
             if (variables != null)
             {
@@ -942,10 +952,10 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 jo = new JSONObject();
                 jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                 jo.put(PublicAPIConstant.VALUE, entry.getValue());
-                //jo.put(PublicAPIConstant.SCOPE_VALUE, "global");
+                // jo.put(PublicAPIConstant.SCOPE_VALUE, "global");
                 ja.add(jo);
             }
-            
+
             final JsonDataWriter dataWriter = new JsonDataWriter(ja);
 
             // send
@@ -963,10 +973,10 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             Log.e(TAG, Log.getStackTraceString(e));
             convertException(e);
         }
-        
+
         return resultProcess;
     }
-    
+
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
@@ -1040,7 +1050,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         if (VARIABLE_TYPES.containsKey((String) data.get(PublicAPIConstant.TYPE_VALUE)))
         {
-            //TODO Replace _ by :
+            // TODO Replace _ by :
             PropertyType type = VARIABLE_TYPES.get((String) data.get(PublicAPIConstant.TYPE_VALUE));
             // Other case
             switch (type)
@@ -1277,6 +1287,12 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         catch (UnsupportedEncodingException e)
         {
         }
+    }
+
+    // Fix hasMoreItems issue on 4.2 / 5.0
+    private boolean hasMoreItems(boolean hasMoreItems, int skipCount, int totalItems)
+    {
+        return (totalItems == -1) ? hasMoreItems : (skipCount >= totalItems) ? false : hasMoreItems;
     }
 
     // ////////////////////////////////////////////////////
