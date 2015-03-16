@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
 		<artifactId>alfresco-mobile-android-sdk</artifactId>
-		<version>1.3.2</version>
+		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.alfresco.mobile.android.sdk.tests</groupId>
@@ -70,12 +70,7 @@
 			<artifactId>android-test</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Tests 
-		<dependency>
-			<groupId>org.robolectric</groupId>
-			<artifactId>robolectric</artifactId>
-			<scope>test</scope>
-		</dependency>-->
+		<!-- Tests -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -84,14 +79,14 @@
 		<!-- Application Dependency -->
 		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-			<artifactId>alfresco-mobile-android-samples-app</artifactId>
+			<artifactId>alfresco-mobile-android-unit-test</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 			<type>apk</type>
 		</dependency>
 		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
-			<artifactId>alfresco-mobile-android-samples-app</artifactId>
+			<artifactId>alfresco-mobile-android-unit-test</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>

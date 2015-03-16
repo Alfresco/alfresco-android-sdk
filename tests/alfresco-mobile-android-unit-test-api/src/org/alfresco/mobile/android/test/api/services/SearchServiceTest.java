@@ -206,6 +206,20 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());
     }
+    
+    /**
+     * @since 1.4
+     */
+    public void testTypeNameSearch()
+    {
+        KeywordSearchOptions options = new KeywordSearchOptions();
+        options.setDoesIncludeContent(false);
+        options.setExactMatch(false);
+        options.setTypeName(KeywordSearchOptions.TYPENAME_FOLDER);
+        String keywords = "Data Dictionary";
+        List<Node> result = searchService.keywordSearch(keywords, options, null).getList();
+        Assert.assertEquals(1, result.size());
+    }
 
     public void testQuickSearchService()
     {

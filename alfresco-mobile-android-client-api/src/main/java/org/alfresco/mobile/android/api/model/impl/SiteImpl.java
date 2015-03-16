@@ -63,8 +63,6 @@ public class SiteImpl implements Site
     /** Indicates if the user has favorite this site. */
     private Boolean isFavorite = false;
 
-    
-
     /**
      * Default constructor.
      */
@@ -92,7 +90,7 @@ public class SiteImpl implements Site
         this.isMember = isMember;
         this.isFavorite = isFavorite;
     }
-    
+
     /**
      * Parse Json Response from Alfresco REST API to create a Site.
      * 
@@ -148,8 +146,17 @@ public class SiteImpl implements Site
         // Extra properties
         site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
                 .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
-        site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+
+        // Cache information might be obsolete => so let's use role
+        if (json.containsKey(CloudConstant.ROLE_VALUE))
+        {
+            site.isMember = true;
+        }
+        else
+        {
+            site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ? JSONConverter
+                    .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        }
         site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
                 .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 

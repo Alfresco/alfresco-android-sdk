@@ -28,4 +28,9 @@ public class Version
      * The user-visible version string.  E.g., "1.0" or "3.4b5".
      */
     public static String SDK = SDKProperties.getString("build.version.sdk");
+    
+    /**
+     * The user-visible version string.  E.g., "1.0" or "3.4b5".
+     */
+    public static String CONFIG = SDKProperties.getString("build.version.config");
 }

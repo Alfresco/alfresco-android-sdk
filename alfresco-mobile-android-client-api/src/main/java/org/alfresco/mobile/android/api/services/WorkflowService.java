@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.Task;
 
 /**
@@ -125,20 +126,23 @@ public interface WorkflowService extends Service
     /** Only tasks explicitly assign to the current user. */
     int FILTER_ASSIGNEE_ME = 1;
 
-    /** Only unassigned tasks current user can claim (member of the group)*/
+    /** Only unassigned tasks current user can claim (member of the group) */
     int FILTER_ASSIGNEE_UNASSIGNED = 2;
-    
-    /** tasks assigned to the current user and unassigned task current user can claim (member of the group)*/
+
+    /**
+     * tasks assigned to the current user and unassigned task current user can
+     * claim (member of the group)
+     */
     int FILTER_ASSIGNEE_ALL = 3;
-    
-    /** tasks not assigned to the current user*/
+
+    /** tasks not assigned to the current user */
     int FILTER_NO_ASSIGNEE = 4;
-    
+
     String FILTER_KEY_INITIATOR = "filterInitiator";
-    
+
     /** Only tasks explicitly assign to the current user. */
     int FILTER_INITIATOR_ME = 1;
-    
+
     /** tasks assigned to anybody. */
     int FILTER_INITIATOR_ANY = 2;
 
@@ -171,6 +175,15 @@ public interface WorkflowService extends Service
      * @since 1.3.0
      */
     ProcessDefinition getProcessDefinition(String processDefinitionIdentifier);
+
+    /**
+     * Returns a single process definition that matches the (versionless)
+     * specific key.
+     * 
+     * @param processDefinitionKey : unique key
+     * @since 1.4
+     */
+    ProcessDefinition getProcessDefinitionByKey(String processDefinitionKey);
 
     // ////////////////////////////////////////////////////////////////
     // PROCESS
@@ -333,6 +346,15 @@ public interface WorkflowService extends Service
      */
     Process refresh(Process process);
 
+    /**
+     * Retrieves the variables for a given process.
+     * 
+     * @since 1.4.0
+     * @param process
+     * @return
+     */
+    Map<String, Property> getVariables(Process process);
+
     // ////////////////////////////////////////////////////////////////
     // DOCUMENTS AS ATTACHMENTS
     // ////////////////////////////////////////////////////////////////
@@ -485,12 +507,13 @@ public interface WorkflowService extends Service
      * assignee/owner of the task or process initiator.
      * 
      * @since 1.3.0
+     * @since 1.4.0 : Replace unClaimedTask by unclaimTask
      * @param task : Task object to unclaim
      * @return unclaimed task object.
      * @throws AlfrescoServiceException : if network or internal problems occur
      *             during the process.
      */
-    Task unClaimTask(Task task);
+    Task unclaimTask(Task task);
 
     /**
      * Completing a task. In order to complete a task, the authenticated user
@@ -530,6 +553,18 @@ public interface WorkflowService extends Service
     Task updateVariables(Task task, Map<String, Serializable> variables);
 
     /**
+     * Update the variables for a given process. If the variable doesn't exist
+     * yet, it will be created. Only small subset of variables can be upgraded.
+     * 
+     * @since 1.4.0
+     * @param process : process to update
+     * @param variables : map of variables to update
+     * @throws AlfrescoServiceException : if network or internal problems occur
+     *             during the process.
+     */
+    Process updateVariables(Process process, Map<String, Serializable> variables);
+
+    /**
      * Returns the latest (and complete) variables for the provided task.
      * 
      * @param task : task to refresh
@@ -539,6 +574,16 @@ public interface WorkflowService extends Service
      *             during the process.
      */
     Task refresh(Task task);
+    
+    
+    /**
+     * Retrieves the variables for a given task.
+     * 
+     * @since 1.4.0
+     * @param task : task to refresh
+     * @return the map of all available variables
+     */
+    Map<String, Property>getVariables(Task  task);
 
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM

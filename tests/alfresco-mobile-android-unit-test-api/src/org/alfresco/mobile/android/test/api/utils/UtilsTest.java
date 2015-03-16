@@ -33,7 +33,7 @@ public class UtilsTest extends AndroidTestCase
     public void testSDKVersion()
     {
         Assert.assertNotNull(Version.SDK);
-        Assert.assertEquals("1.3.2", Version.SDK);
+        Assert.assertEquals("1.4", Version.SDK);
     }
 
     public void testPattern()

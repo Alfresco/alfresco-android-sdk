@@ -13,7 +13,7 @@
 
 	<groupId>org.alfresco.mobile.android.sdk</groupId>
 	<artifactId>alfresco-mobile-android-sdk</artifactId>
-	<version>1.3.2</version>
+	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android SDK (Parent)</name>
@@ -44,8 +44,6 @@
 	<modules>
 		<!-- Libraries -->
 		<module>alfresco-mobile-android-client-api</module>
-		<module>alfresco-mobile-android-async</module>
-		<module>alfresco-mobile-android-ui-library</module>
 
 		<!-- Samples / Extension -->
 		<module>samples</module>
@@ -115,7 +113,7 @@
 	</developers>
 
 	<prerequisites>
-		<maven>3.0.3</maven>
+		<maven>3.2.0</maven>
 	</prerequisites>
 
 	<properties>
@@ -128,12 +126,13 @@
 		<!-- Android Dependencies -->
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
-		<android.maven.plugin.version>3.6.0</android.maven.plugin.version>
+		<android.maven.plugin.version>3.9.0-rc.2</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
 
 		<!-- Alfresco Configuration -->
+		<slf4j.android.version>1.6.1-RC1</slf4j.android.version>
 		<chemistry.opencmis.version>0.11.0</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.7-ANDROID</alfresco.opencmis.version>
 
@@ -197,7 +196,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.4</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.kohsuke</groupId>

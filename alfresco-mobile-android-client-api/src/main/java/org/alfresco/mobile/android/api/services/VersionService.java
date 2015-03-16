@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -31,7 +34,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
  */
 public interface VersionService extends Service
 {
-    
+
     /**
      * Allowable sorting property : Name of the document or folder.
      */
@@ -56,15 +59,15 @@ public interface VersionService extends Service
      * Allowable sorting property : Modification Date
      */
     String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
-    
-    
+
     /**
      * Get the latest version of a document.
+     * 
      * @param document
      * @return
      */
     Document getLatestVersion(Document document);
-    
+
     /**
      * Get the version history that relates to the referenced document.
      * 
@@ -85,5 +88,55 @@ public interface VersionService extends Service
      *         history for the given document.
      */
     PagingResult<Document> getVersions(Document document, ListingContext listingContext);
+
+    /**
+     * Checks out the document, if successful the private working copy is
+     * returned.
+     * 
+     * @param document
+     * @since 1.4
+     * @return
+     */
+    Document checkout(Document document);
+
+    /**
+     * Cancels the check out of the document.
+     * 
+     * @param document
+     * @since 1.4
+     */
+    void cancelCheckout(Document document);
+
+    /**
+     * Checks in the private working copy document, if successful the new
+     * version of the document is returned.
+     * 
+     * @param document
+     * @param majorVersion
+     * @param file
+     * @param properties
+     * @param comment
+     * @since 1.4
+     * @return
+     */
+    Document checkin(Document document, boolean majorVersion, ContentFile file, Map<String, Serializable> properties,
+            String comment);
+
+    /**
+     * Returns a list of documents the authenticated user has checked out.
+     * 
+     * @since 1.4
+     * @return
+     */
+    List<Document> getCheckedOutDocuments();
+
+    /**
+     * Returns a paged list of documents the authenticated user has checked out.
+     * 
+     * @param listingContext
+     * @since 1.4
+     * @return
+     */
+    PagingResult<Document> getCheckedOutDocuments(ListingContext listingContext);
 
 }

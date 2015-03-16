@@ -24,7 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
@@ -34,7 +33,6 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 
 /**
  * @since 1.3
@@ -75,6 +73,11 @@ public class ProcessImpl implements Process
     private HashMap<String, Serializable> data;
 
     private static final String SUFFIX_WORKFLOW_DEFINITION = "api/workflow-definitions/";
+
+    private static final String PROP_WORKFLOW_PRIORITY_ENCODED = WorkflowModel.PROP_WORKFLOW_PRIORITY.replaceAll(":", "_");
+    private static final String PROP_WORKFLOW_DESCRIPTION_ENCODED = WorkflowModel.PROP_WORKFLOW_DESCRIPTION.replaceAll(":", "_");
+    private static final String PROP_WORKFLOW_DUE_DATE_ENCODED = WorkflowModel.PROP_WORKFLOW_DUE_DATE.replaceAll(":", "_");
+
 
     /**
      * Parse Json Response from Alfresco REST API to create a process Definition
@@ -217,19 +220,19 @@ public class ProcessImpl implements Process
             for (Map<String, Object> item : jo)
             {
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_PRIORITY.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_PRIORITY_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     process.priority = JSONConverter.getInteger(item, PublicAPIConstant.VALUE).intValue();
                 }
 
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_DESCRIPTION.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_DESCRIPTION_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     process.description = JSONConverter.getString(item, PublicAPIConstant.VALUE);
                 }
 
                 if (item.containsKey(PublicAPIConstant.NAME_VALUE)
-                        && WorkflowModel.PROP_WORKFLOW_DUE_DATE.equals(item.get(PublicAPIConstant.NAME_VALUE)))
+                        && PROP_WORKFLOW_DUE_DATE_ENCODED.equals(item.get(PublicAPIConstant.NAME_VALUE)))
                 {
                     String dueDateValue = JSONConverter.getString(item, PublicAPIConstant.VALUE);
                     if (dueDateValue != null)
@@ -335,5 +338,11 @@ public class ProcessImpl implements Process
     {
         if (variables.get(name) != null) { return variables.get(name).getValue(); }
         return null;
+    }
+
+    @Override
+    public boolean hasCompleted()
+    {
+        return (endedAt != null);
     }
 }

@@ -103,6 +103,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
         List<ProcessDefinition> definitions = new ArrayList<ProcessDefinition>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getProcessDefinitionsUrl(session);
@@ -111,6 +112,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             // send and parse
@@ -129,7 +131,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<ProcessDefinition>(definitions, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<ProcessDefinition>(definitions, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     @SuppressWarnings("unchecked")
@@ -188,7 +191,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey())
                         || WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
                 {
-                    variablesJson.put(WorkflowModel.PROP_ASSIGNEE, assignees.get(0).getIdentifier());
+                    variablesJson.put(encodeKey(WorkflowModel.PROP_ASSIGNEE), assignees.get(0).getIdentifier());
                 }
                 else
                 {
@@ -200,7 +203,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                         variablesAssignees.add(p.getIdentifier());
                         // guids.add(p.getIdentifier());
                     }
-                    variablesJson.put(WorkflowModel.ASSOC_ASSIGNEES, variablesAssignees);
+                    variablesJson.put(encodeKey(WorkflowModel.ASSOC_ASSIGNEES), variablesAssignees);
                 }
             }
 
@@ -209,7 +212,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             {
                 for (Entry<String, Serializable> entry : variables.entrySet())
                 {
-                    variablesJson.put(entry.getKey(), entry.getValue());
+                    variablesJson.put(encodeKey(entry.getKey()), entry.getValue());
                 }
                 jo.put(PublicAPIConstant.VARIABLES_VALUE, variablesJson);
             }
@@ -262,6 +265,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Process> processes = new ArrayList<Process>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getProcessesUrl(session);
@@ -275,9 +279,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
-
-            Log.d(TAG, url.toString());
 
             // send and parse
             Response resp = read(url, ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -295,7 +298,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Process>(processes, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Process>(processes, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     /** {@inheritDoc} */
@@ -330,6 +334,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Task> tasks = new ArrayList<Task>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier());
@@ -353,6 +358,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             // send and parse
@@ -371,7 +377,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Task>(tasks, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     @Override
@@ -522,6 +529,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         List<Task> tasks = new ArrayList<Task>();
         PublicAPIResponse response = null;
+        int skipCount = -1;
         try
         {
             String link = PublicAPIUrlRegistry.getTasksUrl(session);
@@ -538,6 +546,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                 }
                 url.addParameter(PublicAPIConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
                 url.addParameter(PublicAPIConstant.SKIP_COUNT_VALUE, listingContext.getSkipCount());
+                skipCount = listingContext.getSkipCount();
             }
 
             Log.d(TAG, url.toString());
@@ -558,7 +567,8 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        return new PagingResultImpl<Task>(tasks, hasMoreItems(response.getHasMoreItems(), skipCount,
+                response.getSize()), response.getSize());
     }
 
     /** {@inheritDoc} */
@@ -603,7 +613,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     /** {@inheritDoc} */
-    public Task unClaimTask(Task task)
+    public Task unclaimTask(Task task)
     {
         return updateTask(task, null, PublicAPIConstant.UNCLAIMED_VALUE);
     }
@@ -687,7 +697,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
                     for (Entry<String, Serializable> entry : variables.entrySet())
                     {
                         jv = new JSONObject();
-                        jv.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                        jv.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                         jv.put(PublicAPIConstant.VALUE, entry.getValue());
                         jv.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
                         ja.add(jv);
@@ -751,7 +761,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     // VARIABLES
     // ////////////////////////////////////////////////////////////////
     /** {@inheritDoc} */
-    private Map<String, Property> getVariables(Task task)
+    public Map<String, Property> getVariables(Task task)
     {
         if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
@@ -776,7 +786,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
      * @param process
      * @return
      */
-    private Map<String, Property> getVariables(Process process)
+    public Map<String, Property> getVariables(Process process)
     {
         if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
@@ -813,7 +823,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Object entry : response.getEntries())
             {
                 data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-                variables.put((String) data.get(PublicAPIConstant.NAME_VALUE), parseProperty(data));
+                variables.put(decodeKey((String) data.get(PublicAPIConstant.NAME_VALUE)), parseProperty(data));
             }
         }
         catch (Exception e)
@@ -850,7 +860,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             for (Entry<String, Serializable> entry : internalVariables.entrySet())
             {
                 jo = new JSONObject();
-                jo.put(PublicAPIConstant.NAME_VALUE, entry.getKey());
+                jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
                 jo.put(PublicAPIConstant.VALUE, entry.getValue());
                 jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
                 ja.add(jo);
@@ -891,7 +901,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
 
             // prepare json data
             JSONObject jo = new JSONObject();
-            jo.put(PublicAPIConstant.NAME_VALUE, key);
+            jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(key));
             jo.put(PublicAPIConstant.VALUE, value);
             jo.put(PublicAPIConstant.SCOPE_VALUE, PublicAPIConstant.LOCAL_VALUE);
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
@@ -912,6 +922,59 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
         return resultTask;
+    }
+
+    @Override
+    public Process updateVariables(Process process, Map<String, Serializable> variables)
+    {
+        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+
+        if (isMapNull(variables)) { throw new IllegalArgumentException(String.format(
+                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "variables")); }
+
+        Process resultProcess = process;
+        try
+        {
+            String link = PublicAPIUrlRegistry.getProcessVariablesUrl(session, process.getIdentifier());
+            UrlBuilder url = new UrlBuilder(link);
+
+            Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
+            if (variables != null)
+            {
+                internalVariables.putAll(variables);
+            }
+            // prepare json data
+            JSONArray ja = new JSONArray();
+            JSONObject jo;
+            for (Entry<String, Serializable> entry : internalVariables.entrySet())
+            {
+                jo = new JSONObject();
+                jo.put(PublicAPIConstant.NAME_VALUE, encodeKey(entry.getKey()));
+                jo.put(PublicAPIConstant.VALUE, entry.getValue());
+                // jo.put(PublicAPIConstant.SCOPE_VALUE, "global");
+                ja.add(jo);
+            }
+
+            final JsonDataWriter dataWriter = new JsonDataWriter(ja);
+
+            // send
+            post(url, dataWriter.getContentType(), new Output()
+            {
+                public void write(OutputStream out) throws IOException
+                {
+                    dataWriter.write(out);
+                }
+            }, ErrorCodeRegistry.WORKFLOW_GENERIC);
+            resultProcess = refresh(process);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, Log.getStackTraceString(e));
+            convertException(e);
+        }
+
+        return resultProcess;
     }
 
     // ////////////////////////////////////////////////////////////////
@@ -987,6 +1050,7 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         if (VARIABLE_TYPES.containsKey((String) data.get(PublicAPIConstant.TYPE_VALUE)))
         {
+            // TODO Replace _ by :
             PropertyType type = VARIABLE_TYPES.get((String) data.get(PublicAPIConstant.TYPE_VALUE));
             // Other case
             switch (type)
@@ -1225,6 +1289,12 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
         }
     }
 
+    // Fix hasMoreItems issue on 4.2 / 5.0
+    private boolean hasMoreItems(boolean hasMoreItems, int skipCount, int totalItems)
+    {
+        return (totalItems == -1) ? hasMoreItems : (skipCount >= totalItems) ? false : hasMoreItems;
+    }
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
@@ -1245,5 +1315,4 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-
 }

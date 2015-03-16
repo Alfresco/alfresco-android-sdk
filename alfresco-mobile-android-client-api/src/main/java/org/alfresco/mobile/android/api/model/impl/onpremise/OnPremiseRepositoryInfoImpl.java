@@ -36,6 +36,8 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     private String edition = null;
 
+    boolean hasPublicAPI = false;
+
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
      * 
@@ -45,6 +47,13 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
     public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
         super(repositoryInfo);
+    }
+
+    public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo,
+            boolean hasPublicAPI)
+    {
+        super(repositoryInfo);
+        this.hasPublicAPI = hasPublicAPI;
     }
 
     /**

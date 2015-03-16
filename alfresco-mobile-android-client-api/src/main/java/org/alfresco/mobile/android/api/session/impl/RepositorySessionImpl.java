@@ -21,11 +21,9 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
-import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseServiceRegistry;
@@ -39,14 +37,13 @@ import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
-import org.apache.http.HttpStatus;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
@@ -117,6 +114,10 @@ public class RepositorySessionImpl extends RepositorySession
             catch (Exception err)
             {
                 creationException = err;
+                if (err.getCause() instanceof CmisUnauthorizedException)
+                {
+                    break;
+                }
                 hasPublicAPI = false;
             }
 
@@ -143,7 +144,7 @@ public class RepositorySessionImpl extends RepositorySession
                 creationException); }
 
         // If Session Object available we populate other info & capabilities
-        repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
+        repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo(), hasPublicAPI);
 
         // On cmisatom binding sometimes the edition is not well formated. In
         // this case we use service/cmis binding. MOBSDK-508
@@ -171,8 +172,6 @@ public class RepositorySessionImpl extends RepositorySession
 
         // Retrieve Root Node
         rootNode = new FolderImpl(cmisSession.getRootFolder());
-        
-        //TODO Other capabilities
 
         // Retrieve Service Registry & Services
         initServices();
@@ -193,6 +192,7 @@ public class RepositorySessionImpl extends RepositorySession
         {
             services = new OnPremiseServiceRegistry(this);
         }
+        ((OnPremiseServiceRegistry) services).init();
     }
 
     public boolean hasPublicAPI()

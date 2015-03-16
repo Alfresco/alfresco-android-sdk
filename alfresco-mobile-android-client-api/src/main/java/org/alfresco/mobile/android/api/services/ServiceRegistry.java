@@ -83,5 +83,12 @@ public interface ServiceRegistry extends Parcelable
      * @since 1.3
      */
     WorkflowService getWorkflowService();
+    
+    /**
+     * Returns the TypeDefinitionService instance for the session.
+     * 
+     * @since 1.4
+     */
+    ModelDefinitionService getModelDefinitionService();
 
 }

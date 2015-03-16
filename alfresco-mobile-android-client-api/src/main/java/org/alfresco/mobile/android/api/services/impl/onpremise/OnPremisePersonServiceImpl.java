@@ -137,7 +137,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
             url.addParameter(OnPremiseConstant.FILTER_VALUE, keyword);
             if (listingContext != null)
             {
-                url.addParameter(OnPremiseConstant.MAX_ITEMS_VALUE, listingContext.getMaxItems());
+                url.addParameter(OnPremiseConstant.MAX_RESULTS_VALUE, listingContext.getMaxItems());
             }
 
             // send and parse

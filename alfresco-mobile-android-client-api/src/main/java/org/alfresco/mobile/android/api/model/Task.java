@@ -22,9 +22,9 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
- * A Task represents work or tasks carried out by members of Alfresco repository.
- * This element stands for manual amount of work performed by a person, a group,
- * or automatically. <br/>
+ * A Task represents work or tasks carried out by members of Alfresco
+ * repository. This element stands for manual amount of work performed by a
+ * person, a group, or automatically. <br/>
  * A collection of default Alfresco variables are available inside the
  * {@link org.alfresco.mobile.android.api.constants.WorkflowModel WorkflowModel}
  * 
@@ -59,7 +59,8 @@ public interface Task extends Serializable
      * versions of this task definition are deployed. <br/>
      * A collection of default Alfresco task keys are available inside the
      * {@link org.alfresco.mobile.android.api.constants.WorkflowModel
-     * WorkflowModel} like {@link org.alfresco.mobile.android.api.constants.WorkflowModel#TASK_ACTIVITI_REVIEW
+     * WorkflowModel} like
+     * {@link org.alfresco.mobile.android.api.constants.WorkflowModel#TASK_ACTIVITI_REVIEW
      * TASK_ACTIVITI_REVIEW}
      * 
      * @return the task definition key.
@@ -148,4 +149,11 @@ public interface Task extends Serializable
      * @return the property value
      */
     <T> T getVariableValue(String name);
+
+    /**
+     * Returns true if the task has completed.
+     * 
+     * @since 1.4
+     */
+    boolean hasCompleted();
 }
