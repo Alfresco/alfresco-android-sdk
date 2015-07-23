@@ -18,9 +18,11 @@
 package org.alfresco.mobile.android.api.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -32,11 +34,15 @@ import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.SiteImpl;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.api.services.cache.impl.CacheSiteExtraProperties;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPISiteServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.utils.AlphaComparator;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
@@ -54,8 +60,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     protected static final String DEFAULT_ROLE = "SiteConsumer";
 
     /**
-     * Default constructor for service. </br> Used by the
-     * {@link AbstractServiceRegistry}.
+     * Default constructor for service. </br>
+     * Used by the {@link AbstractServiceRegistry}.
      * 
      * @param repositorySession
      */
@@ -144,6 +150,43 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         return null;
     }
 
+    // ////////////////////////////////////////////////////
+    // Search
+    // ////////////////////////////////////////////////////
+    @Override
+    public List<Site> search(String keyword)
+    {
+        return search(keyword, null).getList();
+    }
+
+    /** {@inheritDoc} */
+    public PagingResult<Site> search(String keyword, ListingContext listingContext)
+    {
+        if (session instanceof CloudSession) { throw new UnsupportedOperationException(
+                "This operation is not supported with Cloud Session"); }
+
+        try
+        {
+            initExtraPropertiesCache();
+            String link = OnPremiseUrlRegistry.getAllSitesUrl(session);
+            UrlBuilder builder = new UrlBuilder(link);
+            builder.addParameter("nf", keyword);
+            if (this instanceof PublicAPISiteServiceImpl)
+            {
+                return computeLegacySites(builder, listingContext);
+            }
+            else
+            {
+                return computeSites(builder, listingContext);
+            }
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
+    }
+
     /**
      * Allows to retrieve specific site url.
      * 
@@ -165,8 +208,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public Site getSite(String siteIdentifier)
     {
-        if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+        if (isStringNull(siteIdentifier)) { throw new IllegalArgumentException(String
+                .format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
 
         try
         {
@@ -207,11 +250,11 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public Folder getDocumentLibrary(Site site)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(String
+                .format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
 
-        if (isStringNull(site.getShortName())) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
+        if (isStringNull(site.getShortName())) { throw new IllegalArgumentException(String
+                .format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "siteIdentifier")); }
 
         try
         {
@@ -226,7 +269,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         {
             // Cloud : site not found
             if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
-                    && er.getMessage().contains("The entity with id") && er.getMessage().contains("was not found")) { return null; }
+                    && er.getMessage().contains("The entity with id")
+                    && er.getMessage().contains("was not found")) { return null; }
             // OnPremise : when containerId is not defined for Moderated site
             // for example
             if (er.getMessage() != null && er.getAlfrescoErrorContent() != null
@@ -250,8 +294,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public void cancelJoinSiteRequest(JoinSiteRequestImpl joinSiteRequest)
     {
-        if (isObjectNull(joinSiteRequest)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(joinSiteRequest)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
         try
         {
             String link = getCancelJoinSiteRequestUrl(joinSiteRequest);
@@ -265,8 +309,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
 
     public Site cancelRequestToJoinSite(Site site)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
         Site updatedSite = null;
 
@@ -311,8 +355,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     /** {@inheritDoc} */
     public Site leaveSite(Site site)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
         Site updatedSite = null;
 
@@ -326,12 +370,19 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         }
         catch (Exception e)
         {
-            if(session instanceof CloudSession){
-                if (e.getMessage().contains("Permission was denied")) { throw new AlfrescoServiceException(
-                        ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
-            } else {
-                if (e.getMessage().contains("one site manager") || e.getMessage().contains("remove last manager")) { throw new AlfrescoServiceException(
-                        ErrorCodeRegistry.SITE_LAST_MANAGER, Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
+            if (session instanceof CloudSession)
+            {
+                if (e.getMessage()
+                        .contains("Permission was denied")) { throw new AlfrescoServiceException(
+                                ErrorCodeRegistry.SITE_LAST_MANAGER,
+                                Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
+            }
+            else
+            {
+                if (e.getMessage().contains("one site manager") || e.getMessage()
+                        .contains("remove last manager")) { throw new AlfrescoServiceException(
+                                ErrorCodeRegistry.SITE_LAST_MANAGER,
+                                Messagesl18n.getString("ErrorCodeRegistry.SITE_LAST_MANAGER")); }
             }
             convertException(e);
         }
@@ -490,8 +541,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
         for (JoinSiteRequestImpl joinSiteRequest : request)
         {
             isFavorite = favoriteSites.contains(joinSiteRequest.getIdentifier());
-            extraPropertiesCache.put(joinSiteRequest.getSiteShortName(), new CacheSiteExtraProperties(true, false,
-                    isFavorite));
+            extraPropertiesCache.put(joinSiteRequest.getSiteShortName(),
+                    new CacheSiteExtraProperties(true, false, isFavorite));
 
             if (isFavorite)
             {
@@ -528,8 +579,8 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     public Site refresh(Site site)
     {
         CacheSiteExtraProperties cacheProperty = extraPropertiesCache.get(site.getIdentifier());
-        return (cacheProperty == null) ? site : new SiteImpl(site, cacheProperty.isPendingMember,
-                cacheProperty.isMember, cacheProperty.isFavorite);
+        return (cacheProperty == null) ? site
+                : new SiteImpl(site, cacheProperty.isPendingMember, cacheProperty.isMember, cacheProperty.isFavorite);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////
@@ -542,4 +593,69 @@ public abstract class AbstractSiteServiceImpl extends AlfrescoService implements
     protected abstract PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext);
 
     protected abstract String parseContainer(String link);
+
+    protected PagingResult<Site> computeLegacySites(UrlBuilder url, ListingContext listingContext)
+    {
+        Response resp = read(url, ErrorCodeRegistry.SITE_GENERIC);
+
+        List<Object> json = JsonUtils.parseArray(resp.getStream(), resp.getCharset());
+        int size = json.size();
+
+        List<Site> result = new ArrayList<Site>();
+        int fromIndex = 0, toIndex = size;
+        Boolean hasMoreItems = false;
+
+        // Define Listing Context
+        if (listingContext != null)
+        {
+            fromIndex = (listingContext.getSkipCount() > size) ? size : listingContext.getSkipCount();
+
+            // Case if skipCount > result size
+            if (listingContext.getMaxItems() + fromIndex >= size)
+            {
+                toIndex = size;
+                hasMoreItems = false;
+            }
+            else
+            {
+                toIndex = listingContext.getMaxItems() + fromIndex;
+                hasMoreItems = true;
+            }
+        }
+        else
+        {
+            listingContext = new ListingContext();
+            listingContext.setSortProperty(SORT_PROPERTY_TITLE);
+        }
+
+        String siteName = null;
+        Map<String, Object> mapProperties = null;
+        CacheSiteExtraProperties extraProperties = null;
+        for (int i = fromIndex; i < toIndex; i++)
+        {
+            mapProperties = (Map<String, Object>) json.get(i);
+            if (mapProperties != null)
+            {
+                siteName = JSONConverter.getString(mapProperties, OnPremiseConstant.SHORTNAME_VALUE);
+                if (extraPropertiesCache.get(siteName) != null)
+                {
+                    extraProperties = extraPropertiesCache.get(siteName);
+                    mapProperties.put(OnPremiseConstant.ISPENDINGMEMBER_VALUE, extraProperties.isPendingMember);
+                    mapProperties.put(OnPremiseConstant.ISMEMBER_VALUE, extraProperties.isMember);
+                    mapProperties.put(OnPremiseConstant.ISFAVORITE_VALUE, extraProperties.isFavorite);
+                }
+                result.add(SiteImpl.parseCompatJson((Map<String, Object>) json.get(i)));
+            }
+        }
+
+        if (listingContext != null)
+        {
+            Collections.sort(result,
+                    new AlphaComparator(listingContext.isSortAscending(), listingContext.getSortProperty()));
+        }
+
+        return new PagingResultImpl<Site>(result, hasMoreItems, size);
+
+    }
+
 }

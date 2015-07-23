@@ -27,10 +27,10 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 /**
- * Provides informations about Alfresco Share site. </br> A site is a project
- * area where you can share content and collaborate with other site
- * members.</br> Each site has a visibility setting that marks the site as
- * public or private.
+ * Provides informations about Alfresco Share site. </br>
+ * A site is a project area where you can share content and collaborate with
+ * other site members.</br>
+ * Each site has a visibility setting that marks the site as public or private.
  * 
  * @author Jean Marie Pascal
  */
@@ -116,12 +116,41 @@ public class SiteImpl implements Site
         site.visibility = JSONConverter.getString(json, OnPremiseConstant.VISIBILITY_VALUE);
 
         // Extra properties
-        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
-        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
-        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+
+        return site;
+    }
+
+    public static SiteImpl parseCompatJson(Map<String, Object> json)
+    {
+        SiteImpl site = new SiteImpl();
+
+        site.identifier = JSONConverter.getString(json, OnPremiseConstant.SHORTNAME_VALUE);
+        site.title = JSONConverter.getString(json, OnPremiseConstant.TITLE_VALUE);
+        site.description = JSONConverter.getString(json, OnPremiseConstant.DESCRIPTION_VALUE);
+        if (site.description.length() == 0)
+        {
+            site.description = null;
+        }
+
+        site.nodeIdentifier = JSONConverter.getString(json, OnPremiseConstant.NODE_VALUE);
+        int lastForwardSlash = site.nodeIdentifier.lastIndexOf('/');
+        site.nodeIdentifier = site.nodeIdentifier.substring(lastForwardSlash + 1);
+
+        site.visibility = JSONConverter.getString(json, OnPremiseConstant.VISIBILITY_VALUE);
+
+        // Extra properties
+        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 
         return site;
     }
@@ -144,8 +173,8 @@ public class SiteImpl implements Site
         site.nodeIdentifier = JSONConverter.getString(json, CloudConstant.GUID_VALUE);
 
         // Extra properties
-        site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
 
         // Cache information might be obsolete => so let's use role
         if (json.containsKey(CloudConstant.ROLE_VALUE))
@@ -154,11 +183,11 @@ public class SiteImpl implements Site
         }
         else
         {
-            site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ? JSONConverter
-                    .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+            site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null)
+                    ? JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
         }
-        site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null)
+                ? JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 
         return site;
     }
