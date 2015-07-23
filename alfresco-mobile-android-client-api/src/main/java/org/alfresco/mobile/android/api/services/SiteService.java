@@ -32,8 +32,9 @@ import org.alfresco.mobile.android.api.model.Site;
  * Sites are a key concept within Alfresco Share for managing documents, wiki
  * pages, blog posts, discussions, and other collaborative content relating to
  * teams, projects, communities of interest, and other types of collaborative
- * sites. </br> There are various methods relating to the Sites service,
- * including the ability to:
+ * sites. </br>
+ * There are various methods relating to the Sites service, including the
+ * ability to:
  * <ul>
  * <li>List Sites (Favorites, all sites, user are member of)</li>
  * </ul>
@@ -44,7 +45,7 @@ public interface SiteService extends Service
 {
 
     /**
-     * Allowable sorting property : Name of the document or folder.
+     * Allowable sorting property : Name of the site.
      */
     String SORT_PROPERTY_SHORTNAME = OnPremiseConstant.SHORTNAME_VALUE;
 
@@ -146,7 +147,8 @@ public interface SiteService extends Service
     Site addFavoriteSite(Site site);
 
     /**
-     * Removes the given site from the current users list of favorite sites. <br/>
+     * Removes the given site from the current users list of favorite sites.
+     * <br/>
      * It's possible to favorite a site independently of its visibility.
      * 
      * @since 1.1.0
@@ -164,7 +166,8 @@ public interface SiteService extends Service
      * 
      * @since 1.1.0
      * @param site : site object
-     * @return If the site is moderated, a JoinSiteRequest object is returned. <br/>
+     * @return If the site is moderated, a JoinSiteRequest object is returned.
+     *         <br/>
      *         If the site is public null is returned.
      * @throws AlfrescoServiceException : <br/>
      *             If the current user is already a member of the site or there
@@ -272,4 +275,23 @@ public interface SiteService extends Service
      * @return
      */
     PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext);
+
+    /**
+     * @return Returns a list of sites which matches the current keywords.
+     * @since 1.4.1
+     * @param keyword
+     * @return Returns a paged list of sites the current user has requested by
+     *         its search.
+     */
+    PagingResult<Site> search(String keyword, ListingContext listingContext);
+
+    /**
+     * @return Returns a list of sites which matches the current keywords.
+     * @since 1.4.1
+     * @param keyword
+     * @return Returns a list of sites the current user has requested by its
+     *         search.
+     */
+    List<Site> search(String keyword);
+
 }
