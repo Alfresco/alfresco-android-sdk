@@ -9,14 +9,14 @@ This SDK provides functionality to connect to both on-premise and Cloud-based se
 
 Download [the latest JAR][2] from the developer portal or grab via Gradle:
 ```groovy
-compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.0'
+compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.1'
 ```
 or Maven:
 ```xml
 <dependency>
   <groupId>org.alfresco.mobile.android.sdk</groupId>
   <artifactId>alfresco-mobile-android-client-api</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
 </dependency>
 ```
 
