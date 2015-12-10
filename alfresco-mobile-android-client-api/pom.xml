@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk</groupId>
 		<artifactId>alfresco-mobile-android-sdk</artifactId>
-		<version>1.4.0</version>
+		<version>1.4.1</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android-client-api</artifactId>

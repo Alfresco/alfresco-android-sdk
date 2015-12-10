@@ -204,6 +204,8 @@ public interface OnPremiseConstant
 
     String STATUS_VALUE = "status";
 
+    String MEMEBERPERSONID_VALUE = "memberPersonId";
+
     String MEMEBERUSERNAME_VALUE = "memberUserName";
 
     String MEMEBERFIRSTNAME_VALUE = "memberFirstName";

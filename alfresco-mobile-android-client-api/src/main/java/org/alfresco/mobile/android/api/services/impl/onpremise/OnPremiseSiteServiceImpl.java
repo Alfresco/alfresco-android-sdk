@@ -63,8 +63,9 @@ import android.util.Log;
  * Sites are a key concept within Alfresco Share for managing documents, wiki
  * pages, blog posts, discussions, and other collaborative content relating to
  * teams, projects, communities of interest, and other types of collaborative
- * sites. </br> There are various methods relating to the Sites service,
- * including the ability to:
+ * sites. </br>
+ * There are various methods relating to the Sites service, including the
+ * ability to:
  * <ul>
  * <li>List Sites (Favorites, all sites, user are member of)</li>
  * </ul>
@@ -76,8 +77,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     private static final String TAG = "OnPremiseSiteServiceImpl";
 
     /**
-     * Default constructor for service. </br> Used by the
-     * {@link AbstractServiceRegistry}.
+     * Default constructor for service. </br>
+     * Used by the {@link AbstractServiceRegistry}.
      * 
      * @param repositorySession
      */
@@ -154,8 +155,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         Boolean hasMoreItems = false;
         if (listingContext != null)
         {
-            int fromIndex = (listingContext.getSkipCount() > result.size()) ? result.size() : listingContext
-                    .getSkipCount();
+            int fromIndex = (listingContext.getSkipCount() > result.size()) ? result.size()
+                    : listingContext.getSkipCount();
 
             // Case if skipCount > result size
             if (listingContext.getSkipCount() < result.size())
@@ -215,8 +216,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
      */
     private Site favoriteSite(Site site, boolean addSite)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
         Site updatedSite = null;
 
@@ -279,11 +280,11 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @Override
     public boolean isMember(Site site, Person person)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
-        if (isObjectNull(person)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+        if (isObjectNull(person)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
 
         return isMemberOf(site, person.getIdentifier());
     }
@@ -339,8 +340,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     public Site joinSite(Site site)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
 
         Site updatedSite = null;
 
@@ -354,9 +355,10 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
             // Check isMember because on onPremise theres no error message if
             // the user is already member of a site.
-            if (isMemberOf(site, session.getPersonIdentifier())) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.SITE_ALREADY_MEMBER,
-                    Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
+            if (isMemberOf(site,
+                    session.getPersonIdentifier())) { throw new AlfrescoServiceException(
+                            ErrorCodeRegistry.SITE_ALREADY_MEMBER,
+                            Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
 
             switch (site.getVisibility())
             {
@@ -394,9 +396,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
                 case MODERATED:
 
-                    if (hasJoinRequest(site)) { throw new AlfrescoServiceException(
-                            ErrorCodeRegistry.SITE_ALREADY_MEMBER,
-                            Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER.request")); }
+                    if (hasJoinRequest(
+                            site)) { throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_ALREADY_MEMBER,
+                                    Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER.request")); }
 
                     link = OnPremiseUrlRegistry.getJoinModeratedSiteUrl(session, site.getIdentifier());
                     url = new UrlBuilder(link);
@@ -565,9 +567,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @SuppressWarnings("unchecked")
     public PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
-        
+        if (isObjectNull(site)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+
         List<Person> persons = new ArrayList<Person>();
         int maxItems = -1;
         try
@@ -593,8 +595,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
             for (Object obj : json)
             {
-                persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj)
-                        .get(OnPremiseConstant.AUTHORITY_VALUE), false));
+                persons.add(PersonImpl.parseJson(
+                        (Map<String, Object>) ((Map<String, Object>) obj).get(OnPremiseConstant.AUTHORITY_VALUE),
+                        false));
             }
         }
         catch (Exception e)
@@ -636,6 +639,11 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 toIndex = listingContext.getMaxItems() + fromIndex;
                 hasMoreItems = true;
             }
+        }
+        else
+        {
+            listingContext = new ListingContext();
+            listingContext.setSortProperty(SORT_PROPERTY_TITLE);
         }
 
         String siteName = null;

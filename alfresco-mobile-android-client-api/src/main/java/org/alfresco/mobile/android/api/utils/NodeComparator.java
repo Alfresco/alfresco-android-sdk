@@ -47,33 +47,37 @@ public class NodeComparator implements Serializable, Comparator<Node>
 
     public int compare(Node nodeA, Node nodeB)
     {
-        if (nodeA == null || nodeB == null){
-            return 0;
-        }
-        
+        if (nodeA == null || nodeB == null) { return 0; }
+
         int b = 0;
         if (DocumentFolderService.SORT_PROPERTY_NAME.equals(propertySorting))
         {
+            if (nodeA.getName() == null) { return 0; }
             b = nodeA.getName().compareToIgnoreCase(nodeB.getName());
         }
         else if (DocumentFolderService.SORT_PROPERTY_TITLE.equals(propertySorting))
         {
+            if (nodeA.getTitle() == null) { return 0; }
             b = nodeA.getTitle().compareToIgnoreCase(nodeB.getTitle());
         }
         else if (DocumentFolderService.SORT_PROPERTY_DESCRIPTION.equals(propertySorting))
         {
+            if (nodeA.getDescription() == null) { return 0; }
             b = nodeA.getDescription().compareToIgnoreCase(nodeB.getDescription());
         }
         else if (DocumentFolderService.SORT_PROPERTY_CREATED_AT.equals(propertySorting))
         {
+            if (nodeA.getCreatedAt() == null || nodeB.getCreatedAt() == null) { return 0; }
             return compareDate(nodeA.getCreatedAt().getTime(), nodeB.getCreatedAt().getTime());
         }
         else if (DocumentFolderService.SORT_PROPERTY_MODIFIED_AT.equals(propertySorting))
         {
+            if (nodeA.getModifiedAt() == null || nodeB.getModifiedAt() == null) { return 0; }
             return compareDate(nodeA.getModifiedAt().getTime(), nodeB.getModifiedAt().getTime());
         }
         else
         {
+            if (nodeA.getName() == null) { return 0; }
             b = nodeA.getName().compareToIgnoreCase(nodeB.getName());
         }
         if (asc)

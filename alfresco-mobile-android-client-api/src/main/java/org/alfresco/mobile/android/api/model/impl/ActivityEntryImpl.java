@@ -130,6 +130,8 @@ public class ActivityEntryImpl implements ActivityEntry
                 JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
         activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
+        activityItem.data.put(CloudConstant.MEMEBERPERSONID_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.MEMEBERPERSONID_VALUE));
         
         return activityItem;
     }
@@ -198,6 +200,8 @@ public class ActivityEntryImpl implements ActivityEntry
                 JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
         activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
+        activityItem.data.put(CloudConstant.MEMEBERPERSONID_VALUE,
+                JSONConverter.getString(activitySummary, CloudConstant.MEMEBERPERSONID_VALUE));
         
         return activityItem;
     }
