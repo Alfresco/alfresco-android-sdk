@@ -17,36 +17,20 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_ASPECTS;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.ALFRESCO_TO_CMIS;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_ASPECTS;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_DOCUMENT;
-import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.CMISPREFIX_FOLDER;
+import static org.alfresco.mobile.android.api.constants.ModelMappingUtils.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.ContentFile;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Permissions;
-import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.*;
 import org.alfresco.mobile.android.api.model.impl.ContentStreamImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.model.impl.PermissionsImpl;
@@ -139,12 +123,15 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             String orderBy = getSorting(SORT_PROPERTY_NAME, true);
             BigInteger maxItems = null;
             BigInteger skipCount = null;
+            boolean includeLinks = false;
 
             if (lcontext != null)
             {
                 orderBy = getSorting(lcontext.getSortProperty(), lcontext.isSortAscending());
                 maxItems = BigInteger.valueOf(lcontext.getMaxItems());
                 skipCount = BigInteger.valueOf(lcontext.getSkipCount());
+                includeLinks = (lcontext.getFilter() != null)
+                        ? (Boolean) lcontext.getFilter().getFilterValue(FILTER_INCLUDE_LINKS) : false;
             }
             // get the children
             ObjectInFolderList children = navigationService.getChildren(session.getRepositoryInfo().getIdentifier(),
@@ -161,10 +148,24 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 // //Log.d(TAG, "childObjects : " + childObjects.size());
                 for (ObjectInFolderData objectData : childObjects)
                 {
-                    if (objectData.getObject() != null)
+                    try
                     {
-                        Node n = convertNode(objectFactory.convertObject(objectData.getObject(), ctxt));
-                        page.add(n);
+                        if (objectData.getObject() != null)
+                        {
+                            Node n = convertNode(objectFactory.convertObject(objectData.getObject(), ctxt));
+                            page.add(n);
+
+                            // Remove links if set
+                            if (!includeLinks && n instanceof Link)
+                            {
+                                page.remove(n);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.d("Convert issue", "Impossible to convert " + objectData.getObject() + " to Node Object"
+                                + objectData.getObject().getBaseTypeId());
                     }
                 }
             }
