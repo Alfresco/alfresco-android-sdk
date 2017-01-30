@@ -19,30 +19,19 @@ package org.alfresco.mobile.android.test.api.services;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.Assert;
+import java.util.*;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.ContentFile;
-import org.alfresco.mobile.android.api.model.ContentStream;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.*;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+
+import junit.framework.Assert;
 
 /**
  * Test class for DocumentFolderService.
@@ -772,48 +761,25 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // Rendition Methods
         // ////////////////////////////////////////////////////
-        doc2 = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc2.getIdentifier()));
-        ContentFile cf = docfolderservice.getRendition(doc2, "doclib");
-        if (isOnPremise() && !hasPublicAPI())
-        {
-            Assert.assertNull(cf);
-        }
-        else
-        {
-            Assert.assertNotNull(cf);
-        }
-
-        cf = docfolderservice.getRendition(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise() && !hasPublicAPI())
-        {
-            Assert.assertNull(cf);
-        }
-        else
-        {
-            Assert.assertNotNull(cf);
-        }
-
-        ContentStream ci = docfolderservice.getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise() && !hasPublicAPI())
-        {
-            Assert.assertNull(ci);
-        }
-        else
-        {
-            Assert.assertNotNull(ci);
-        }
-
-        // 28S1
-        ci = session.getServiceRegistry().getDocumentFolderService()
-                .getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
-        if (isOnPremise() && !hasPublicAPI())
-        {
-            Assert.assertNull(ci);
-        }
-        else
-        {
-            Assert.assertNotNull(ci);
-        }
+        /*
+         * doc2 = (Document)
+         * docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(
+         * doc2.getIdentifier())); ContentFile cf =
+         * docfolderservice.getRendition(doc2, "doclib"); if (isOnPremise() &&
+         * !hasPublicAPI()) { Assert.assertNull(cf); } else {
+         * Assert.assertNotNull(cf); } cf = docfolderservice.getRendition(doc2,
+         * DocumentFolderService.RENDITION_THUMBNAIL); if (isOnPremise() &&
+         * !hasPublicAPI()) { Assert.assertNull(cf); } else {
+         * Assert.assertNotNull(cf); } ContentStream ci =
+         * docfolderservice.getRenditionStream(doc2,
+         * DocumentFolderService.RENDITION_THUMBNAIL); if (isOnPremise() &&
+         * !hasPublicAPI()) { Assert.assertNull(ci); } else {
+         * Assert.assertNotNull(ci); } // 28S1 ci =
+         * session.getServiceRegistry().getDocumentFolderService()
+         * .getRenditionStream(doc2, DocumentFolderService.RENDITION_THUMBNAIL);
+         * if (isOnPremise() && !hasPublicAPI()) { Assert.assertNull(ci); } else
+         * { Assert.assertNotNull(ci); }
+         */
 
         // ////////////////////////////////////////////////////
         // Content Methods
@@ -825,7 +791,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         Assert.assertEquals(0, f.length());
 
-        cf = docfolderservice.getContent(doc2);
+        ContentFile cf = docfolderservice.getContent(doc2);
         Assert.assertNotNull(cf);
         Assert.assertTrue(cf.getMimeType().contains(doc2.getContentStreamMimeType()));
         Assert.assertNotNull(cf.getFile());
