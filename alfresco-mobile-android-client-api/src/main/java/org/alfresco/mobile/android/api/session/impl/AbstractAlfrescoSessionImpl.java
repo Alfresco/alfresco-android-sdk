@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -19,11 +19,7 @@ package org.alfresco.mobile.android.api.session.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -467,6 +463,32 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         }
     }
 
+    // //////////////////////////////////////////////////////////////
+    // Authentication Provider
+    // /////////////////////////////////////////////////////////////
+    /**
+     * Create the Alfresco AuthenticationProvider. Used by the default
+     * "CMIS enable" PassThruAuthenticationProvider.
+     *
+     * @param className
+     * @return
+     */
+    protected AuthenticationProvider createAuthenticationProvider(String className)
+    {
+        AuthenticationProvider s = null;
+        try
+        {
+            Class<?> c = Class.forName(className);
+            Constructor<?> t = c.getDeclaredConstructor(Map.class);
+            s = (AuthenticationProvider) t.newInstance(userParameters);
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
+        }
+        return s;
+    }
+
     // ///////////////////////////////////////////////
     // BINDINGS
     // ///////////////////////////////////////////////
@@ -498,6 +520,8 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
     protected static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     private static final String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
+
+    private static final String SAMLV2_SESSION_SETTING = "org.alfresco.mobile.binding.internal.onpremise.samlv2";
 
     // ////////////////////////
     // SHORTCUTS
