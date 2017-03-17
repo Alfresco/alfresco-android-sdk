@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -17,17 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.network;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
@@ -37,7 +34,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.IOUtils;
-import org.apache.chemistry.opencmis.client.bindings.impl.ClientVersion;
 import org.apache.chemistry.opencmis.client.bindings.impl.CmisBindingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.DefaultHttpInvoker;
@@ -89,6 +85,34 @@ public class NetworkHttpInvoker implements HttpInvoker
     {
         return (HttpURLConnection) url.openConnection();
     }
+
+    /**
+     * Retrieve the value for the specified key.
+     * 
+     * @param key
+     * @return value associated to the key. Null if the key doesn't exist.
+     */
+    private static String getString(String key)
+    {
+        try
+        {
+            Properties properties = new Properties();
+            properties.load(NetworkHttpInvoker.class
+                    .getResourceAsStream("/org/alfresco/mobile/android/api/network.properties"));
+            return (String) properties.get(key);
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+    }
+
+    public static String USER_AGENT = getString("user.agent");
+
+    protected static String getUserAgent()
+    {
+        return USER_AGENT;
+    }
     
     protected Response invoke(UrlBuilder url, String method, String contentType, Map<String, String> headers,
             Output writer, BindingSession session, BigInteger offset, BigInteger length)
@@ -109,7 +133,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             conn.setDoOutput(writer != null);
             conn.setAllowUserInteraction(false);
             conn.setUseCaches(false);
-            conn.setRequestProperty(HTTP.USER_AGENT, ClientVersion.OPENCMIS_CLIENT);
+            conn.setRequestProperty(HTTP.USER_AGENT, getUserAgent());
 
             // timeouts
             int connectTimeout = session.get(SessionParameter.CONNECT_TIMEOUT, -1);
@@ -152,6 +176,8 @@ public class NetworkHttpInvoker implements HttpInvoker
                             for (String value : header.getValue())
                             {
                                 conn.addRequestProperty(header.getKey(), value);
+                                // Log.d("Header", header.getKey() + " : " +
+                                // value);
                             }
                         }
                     }
@@ -333,7 +359,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             conn.setDoOutput(writer != null || forceOutput);
             conn.setAllowUserInteraction(false);
             conn.setUseCaches(false);
-            conn.setRequestProperty("User-Agent", ClientVersion.OPENCMIS_CLIENT);
+            conn.setRequestProperty("User-Agent", getUserAgent());
 
             // set content type
             if (contentType != null)
