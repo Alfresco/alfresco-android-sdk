@@ -64,6 +64,12 @@ public interface ContentModel
     /** Distribution Policies Model URI */
     String DISTRIBUTION_MODEL_1_0_URI = "http://www.alfresco.org/model/distributionpolicies/1.0/model";
 
+    /** APP Model Prefix */
+    String APP_MODEL_PREFIX = "app";
+
+    /** Audio Model URI */
+    String APP_MODEL_1_0_URI = "http://www.alfresco.org/model/application/1.0";
+
     // //////////////////////////////////////////////////////////////
     // TYPES
     // /////////////////////////////////////////////////////////////
@@ -317,4 +323,18 @@ public interface ContentModel
             add(PROP_OFFLINE_EXPIRES_AFTER);
         }
     };
+
+    //
+    // LINK & FILE/FOLDER LINK
+    // @Since 1.5
+    //
+    // link object
+    String TYPE_LINK = CONTENT_MODEL_PREFIX.concat(":link");
+
+    String PROP_LINK_DESTINATION = CONTENT_MODEL_PREFIX.concat(":destination");
+
+    String TYPE_APP_FILELINK = APP_MODEL_PREFIX.concat(":filelink");
+
+    String TYPE_APP_FOLDERLINK = APP_MODEL_PREFIX.concat(":folderlink");
+
 }

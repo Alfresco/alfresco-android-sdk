@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.api.session.impl;
 import static org.alfresco.mobile.android.api.constants.OAuthConstant.PUBLIC_API_HOSTNAME;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -228,32 +227,6 @@ public class CloudSessionImpl extends CloudSession
         passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
         authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
                 .getAlfrescoAuthenticationProvider();
-    }
-
-    // //////////////////////////////////////////////////////////////
-    // Authentication Provider
-    // /////////////////////////////////////////////////////////////
-    /**
-     * Create the Alfresco AuthenticationProvider. Used by the default
-     * "CMIS enable" PassThruAuthenticationProvider.
-     * 
-     * @param className
-     * @return
-     */
-    private AuthenticationProvider createAuthenticationProvider(String className)
-    {
-        AuthenticationProvider s = null;
-        try
-        {
-            Class<?> c = Class.forName(className);
-            Constructor<?> t = c.getDeclaredConstructor(Map.class);
-            s = (AuthenticationProvider) t.newInstance(userParameters);
-        }
-        catch (Exception e)
-        {
-            throw new AlfrescoSessionException(ErrorCodeRegistry.SESSION_AUTHENTICATOR, e);
-        }
-        return s;
     }
 
     // //////////////////////////////////////////////////////////////

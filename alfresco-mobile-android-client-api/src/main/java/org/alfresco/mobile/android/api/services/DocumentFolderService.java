@@ -23,14 +23,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.model.ContentFile;
-import org.alfresco.mobile.android.api.model.ContentStream;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.*;
 
 /**
  * DocumentFolderService manages Folders and Documents in an Alfresco
@@ -75,6 +68,14 @@ public interface DocumentFolderService extends Service
      * Allowable sorting property : Modification Date
      */
     String SORT_PROPERTY_MODIFIED_AT = ContentModel.PROP_MODIFIED;
+
+    // ////////////////////////////////////////////////////////////////
+    // FILTERS
+    // ////////////////////////////////////////////////////////////////
+    /**
+     * Filter to include links object in listing.
+     */
+    String FILTER_INCLUDE_LINKS = "filterIncludeLinks";
 
     /**
      * Lists all immediate child nodes of the given context folder. </br> By

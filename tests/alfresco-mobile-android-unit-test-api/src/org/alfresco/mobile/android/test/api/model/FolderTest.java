@@ -19,14 +19,7 @@ package org.alfresco.mobile.android.test.api.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.Assert;
+import java.util.*;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
@@ -42,6 +35,8 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
+
+import junit.framework.Assert;
 
 /**
  * Test class for Folder Object.
@@ -358,20 +353,24 @@ public class FolderTest extends AlfrescoSDKTestCase
         Folder rootFolder = createUnitTestFolder(alfsession);
         Assert.assertNotNull(rootFolder);
 
-        // Create Folder with aspects (title and geographic)
+        // Create Folder with aspects (title and geographic implicitly)
         Map<String, Serializable> properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_TITLE, ROOT_TEST_FOLDER_NAME);
         properties.put(ContentModel.PROP_DESCRIPTION, ROOT_TEST_FOLDER_NAME);
         properties.put(ContentModel.PROP_LATITUDE, 51.522543);
         properties.put(ContentModel.PROP_LONGITUDE, -0.716689);
 
-        Folder folder = docfolderservice.createFolder(rootFolder, ROOT_TEST_FOLDER_NAME, properties);
+        // Add Aspect EXIF (explicitly
+        List<String> aspects = new ArrayList<String>(1);
+        aspects.add(ContentModel.ASPECT_EXIF);
+
+        Folder folder = docfolderservice.createFolder(rootFolder, ROOT_TEST_FOLDER_NAME, properties, aspects);
 
         // Check Aspects
         Assert.assertNotNull(folder.getAspects());
         
         //Check getAspects results don't start with a P:
-        List<String> aspects = folder.getAspects();
+        aspects = folder.getAspects();
         for (String aspect : aspects)
         {
             Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS));

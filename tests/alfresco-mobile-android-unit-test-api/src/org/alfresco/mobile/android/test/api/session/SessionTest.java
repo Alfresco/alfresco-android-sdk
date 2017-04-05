@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -22,16 +22,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
+import org.alfresco.mobile.android.api.session.authentication.SamlInfo;
+import org.alfresco.mobile.android.api.session.authentication.SamlTicket;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2InfoImpl;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2TicketImpl;
+import org.alfresco.mobile.android.api.session.authentication.impl.SamlDataImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.ServerConfigFile;
 
 import android.util.Log;
+import junit.framework.Assert;
 
 public class SessionTest extends AlfrescoSDKTestCase
 {
@@ -76,8 +81,8 @@ public class SessionTest extends AlfrescoSDKTestCase
     }
 
     /**
-     * Simple test to create a session with basic parameters. </br> Check
-     * repository informations, edition, version number.
+     * Simple test to create a session with basic parameters. </br>
+     * Check repository informations, edition, version number.
      * 
      * @Requirement 78S1, 79S1, 80S1
      */
@@ -123,11 +128,18 @@ public class SessionTest extends AlfrescoSDKTestCase
         }
 
         // Edition Informations : Community by default
-        Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN, alfsession.getRepositoryInfo().getEdition());
+        Assert.assertEquals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE, alfsession.getRepositoryInfo().getEdition());
 
         // Edition Version number
         Assert.assertNotNull(alfsession.getRepositoryInfo().getVersion());
-        if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
+        if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_5)
+        {
+            Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("5.1.0"));
+            Assert.assertEquals(5, alfsession.getRepositoryInfo().getMajorVersion().intValue());
+            Assert.assertEquals(1, alfsession.getRepositoryInfo().getMinorVersion().intValue());
+            Assert.assertEquals(0, alfsession.getRepositoryInfo().getMaintenanceVersion().intValue());
+        }
+        else if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
             Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("4.2.0"));
             Assert.assertEquals(4, alfsession.getRepositoryInfo().getMajorVersion().intValue());
@@ -200,19 +212,30 @@ public class SessionTest extends AlfrescoSDKTestCase
         // /////////////////////
         Assert.assertNotNull(alfsession.getRepositoryInfo());
 
-        if (hasPublicAPI()){
+        if (hasPublicAPI())
+        {
             Assert.assertEquals("", alfsession.getRepositoryInfo().getName());
-        } else {
+        }
+        else
+        {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getName());
         }
-        if (alfsession.getRepositoryInfo().getDescription() != null && !alfsession.getRepositoryInfo().getDescription().isEmpty())
+        if (alfsession.getRepositoryInfo().getDescription() != null
+                && !alfsession.getRepositoryInfo().getDescription().isEmpty())
         {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
         }
 
         // Edition Version number
         Assert.assertNotNull(alfsession.getRepositoryInfo().getVersion());
-        if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
+        if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_5)
+        {
+            Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("5."));
+            Assert.assertEquals(5, alfsession.getRepositoryInfo().getMajorVersion().intValue());
+            Assert.assertNotNull(alfsession.getRepositoryInfo().getMinorVersion());
+            Assert.assertNotNull(alfsession.getRepositoryInfo().getMaintenanceVersion());
+        }
+        else if (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4)
         {
             Assert.assertTrue(alfsession.getRepositoryInfo().getVersion().contains("4."));
             Assert.assertEquals(4, alfsession.getRepositoryInfo().getMajorVersion().intValue());
@@ -240,7 +263,9 @@ public class SessionTest extends AlfrescoSDKTestCase
                 Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
                         OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY, alfsession.getRepositoryInfo().getEdition());
             }
-        } else {
+        }
+        else
+        {
             if (alfsession.getRepositoryInfo().getEdition().contains("Enterprise"))
             {
                 Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
@@ -469,7 +494,7 @@ public class SessionTest extends AlfrescoSDKTestCase
 
         try
         {
-            RepositorySession.connect(url, null, null);
+            RepositorySession.connect(url, (String) null, (String) null);
             Assert.fail();
         }
         catch (IllegalArgumentException e)
@@ -506,6 +531,33 @@ public class SessionTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-
     }
+
+    /**
+     * Simple test to create a session.
+     */
+    public void testCreateSimpleSessionWithToken()
+    {
+        try
+        {
+            SamlInfo info = new Saml2InfoImpl(true, true, "PingFederate", "-default-");
+            SamlTicket token = new Saml2TicketImpl("XXX_TICKET_TO_PROVIDE", "admin");
+            SamlData data = new SamlDataImpl(token, info);
+
+            RepositorySession session = RepositorySession.connect("http://IP_OF_YOUR_ALFRESCO:8080/alfresco", data);
+
+            // Check informations has been collected from repository
+            Assert.assertNotNull(session);
+            Assert.assertNotNull(session.getRepositoryInfo());
+
+            // Base Url
+            Assert.assertNotNull(session.getBaseUrl());
+            Assert.assertEquals("http://IP_OF_YOUR_ALFRESCO:8080/alfresco", session.getBaseUrl());
+        }
+        catch (Exception e)
+        {
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }

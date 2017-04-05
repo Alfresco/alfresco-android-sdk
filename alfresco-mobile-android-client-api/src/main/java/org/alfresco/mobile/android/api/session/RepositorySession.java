@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -81,5 +82,26 @@ public abstract class RepositorySession extends AbstractAlfrescoSessionImpl
     public static RepositorySession connect(String url, String username, String password)
     {
         return connect(url, username, password, null);
+    }
+
+    /**
+     * @param url
+     * @param data
+     * @return
+     */
+    public static RepositorySession connect(String url, SamlData data)
+    {
+        return connect(url, data, null);
+    }
+
+    public static RepositorySession connect(String url, SamlData data, Map<String, Serializable> parameters)
+    {
+        if (url == null || url.isEmpty()) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "url")); }
+
+        if (data == null || data.getTicket() == null) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "saml token")); }
+
+        return new RepositorySessionImpl(url, data, parameters);
     }
 }

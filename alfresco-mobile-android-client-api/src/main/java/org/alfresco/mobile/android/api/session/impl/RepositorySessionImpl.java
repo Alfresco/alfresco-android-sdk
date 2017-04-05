@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2017 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -28,7 +28,9 @@ import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryI
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseServiceRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.SamlData;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
+import org.alfresco.mobile.android.api.session.authentication.impl.Saml2AuthenticationProviderImpl;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
@@ -82,6 +84,20 @@ public class RepositorySessionImpl extends RepositorySession
         authenticate();
     }
 
+    public RepositorySessionImpl(String url, SamlData data)
+    {
+        this(url, data, null);
+    }
+
+    public RepositorySessionImpl(String url, SamlData data, Map<String, Serializable> settings)
+    {
+        authenticator = new Saml2AuthenticationProviderImpl(data);
+
+        initSettings(url, data.getUserId(), null, settings);
+
+        authenticate();
+    }
+
     /**
      * @see org.alfresco.mobile.android.api.session.RepositorySession#authenticate(String,
      *      String)
@@ -109,7 +125,7 @@ public class RepositorySessionImpl extends RepositorySession
             // Create the session with parameters
             try
             {
-                cmisSession = createSession(sessionFactory, param);
+                cmisSession = createSession(sessionFactory, authenticator, param);
             }
             catch (Exception err)
             {
@@ -199,6 +215,7 @@ public class RepositorySessionImpl extends RepositorySession
     {
         return hasPublicAPI;
     }
+
 
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization

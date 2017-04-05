@@ -21,15 +21,14 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.exceptions.impl.ExceptionHelper;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
-import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
-import org.alfresco.mobile.android.api.model.impl.FolderImpl;
+import org.alfresco.mobile.android.api.model.impl.*;
 import org.alfresco.mobile.android.api.services.Service;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -53,9 +52,11 @@ import android.os.Parcel;
 
 /**
  * Abstract base class for all public Alfresco SDK Services. Contains all
- * utility methods that are common for building a service. </br> Developers can
- * extend this class if they want to add new services inside the SDK.</br> NB :
- * Don't forget to add the newly service to a custom {@link ServiceRegistry}
+ * utility methods that are common for building a service. </br>
+ * Developers can extend this class if they want to add new services inside the
+ * SDK.</br>
+ * NB : Don't forget to add the newly service to a custom
+ * {@link ServiceRegistry}
  * 
  * @author Jean Marie Pascal
  */
@@ -74,8 +75,8 @@ public abstract class AlfrescoService implements Service
     }
 
     /**
-     * Default constructor for service. </br> Used by the
-     * {@link ServiceRegistry}.
+     * Default constructor for service. </br>
+     * Used by the {@link ServiceRegistry}.
      * 
      * @param repositorySession : Repository Session.
      * @param cmisSession : CMIS session.
@@ -123,7 +124,7 @@ public abstract class AlfrescoService implements Service
     {
         // make the call
         Response resp = getHttpInvoker().invokePOST(url, contentType, writer, getSessionHttp());
-        
+
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
         {
@@ -154,7 +155,8 @@ public abstract class AlfrescoService implements Service
      * Performs a PUT on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected Response put(UrlBuilder url, String contentType, Map<String, String> headers, Output writer, int errorCode)
+    protected Response put(UrlBuilder url, String contentType, Map<String, String> headers, Output writer,
+            int errorCode)
     {
         Response resp = getHttpInvoker().invokePUT(url, contentType, headers, writer, getSessionHttp());
 
@@ -214,8 +216,8 @@ public abstract class AlfrescoService implements Service
 
     protected Node convertNode(CmisObject object, boolean hasAllProperties)
     {
-        if (isObjectNull(object)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
+        if (isObjectNull(object)) { throw new IllegalArgumentException(
+                String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
 
         /* determine type */
         switch (object.getBaseTypeId())
@@ -224,6 +226,22 @@ public abstract class AlfrescoService implements Service
                 return new DocumentImpl(object, hasAllProperties);
             case CMIS_FOLDER:
                 return new FolderImpl(object, hasAllProperties);
+            case CMIS_ITEM:
+                // We support link since 1.5 and let the app to display it or
+                // not
+                if (object.getType().getId().endsWith(ContentModel.TYPE_APP_FILELINK))
+                {
+                    return new DocumentLinkImpl(object, hasAllProperties);
+                }
+                else if (object.getType().getId().endsWith(ContentModel.TYPE_APP_FOLDERLINK))
+                {
+                    return new FolderLinkImpl(object, hasAllProperties);
+                }
+                else
+                {
+                    throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
+                            Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
+                }
             default:
                 throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
                         Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());

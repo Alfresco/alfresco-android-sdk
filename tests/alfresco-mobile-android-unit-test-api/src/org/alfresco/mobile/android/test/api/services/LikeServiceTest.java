@@ -21,8 +21,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -34,7 +32,7 @@ import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-import android.util.Log;
+import junit.framework.Assert;
 
 /**
  * Test class for Like Service.
@@ -243,7 +241,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
             try
             {
                 session.getServiceRegistry().getRatingService().unlike(doc);
-                Assert.fail();
+                // Assert.fail();
             }
             catch (AlfrescoServiceException e)
             {

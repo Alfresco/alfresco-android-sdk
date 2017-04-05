@@ -19,13 +19,12 @@ package org.alfresco.mobile.android.test.api.utils;
 
 import java.util.Locale;
 
-import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.Version;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 
 import android.os.PatternMatcher;
 import android.test.AndroidTestCase;
+import junit.framework.Assert;
 
 public class UtilsTest extends AndroidTestCase
 {
@@ -33,7 +32,7 @@ public class UtilsTest extends AndroidTestCase
     public void testSDKVersion()
     {
         Assert.assertNotNull(Version.SDK);
-        Assert.assertEquals("1.4", Version.SDK);
+        Assert.assertEquals("1.5", Version.SDK);
     }
 
     public void testPattern()
