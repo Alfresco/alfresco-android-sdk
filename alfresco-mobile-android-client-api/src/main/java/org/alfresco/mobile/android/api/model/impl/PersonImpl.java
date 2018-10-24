@@ -51,6 +51,9 @@ public class PersonImpl implements Person
     /** the last name of this person. */
     private String lastName;
 
+    /** the email of this person. */
+    private String email;
+
     private boolean isCloud = false;
 
     private Map<String, String> properties;
@@ -166,6 +169,7 @@ public class PersonImpl implements Person
         person.username = JSONConverter.getString(json, CloudConstant.ID_VALUE);
         person.firstName = JSONConverter.getString(json, CloudConstant.FIRSTNAME_VALUE);
         person.lastName = JSONConverter.getString(json, CloudConstant.LASTNAME_VALUE);
+        person.email = JSONConverter.getString(json, CloudConstant.EMAIL_VALUE);
 
         person.isCloud = true;
 
@@ -174,7 +178,7 @@ public class PersonImpl implements Person
         {
             props.put(key, JSONConverter.getString(json, key));
         }
-        props.put(CloudConstant.EMAIL_VALUE, person.username);
+        props.put(CloudConstant.EMAIL_VALUE, person.email);
         person.properties = props;
 
         person.company = CompanyImpl.parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.COMPANY_VALUE),
