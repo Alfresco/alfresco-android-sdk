@@ -63,11 +63,6 @@
 			<name>Alfresco Internal Snapshots Repository</name>
 			<url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
 		</snapshotRepository>
-		<site>
-			<id>alfresco.mobile.website</id>
-			<name>Alfresco Mobile SDK Website</name>
-			<url>https://bamboo.alfresco.com/bamboo/browse/MOBILE-ANDROIDSDKHEAD/latest/artifact</url>
-		</site>
 	</distributionManagement>
 
 	<issueManagement>
