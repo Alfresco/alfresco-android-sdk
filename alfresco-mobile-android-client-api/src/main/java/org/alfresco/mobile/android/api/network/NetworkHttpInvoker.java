@@ -51,9 +51,20 @@ import org.slf4j.LoggerFactory;
 
 public class NetworkHttpInvoker implements HttpInvoker
 {
+	public interface ConnectionProvider {
+		public HttpURLConnection getHttpURLConnection(URL url) throws IOException;
+	}
+
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpInvoker.class);
 
     private static final int BUFFER_SIZE = 2 * 1024 * 1024;
+
+    private static ConnectionProvider connectionProvider = null;
+
+    public static void setConnectionProvider(ConnectionProvider provider)
+    {
+    	connectionProvider = provider;
+    }
 
     public Response invokeGET(UrlBuilder url, BindingSession session)
     {
@@ -81,8 +92,12 @@ public class NetworkHttpInvoker implements HttpInvoker
         return invoke(url, "DELETE", null, null, null, session, null, null);
     }
 
-    protected HttpURLConnection getHttpURLConnection(URL url) throws IOException
+    private static HttpURLConnection getHttpURLConnection(URL url) throws IOException
     {
+    	if (connectionProvider != null) {
+    		return connectionProvider.getHttpURLConnection(url);
+    	}
+
         return (HttpURLConnection) url.openConnection();
     }
 
@@ -353,7 +368,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             // Log.d("URL", url.toString());
 
             // connect
-            HttpURLConnection conn = (HttpURLConnection) (new URL(url.toString())).openConnection();
+            HttpURLConnection conn = getHttpURLConnection(new URL(url.toString()));
             conn.setRequestMethod(method);
             conn.setDoInput(true);
             conn.setDoOutput(writer != null || forceOutput);
