@@ -84,11 +84,19 @@ public abstract class AlfrescoService implements Service
     public AlfrescoService(AlfrescoSession repositorySession)
     {
         this.session = repositorySession;
-        this.bindingSession = new SessionImpl();
-        bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
-                ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
-        bindingSession.put(SessionParameter.HTTP_INVOKER_CLASS,
-                repositorySession.getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
+       	initBindingSession();
+    }
+
+    private void initBindingSession() {
+    	this.bindingSession = new SessionImpl();
+		
+		Map<String, String> sessionParameters = ((AbstractAlfrescoSessionImpl)this.session).retrieveSessionParameters();
+		for (Map.Entry<String, String> entry : sessionParameters.entrySet()) {
+			bindingSession.put(entry.getKey(), entry.getValue());
+		}
+
+		bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
+                ((AbstractAlfrescoSessionImpl) this.session).getPassthruAuthenticationProvider());
     }
 
     // //////////////////////////////////////////////////////////////////////////////////////////
@@ -177,11 +185,7 @@ public abstract class AlfrescoService implements Service
     {
         if (bindingSession == null)
         {
-            bindingSession = new SessionImpl();
-            bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
-                    ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
-            bindingSession.put(SessionParameter.HTTP_INVOKER_CLASS,
-                    ((AbstractAlfrescoSessionImpl) session).getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
+            initBindingSession();
         }
         else if (bindingSession != null
                 && bindingSession.get(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT) == null)

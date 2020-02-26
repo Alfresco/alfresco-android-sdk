@@ -258,7 +258,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
      * 
      * @return OpenCMIS Map of Session Parameters.
      */
-    protected Map<String, String> retrieveSessionParameters()
+    public Map<String, String> retrieveSessionParameters()
     {
         init();
         return sessionParameters;
