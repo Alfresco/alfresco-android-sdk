@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
 		<artifactId>alfresco-mobile-android-sdk-samples</artifactId>
-        <version>1.5.1-SNAPSHOT</version>
+		<version>${revision}</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android-samples-hellorepo</artifactId>

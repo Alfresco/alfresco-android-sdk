@@ -13,7 +13,7 @@
 
 	<groupId>org.alfresco.mobile.android.sdk</groupId>
 	<artifactId>alfresco-mobile-android-sdk</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>${revision}</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android SDK (Parent)</name>
@@ -121,6 +121,7 @@
 
 	<properties>
 		<!-- Common -->
+		<revision>1.5.2-SNAPSHOT</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compile.source>1.6</maven.compile.source>
