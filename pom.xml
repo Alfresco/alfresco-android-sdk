@@ -133,7 +133,7 @@
 		<android.maven.plugin.version>3.9.0-rc.2</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
-		<junit.version>4.10</junit.version>
+		<junit.version>4.13.1</junit.version>
 
 		<!-- Alfresco Configuration -->
 		<slf4j.android.version>1.6.1-RC1</slf4j.android.version>
